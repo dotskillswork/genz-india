@@ -19,9 +19,9 @@
             line-height: 1.6;
         }
         header {
-            background: rgba(15, 23, 42, 0.9);
+            background: rgba(15, 23, 42, 0.95);
             backdrop-filter: blur(10px);
-            padding: 20px 40px;
+            padding: 15px 20px;
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -31,29 +31,57 @@
             z-index: 1000;
         }
         .logo {
-            font-size: 24px;
+            font-size: 20px;
             font-weight: 700;
             color: #38bdf8;
+            white-space: nowrap;
+        }
+        nav {
+            display: flex;
+            gap: 12px;
         }
         nav a {
             color: #94a3b8;
             text-decoration: none;
-            margin-left: 25px;
             font-weight: 500;
-            font-size: 15px;
+            font-size: 13px;
             transition: 0.3s;
+            white-space: nowrap;
         }
         nav a:hover {
             color: #38bdf8;
         }
+
+        /* Mobile Screen ke liye Perfect Stacking */
+        @media (max-width: 768px) {
+            header {
+                flex-direction: column;
+                align-items: center;
+                padding: 12px 10px;
+                gap: 10px;
+            }
+            nav {
+                width: 100%;
+                justify-content: center;
+                gap: 10px;
+                flex-wrap: wrap;
+            }
+            nav a {
+                font-size: 12px;
+                padding: 4px 6px;
+                background: #1e293b;
+                border-radius: 4px;
+            }
+        }
+
         .hero {
             text-align: center;
-            padding: 90px 20px;
+            padding: 70px 20px;
             background: radial-gradient(circle at center, #1e293b 0%, #0b0f19 70%);
         }
         .hero h1 {
-            font-size: 46px;
-            margin-bottom: 20px;
+            font-size: 34px;
+            margin-bottom: 15px;
             color: #f8fafc;
             font-weight: 700;
         }
@@ -61,19 +89,19 @@
             color: #38bdf8;
         }
         .hero p {
-            font-size: 18px;
+            font-size: 15px;
             color: #94a3b8;
             max-width: 650px;
-            margin: 0 auto 30px auto;
+            margin: 0 auto 25px auto;
         }
         .cta-btn {
             background: #38bdf8;
             color: #0f172a;
-            padding: 12px 30px;
+            padding: 12px 25px;
             border: none;
             border-radius: 30px;
             font-weight: 600;
-            font-size: 16px;
+            font-size: 15px;
             cursor: pointer;
             text-decoration: none;
             display: inline-block;
@@ -84,15 +112,15 @@
         }
         .features {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 25px;
-            padding: 50px 40px;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 20px;
+            padding: 40px 20px;
             max-width: 1200px;
             margin: 0 auto;
         }
         .card {
             background: #111827;
-            padding: 30px;
+            padding: 25px;
             border-radius: 16px;
             border: 1px solid #1f2937;
             transition: 0.3s;
@@ -103,53 +131,53 @@
             transform: translateY(-5px);
         }
         .card h3 {
-            margin-bottom: 15px;
+            margin-bottom: 12px;
             color: #38bdf8;
-            font-size: 20px;
+            font-size: 18px;
         }
         .card p {
             color: #9ca3af;
-            font-size: 14px;
+            font-size: 13px;
         }
         .feed-section {
             max-width: 1200px;
             margin: 20px auto 40px auto;
-            padding: 0 40px;
+            padding: 0 20px;
         }
         .feed-section h2 {
             color: #38bdf8;
-            margin-bottom: 20px;
-            font-size: 24px;
+            margin-bottom: 15px;
+            font-size: 20px;
         }
         .feed-card {
             background: #1e293b;
-            padding: 20px;
+            padding: 18px;
             border-radius: 12px;
             margin-bottom: 15px;
             border-left: 4px solid #38bdf8;
         }
         .feed-card h4 {
             color: #f8fafc;
-            font-size: 16px;
+            font-size: 15px;
             margin-bottom: 5px;
         }
         .feed-card span {
-            font-size: 12px;
+            font-size: 11px;
             color: #38bdf8;
             background: rgba(56, 189, 248, 0.1);
-            padding: 3px 8px;
+            padding: 2px 6px;
             border-radius: 4px;
         }
         .feed-card p {
             color: #94a3b8;
-            font-size: 14px;
-            margin-top: 10px;
+            font-size: 13px;
+            margin-top: 8px;
         }
         .feed-card img, .feed-card video {
             max-width: 100%;
             border-radius: 8px;
             margin-top: 10px;
-            max-height: 250px;
+            max-height: 220px;
         }
         .modal {
             display: none;
@@ -162,13 +190,14 @@
             justify-content: center;
             align-items: center;
             z-index: 2000;
+            padding: 15px;
         }
         .modal-content {
             background: #1e293b;
-            padding: 30px;
+            padding: 25px;
             border-radius: 16px;
-            width: 90%;
-            max-width: 500px;
+            width: 100%;
+            max-width: 450px;
             border: 1px solid #334155;
             position: relative;
             max-height: 90vh;
@@ -176,12 +205,13 @@
         }
         .modal-content h2 {
             color: #38bdf8;
-            margin-bottom: 20px;
+            margin-bottom: 15px;
+            font-size: 20px;
         }
         .modal-content input, .modal-content textarea {
             width: 100%;
-            padding: 12px;
-            margin-bottom: 15px;
+            padding: 10px;
+            margin-bottom: 12px;
             background: #0f172a;
             border: 1px solid #475569;
             border-radius: 8px;
@@ -189,13 +219,13 @@
             font-size: 14px;
         }
         .modal-content textarea {
-            height: 100px;
+            height: 90px;
             resize: none;
         }
         .file-label {
             display: block;
             color: #94a3b8;
-            font-size: 13px;
+            font-size: 12px;
             margin-bottom: 5px;
         }
         .modal-content input[type="file"] {
@@ -203,12 +233,12 @@
             border: none;
             padding: 0;
             color: #38bdf8;
-            margin-bottom: 20px;
+            margin-bottom: 15px;
         }
         .close-btn {
             position: absolute;
-            top: 15px;
-            right: 20px;
+            top: 12px;
+            right: 15px;
             font-size: 20px;
             color: #94a3b8;
             cursor: pointer;
@@ -221,7 +251,7 @@
             padding: 20px;
             background: #0b0f19;
             color: #6b7280;
-            font-size: 14px;
+            font-size: 13px;
             border-top: 1px solid #1f2937;
             margin-top: 40px;
         }
