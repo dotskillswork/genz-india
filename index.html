@@ -51,8 +51,6 @@
         nav a:hover {
             color: #38bdf8;
         }
-
-        /* Mobile Screen ke liye Perfect Stacking */
         @media (max-width: 768px) {
             header {
                 flex-direction: column;
@@ -73,7 +71,6 @@
                 border-radius: 4px;
             }
         }
-
         .hero {
             text-align: center;
             padding: 70px 20px;
@@ -293,30 +290,21 @@
     <section class="feed-section">
         <h2>🔥 Recent Doubts from Students</h2>
         <div id="doubtsList">
-            <div class="feed-card">
-                <h4>Rahul Sharma <span>Data Structures</span></h4>
-                <p>Can anyone explain how AVL Trees self-balance during right rotations? Confused with the pointer adjustments.</p>
-            </div>
+            <!-- Real-time database se yahan doubts load honge -->
         </div>
     </section>
 
     <section class="feed-section">
         <h2>🚀 Student Innovations Showcase</h2>
         <div id="innovationsList">
-            <div class="feed-card">
-                <h4>Aman Verma <span>IoT / Robotics</span></h4>
-                <p>Built a low-cost smart helmet using Arduino that detects rider drowsiness and alerts via buzzer and IoT cloud.</p>
-            </div>
+            <!-- Real-time database se yahan innovations load honge -->
         </div>
     </section>
 
     <section class="feed-section">
         <h2>✊ Voice Up Issues</h2>
         <div id="voiceList">
-            <div class="feed-card">
-                <h4>Anonymous Student <span>Campus Facilities</span></h4>
-                <p>The library Wi-Fi speed in our campus block is extremely slow, making it impossible to access online coding classes.</p>
-            </div>
+            <!-- Real-time database se yahan issues load honge -->
         </div>
     </section>
 
@@ -329,8 +317,8 @@
                 <input type="text" id="dName" placeholder="Your Name or Keep Anonymous" required>
                 <input type="text" id="dSub" placeholder="Subject / Topic (e.g., DSA, Physics)" required>
                 <textarea id="dText" placeholder="Type your doubt clearly here..." required></textarea>
-                <label class="file-label">Attach Image or Video (Optional):</label>
-                <input type="file" id="dFile" accept="image/*,video/*">
+                <label class="file-label">Attach Image Link / URL (Optional):</label>
+                <input type="text" id="dMedia" placeholder="Paste image/media link (optional)">
                 <button type="submit" class="cta-btn" style="width: 100%;">Post Doubt</button>
             </form>
         </div>
@@ -345,8 +333,8 @@
                 <input type="text" id="iName" placeholder="Your Name / Team Name" required>
                 <input type="text" id="iTech" placeholder="Tech / Domain (e.g., AI, IoT, Web)" required>
                 <textarea id="iText" placeholder="Describe your project or invention..." required></textarea>
-                <label class="file-label">Attach Project Image/Video (Optional):</label>
-                <input type="file" id="iFile" accept="image/*,video/*">
+                <label class="file-label">Attach Project Image Link (Optional):</label>
+                <input type="text" id="iMedia" placeholder="Paste image/media link (optional)">
                 <button type="submit" class="cta-btn" style="width: 100%;">Showcase Project</button>
             </form>
         </div>
@@ -361,8 +349,8 @@
                 <input type="text" id="vName" placeholder="Name or type 'Anonymous'" required>
                 <input type="text" id="vCategory" placeholder="Category (e.g., College, Social Issue)" required>
                 <textarea id="vText" placeholder="Explain the issue clearly to raise awareness..." required></textarea>
-                <label class="file-label">Attach Proof/Media (Optional):</label>
-                <input type="file" id="vFile" accept="image/*,video/*">
+                <label class="file-label">Attach Proof/Media Link (Optional):</label>
+                <input type="text" id="vMedia" placeholder="Paste image/media link (optional)">
                 <button type="submit" class="cta-btn" style="width: 100%;">Raise Voice</button>
             </form>
         </div>
@@ -372,111 +360,134 @@
         <p>&copy; 2026 Gen'Z India. Built for the Youth of Bharat.</p>
     </footer>
 
-    <script>
-        function openModal(modalId) {
+    <!-- Firebase Integration Script -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-app.js";
+        import { getFirestore, collection, addDoc, getDocs, query, orderBy } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-firestore.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyCNLwSjHq6LlX9uUovTRHrz9ZfUwEIUWQM",
+            authDomain: "genz-india.firebaseapp.com",
+            projectId: "genz-india",
+            storageBucket: "genz-india.firebasestorage.app",
+            messagingSenderId: "149959470783",
+            appId: "1:149959470783:web:71b7969ee2c8fc049c200a",
+            measurementId: "G-RBRSDRKSRH"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+
+        window.openModal = function(modalId) {
             document.getElementById(modalId).style.display = 'flex';
         }
-        function closeModal(modalId) {
+
+        window.closeModal = function(modalId) {
             document.getElementById(modalId).style.display = 'none';
         }
-        function submitData(event, type) {
+
+        window.submitData = async function(event, type) {
             event.preventDefault();
-            
+
+            let collectionName = '';
+            let data = {};
+
             if(type === 'doubt') {
-                const name = document.getElementById('dName').value;
-                const sub = document.getElementById('dSub').value;
-                const text = document.getElementById('dText').value;
-                const fileInput = document.getElementById('dFile');
-                
-                let mediaHTML = '';
-                if (fileInput.files && fileInput.files[0]) {
-                    const file = fileInput.files[0];
-                    const fileURL = URL.createObjectURL(file);
-                    if (file.type.startsWith('video/')) {
-                        mediaHTML = `<video controls src="${fileURL}"></video>`;
-                    } else {
-                        mediaHTML = `<img src="${fileURL}" alt="Attachment">`;
-                    }
-                }
-
-                document.getElementById('doubtsList').insertAdjacentHTML('afterbegin', `
-                    <div class="feed-card">
-                        <h4>${name} <span>${sub}</span></h4>
-                        <p>${text}</p>
-                        ${mediaHTML}
-                    </div>
-                `);
-                alert('Your doubt has been successfully posted! 🚀');
-                document.getElementById('dName').value = '';
-                document.getElementById('dSub').value = '';
-                document.getElementById('dText').value = '';
-                document.getElementById('dFile').value = '';
-                closeModal('doubtModal');
-                
+                collectionName = 'doubts';
+                data = {
+                    name: document.getElementById('dName').value,
+                    sub: document.getElementById('dSub').value,
+                    text: document.getElementById('dText').value,
+                    media: document.getElementById('dMedia').value,
+                    time: new Date().getTime()
+                };
             } else if(type === 'innovation') {
-                const name = document.getElementById('iName').value;
-                const tech = document.getElementById('iTech').value;
-                const text = document.getElementById('iText').value;
-                const fileInput = document.getElementById('iFile');
-                
-                let mediaHTML = '';
-                if (fileInput.files && fileInput.files[0]) {
-                    const file = fileInput.files[0];
-                    const fileURL = URL.createObjectURL(file);
-                    if (file.type.startsWith('video/')) {
-                        mediaHTML = `<video controls src="${fileURL}"></video>`;
-                    } else {
-                        mediaHTML = `<img src="${fileURL}" alt="Attachment">`;
-                    }
-                }
-
-                document.getElementById('innovationsList').insertAdjacentHTML('afterbegin', `
-                    <div class="feed-card">
-                        <h4>${name} <span>${tech}</span></h4>
-                        <p>${text}</p>
-                        ${mediaHTML}
-                    </div>
-                `);
-                alert('Your project has been successfully showcased! 🚀');
-                document.getElementById('iName').value = '';
-                document.getElementById('iTech').value = '';
-                document.getElementById('iText').value = '';
-                document.getElementById('iFile').value = '';
-                closeModal('innovationModal');
-                
+                collectionName = 'innovations';
+                data = {
+                    name: document.getElementById('iName').value,
+                    tech: document.getElementById('iTech').value,
+                    text: document.getElementById('iText').value,
+                    media: document.getElementById('iMedia').value,
+                    time: new Date().getTime()
+                };
             } else if(type === 'voice') {
-                const name = document.getElementById('vName').value;
-                const cat = document.getElementById('vCategory').value;
-                const text = document.getElementById('vText').value;
-                const fileInput = document.getElementById('vFile');
-                
-                let mediaHTML = '';
-                if (fileInput.files && fileInput.files[0]) {
-                    const file = fileInput.files[0];
-                    const fileURL = URL.createObjectURL(file);
-                    if (file.type.startsWith('video/')) {
-                        mediaHTML = `<video controls src="${fileURL}"></video>`;
-                    } else {
-                        mediaHTML = `<img src="${fileURL}" alt="Attachment">`;
-                    }
-                }
+                collectionName = 'voices';
+                data = {
+                    name: document.getElementById('vName').value,
+                    cat: document.getElementById('vCategory').value,
+                    text: document.getElementById('vText').value,
+                    media: document.getElementById('vMedia').value,
+                    time: new Date().getTime()
+                };
+            }
 
-                document.getElementById('voiceList').insertAdjacentHTML('afterbegin', `
-                    <div class="feed-card">
-                        <h4>${name} <span>${cat}</span></h4>
-                        <p>${text}</p>
-                        ${mediaHTML}
-                    </div>
-                `);
-                alert('Your voice has been successfully raised! ✊');
-                document.getElementById('vName').value = '';
-                document.getElementById('vCategory').value = '';
-                document.getElementById('vText').value = '';
-                document.getElementById('vFile').value = '';
-                closeModal('voiceModal');
+            try {
+                await addDoc(collection(db, collectionName), data);
+                alert('Successfully posted to live database! 🚀');
+                location.reload();
+            } catch (e) {
+                console.error("Error adding document: ", e);
+                alert('Error posting data. Please check Firestore rules.');
             }
         }
-    </script>
 
+        async function loadPosts() {
+            // Load Doubts
+            const doubtsContainer = document.getElementById('doubtsList');
+            try {
+                const querySnapshot = await getDocs(collection(db, "doubts"));
+                doubtsContainer.innerHTML = '';
+                querySnapshot.forEach((doc) => {
+                    const d = doc.data();
+                    let mediaHTML = d.media ? `<img src="${d.media}" alt="Attachment">` : '';
+                    doubtsContainer.innerHTML += `
+                        <div class="feed-card">
+                            <h4>${d.name} <span>${d.sub}</span></h4>
+                            <p>${d.text}</p>
+                            ${mediaHTML}
+                        </div>
+                    `;
+                });
+            } catch(e) { console.log(e); }
+
+            // Load Innovations
+            const innovationsContainer = document.getElementById('innovationsList');
+            try {
+                const querySnapshot = await getDocs(collection(db, "innovations"));
+                innovationsContainer.innerHTML = '';
+                querySnapshot.forEach((doc) => {
+                    const d = doc.data();
+                    let mediaHTML = d.media ? `<img src="${d.media}" alt="Attachment">` : '';
+                    innovationsContainer.innerHTML += `
+                        <div class="feed-card">
+                            <h4>${d.name} <span>${d.tech}</span></h4>
+                            <p>${d.text}</p>
+                            ${mediaHTML}
+                        </div>
+                    `;
+                });
+            } catch(e) { console.log(e); }
+
+            // Load Voices
+            const voiceContainer = document.getElementById('voiceList');
+            try {
+                const querySnapshot = await getDocs(collection(db, "voices"));
+                voiceContainer.innerHTML = '';
+                querySnapshot.forEach((doc) => {
+                    const d = doc.data();
+                    let mediaHTML = d.media ? `<img src="${d.media}" alt="Attachment">` : '';
+                    voiceContainer.innerHTML += `
+                        <div class="feed-card">
+                            <h4>${d.name} <span>${d.cat}</span></h4>
+                            <p>${d.text}</p>
+                            ${mediaHTML}
+                        </div>
+                    `;
+                });
+            } catch(e) { console.log(e); }
+        }
+
+        loadPosts();
+    </script>
 </body>
 </html>
