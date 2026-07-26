@@ -176,7 +176,6 @@
             margin-top: 10px;
             max-height: 220px;
         }
-        /* Replies Section Styling */
         .replies-container {
             margin-top: 12px;
             padding-top: 10px;
@@ -323,17 +322,17 @@
 
     <section class="feed-section" id="doubtbox">
         <h2>🔥 Recent Doubts from Students</h2>
-        <div id="doubtsList"></div>
+        <div id="doubtsList"><p style="color: #94a3b8; font-size: 13px;">Loading doubts from live database...</p></div>
     </section>
 
     <section class="feed-section" id="innovations">
         <h2>🚀 Student Innovations Showcase</h2>
-        <div id="innovationsList"></div>
+        <div id="innovationsList"><p style="color: #94a3b8; font-size: 13px;">Loading innovations...</p></div>
     </section>
 
     <section class="feed-section" id="issues">
         <h2>✊ Voice Up Issues</h2>
-        <div id="voiceList"></div>
+        <div id="voiceList"><p style="color: #94a3b8; font-size: 13px;">Loading issues...</p></div>
     </section>
 
     <!-- Doubt Modal -->
@@ -388,7 +387,7 @@
         <p>&copy; 2026 Gen'Z India. Built for the Youth of Bharat.</p>
     </footer>
 
-    <!-- Firebase Script with Reply Feature -->
+    <!-- Firebase Script -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-app.js";
         import { getFirestore, collection, addDoc, getDocs, updateDoc, doc, arrayUnion } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-firestore.js";
@@ -450,7 +449,7 @@
                 location.reload();
             } catch (e) {
                 console.error(e);
-                alert('Error posting data.');
+                alert('Error saving data. Please check Firebase Firestore Rules.');
             }
         }
 
@@ -517,6 +516,7 @@
                 });
             } catch(e) {
                 console.log(e);
+                container.innerHTML = `<p style="color: #ef4444; font-size: 13px;">Failed to load posts. Check Firebase Rules.</p>`;
             }
         }
 
