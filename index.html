@@ -176,6 +176,47 @@
             margin-top: 10px;
             max-height: 220px;
         }
+        /* Replies Section Styling */
+        .replies-container {
+            margin-top: 12px;
+            padding-top: 10px;
+            border-top: 1px solid #334155;
+        }
+        .reply-item {
+            background: #0f172a;
+            padding: 8px 12px;
+            border-radius: 8px;
+            margin-top: 6px;
+            font-size: 12px;
+            color: #cbd5e1;
+        }
+        .reply-box {
+            display: flex;
+            gap: 8px;
+            margin-top: 10px;
+        }
+        .reply-box input {
+            flex: 1;
+            padding: 6px 10px;
+            background: #0f172a;
+            border: 1px solid #475569;
+            border-radius: 6px;
+            color: #fff;
+            font-size: 12px;
+        }
+        .reply-btn {
+            background: #38bdf8;
+            color: #0f172a;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-weight: 600;
+            font-size: 12px;
+            cursor: pointer;
+        }
+        .reply-btn:hover {
+            background: #0ea5e9;
+        }
         .modal {
             display: none;
             position: fixed;
@@ -224,13 +265,6 @@
             color: #94a3b8;
             font-size: 12px;
             margin-bottom: 5px;
-        }
-        .modal-content input[type="file"] {
-            background: transparent;
-            border: none;
-            padding: 0;
-            color: #38bdf8;
-            margin-bottom: 15px;
         }
         .close-btn {
             position: absolute;
@@ -289,32 +323,17 @@
 
     <section class="feed-section" id="doubtbox">
         <h2>🔥 Recent Doubts from Students</h2>
-        <div id="doubtsList">
-            <div class="feed-card">
-                <h4>Rahul Sharma <span>Data Structures</span></h4>
-                <p>Can anyone explain how AVL Trees self-balance during right rotations? Confused with the pointer adjustments.</p>
-            </div>
-        </div>
+        <div id="doubtsList"></div>
     </section>
 
     <section class="feed-section" id="innovations">
         <h2>🚀 Student Innovations Showcase</h2>
-        <div id="innovationsList">
-            <div class="feed-card">
-                <h4>Aman Verma <span>IoT / Robotics</span></h4>
-                <p>Built a low-cost smart helmet using Arduino that detects rider drowsiness and alerts via buzzer and IoT cloud.</p>
-            </div>
-        </div>
+        <div id="innovationsList"></div>
     </section>
 
     <section class="feed-section" id="issues">
         <h2>✊ Voice Up Issues</h2>
-        <div id="voiceList">
-            <div class="feed-card">
-                <h4>Anonymous Student <span>Campus Facilities</span></h4>
-                <p>The library Wi-Fi speed in our campus block is extremely slow, making it impossible to access online coding classes.</p>
-            </div>
-        </div>
+        <div id="voiceList"></div>
     </section>
 
     <!-- Doubt Modal -->
@@ -322,12 +341,12 @@
         <div class="modal-content">
             <span class="close-btn" onclick="closeModal('doubtModal')">&times;</span>
             <h2>💬 Ask in DoubtBox</h2>
-            <form onsubmit="submitData(event, 'doubt')">
+            <form onsubmit="submitData(event, 'doubts')">
                 <input type="text" id="dName" placeholder="Your Name or Keep Anonymous" required>
                 <input type="text" id="dSub" placeholder="Subject / Topic (e.g., DSA, Physics)" required>
                 <textarea id="dText" placeholder="Type your doubt clearly here..." required></textarea>
-                <label class="file-label">Attach Image (Optional):</label>
-                <input type="file" id="dFile" accept="image/*">
+                <label class="file-label">Image Link (Optional):</label>
+                <input type="text" id="dMedia" placeholder="Paste image URL here">
                 <button type="submit" class="cta-btn" style="width: 100%;">Post Doubt</button>
             </form>
         </div>
@@ -338,12 +357,12 @@
         <div class="modal-content">
             <span class="close-btn" onclick="closeModal('innovationModal')">&times;</span>
             <h2>🚀 Showcase Innovation</h2>
-            <form onsubmit="submitData(event, 'innovation')">
+            <form onsubmit="submitData(event, 'innovations')">
                 <input type="text" id="iName" placeholder="Your Name / Team Name" required>
-                <input type="text" id="iTech" placeholder="Tech / Domain (e.g., AI, IoT, Web)" required>
+                <input type="text" id="iTech" placeholder="Tech / Domain (e.g., AI, IoT)" required>
                 <textarea id="iText" placeholder="Describe your project or invention..." required></textarea>
-                <label class="file-label">Attach Project Image (Optional):</label>
-                <input type="file" id="iFile" accept="image/*">
+                <label class="file-label">Image Link (Optional):</label>
+                <input type="text" id="iMedia" placeholder="Paste image URL here">
                 <button type="submit" class="cta-btn" style="width: 100%;">Showcase Project</button>
             </form>
         </div>
@@ -354,12 +373,12 @@
         <div class="modal-content">
             <span class="close-btn" onclick="closeModal('voiceModal')">&times;</span>
             <h2>✊ Raise an Issue (Voice Up)</h2>
-            <form onsubmit="submitData(event, 'voice')">
+            <form onsubmit="submitData(event, 'voices')">
                 <input type="text" id="vName" placeholder="Name or type 'Anonymous'" required>
                 <input type="text" id="vCategory" placeholder="Category (e.g., College, Social Issue)" required>
-                <textarea id="vText" placeholder="Explain the issue clearly to raise awareness..." required></textarea>
-                <label class="file-label">Attach Proof Image (Optional):</label>
-                <input type="file" id="vFile" accept="image/*">
+                <textarea id="vText" placeholder="Explain the issue clearly..." required></textarea>
+                <label class="file-label">Image Link (Optional):</label>
+                <input type="text" id="vMedia" placeholder="Paste image URL here">
                 <button type="submit" class="cta-btn" style="width: 100%;">Raise Voice</button>
             </form>
         </div>
@@ -369,10 +388,10 @@
         <p>&copy; 2026 Gen'Z India. Built for the Youth of Bharat.</p>
     </footer>
 
-    <!-- Firebase Script -->
+    <!-- Firebase Script with Reply Feature -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-app.js";
-        import { getFirestore, collection, addDoc, getDocs } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-firestore.js";
+        import { getFirestore, collection, addDoc, getDocs, updateDoc, doc, arrayUnion } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-firestore.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyCNLwSjHq6LlX9uUovTRHrz9ZfUwEIUWQM",
@@ -395,126 +414,116 @@
             document.getElementById(modalId).style.display = 'none';
         }
 
-        window.submitData = async function(event, type) {
+        window.submitData = async function(event, collectionName) {
             event.preventDefault();
-
-            let collectionName = '';
             let data = {};
 
-            if(type === 'doubt') {
-                collectionName = 'doubts';
-                const fileInput = document.getElementById('dFile');
-                let mediaURL = '';
-                if(fileInput.files && fileInput.files[0]) {
-                    mediaURL = URL.createObjectURL(fileInput.files[0]);
-                }
+            if(collectionName === 'doubts') {
                 data = {
                     name: document.getElementById('dName').value,
                     sub: document.getElementById('dSub').value,
                     text: document.getElementById('dText').value,
-                    media: mediaURL,
-                    time: Date.now()
+                    media: document.getElementById('dMedia').value,
+                    replies: []
                 };
-            } else if(type === 'innovation') {
-                collectionName = 'innovations';
-                const fileInput = document.getElementById('iFile');
-                let mediaURL = '';
-                if(fileInput.files && fileInput.files[0]) {
-                    mediaURL = URL.createObjectURL(fileInput.files[0]);
-                }
+            } else if(collectionName === 'innovations') {
                 data = {
                     name: document.getElementById('iName').value,
-                    tech: document.getElementById('iTech').value,
+                    sub: document.getElementById('iTech').value,
                     text: document.getElementById('iText').value,
-                    media: mediaURL,
-                    time: Date.now()
+                    media: document.getElementById('iMedia').value,
+                    replies: []
                 };
-            } else if(type === 'voice') {
-                collectionName = 'voices';
-                const fileInput = document.getElementById('vFile');
-                let mediaURL = '';
-                if(fileInput.files && fileInput.files[0]) {
-                    mediaURL = URL.createObjectURL(fileInput.files[0]);
-                }
+            } else if(collectionName === 'voices') {
                 data = {
                     name: document.getElementById('vName').value,
-                    cat: document.getElementById('vCategory').value,
+                    sub: document.getElementById('vCategory').value,
                     text: document.getElementById('vText').value,
-                    media: mediaURL,
-                    time: Date.now()
+                    media: document.getElementById('vMedia').value,
+                    replies: []
                 };
             }
 
             try {
                 await addDoc(collection(db, collectionName), data);
-                alert('Successfully posted! 🚀');
+                alert('Successfully posted live! 🚀');
                 location.reload();
             } catch (e) {
-                console.error("Error adding document: ", e);
-                alert('Error posting data. Please try again.');
+                console.error(e);
+                alert('Error posting data.');
+            }
+        }
+
+        window.addReply = async function(collectionName, docId) {
+            const inputField = document.getElementById(`reply-input-${docId}`);
+            const replyText = inputField.value.trim();
+            if(!replyText) return;
+
+            try {
+                const docRef = doc(db, collectionName, docId);
+                await updateDoc(docRef, {
+                    replies: arrayUnion(replyText)
+                });
+                alert('Solution/Reply posted successfully! 💡');
+                loadPosts();
+            } catch(e) {
+                console.error(e);
+                alert('Error sending reply.');
+            }
+        }
+
+        async function renderCollection(collectionName, containerId) {
+            const container = document.getElementById(containerId);
+            try {
+                const querySnapshot = await getDocs(collection(db, collectionName));
+                container.innerHTML = '';
+                
+                if(querySnapshot.empty) {
+                    container.innerHTML = `<p style="color: #94a3b8; font-size: 13px;">No posts yet. Be the first one to post!</p>`;
+                    return;
+                }
+
+                querySnapshot.forEach((document) => {
+                    const d = document.data();
+                    const docId = document.id;
+                    let mediaHTML = d.media ? `<img src="${d.media}" alt="Attachment">` : '';
+                    
+                    let repliesHTML = '';
+                    if(d.replies && d.replies.length > 0) {
+                        d.replies.forEach(r => {
+                            repliesHTML += `<div class="reply-item">💡 ${r}</div>`;
+                        });
+                    } else {
+                        repliesHTML = `<div class="reply-item" style="color: #64748b;">No replies yet. Be the first to answer!</div>`;
+                    }
+
+                    container.innerHTML += `
+                        <div class="feed-card">
+                            <h4>${d.name} <span>${d.sub}</span></h4>
+                            <p>${d.text}</p>
+                            ${mediaHTML}
+                            <div class="replies-container">
+                                <strong style="font-size: 12px; color: #38bdf8;">Solutions / Replies:</strong>
+                                <div id="replies-list-${docId}">
+                                    ${repliesHTML}
+                                </div>
+                                <div class="reply-box">
+                                    <input type="text" id="reply-input-${docId}" placeholder="Write a solution or answer...">
+                                    <button class="reply-btn" onclick="addReply('${collectionName}', '${docId}')">Send</button>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                });
+            } catch(e) {
+                console.log(e);
             }
         }
 
         async function loadPosts() {
-            // Load Doubts
-            try {
-                const querySnapshot = await getDocs(collection(db, "doubts"));
-                if(!querySnapshot.empty) {
-                    const doubtsContainer = document.getElementById('doubtsList');
-                    doubtsContainer.innerHTML = '';
-                    querySnapshot.forEach((doc) => {
-                        const d = doc.data();
-                        let mediaHTML = d.media ? `<img src="${d.media}" alt="Attachment">` : '';
-                        doubtsContainer.innerHTML += `
-                            <div class="feed-card">
-                                <h4>${d.name} <span>${d.sub}</span></h4>
-                                <p>${d.text}</p>
-                                ${mediaHTML}
-                            </div>
-                        `;
-                    });
-                }
-            } catch(e) { console.log(e); }
-
-            // Load Innovations
-            try {
-                const querySnapshot = await getDocs(collection(db, "innovations"));
-                if(!querySnapshot.empty) {
-                    const innovationsContainer = document.getElementById('innovationsList');
-                    innovationsContainer.innerHTML = '';
-                    querySnapshot.forEach((doc) => {
-                        const d = doc.data();
-                        let mediaHTML = d.media ? `<img src="${d.media}" alt="Attachment">` : '';
-                        innovationsContainer.innerHTML += `
-                            <div class="feed-card">
-                                <h4>${d.name} <span>${d.tech}</span></h4>
-                                <p>${d.text}</p>
-                                ${mediaHTML}
-                            </div>
-                        `;
-                    });
-                }
-            } catch(e) { console.log(e); }
-
-            // Load Voices
-            try {
-                const querySnapshot = await getDocs(collection(db, "voices"));
-                if(!querySnapshot.empty) {
-                    const voiceContainer = document.getElementById('voiceList');
-                    voiceContainer.innerHTML = '';
-                    querySnapshot.forEach((doc) => {
-                        const d = doc.data();
-                        let mediaHTML = d.media ? `<img src="${d.media}" alt="Attachment">` : '';
-                        voiceContainer.innerHTML += `
-                            <div class="feed-card">
-                                <h4>${d.name} <span>${d.cat}</span></h4>
-                                <p>${d.text}</p>
-                                ${mediaHTML}
-                            </div>
-                        `;
-                    });
-                }
-            } catch(e) { console.log(e); }
+            renderCollection('doubts', 'doubtsList');
+            renderCollection('innovations', 'innovationsList');
+            renderCollection('voices', 'voiceList');
         }
 
         loadPosts();
