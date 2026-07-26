@@ -170,7 +170,7 @@
             font-size: 13px;
             margin-top: 8px;
         }
-        .feed-card img, .feed-card video {
+        .feed-card img {
             max-width: 100%;
             border-radius: 8px;
             margin-top: 10px;
@@ -287,19 +287,34 @@
         </div>
     </section>
 
-    <section class="feed-section">
+    <section class="feed-section" id="doubtbox">
         <h2>🔥 Recent Doubts from Students</h2>
-        <div id="doubtsList"></div>
+        <div id="doubtsList">
+            <div class="feed-card">
+                <h4>Rahul Sharma <span>Data Structures</span></h4>
+                <p>Can anyone explain how AVL Trees self-balance during right rotations? Confused with the pointer adjustments.</p>
+            </div>
+        </div>
     </section>
 
-    <section class="feed-section">
+    <section class="feed-section" id="innovations">
         <h2>🚀 Student Innovations Showcase</h2>
-        <div id="innovationsList"></div>
+        <div id="innovationsList">
+            <div class="feed-card">
+                <h4>Aman Verma <span>IoT / Robotics</span></h4>
+                <p>Built a low-cost smart helmet using Arduino that detects rider drowsiness and alerts via buzzer and IoT cloud.</p>
+            </div>
+        </div>
     </section>
 
-    <section class="feed-section">
+    <section class="feed-section" id="issues">
         <h2>✊ Voice Up Issues</h2>
-        <div id="voiceList"></div>
+        <div id="voiceList">
+            <div class="feed-card">
+                <h4>Anonymous Student <span>Campus Facilities</span></h4>
+                <p>The library Wi-Fi speed in our campus block is extremely slow, making it impossible to access online coding classes.</p>
+            </div>
+        </div>
     </section>
 
     <!-- Doubt Modal -->
@@ -311,8 +326,8 @@
                 <input type="text" id="dName" placeholder="Your Name or Keep Anonymous" required>
                 <input type="text" id="dSub" placeholder="Subject / Topic (e.g., DSA, Physics)" required>
                 <textarea id="dText" placeholder="Type your doubt clearly here..." required></textarea>
-                <label class="file-label">Attach Image or Video (Optional):</label>
-                <input type="file" id="dFile" accept="image/*,video/*">
+                <label class="file-label">Attach Image (Optional):</label>
+                <input type="file" id="dFile" accept="image/*">
                 <button type="submit" class="cta-btn" style="width: 100%;">Post Doubt</button>
             </form>
         </div>
@@ -327,8 +342,8 @@
                 <input type="text" id="iName" placeholder="Your Name / Team Name" required>
                 <input type="text" id="iTech" placeholder="Tech / Domain (e.g., AI, IoT, Web)" required>
                 <textarea id="iText" placeholder="Describe your project or invention..." required></textarea>
-                <label class="file-label">Attach Project Image/Video (Optional):</label>
-                <input type="file" id="iFile" accept="image/*,video/*">
+                <label class="file-label">Attach Project Image (Optional):</label>
+                <input type="file" id="iFile" accept="image/*">
                 <button type="submit" class="cta-btn" style="width: 100%;">Showcase Project</button>
             </form>
         </div>
@@ -343,8 +358,8 @@
                 <input type="text" id="vName" placeholder="Name or type 'Anonymous'" required>
                 <input type="text" id="vCategory" placeholder="Category (e.g., College, Social Issue)" required>
                 <textarea id="vText" placeholder="Explain the issue clearly to raise awareness..." required></textarea>
-                <label class="file-label">Attach Proof/Media (Optional):</label>
-                <input type="file" id="vFile" accept="image/*,video/*">
+                <label class="file-label">Attach Proof Image (Optional):</label>
+                <input type="file" id="vFile" accept="image/*">
                 <button type="submit" class="cta-btn" style="width: 100%;">Raise Voice</button>
             </form>
         </div>
@@ -354,7 +369,7 @@
         <p>&copy; 2026 Gen'Z India. Built for the Youth of Bharat.</p>
     </footer>
 
-    <!-- Firebase Script with Local File Support -->
+    <!-- Firebase Script -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-app.js";
         import { getFirestore, collection, addDoc, getDocs } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-firestore.js";
@@ -398,7 +413,7 @@
                     sub: document.getElementById('dSub').value,
                     text: document.getElementById('dText').value,
                     media: mediaURL,
-                    time: new Date().getTime()
+                    time: Date.now()
                 };
             } else if(type === 'innovation') {
                 collectionName = 'innovations';
@@ -412,7 +427,7 @@
                     tech: document.getElementById('iTech').value,
                     text: document.getElementById('iText').value,
                     media: mediaURL,
-                    time: new Date().getTime()
+                    time: Date.now()
                 };
             } else if(type === 'voice') {
                 collectionName = 'voices';
@@ -426,7 +441,7 @@
                     cat: document.getElementById('vCategory').value,
                     text: document.getElementById('vText').value,
                     media: mediaURL,
-                    time: new Date().getTime()
+                    time: Date.now()
                 };
             }
 
@@ -436,63 +451,69 @@
                 location.reload();
             } catch (e) {
                 console.error("Error adding document: ", e);
-                alert('Error posting data.');
+                alert('Error posting data. Please try again.');
             }
         }
 
         async function loadPosts() {
             // Load Doubts
-            const doubtsContainer = document.getElementById('doubtsList');
             try {
                 const querySnapshot = await getDocs(collection(db, "doubts"));
-                doubtsContainer.innerHTML = '';
-                querySnapshot.forEach((doc) => {
-                    const d = doc.data();
-                    let mediaHTML = d.media ? `<img src="${d.media}" alt="Attachment">` : '';
-                    doubtsContainer.innerHTML += `
-                        <div class="feed-card">
-                            <h4>${d.name} <span>${d.sub}</span></h4>
-                            <p>${d.text}</p>
-                            ${mediaHTML}
-                        </div>
-                    `;
-                });
+                if(!querySnapshot.empty) {
+                    const doubtsContainer = document.getElementById('doubtsList');
+                    doubtsContainer.innerHTML = '';
+                    querySnapshot.forEach((doc) => {
+                        const d = doc.data();
+                        let mediaHTML = d.media ? `<img src="${d.media}" alt="Attachment">` : '';
+                        doubtsContainer.innerHTML += `
+                            <div class="feed-card">
+                                <h4>${d.name} <span>${d.sub}</span></h4>
+                                <p>${d.text}</p>
+                                ${mediaHTML}
+                            </div>
+                        `;
+                    });
+                }
             } catch(e) { console.log(e); }
 
             // Load Innovations
-            const innovationsContainer = document.getElementById('innovationsList');
             try {
                 const querySnapshot = await getDocs(collection(db, "innovations"));
-                innovationsContainer.innerHTML = '';
-                querySnapshot.forEach((doc) => {
-                    const d = doc.data();
-                    let mediaHTML = d.media ? `<img src="${d.media}" alt="Attachment">` : '';
-                    innovationsContainer.innerHTML += `
-                        <div class="feed-card">
-                            <h4>${d.name} <span>${d.tech}</span></h4>
-                            <p>${d.text}</p>
-                            ${mediaHTML}
-                        </div>
-                    `;
-                });
+                if(!querySnapshot.empty) {
+                    const innovationsContainer = document.getElementById('innovationsList');
+                    innovationsContainer.innerHTML = '';
+                    querySnapshot.forEach((doc) => {
+                        const d = doc.data();
+                        let mediaHTML = d.media ? `<img src="${d.media}" alt="Attachment">` : '';
+                        innovationsContainer.innerHTML += `
+                            <div class="feed-card">
+                                <h4>${d.name} <span>${d.tech}</span></h4>
+                                <p>${d.text}</p>
+                                ${mediaHTML}
+                            </div>
+                        `;
+                    });
+                }
             } catch(e) { console.log(e); }
 
             // Load Voices
-            const voiceContainer = document.getElementById('voiceList');
             try {
                 const querySnapshot = await getDocs(collection(db, "voices"));
-                voiceContainer.innerHTML = '';
-                querySnapshot.forEach((doc) => {
-                    const d = doc.data();
-                    let mediaHTML = d.media ? `<img src="${d.media}" alt="Attachment">` : '';
-                    voiceContainer.innerHTML += `
-                        <div class="feed-card">
-                            <h4>${d.name} <span>${d.cat}</span></h4>
-                            <p>${d.text}</p>
-                            ${mediaHTML}
-                        </div>
-                    `;
-                });
+                if(!querySnapshot.empty) {
+                    const voiceContainer = document.getElementById('voiceList');
+                    voiceContainer.innerHTML = '';
+                    querySnapshot.forEach((doc) => {
+                        const d = doc.data();
+                        let mediaHTML = d.media ? `<img src="${d.media}" alt="Attachment">` : '';
+                        voiceContainer.innerHTML += `
+                            <div class="feed-card">
+                                <h4>${d.name} <span>${d.cat}</span></h4>
+                                <p>${d.text}</p>
+                                ${mediaHTML}
+                            </div>
+                        `;
+                    });
+                }
             } catch(e) { console.log(e); }
         }
 
