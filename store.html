@@ -79,7 +79,6 @@
         .add-product-toggle-btn:hover {
             background: #d97706;
         }
-        /* Filter Tabs Bar */
         .filter-tabs-bar {
             display: flex;
             gap: 8px;
@@ -105,7 +104,6 @@
             border-color: #38bdf8;
             font-weight: 600;
         }
-        /* Strict Hidden Modal Fix */
         .form-modal {
             display: none;
             position: fixed;
@@ -320,7 +318,6 @@
             padding: 6px 0;
             border-bottom: 1px solid #1f2937;
         }
-        /* Modal */
         .modal {
             display: none;
             position: fixed;
@@ -386,16 +383,14 @@
     </header>
 
     <div class="container">
-        <!-- Hero Banner with Add Product Button -->
         <div class="hero-banner">
             <div class="hero-banner-text">
                 <h1>Notes, PYQs & Study Material Exchange</h1>
-                <p>Share or buy study notes securely via Firebase Cloud Storage.</p>
+                <p>Share or buy study notes instantly from your device.</p>
             </div>
             <button class="add-product-toggle-btn" id="openModalBtn">+ Add Product / Notes 🚀</button>
         </div>
 
-        <!-- Category Filter Tabs -->
         <div class="filter-tabs-bar">
             <button class="filter-tab active" data-filter="All">All Material</button>
             <button class="filter-tab" data-filter="Handwritten Notes">Handwritten Notes</button>
@@ -404,7 +399,6 @@
             <button class="filter-tab" data-filter="Coding Snippets / Template">Coding Snippets</button>
         </div>
 
-        <!-- Hidden Upload Modal Form -->
         <div class="form-modal" id="uploadFormModal">
             <div class="store-form-box">
                 <button class="close-form-btn" id="closeModalBtn">&times;</button>
@@ -487,7 +481,6 @@
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-app.js";
         import { getFirestore, collection, addDoc, updateDoc, doc, onSnapshot, query, orderBy } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-firestore.js";
-        import { getStorage, ref, uploadBytesResumable, getDownloadURL } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-storage.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyCNLwSjHq6LlX9uUovTRHrz9ZfUwEIUWQM",
@@ -501,14 +494,12 @@
 
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
-        const storage = getStorage(app);
 
         const activeUser = JSON.parse(localStorage.getItem('genzUser'));
         if (!activeUser) {
             window.location.href = 'login.html';
         }
 
-        // Guaranteed Modal Toggle Logic
         const modalBox = document.getElementById('uploadFormModal');
         document.getElementById('openModalBtn').addEventListener('click', () => {
             modalBox.style.display = 'flex';
@@ -517,7 +508,6 @@
             modalBox.style.display = 'none';
         });
 
-        // Category Filter Management
         let currentFilter = 'All';
         const filterButtons = document.querySelectorAll('.filter-tab');
         filterButtons.forEach(btn => {
@@ -525,7 +515,7 @@
                 filterButtons.forEach(b => b.classList.remove('active'));
                 this.classList.add('active');
                 currentFilter = this.getAttribute('data-filter');
-                renderStoreFeed(); // re-render feed with current items
+                renderStoreFeed();
             });
         });
 
@@ -550,7 +540,7 @@
             }
         });
 
-        document.getElementById('storeForm').addEventListener('submit', function(e) {
+        document.getElementById('storeForm').addEventListener('submit', async function(e) {
             e.preventDefault();
             const title = document.getElementById('itemTitle').value.trim();
             const category = document.getElementById('itemCategory').value;
@@ -564,54 +554,43 @@
 
             if (!title || !category || !type || !semester || !price || !fileInput || !desc) return;
 
+            publishBtn.innerText = "Processing PDF... ⏳";
             publishBtn.disabled = true;
-            const storageRef = ref(storage, `store_pdfs/${Date.now()}_${fileInput.name}`);
-            const uploadTask = uploadBytesResumable(storageRef, fileInput);
 
-            uploadTask.on('state_changed', 
-                (snapshot) => {
-                    const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-                    publishBtn.innerText = `Uploading... ${Math.round(progress)}% ⏳`;
-                }, 
-                (error) => {
-                    console.error("Upload error:", error);
-                    alert("Failed to upload file.");
+            const reader = new FileReader();
+            reader.readAsDataURL(fileInput);
+            reader.onload = async function() {
+                const base64Url = reader.result;
+                try {
+                    const newItem = {
+                        title: title,
+                        category: category,
+                        type: type,
+                        semester: semester,
+                        price: price,
+                        fileUrl: base64Url,
+                        fileName: fileInput.name,
+                        upi: upi || "",
+                        description: desc,
+                        author: activeUser.username,
+                        authorPic: activeUser.profilePic || "",
+                        createdAt: Date.now()
+                    };
+
+                    await addDoc(collection(db, 'store_items'), newItem);
+                    document.getElementById('storeForm').reset();
+                    document.getElementById('fileNameDisplay').innerText = '';
+                    document.getElementById('upiSection').style.display = 'none';
+                    modalBox.style.display = 'none';
+                    alert("Study material published successfully! 🎉");
+                } catch (err) {
+                    console.error("Database error:", err);
+                    alert("Failed to save item. File might be slightly large, try a smaller PDF.");
+                } finally {
                     publishBtn.innerText = "Publish to Store 🚀";
                     publishBtn.disabled = false;
-                }, 
-                async () => {
-                    try {
-                        const downloadURL = await getDownloadURL(uploadTask.snapshot.ref);
-                        const newItem = {
-                            title: title,
-                            category: category,
-                            type: type,
-                            semester: semester,
-                            price: price,
-                            fileUrl: downloadURL,
-                            fileName: fileInput.name,
-                            upi: upi || "",
-                            description: desc,
-                            author: activeUser.username,
-                            authorPic: activeUser.profilePic || "",
-                            createdAt: Date.now()
-                        };
-
-                        await addDoc(collection(db, 'store_items'), newItem);
-                        document.getElementById('storeForm').reset();
-                        document.getElementById('fileNameDisplay').innerText = '';
-                        document.getElementById('upiSection').style.display = 'none';
-                        modalBox.style.display = 'none';
-                        alert("Study material published successfully! 🎉");
-                    } catch (err) {
-                        console.error("Database error:", err);
-                        alert("Failed to save item details.");
-                    } finally {
-                        publishBtn.innerText = "Publish to Store 🚀";
-                        publishBtn.disabled = false;
-                    }
                 }
-            );
+            };
         });
 
         let cachedStoreList = [];
