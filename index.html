@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gen'Z India ⚡ | Student Ecosystem</title>
+    <title>Dashboard | Gen'Z India ⚡</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
     <style>
         * {
@@ -20,7 +20,7 @@
         header {
             background: rgba(15, 23, 42, 0.95);
             backdrop-filter: blur(10px);
-            padding: 15px 20px;
+            padding: 15px 25px;
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -46,7 +46,6 @@
             font-weight: 500;
             font-size: 13px;
             transition: 0.3s;
-            cursor: pointer;
         }
         nav a:hover, nav a.active {
             color: #38bdf8;
@@ -55,108 +54,189 @@
             background: #ef4444;
             color: #fff;
             border: none;
-            padding: 5px 12px;
+            padding: 6px 14px;
             border-radius: 6px;
             font-size: 12px;
             cursor: pointer;
-        }
-        .hero {
-            text-align: center;
-            padding: 60px 20px;
-            max-width: 800px;
-            margin: 0 auto;
-        }
-        .hero h1 {
-            font-size: 38px;
-            font-weight: 700;
-            color: #f8fafc;
-            margin-bottom: 15px;
-        }
-        .hero h1 span {
-            color: #38bdf8;
-        }
-        .hero p {
-            color: #94a3b8;
-            font-size: 15px;
-            margin-bottom: 25px;
-        }
-        .cta-btn {
-            background: #38bdf8;
-            color: #0f172a;
-            border: none;
-            padding: 12px 28px;
-            border-radius: 25px;
             font-weight: 600;
-            font-size: 14px;
-            cursor: pointer;
-            transition: 0.3s;
-            text-decoration: none;
-            display: inline-block;
-        }
-        .cta-btn:hover {
-            background: #0ea5e9;
         }
         .container {
-            max-width: 900px;
-            margin: 20px auto;
+            max-width: 1000px;
+            margin: 30px auto;
             padding: 0 15px;
         }
-        .section-card {
-            background: #111827;
-            padding: 25px;
+        .welcome-banner {
+            background: linear-gradient(135deg, #1e293b, #111827);
+            padding: 30px;
             border-radius: 16px;
-            border: 1px solid #1f2937;
-            margin-bottom: 25px;
+            border: 1px solid #334155;
+            margin-bottom: 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
         }
-        .section-card h3 {
+        .welcome-banner h2 {
             color: #38bdf8;
-            font-size: 20px;
-            margin-bottom: 15px;
+            font-size: 24px;
+            margin-bottom: 5px;
         }
-        .form-control {
-            width: 100%;
-            background: #0b0f19;
-            border: 1px solid #334155;
-            border-radius: 8px;
-            padding: 10px;
-            color: #fff;
-            font-size: 13px;
-            margin-bottom: 12px;
-            resize: none;
+        .welcome-banner p {
+            color: #94a3b8;
+            font-size: 13.5px;
         }
-        .feed-card {
-            background: #1e293b;
-            padding: 15px;
-            border-radius: 10px;
-            margin-top: 15px;
-            border: 1px solid #334155;
-        }
-        .feed-header {
+        .user-badge {
             display: flex;
             align-items: center;
-            gap: 10px;
-            margin-bottom: 8px;
+            gap: 12px;
+            background: #0b0f19;
+            padding: 8px 15px;
+            border-radius: 30px;
+            border: 1px solid #1f2937;
         }
-        .feed-avatar {
-            width: 35px;
-            height: 35px;
+        .user-badge img {
+            width: 40px;
+            height: 40px;
             border-radius: 50%;
             object-fit: cover;
             border: 1px solid #38bdf8;
         }
-        .feed-user-info h4 {
-            color: #f8fafc;
+        .user-badge h4 {
             font-size: 14px;
+            color: #fff;
         }
-        .feed-user-info span {
+        .user-badge span {
             font-size: 11px;
+            color: #38bdf8;
+        }
+
+        /* Hub Feature Cards Grid */
+        .hub-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+            margin-bottom: 40px;
+        }
+        .hub-card {
+            background: #111827;
+            padding: 25px;
+            border-radius: 16px;
+            border: 1px solid #1f2937;
+            transition: 0.3s;
+            text-decoration: none;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+        .hub-card:hover {
+            border-color: #38bdf8;
+            transform: translateY(-3px);
+        }
+        .hub-card h3 {
+            color: #f8fafc;
+            font-size: 18px;
+            margin-bottom: 8px;
+        }
+        .hub-card p {
             color: #94a3b8;
+            font-size: 13px;
+            margin-bottom: 20px;
+        }
+        .hub-btn {
+            background: rgba(56, 189, 248, 0.1);
+            color: #38bdf8;
+            border: 1px solid #38bdf8;
+            padding: 8px 15px;
+            border-radius: 8px;
+            font-size: 13px;
+            font-weight: 600;
+            text-align: center;
+            transition: 0.3s;
+        }
+        .hub-card:hover .hub-btn {
+            background: #38bdf8;
+            color: #0f172a;
+        }
+
+        /* Global Chat Section */
+        .chat-section {
+            background: #111827;
+            padding: 25px;
+            border-radius: 16px;
+            border: 1px solid #1f2937;
+        }
+        .chat-section h3 {
+            color: #38bdf8;
+            font-size: 20px;
+            margin-bottom: 15px;
+        }
+        .chat-box {
+            background: #0b0f19;
+            border: 1px solid #334155;
+            border-radius: 12px;
+            height: 300px;
+            overflow-y: auto;
+            padding: 15px;
+            margin-bottom: 15px;
+        }
+        .chat-message {
+            margin-bottom: 12px;
+            font-size: 13px;
+        }
+        .chat-message .c-header {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 4px;
+        }
+        .chat-message img {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+        .chat-message .c-name {
+            font-weight: 600;
+            color: #38bdf8;
+            font-size: 12px;
+        }
+        .chat-message .c-time {
+            font-size: 10px;
+            color: #64748b;
+        }
+        .chat-message .c-text {
+            color: #cbd5e1;
+            padding-left: 32px;
+        }
+        .chat-input-area {
+            display: flex;
+            gap: 10px;
+        }
+        .chat-input-area input {
+            flex: 1;
+            background: #0b0f19;
+            border: 1px solid #334155;
+            border-radius: 8px;
+            padding: 10px 15px;
+            color: #fff;
+            font-size: 13px;
+        }
+        .chat-send-btn {
+            background: #38bdf8;
+            color: #0f172a;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 13px;
+            cursor: pointer;
         }
     </style>
 </head>
 <body>
 
-    <!-- Strict Auth Guard: Agar login nahi hai toh login.html par bhej do -->
+    <!-- Auth Guard -->
     <script>
         const user = localStorage.getItem('genzUser');
         if (!user) {
@@ -167,36 +247,83 @@
     <header>
         <a href="index.html" class="logo">Gen'Z India ⚡</a>
         <nav>
-            <a href="index.html" class="active">Home</a>
-            <a href="voiceup.html">Voice Up Feed</a>
+            <a href="index.html" class="active">Dashboard</a>
             <button class="logout-btn" onclick="logoutUser()">Logout</button>
         </nav>
     </header>
 
-    <div class="hero">
-        <h1>Empowering the <span>Voice of Bharat</span></h1>
-        <p>A unified platform built by Gen'Z, for Gen'Z. Share ideas, crack academic doubts, and showcase tech innovations.</p>
-        <a href="voiceup.html" class="cta-btn">Open Voice Up Feed ✊</a>
-    </div>
-
     <div class="container">
-        <!-- DoubtBox Section -->
-        <div class="section-card">
-            <h3>💬 DoubtBox (Ask Academic Doubts)</h3>
-            <form onsubmit="postDoubt(event)">
-                <textarea id="doubtText" class="form-control" placeholder="Ask your math, coding, or academic doubt here..." required></textarea>
-                <button type="submit" class="cta-btn" style="padding: 8px 20px; font-size: 13px;">Post Doubt</button>
-            </form>
-            <div id="doubtsFeed" style="margin-top: 20px;">
-                <p style="color: #94a3b8; font-size: 13px;">Loading doubts...</p>
+        <!-- Welcome Banner with User Profile -->
+        <div class="welcome-banner">
+            <div>
+                <h2>Welcome to Student Hub 🚀</h2>
+                <p>Access all your campus tools, doubts, gigs, and talk with peers globally.</p>
             </div>
+            <div class="user-badge" id="userBadgeDiv">
+                <!-- Loaded via JS -->
+            </div>
+        </div>
+
+        <!-- Hub Navigation Cards Grid -->
+        <div class="hub-grid">
+            <a href="doubtbox.html" class="hub-card">
+                <div>
+                    <h3>💬 DoubtBox</h3>
+                    <p>Ask academic & coding doubts, get verified peer answers instantly.</p>
+                </div>
+                <div class="hub-btn">Open DoubtBox →</div>
+            </a>
+
+            <a href="voiceup.html" class="hub-card">
+                <div>
+                    <h3>✊ Voice Up</h3>
+                    <p>Share campus issues, social updates, and participate in discussions.</p>
+                </div>
+                <div class="hub-btn">Open Voice Feed →</div>
+            </a>
+
+            <a href="freelance.html" class="hub-card">
+                <div>
+                    <h3>💼 Freelance & Gigs</h3>
+                    <p>Find student projects, design tasks, and micro-internship gigs.</p>
+                </div>
+                <div class="hub-btn">Explore Gigs →</div>
+            </a>
+
+            <a href="store.html" class="hub-card">
+                <div>
+                    <h3>📦 Gen'Z Store</h3>
+                    <p>Exchange handwritten notes, study materials, and tech resources.</p>
+                </div>
+                <div class="hub-btn">Visit Store →</div>
+            </a>
+
+            <a href="innovation.html" class="hub-card">
+                <div>
+                    <h3>💡 Innovations & Talent</h3>
+                    <p>Showcase your tech projects, startup ideas, and creative builds.</p>
+                </div>
+                <div class="hub-btn">View Showcase →</div>
+            </a>
+        </div>
+
+        <!-- Global Student Chat Section -->
+        <div class="chat-section">
+            <h3>🌐 Global Student Community Chat</h3>
+            <div class="chat-box" id="globalChatBox">
+                <p style="color: #64748b; font-size: 12px;">Loading messages...</p>
+            </div>
+            <form onsubmit="sendChatMessage(event)" class="chat-input-area">
+                <input type="text" id="chatInputText" placeholder="Say something to fellow students..." required>
+                <button type="submit" class="chat-send-btn">Send</button>
+            </form>
         </div>
     </div>
 
-    <!-- Firebase Scripts & Logic -->
+    <!-- Firebase Scripts -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-app.js";
-        import { getFirestore, collection, addDoc, getDocs } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-firestore.js";
+        import { getFirestore, collection, addDoc, getDocs, query, orderBy } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-firestore.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyCNLwSjHq6LlX9uUovTRHrz9ZfUwEIUWQM",
@@ -211,70 +338,81 @@
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
 
+        const currentUser = JSON.parse(localStorage.getItem('genzUser'));
+
+        // Render User Profile Badge
+        if(currentUser) {
+            document.getElementById('userBadgeDiv').innerHTML = `
+                <img src="${currentUser.photo || 'https://cdn.jsdelivr.net/gh/twitter/twemoji@14.0.2/assets/72x72/1f464.png'}" alt="Avatar">
+                <div>
+                    <h4>${currentUser.name}</h4>
+                    <span>@${currentUser.username} • ${currentUser.college || 'Student'}</span>
+                </div>
+            `;
+        }
+
         window.logoutUser = function() {
             localStorage.removeItem('genzUser');
             window.location.href = 'login.html';
         }
 
-        window.postDoubt = async function(event) {
+        // Chat functionality
+        window.sendChatMessage = async function(event) {
             event.preventDefault();
-            const currentUser = JSON.parse(localStorage.getItem('genzUser'));
-            const text = document.getElementById('doubtText').value.trim();
+            const text = document.getElementById('chatInputText').value.trim();
             if(!text) return;
 
-            let data = {
+            let chatData = {
                 name: currentUser.name,
                 username: "@" + currentUser.username,
                 photo: currentUser.photo || "https://cdn.jsdelivr.net/gh/twitter/twemoji@14.0.2/assets/72x72/1f464.png",
-                college: currentUser.college || "Student",
-                text: text
+                text: text,
+                timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
             };
 
             try {
-                await addDoc(collection(db, 'doubts'), data);
-                alert('Doubt posted successfully!');
-                location.reload();
+                await addDoc(collection(db, 'globalChat'), chatData);
+                document.getElementById('chatInputText').value = '';
+                loadChatMessages();
             } catch(e) {
                 console.error(e);
-                alert('Error posting doubt.');
+                alert('Error sending message.');
             }
         }
 
-        async function loadDoubts() {
-            const container = document.getElementById('doubtsFeed');
+        async function loadChatMessages() {
+            const chatBox = document.getElementById('globalChatBox');
             try {
-                const querySnapshot = await getDocs(collection(db, 'doubts'));
-                container.innerHTML = '';
+                const querySnapshot = await getDocs(collection(db, 'globalChat'));
+                chatBox.innerHTML = '';
 
                 if(querySnapshot.empty) {
-                    container.innerHTML = `<p style="color: #94a3b8; font-size: 13px;">No doubts posted yet. Be the first!</p>`;
+                    chatBox.innerHTML = `<p style="color: #64748b; font-size: 12px;">No messages yet. Start the conversation!</p>`;
                     return;
                 }
 
-                querySnapshot.forEach((document) => {
-                    const d = document.data();
-                    let avatar = d.photo || "https://cdn.jsdelivr.net/gh/twitter/twemoji@14.0.2/assets/72x72/1f464.png";
-
-                    container.innerHTML += `
-                        <div class="feed-card">
-                            <div class="feed-header">
-                                <img src="${avatar}" class="feed-avatar" alt="Avatar">
-                                <div class="feed-user-info">
-                                    <h4>${d.name}</h4>
-                                    <span>${d.username} • ${d.college}</span>
-                                </div>
+                querySnapshot.forEach((doc) => {
+                    const c = doc.data();
+                    let avatar = c.photo || 'https://cdn.jsdelivr.net/gh/twitter/twemoji@14.0.2/assets/72x72/1f464.png';
+                    chatBox.innerHTML += `
+                        <div class="chat-message">
+                            <div class="c-header">
+                                <img src="${avatar}" alt="Avatar">
+                                <span class="c-name">${c.name} (${c.username})</span>
+                                <span class="c-time">${c.timestamp || ''}</span>
                             </div>
-                            <p style="color: #cbd5e1; font-size: 13.5px; margin-top: 5px;">${d.text}</p>
+                            <div class="c-text">${c.text}</div>
                         </div>
                     `;
                 });
+                chatBox.scrollTop = chatBox.scrollHeight;
             } catch(e) {
                 console.error(e);
-                container.innerHTML = `<p style="color: #ef4444; font-size: 13px;">Failed to load doubts.</p>`;
+                chatBox.innerHTML = `<p style="color: #ef4444; font-size: 12px;">Failed to load chat.</p>`;
             }
         }
 
-        loadDoubts();
+        loadChatMessages();
     </script>
 </body>
 </html>
