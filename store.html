@@ -45,24 +45,75 @@
             border: 1px solid #1f2937;
             border-radius: 12px;
             padding: 20px;
-            margin-bottom: 25px;
+            margin-bottom: 20px;
             text-align: center;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+        .hero-banner-text {
+            text-align: left;
         }
         .hero-banner h1 {
-            font-size: 22px;
+            font-size: 20px;
             color: #f59e0b;
-            margin-bottom: 6px;
+            margin-bottom: 4px;
         }
         .hero-banner p {
-            font-size: 13px;
+            font-size: 12px;
             color: #94a3b8;
+        }
+        .add-product-toggle-btn {
+            background: #f59e0b;
+            color: #0f172a;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 13px;
+            cursor: pointer;
+            white-space: nowrap;
+        }
+        .add-product-toggle-btn:hover {
+            background: #d97706;
+        }
+        /* Strict Hidden Modal Fix */
+        .form-modal {
+            display: none !important;
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.85);
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+            padding: 15px;
+            overflow-y: auto;
         }
         .store-form-box {
             background: #111827;
-            border: 1px solid #1f2937;
+            border: 1px solid #334155;
             border-radius: 12px;
-            padding: 20px;
-            margin-bottom: 30px;
+            padding: 25px;
+            width: 100%;
+            max-width: 550px;
+            position: relative;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+        .close-form-btn {
+            position: absolute;
+            top: 15px;
+            right: 20px;
+            background: none;
+            border: none;
+            color: #94a3b8;
+            font-size: 22px;
+            cursor: pointer;
+        }
+        .close-form-btn:hover {
+            color: #fff;
         }
         .store-form-box input, .store-form-box textarea, .store-form-box select {
             width: 100%;
@@ -243,8 +294,9 @@
             padding: 6px 0;
             border-bottom: 1px solid #1f2937;
         }
+        /* Modal */
         .modal {
-            display: none;
+            display: none !important;
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
             background: rgba(0,0,0,0.75);
@@ -308,63 +360,71 @@
     </header>
 
     <div class="container">
+        <!-- Hero Banner with Add Product Button -->
         <div class="hero-banner">
-            <h1>Notes, PYQs & Study Material Exchange</h1>
-            <p>Upload PDF notes securely via official Firebase Cloud Storage.</p>
+            <div class="hero-banner-text">
+                <h1>Notes, PYQs & Study Material Exchange</h1>
+                <p>Share or buy study notes securely via Firebase Cloud Storage.</p>
+            </div>
+            <button class="add-product-toggle-btn" onclick="openUploadModal()">+ Add Product / Notes 🚀</button>
         </div>
 
-        <div class="store-form-box">
-            <h3 style="font-size: 15px; color: #f59e0b; margin-bottom: 15px;">Upload Study Material / PDF Notes</h3>
-            <form id="storeForm">
-                <input type="text" id="itemTitle" placeholder="Title (e.g., Data Structures Complete Handwritten Notes)" required>
-                
-                <div class="form-row">
-                    <select id="itemCategory" required>
-                        <option value="">Select Category</option>
-                        <option value="Engineering / BTech">Engineering / BTech</option>
-                        <option value="BCA / MCA">BCA / MCA</option>
-                        <option value="UPSC / Govt Exams">UPSC / Govt Exams</option>
-                        <option value="Medical / NEET">Medical / NEET</option>
-                        <option value="Class 11th - 12th">Class 11th - 12th</option>
-                        <option value="Other">Other</option>
-                    </select>
+        <!-- Hidden Upload Modal Form -->
+        <div class="form-modal" id="uploadFormModal">
+            <div class="store-form-box">
+                <button class="close-form-btn" onclick="closeUploadModal()">&times;</button>
+                <h3 style="font-size: 16px; color: #f59e0b; margin-bottom: 15px;">Upload Study Material / PDF Notes</h3>
+                <form id="storeForm">
+                    <input type="text" id="itemTitle" placeholder="Title (e.g., Data Structures Complete Handwritten Notes)" required>
+                    
+                    <div class="form-row">
+                        <select id="itemCategory" required>
+                            <option value="">Select Category</option>
+                            <option value="Engineering / BTech">Engineering / BTech</option>
+                            <option value="BCA / MCA">BCA / MCA</option>
+                            <option value="UPSC / Govt Exams">UPSC / Govt Exams</option>
+                            <option value="Medical / NEET">Medical / NEET</option>
+                            <option value="Class 11th - 12th">Class 11th - 12th</option>
+                            <option value="Other">Other</option>
+                        </select>
 
-                    <select id="itemType" required>
-                        <option value="">Select Resource Type</option>
-                        <option value="Handwritten Notes">Handwritten Notes</option>
-                        <option value="Previous Year Paper (PYQ)">Previous Year Paper (PYQ)</option>
-                        <option value="E-Book / PDF">E-Book / PDF</option>
-                        <option value="Coding Snippets / Template">Coding Snippets / Template</option>
-                    </select>
-                </div>
+                        <select id="itemType" required>
+                            <option value="">Select Resource Type</option>
+                            <option value="Handwritten Notes">Handwritten Notes</option>
+                            <option value="Previous Year Paper (PYQ)">Previous Year Paper (PYQ)</option>
+                            <option value="E-Book / PDF">E-Book / PDF</option>
+                            <option value="Coding Snippets / Template">Coding Snippets / Template</option>
+                        </select>
+                    </div>
 
-                <div class="form-row">
-                    <select id="itemSemester" required>
-                        <option value="">Select Semester / Year</option>
-                        <option value="1st Year / Sem 1-2">1st Year / Sem 1-2</option>
-                        <option value="2nd Year / Sem 3-4">2nd Year / Sem 3-4</option>
-                        <option value="3rd Year / Sem 5-6">3rd Year / Sem 5-6</option>
-                        <option value="Final Year / Sem 7-8">Final Year / Sem 7-8</option>
-                        <option value="General / All Years">General / All Years</option>
-                    </select>
+                    <div class="form-row">
+                        <select id="itemSemester" required>
+                            <option value="">Select Semester / Year</option>
+                            <option value="1st Year / Sem 1-2">1st Year / Sem 1-2</option>
+                            <option value="2nd Year / Sem 3-4">2nd Year / Sem 3-4</option>
+                            <option value="3rd Year / Sem 5-6">3rd Year / Sem 5-6</option>
+                            <option value="Final Year / Sem 7-8">Final Year / Sem 7-8</option>
+                            <option value="General / All Years">General / All Years</option>
+                        </select>
 
-                    <input type="text" id="itemPrice" placeholder="Price (e.g., Free or ₹49)" required>
-                </div>
+                        <input type="text" id="itemPrice" placeholder="Price (e.g., Free or ₹49)" required>
+                    </div>
 
-                <div class="file-upload-box">
-                    <label>📎 Select PDF Document File from Device</label>
-                    <input type="file" id="itemPdfFile" accept=".pdf,image/*" required style="border:none; padding:4px 0; background:transparent; font-size:12px; color:#94a3b8;">
-                    <p id="fileNameDisplay" style="font-size: 11px; color: #38bdf8; margin-top: 4px;"></p>
-                </div>
-                
-                <div id="upiSection" style="display: none;">
-                    <input type="text" id="uploaderUpi" placeholder="Enter your UPI ID for payments (e.g., yourname@paytm)">
-                </div>
+                    <div class="file-upload-box">
+                        <label>📎 Select PDF Document File from Device</label>
+                        <input type="file" id="itemPdfFile" accept=".pdf,image/*" required style="border:none; padding:4px 0; background:transparent; font-size:12px; color:#94a3b8;">
+                        <p id="fileNameDisplay" style="font-size: 11px; color: #38bdf8; margin-top: 4px;"></p>
+                    </div>
+                    
+                    <div id="upiSection" style="display: none;">
+                        <input type="text" id="uploaderUpi" placeholder="Enter your UPI ID for payments (e.g., yourname@paytm)">
+                    </div>
 
-                <textarea id="itemDesc" placeholder="Describe what's included in these notes or papers..." required style="min-height: 80px;"></textarea>
-                
-                <button type="submit" class="publish-btn" id="publishBtn">Publish to Store 🚀</button>
-            </form>
+                    <textarea id="itemDesc" placeholder="Describe what's included in these notes or papers..." required style="min-height: 80px;"></textarea>
+                    
+                    <button type="submit" class="publish-btn" id="publishBtn">Publish to Store 🚀</button>
+                </form>
+            </div>
         </div>
 
         <div id="storeFeedContainer">
@@ -413,6 +473,15 @@
             window.location.href = 'login.html';
         }
 
+        // Modal Open/Close Functions with flex display override
+        window.openUploadModal = function() {
+            document.getElementById('uploadFormModal').style.display = 'flex';
+        };
+
+        window.closeUploadModal = function() {
+            document.getElementById('uploadFormModal').style.display = 'none';
+        };
+
         document.getElementById('itemPdfFile').addEventListener('change', function(e) {
             const file = e.target.files[0];
             if (file) {
@@ -455,7 +524,7 @@
             uploadTask.on('state_changed', 
                 (snapshot) => {
                     const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-                    publishBtn.innerText = `Uploading to Cloud... ${Math.round(progress)}% ⏳`;
+                    publishBtn.innerText = `Uploading... ${Math.round(progress)}% ⏳`;
                 }, 
                 (error) => {
                     console.error("Upload error:", error);
@@ -485,6 +554,7 @@
                         document.getElementById('storeForm').reset();
                         document.getElementById('fileNameDisplay').innerText = '';
                         document.getElementById('upiSection').style.display = 'none';
+                        closeUploadModal();
                         alert("Study material published successfully! 🎉");
                     } catch (err) {
                         console.error("Database error:", err);
