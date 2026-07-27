@@ -125,10 +125,10 @@
         </form>
     </div>
 
-    <!-- Firebase Chat Logic -->
+    <!-- Firebase Chat Logic with Zero Index Errors -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-app.js";
-        import { getFirestore, collection, addDoc, getDocs, query, where, orderBy, serverTimestamp } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-firestore.js";
+        import { getFirestore, collection, addDoc, getDocs } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-firestore.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyCNLwSjHq6LlX9uUovTRHrz9ZfUwEIUWQM",
@@ -188,7 +188,7 @@
                 sender: activeUser.username,
                 receiver: targetUsername,
                 text: text,
-                createdAt: serverTimestamp()
+                createdAt: Date.now() // Clean reliable timestamp
             };
 
             try {
@@ -204,18 +204,19 @@
         async function loadMessages(isSentByMe = false) {
             const chatBox = document.getElementById('msgChatBox');
             try {
-                const q = query(
-                    collection(db, 'directMessages'),
-                    where("room", "==", chatRoomId),
-                    orderBy("createdAt", "asc")
-                );
-                
-                const querySnapshot = await getDocs(q);
+                // Fetch all messages and filter client-side to prevent compound index errors
+                const querySnapshot = await getDocs(collection(db, 'directMessages'));
                 const messagesArray = [];
 
                 querySnapshot.forEach((docSnap) => {
-                    messagesArray.push(docSnap.data());
+                    const m = docSnap.data();
+                    if (m.room === chatRoomId) {
+                        messagesArray.push(m);
+                    }
                 });
+
+                // Sort numerically ascending (oldest to newest)
+                messagesArray.sort((a, b) => (Number(a.createdAt) || 0) - (Number(b.createdAt) || 0));
 
                 if (previousMessageCount > 0 && messagesArray.length > previousMessageCount && !isSentByMe) {
                     playBeep();
@@ -231,13 +232,7 @@
 
                 messagesArray.forEach(m => {
                     const isSender = m.sender === activeUser.username;
-                    let timeString = "";
-                    if (m.createdAt && m.createdAt.toDate) {
-                        timeString = m.createdAt.toDate().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-                    } else {
-                        timeString = "Just now";
-                    }
-
+                    const timeString = m.createdAt ? new Date(Number(m.createdAt)).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : '';
                     chatBox.innerHTML += `
                         <div class="message ${isSender ? 'sent' : 'received'}">
                             <div>${m.text}</div>
@@ -249,6 +244,7 @@
                 chatBox.scrollTop = chatBox.scrollHeight;
             } catch (err) {
                 console.error("Chat load error:", err);
+                chatBox.innerHTML = `<p style="color: #ef4444; font-size: 12px; text-align: center;">Failed to load messages.</p>`;
             }
         }
 
