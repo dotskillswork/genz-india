@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Voice Up | Gen'Z India</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+        body {
+            background-color: #0b0f19;
+            color: #f1f5f9;
+            line-height: 1.6;
+        }
+        header {
+            background: rgba(15, 23, 42, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #1e293b;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+        .logo {
+            font-size: 20px;
+            font-weight: 700;
+            color: #38bdf8;
+            text-decoration: none;
+        }
+        nav {
+            display: flex;
+            gap: 15px;
+        }
+        nav a {
+            color: #94a3b8;
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 13px;
+            transition: 0.3s;
+        }
+        nav a:hover, nav a.active {
+            color: #38bdf8;
+        }
+        .container {
+            max-width: 700px;
+            margin: 30px auto;
+            padding: 0 15px;
+        }
+        .page-title {
+            margin-bottom: 20px;
+            font-size: 24px;
+            color: #38bdf8;
+            font-weight: 700;
+        }
+        .tweet-box {
+            background: #111827;
+            padding: 20px;
+            border-radius: 16px;
+            border: 1px solid #1f2937;
+            margin-bottom: 30px;
+        }
+        .tweet-box textarea {
+            width: 100%;
+            background: #0b0f19;
+            border: 1px solid #334155;
+            border-radius: 10px;
+            padding: 12px;
+            color: #fff;
+            font-size: 14px;
+            resize: none;
+            height: 90px;
+            margin-bottom: 12px;
+        }
+        .tweet-controls {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        .tweet-controls input[type="text"] {
+            background: #0b0f19;
+            border: 1px solid #334155;
+            border-radius: 6px;
+            padding: 8px 10px;
+            color: #fff;
+            font-size: 13px;
+            width: 35%;
+        }
+        .file-upload-wrapper {
+            font-size: 12px;
+            color: #94a3b8;
+        }
+        .post-btn {
+            background: #38bdf8;
+            color: #0f172a;
+            border: none;
+            padding: 8px 20px;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 13px;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+        .post-btn:hover {
+            background: #0ea5e9;
+        }
+        .feed-card {
+            background: #1e293b;
+            padding: 18px;
+            border-radius: 12px;
+            margin-bottom: 15px;
+            border: 1px solid #334155;
+            word-break: break-word;
+            overflow-wrap: break-word;
+        }
+        .feed-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+        }
+        .feed-header h4 {
+            color: #f8fafc;
+            font-size: 15px;
+        }
+        .feed-header span {
+            font-size: 11px;
+            color: #38bdf8;
+            background: rgba(56, 189, 248, 0.1);
+            padding: 2px 6px;
+            border-radius: 4px;
+        }
+        .feed-card p {
+            color: #cbd5e1;
+            font-size: 13.5px;
+            margin-bottom: 10px;
+        }
+        .feed-card img {
+            max-width: 100%;
+            border-radius: 8px;
+            margin-top: 8px;
+            max-height: 250px;
+        }
+        .replies-section {
+            margin-top: 12px;
+            padding-top: 10px;
+            border-top: 1px solid #334155;
+        }
+        .reply-item {
+            background: #0f172a;
+            padding: 8px 12px;
+            border-radius: 6px;
+            margin-top: 6px;
+            font-size: 12px;
+            color: #94a3b8;
+        }
+        .reply-input-box {
+            display: flex;
+            gap: 8px;
+            margin-top: 10px;
+        }
+        .reply-input-box input {
+            flex: 1;
+            background: #0b0f19;
+            border: 1px solid #334155;
+            border-radius: 6px;
+            padding: 6px 10px;
+            color: #fff;
+            font-size: 12px;
+        }
+        .reply-sub-btn {
+            background: #38bdf8;
+            color: #0f172a;
+            border: none;
+            padding: 6px 14px;
+            border-radius: 6px;
+            font-weight: 600;
+            font-size: 12px;
+            cursor: pointer;
+        }
+        @media (max-width: 600px) {
+            .tweet-controls input[type="text"] {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <a href="index.html" class="logo">Gen'Z India ⚡</a>
+        <nav>
+            <a href="index.html">Home</a>
+            <a href="voiceup.html" class="active">Voice Up</a>
+        </nav>
+    </header>
+
+    <div class="container">
+        <h2 class="page-title">✊ Voice Up (Campus & Social Issues)</h2>
+        
+        <!-- Twitter Style Post Box -->
+        <div class="tweet-box">
+            <form onsubmit="postVoiceIssue(event)">
+                <textarea id="vText" placeholder="What is happening in your college or society? Speak up..." required></textarea>
+                <div class="tweet-controls">
+                    <input type="text" id="vName" placeholder="Name or type 'Anonymous'">
+                    <div class="file-upload-wrapper">
+                        <input type="file" id="vMedia" accept="image/*" style="font-size: 11px;">
+                    </div>
+                    <button type="submit" class="post-btn">Post</button>
+                </div>
+            </form>
+        </div>
+
+        <!-- Live Feed Container -->
+        <div id="voicesFeed">
+            <p style="color: #94a3b8; font-size: 13px;">Loading issues...</p>
+        </div>
+    </div>
+
+    <!-- Firebase Logic -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-app.js";
+        import { getFirestore, collection, addDoc, getDocs, updateDoc, doc, arrayUnion } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-firestore.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyCNLwSjHq6LlX9uUovTRHrz9ZfUwEIUWQM",
+            authDomain: "genz-india.firebaseapp.com",
+            projectId: "genz-india",
+            storageBucket: "genz-india.firebasestorage.app",
+            messagingSenderId: "149959470783",
+            appId: "1:149959470783:web:71b7969ee2c8fc049c200a",
+            measurementId: "G-RBRSDRKSRH"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+
+        function convertImageToBase64(fileInputId) {
+            return new Promise((resolve) => {
+                const fileInput = document.getElementById(fileInputId);
+                if(fileInput && fileInput.files && fileInput.files[0]) {
+                    const reader = new FileReader();
+                    reader.onload = (e) => resolve(e.target.result);
+                    reader.readAsDataURL(fileInput.files[0]);
+                } else {
+                    resolve("");
+                }
+            });
+        }
+
+        window.postVoiceIssue = async function(event) {
+            event.preventDefault();
+            let text = document.getElementById('vText').value;
+            let nameInput = document.getElementById('vName').value.trim();
+            let name = nameInput === "" ? "Anonymous" : nameInput;
+            let mediaBase64 = await convertImageToBase64('vMedia');
+
+            let data = {
+                name: name,
+                text: text,
+                media: mediaBase64,
+                replies: []
+            };
+
+            try {
+                await addDoc(collection(db, 'voices'), data);
+                alert('Issue posted successfully! ✊');
+                location.reload();
+            } catch(e) {
+                console.error(e);
+                alert('Error posting issue.');
+            }
+        }
+
+        window.addVoiceReply = async function(docId) {
+            const inputField = document.getElementById(`reply-text-${docId}`);
+            const replyText = inputField.value.trim();
+            if(!replyText) return;
+
+            try {
+                const docRef = doc(db, 'voices', docId);
+                await updateDoc(docRef, {
+                    replies: arrayUnion(replyText)
+                });
+                loadVoices();
+            } catch(e) {
+                console.error(e);
+            }
+        }
+
+        async function loadVoices() {
+            const container = document.getElementById('voicesFeed');
+            try {
+                const querySnapshot = await getDocs(collection(db, 'voices'));
+                container.innerHTML = '';
+
+                if(querySnapshot.empty) {
+                    container.innerHTML = `<p style="color: #94a3b8; font-size: 13px;">No issues posted yet. Be the first to raise your voice!</p>`;
+                    return;
+                }
+
+                querySnapshot.forEach((document) => {
+                    const d = document.data();
+                    const docId = document.id;
+                    let mediaHTML = d.media ? `<img src="${d.media}" alt="Attachment">` : '';
+
+                    let repliesHTML = '';
+                    if(d.replies && d.replies.length > 0) {
+                        d.replies.forEach(r => {
+                            repliesHTML += `<div class="reply-item">💬 ${r}</div>`;
+                        });
+                    } else {
+                        repliesHTML = `<div class="reply-item" style="color: #64748b;">No comments yet.</div>`;
+                    }
+
+                    container.innerHTML += `
+                        <div class="feed-card">
+                            <div class="feed-header">
+                                <h4>${d.name}</h4>
+                                <span>Voice Up</span>
+                            </div>
+                            <p>${d.text}</p>
+                            ${mediaHTML}
+                            <div class="replies-section">
+                                <div style="font-size: 11px; color: #38bdf8; margin-bottom: 5px;">Discussions:</div>
+                                <div id="replies-list-${docId}">${repliesHTML}</div>
+                                <div class="reply-input-box">
+                                    <input type="text" id="reply-text-${docId}" placeholder="Write a comment...">
+                                    <button class="reply-sub-btn" onclick="addVoiceReply('${docId}')">Reply</button>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                });
+            } catch(e) {
+                console.error(e);
+                container.innerHTML = `<p style="color: #ef4444; font-size: 13px;">Failed to load feed.</p>`;
+            }
+        }
+
+        loadVoices();
+    </script>
+</body>
+</html>
