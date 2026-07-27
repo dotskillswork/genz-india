@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Freelance & Gigs | Gen'Z India</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+        body {
+            background-color: #0b0f19;
+            color: #f1f5f9;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        header {
+            background: #111827;
+            padding: 15px 30px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 1px solid #1f2937;
+        }
+        .back-btn {
+            color: #38bdf8;
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 600;
+        }
+        .container {
+            max-width: 850px;
+            width: 100%;
+            margin: 30px auto;
+            padding: 0 20px;
+            flex: 1;
+        }
+        .hero-banner {
+            background: #111827;
+            border: 1px solid #1f2937;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 25px;
+            text-align: center;
+        }
+        .hero-banner h1 {
+            font-size: 22px;
+            color: #38bdf8;
+            margin-bottom: 6px;
+        }
+        .hero-banner p {
+            font-size: 13px;
+            color: #94a3b8;
+        }
+        /* Post Gig Box */
+        .gig-form-box {
+            background: #111827;
+            border: 1px solid #1f2937;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 30px;
+        }
+        .gig-form-box input, .gig-form-box textarea, .gig-form-box select {
+            width: 100%;
+            background: #0b0f19;
+            border: 1px solid #334155;
+            border-radius: 8px;
+            padding: 12px;
+            color: #fff;
+            font-size: 13px;
+            margin-bottom: 12px;
+        }
+        .gig-form-box input:focus, .gig-form-box textarea:focus, .gig-form-box select:focus {
+            outline: none;
+            border-color: #38bdf8;
+        }
+        .gig-form-box textarea {
+            resize: vertical;
+            min-height: 90px;
+        }
+        .form-row {
+            display: flex;
+            gap: 12px;
+        }
+        .form-row input, .form-row select {
+            flex: 1;
+        }
+        .post-gig-btn {
+            background: #38bdf8;
+            color: #0f172a;
+            border: none;
+            padding: 10px 24px;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 13px;
+            cursor: pointer;
+            width: 100%;
+        }
+        .post-gig-btn:hover {
+            background: #0ea5e9;
+        }
+        /* Gig Cards Feed */
+        .gig-card {
+            background: #111827;
+            border: 1px solid #1f2937;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        .gig-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 10px;
+        }
+        .poster-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .poster-avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: #334155;
+            object-fit: cover;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #38bdf8;
+            font-weight: 600;
+            font-size: 13px;
+        }
+        .budget-badge {
+            background: #065f46;
+            color: #34d399;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+        .gig-title {
+            font-size: 16px;
+            color: #f8fafc;
+            margin-bottom: 6px;
+            font-weight: 600;
+        }
+        .gig-category {
+            font-size: 11px;
+            color: #38bdf8;
+            background: #1e293b;
+            padding: 3px 8px;
+            border-radius: 4px;
+            display: inline-block;
+            margin-bottom: 10px;
+        }
+        .gig-desc {
+            font-size: 13px;
+            color: #cbd5e1;
+            margin-bottom: 15px;
+            line-height: 1.5;
+            word-break: break-word;
+        }
+        .gig-footer {
+            border-top: 1px solid #1f2937;
+            padding-top: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .connect-btn {
+            background: #38bdf8;
+            color: #0f172a;
+            border: none;
+            padding: 6px 14px;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: 600;
+            text-decoration: none;
+            cursor: pointer;
+        }
+        .connect-btn:hover {
+            background: #0ea5e9;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <a href="makefriend.html" class="back-btn">← Back to Dashboard</a>
+        <h3 style="font-size: 16px; color: #fff;">💼 Freelance & Gigs Hub</h3>
+        <div style="width: 80px;"></div>
+    </header>
+
+    <div class="container">
+        <div class="hero-banner">
+            <h1>Student Freelance & Micro-Internships</h1>
+            <p>Post tasks, coding projects, or design gigs and collaborate with talented campus peers.</p>
+        </div>
+
+        <!-- Post Gig Form -->
+        <div class="gig-form-box">
+            <h3 style="font-size: 15px; color: #38bdf8; margin-bottom: 15px;">Post a New Gig / Task</h3>
+            <form id="gigForm">
+                <input type="text" id="gigTitle" placeholder="Gig Title (e.g., React JS Landing Page Design)" required>
+                <div class="form-row">
+                    <select id="gigCategory" required>
+                        <option value="">Select Category</option>
+                        <option value="Web Development">Web Development</option>
+                        <option value="Graphic Design">Graphic Design</option>
+                        <option value="Content Writing">Content Writing</option>
+                        <option value="Video Editing">Video Editing</option>
+                        <option value="Assignments / Tutoring">Assignments / Tutoring</option>
+                        <option value="Other">Other</option>
+                    </select>
+                    <input type="text" id="gigBudget" placeholder="Budget / Reward (e.g., ₹500 or Unpaid/Collab)" required>
+                </div>
+                <textarea id="gigDesc" placeholder="Describe the requirements, tech stack, or deliverables in detail..." required></textarea>
+                <button type="submit" class="post-gig-btn" id="postGigBtn">Publish Gig 🚀</button>
+            </form>
+        </div>
+
+        <!-- Live Gigs Feed -->
+        <div id="gigsFeedContainer">
+            <p style="color: #64748b; text-align: center; font-size: 13px;">Loading active gigs...</p>
+        </div>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-app.js";
+        import { getFirestore, collection, addDoc, onSnapshot, query, orderBy } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-firestore.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyCNLwSjHq6LlX9uUovTRHrz9ZfUwEIUWQM",
+            authDomain: "genz-india.firebaseapp.com",
+            projectId: "genz-india",
+            storageBucket: "genz-india.firebasestorage.app",
+            messagingSenderId: "149959470783",
+            appId: "1:149959470783:web:71b7969ee2c8fc049c200a",
+            measurementId: "G-RBRSDRKSRH"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+
+        const activeUser = JSON.parse(localStorage.getItem('genzUser'));
+        if (!activeUser) {
+            window.location.href = 'login.html';
+        }
+
+        // Post Gig Handler
+        document.getElementById('gigForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            const title = document.getElementById('gigTitle').value.trim();
+            const category = document.getElementById('gigCategory').value;
+            const budget = document.getElementById('gigBudget').value.trim();
+            const desc = document.getElementById('gigDesc').value.trim();
+            const postBtn = document.getElementById('postGigBtn');
+
+            if (!title || !category || !budget || !desc) return;
+
+            postBtn.innerText = "Publishing...";
+            postBtn.disabled = true;
+
+            const newGig = {
+                title: title,
+                category: category,
+                budget: budget,
+                description: desc,
+                author: activeUser.username,
+                authorPic: activeUser.profilePic || "",
+                createdAt: Date.now()
+            };
+
+            try {
+                await addDoc(collection(db, 'gigs'), newGig);
+                document.getElementById('gigForm').reset();
+            } catch (err) {
+                console.error("Error posting gig:", err);
+                alert("Failed to publish gig.");
+            } finally {
+                postBtn.innerText = "Publish Gig 🚀";
+                postBtn.disabled = false;
+            }
+        });
+
+        // Real-time Gigs Feed Listener
+        const q = query(collection(db, 'gigs'), orderBy('createdAt', 'desc'));
+        onSnapshot(q, (snapshot) => {
+            const container = document.getElementById('gigsFeedContainer');
+            container.innerHTML = "";
+
+            let gigsList = [];
+            snapshot.forEach((docSnap) => {
+                gigsList.push({ id: docSnap.id, ...docSnap.data() });
+            });
+
+            if (gigsList.length === 0) {
+                container.innerHTML = `<p style="color: #64748b; text-align: center; font-size: 13px; padding: 20px;">No gigs posted yet. Be the first to post a project or task!</p>`;
+                return;
+            }
+
+            gigsList.forEach((gig) => {
+                const timeString = new Date(gig.createdAt).toLocaleString([], { dateStyle: 'short', timeStyle: 'short' });
+                const authorInitial = gig.author ? gig.author.charAt(0).toUpperCase() : 'U';
+                const authorAvatar = gig.authorPic ? `<img src="${gig.authorPic}" class="poster-avatar">` : `<div class="poster-avatar">${authorInitial}</div>`;
+
+                // Hide Connect button if viewing own gig
+                const connectButton = gig.author === activeUser.username 
+                    ? `<span style="font-size: 11px; color: #64748b; font-style: italic;">Your Gig</span>`
+                    : `<a href="chat.html?with=${gig.author}" class="connect-btn">Connect & Chat</a>`;
+
+                container.innerHTML += `
+                    <div class="gig-card">
+                        <div class="gig-header">
+                            <div class="poster-info">
+                                ${authorAvatar}
+                                <div>
+                                    <h4 style="font-size: 13px; color: #f8fafc;">@${gig.author}</h4>
+                                    <span style="font-size: 11px; color: #94a3b8;">${timeString}</span>
+                                </div>
+                            </div>
+                            <span class="budget-badge">💰 ${gig.budget}</span>
+                        </div>
+                        <span class="gig-category">${gig.category}</span>
+                        <div class="gig-title">${gig.title}</div>
+                        <div class="gig-desc">${gig.description}</div>
+                        
+                        <div class="gig-footer">
+                            <span style="font-size: 11px; color: #64748b;">Direct peer-to-peer gig collaboration</span>
+                            ${connectButton}
+                        </div>
+                    </div>
+                `;
+            });
+        });
+    </script>
+</body>
+</html>
