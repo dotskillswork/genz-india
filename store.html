@@ -440,7 +440,7 @@
                     </div>
 
                     <div class="file-upload-box">
-                        <label>📎 Select PDF Document File from Device</label>
+                        <label>📎 Select PDF Document File from Device (Any Size)</label>
                         <input type="file" id="itemPdfFile" accept=".pdf,image/*" required style="border:none; padding:4px 0; background:transparent; font-size:12px; color:#94a3b8;">
                         <p id="fileNameDisplay" style="font-size: 11px; color: #38bdf8; margin-top: 4px;"></p>
                     </div>
@@ -554,43 +554,52 @@
 
             if (!title || !category || !type || !semester || !price || !fileInput || !desc) return;
 
-            publishBtn.innerText = "Processing PDF... ⏳";
+            publishBtn.innerText = "Uploading to Cloud... ⏳";
             publishBtn.disabled = true;
 
-            const reader = new FileReader();
-            reader.readAsDataURL(fileInput);
-            reader.onload = async function() {
-                const base64Url = reader.result;
-                try {
-                    const newItem = {
-                        title: title,
-                        category: category,
-                        type: type,
-                        semester: semester,
-                        price: price,
-                        fileUrl: base64Url,
-                        fileName: fileInput.name,
-                        upi: upi || "",
-                        description: desc,
-                        author: activeUser.username,
-                        authorPic: activeUser.profilePic || "",
-                        createdAt: Date.now()
-                    };
+            try {
+                const formData = new FormData();
+                formData.append('reqtype', 'fileupload');
+                formData.append('fileToUpload', fileInput);
 
-                    await addDoc(collection(db, 'store_items'), newItem);
-                    document.getElementById('storeForm').reset();
-                    document.getElementById('fileNameDisplay').innerText = '';
-                    document.getElementById('upiSection').style.display = 'none';
-                    modalBox.style.display = 'none';
-                    alert("Study material published successfully! 🎉");
-                } catch (err) {
-                    console.error("Database error:", err);
-                    alert("Failed to save item. File might be slightly large, try a smaller PDF.");
-                } finally {
-                    publishBtn.innerText = "Publish to Store 🚀";
-                    publishBtn.disabled = false;
+                const response = await fetch('https://catbox.moe/user/api.php', {
+                    method: 'POST',
+                    body: formData
+                });
+                const fileUrl = await response.text();
+
+                if (!fileUrl || !fileUrl.startsWith('http')) {
+                    throw new Error("Cloud upload failed");
                 }
-            };
+
+                const newItem = {
+                    title: title,
+                    category: category,
+                    type: type,
+                    semester: semester,
+                    price: price,
+                    fileUrl: fileUrl.trim(),
+                    fileName: fileInput.name,
+                    upi: upi || "",
+                    description: desc,
+                    author: activeUser.username,
+                    authorPic: activeUser.profilePic || "",
+                    createdAt: Date.now()
+                };
+
+                await addDoc(collection(db, 'store_items'), newItem);
+                document.getElementById('storeForm').reset();
+                document.getElementById('fileNameDisplay').innerText = '';
+                document.getElementById('upiSection').style.display = 'none';
+                modalBox.style.display = 'none';
+                alert("Study material published successfully! 🎉");
+            } catch (err) {
+                console.error("Upload error:", err);
+                alert("Failed to upload file. Please check your internet connection.");
+            } finally {
+                publishBtn.innerText = "Publish to Store 🚀";
+                publishBtn.disabled = false;
+            }
         });
 
         let cachedStoreList = [];
@@ -735,8 +744,10 @@
         };
 
         window.acceptPayment = async function(orderId) {
+            /** @type {string} */
+            const orderIdRef = orderId;
             try {
-                await updateDoc(doc(db, 'store_orders', orderId), {
+                await updateDoc(doc(db, 'store_orders', orderIdRef), {
                     status: 'accepted'
                 });
                 alert("Payment accepted! Download link unlocked for the buyer.");
