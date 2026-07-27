@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Profile | Gen'Z India</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+        body {
+            background-color: #0b0f19;
+            color: #f1f5f9;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        header {
+            background: #111827;
+            padding: 15px 30px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 1px solid #1f2937;
+        }
+        .back-btn {
+            color: #38bdf8;
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 600;
+        }
+        .container {
+            max-width: 500px;
+            width: 100%;
+            margin: 50px auto;
+            padding: 0 20px;
+            flex: 1;
+        }
+        .profile-card {
+            background: #111827;
+            border: 1px solid #1f2937;
+            border-radius: 12px;
+            padding: 30px;
+            text-align: center;
+        }
+        .avatar-preview {
+            width: 90px;
+            height: 90px;
+            border-radius: 50%;
+            background: #1e293b;
+            border: 2px solid #38bdf8;
+            margin: 0 auto 20px auto;
+            object-fit: cover;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 32px;
+            font-weight: 600;
+            color: #38bdf8;
+        }
+        .profile-card h2 {
+            font-size: 20px;
+            color: #f8fafc;
+            margin-bottom: 5px;
+        }
+        .profile-card p {
+            font-size: 13px;
+            color: #94a3b8;
+            margin-bottom: 25px;
+        }
+        .input-group {
+            text-align: left;
+            margin-bottom: 20px;
+        }
+        .input-group label {
+            display: block;
+            font-size: 12px;
+            color: #cbd5e1;
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+        .input-group input {
+            width: 100%;
+            background: #0b0f19;
+            border: 1px solid #334155;
+            border-radius: 8px;
+            padding: 12px 15px;
+            color: #fff;
+            font-size: 13px;
+        }
+        .input-group input:focus {
+            outline: none;
+            border-color: #38bdf8;
+        }
+        .save-btn {
+            width: 100%;
+            background: #38bdf8;
+            color: #0f172a;
+            border: none;
+            padding: 12px;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 14px;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        .save-btn:hover {
+            background: #0ea5e9;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <a href="makefriend.html" class="back-btn">← Back to Dashboard</a>
+        <h3 style="font-size: 16px; color: #fff;">⚙️ Edit Profile</h3>
+        <div style="width: 80px;"></div>
+    </header>
+
+    <div class="container">
+        <div class="profile-card">
+            <div id="avatarContainer">
+                <!-- Avatar or Image will render here -->
+            </div>
+            <h2 id="profileUsername">@Username</h2>
+            <p>Update your profile picture using any image link</p>
+
+            <form id="profileForm">
+                <div class="input-group">
+                    <label>Profile Picture Image URL</label>
+                    <input type="url" id="picUrlInput" placeholder="Paste image link (e.g., https://...)" autocomplete="off">
+                </div>
+                <button type="submit" class="save-btn" id="saveBtn">Save Profile</button>
+            </form>
+        </div>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-app.js";
+        import { getFirestore, doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-firestore.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyCNLwSjHq6LlX9uUovTRHrz9ZfUwEIUWQM",
+            authDomain: "genz-india.firebaseapp.com",
+            projectId: "genz-india",
+            storageBucket: "genz-india.firebasestorage.app",
+            messagingSenderId: "149959470783",
+            appId: "1:149959470783:web:71b7969ee2c8fc049c200a",
+            measurementId: "G-RBRSDRKSRH"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+
+        const activeUser = JSON.parse(localStorage.getItem('genzUser'));
+        if (!activeUser) {
+            window.location.href = 'login.html';
+        }
+
+        document.getElementById('profileUsername').innerText = `@${activeUser.username}`;
+        
+        const avatarContainer = document.getElementById('avatarContainer');
+        const picUrlInput = document.getElementById('picUrlInput');
+
+        if (activeUser.profilePic) {
+            picUrlInput.value = activeUser.profilePic;
+            avatarContainer.innerHTML = `<img src="${activeUser.profilePic}" class="avatar-preview" onerror="fallbackAvatar()">`;
+        } else {
+            fallbackAvatar();
+        }
+
+        function fallbackAvatar() {
+            const initial = activeUser.username ? activeUser.username.charAt(0).toUpperCase() : 'U';
+            avatarContainer.innerHTML = `<div class="avatar-preview">${initial}</div>`;
+        }
+
+        // Handle Profile Update
+        document.getElementById('profileForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            const newPicUrl = picUrlInput.value.trim();
+            const saveBtn = document.getElementById('saveBtn');
+
+            saveBtn.innerText = "Saving...";
+            saveBtn.disabled = true;
+
+            try {
+                // Update in Firestore users collection or userStatus
+                const userRef = doc(db, 'userStatus', activeUser.username);
+                await setDoc(userRef, { profilePic: newPicUrl }, { merge: true });
+
+                // Update LocalStorage
+                activeUser.profilePic = newPicUrl;
+                localStorage.setItem('genzUser', JSON.stringify(activeUser));
+
+                alert("Profile picture updated successfully! 🎉");
+                window.location.href = 'makefriend.html';
+            } catch (err) {
+                console.error("Error updating profile:", err);
+                alert("Failed to update profile.");
+                saveBtn.innerText = "Save Profile";
+                saveBtn.disabled = false;
+            }
+        });
+    </script>
+</body>
+</html>
