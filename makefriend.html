@@ -61,6 +61,28 @@
             margin-bottom: 20px;
             font-weight: 700;
         }
+        .search-bar-box {
+            background: #111827;
+            border: 1px solid #1f2937;
+            border-radius: 12px;
+            padding: 15px;
+            margin-bottom: 25px;
+            display: flex;
+            gap: 10px;
+        }
+        .search-bar-box input {
+            flex: 1;
+            background: #0b0f19;
+            border: 1px solid #334155;
+            border-radius: 8px;
+            padding: 10px 14px;
+            color: #fff;
+            font-size: 13px;
+        }
+        .search-bar-box input:focus {
+            outline: none;
+            border-color: #38bdf8;
+        }
         .users-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
@@ -230,6 +252,12 @@
 
     <div class="container">
         <h2 class="page-title">🤝 Student Community & Profiles</h2>
+        
+        <!-- Search Bar -->
+        <div class="search-bar-box">
+            <input type="text" id="friendSearchInput" placeholder="🔍 Search friends by username (e.g., rahul123)...">
+        </div>
+
         <div class="users-grid" id="usersListContainer">
             <p style="color: #94a3b8; font-size: 13px;">Loading student profiles...</p>
         </div>
@@ -270,12 +298,13 @@
         const db = getFirestore(app);
 
         const currentLoggedInUser = JSON.parse(localStorage.getItem('genzUser'));
+        let allUsersList = [];
 
         async function loadAllUsers() {
             const container = document.getElementById('usersListContainer');
             try {
                 const querySnapshot = await getDocs(collection(db, 'users'));
-                container.innerHTML = '';
+                allUsersList = [];
 
                 if(querySnapshot.empty) {
                     container.innerHTML = `<p style="color: #94a3b8; font-size: 13px;">No other students found yet.</p>`;
@@ -284,29 +313,57 @@
 
                 querySnapshot.forEach((docSnap) => {
                     const u = docSnap.data();
-                    // Don't show own card in friend list if you want, or show all
-                    let avatar = u.photo || 'https://cdn.jsdelivr.net/gh/twitter/twemoji@14.0.2/assets/72x72/1f464.png';
-                    
-                    container.innerHTML += `
-                        <div class="user-card">
-                            <img src="${avatar}" alt="Avatar">
-                            <h3>${u.name}</h3>
-                            <div class="username">@${u.username}</div>
-                            <p>🎓 ${u.college || 'College not specified'}</p>
-                            <p>📚 ${u.course || 'Course not specified'}</p>
-                            <p>📍 ${u.city || ''}, ${u.state || ''}</p>
-                            <div class="card-btn-group">
-                                <button class="action-btn btn-view" onclick='openUserProfile(${JSON.stringify(u)})'>View Profile</button>
-                                <button class="action-btn btn-chat" onclick="startChat('${u.username}', '${u.name}')">Chat</button>
-                            </div>
-                        </div>
-                    `;
+                    if (u.username !== currentLoggedInUser.username) {
+                        allUsersList.push(u);
+                    }
                 });
+
+                renderUsers(allUsersList);
             } catch(e) {
                 console.error(e);
                 container.innerHTML = `<p style="color: #ef4444; font-size: 13px;">Failed to load profiles.</p>`;
             }
         }
+
+        function renderUsers(users) {
+            const container = document.getElementById('usersListContainer');
+            container.innerHTML = '';
+
+            if (users.length === 0) {
+                container.innerHTML = `<p style="color: #94a3b8; font-size: 13px;">No student profiles found matching your search.</p>`;
+                return;
+            }
+
+            users.forEach((u) => {
+                let avatar = u.photo || 'https://cdn.jsdelivr.net/gh/twitter/twemoji@14.0.2/assets/72x72/1f464.png';
+                
+                container.innerHTML += `
+                    <div class="user-card">
+                        <img src="${avatar}" alt="Avatar">
+                        <h3>${u.name}</h3>
+                        <div class="username">@${u.username}</div>
+                        <p>🎓 ${u.college || 'College not specified'}</p>
+                        <p>📚 ${u.course || 'Course not specified'}</p>
+                        <p>📍 ${u.city || ''}, ${u.state || ''}</p>
+                        <div class="card-btn-group">
+                            <button class="action-btn btn-view" onclick='openUserProfile(${JSON.stringify(u)})'>View Profile</button>
+                            <button class="action-btn btn-chat" onclick="startChat('${u.username}', '${u.name}')">Chat</button>
+                        </div>
+                    </div>
+                `;
+            });
+        }
+
+        // Username Search Filter Listener
+        document.getElementById('friendSearchInput').addEventListener('input', function(e) {
+            const searchTerm = e.target.value.trim().toLowerCase();
+            if (!searchTerm) {
+                renderUsers(allUsersList);
+                return;
+            }
+            const filtered = allUsersList.filter(u => u.username.toLowerCase().includes(searchTerm));
+            renderUsers(filtered);
+        });
 
         window.openUserProfile = async function(userObj) {
             const modal = document.getElementById('profileModal');
@@ -328,11 +385,9 @@
             activityContainer.innerHTML = `<p style="color: #94a3b8; font-size: 12px;">Fetching user activities...</p>`;
 
             try {
-                // Fetch doubts by this user
                 const qDoubts = query(collection(db, 'doubts'), where("username", "==", "@" + userObj.username));
                 const doubtsSnap = await getDocs(qDoubts);
 
-                // Fetch voices/issues by this user
                 const qVoices = query(collection(db, 'voices'), where("username", "==", "@" + userObj.username));
                 const voicesSnap = await getDocs(qVoices);
 
@@ -366,8 +421,8 @@
         }
 
         window.startChat = function(username, name) {
-    window.location.href = `chat.html?with=${username}`;
-}
+            window.location.href = `chat.html?with=${username}`;
+        }
 
         loadAllUsers();
     </script>
