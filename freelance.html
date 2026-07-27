@@ -193,7 +193,35 @@
             flex-wrap: wrap;
             gap: 10px;
         }
-        .connect-btn {
+        .action-group {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+        }
+        .apply-btn {
+            background: #10b981;
+            color: #0f172a;
+            border: none;
+            padding: 6px 14px;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+        .apply-btn:hover {
+            background: #059669;
+        }
+        .applied-btn {
+            background: #065f46;
+            color: #34d399;
+            border: none;
+            padding: 6px 14px;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: 600;
+            cursor: default;
+        }
+        .chat-btn {
             background: #38bdf8;
             color: #0f172a;
             border: none;
@@ -204,7 +232,7 @@
             text-decoration: none;
             cursor: pointer;
         }
-        .connect-btn:hover {
+        .chat-btn:hover {
             background: #0ea5e9;
         }
         .close-deal-btn {
@@ -219,6 +247,49 @@
         }
         .close-deal-btn:hover {
             background: #991b1b;
+        }
+
+        /* Modal Popup for Resume */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.7);
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+        .modal-content {
+            background: #111827;
+            border: 1px solid #334155;
+            padding: 25px;
+            border-radius: 12px;
+            width: 100%;
+            max-width: 400px;
+        }
+        .modal-content input {
+            width: 100%;
+            background: #0b0f19;
+            border: 1px solid #334155;
+            border-radius: 8px;
+            padding: 10px;
+            color: #fff;
+            font-size: 13px;
+            margin-bottom: 15px;
+            margin-top: 8px;
+        }
+        .modal-btns {
+            display: flex;
+            gap: 10px;
+            justify-content: flex-end;
+        }
+        .modal-btns button {
+            padding: 8px 16px;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            border: none;
         }
     </style>
 </head>
@@ -264,6 +335,19 @@
         </div>
     </div>
 
+    <!-- Apply Modal -->
+    <div class="modal" id="applyModal">
+        <div class="modal-content">
+            <h3 style="font-size: 16px; color: #38bdf8; margin-bottom: 10px;">Apply for this Gig</h3>
+            <p style="font-size: 12px; color: #94a3b8; margin-bottom: 10px;">Provide your Resume link (Google Drive, LinkedIn, Portfolio, etc.)</p>
+            <input type="url" id="resumeUrlInput" placeholder="https://..." required>
+            <div class="modal-btns">
+                <button type="button" style="background: #334155; color: #fff;" onclick="closeModal()">Cancel</button>
+                <button type="button" style="background: #10b981; color: #0f172a;" onclick="submitApplication()">Submit Application ✅</button>
+            </div>
+        </div>
+    </div>
+
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-app.js";
         import { getFirestore, collection, addDoc, updateDoc, doc, arrayUnion, onSnapshot, query, orderBy } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-firestore.js";
@@ -285,6 +369,8 @@
         if (!activeUser) {
             window.location.href = 'login.html';
         }
+
+        let selectedGigId = null;
 
         // Post Gig Handler
         document.getElementById('gigForm').addEventListener('submit', async function(e) {
@@ -308,8 +394,8 @@
                 author: activeUser.username,
                 authorPic: activeUser.profilePic || "",
                 createdAt: Date.now(),
-                applicants: [], // Tracks who clicked connect/responded
-                isClosed: false  // Deal done status
+                applicants: [], // Array of usernames who applied
+                isClosed: false
             };
 
             try {
@@ -345,26 +431,37 @@
                 const authorInitial = gig.author ? gig.author.charAt(0).toUpperCase() : 'U';
                 const authorAvatar = gig.authorPic ? `<img src="${gig.authorPic}" class="poster-avatar">` : `<div class="poster-avatar">${authorInitial}</div>`;
 
-                const applicantsCount = gig.applicants ? gig.applicants.length : 0;
+                const applicantsList = gig.applicants || [];
+                const applicantsCount = applicantsList.length;
+                const hasApplied = applicantsList.includes(activeUser.username);
                 const isOwner = gig.author === activeUser.username;
                 const isClosed = gig.isClosed;
 
-                // Badge display
                 const badgeHtml = isClosed 
                     ? `<span class="closed-badge">🔒 Deal Done (Closed)</span>` 
                     : `<span class="budget-badge">💰 ${gig.budget}</span>`;
 
-                // Action buttons logic
                 let actionHtml = "";
                 if (isClosed) {
                     actionHtml = `<span style="font-size: 12px; color: #f87171; font-weight: 600;">🚫 Applications Closed - Deal Done</span>`;
                 } else if (isOwner) {
                     actionHtml = `
                         <span style="font-size: 11px; color: #64748b; font-style: italic;">Your Gig</span>
-                        <button class="close-deal-btn" onclick="closeDeal('${gig.id}')">Mark Deal Done & Close 🔒</button>
+                        <button class="close-deal-btn" onclick="closeDeal('${gig.id}')">Mark Deal Done 🔒</button>
                     `;
                 } else {
-                    actionHtml = `<a href="chat.html?with=${gig.author}" class="connect-btn" onclick="registerApplicant('${gig.id}')">Connect & Chat</a>`;
+                    const applyButtonHtml = hasApplied 
+                        ? `<button class="applied-btn">Applied ✅</button>` 
+                        : `<button class="apply-btn" onclick="openApplyModal('${gig.id}')">Apply Now 📄</button>`;
+                    
+                    const chatButtonHtml = `<a href="chat.html?with=${gig.author}" class="chat-btn">Chat 💬</a>`;
+
+                    actionHtml = `
+                        <div class="action-group">
+                            ${applyButtonHtml}
+                            ${chatButtonHtml}
+                        </div>
+                    `;
                 }
 
                 container.innerHTML += `
@@ -384,11 +481,11 @@
                         <div class="gig-desc">${gig.description}</div>
                         
                         <div class="stats-info">
-                            👥 Total Responses / Applicants: <strong>${applicantsCount}</strong> student(s)
+                            👥 Total Applicants: <strong>${applicantsCount}</strong> student(s)
                         </div>
 
                         <div class="gig-footer">
-                            <span style="font-size: 11px; color: #64748b;">Direct peer-to-peer gig marketplace</span>
+                            <span style="font-size: 11px; color: #64748b;">Submit resume to apply or chat with poster</span>
                             ${actionHtml}
                         </div>
                     </div>
@@ -396,30 +493,44 @@
             });
         });
 
-        // Function when a user clicks Connect & Chat
-        window.registerApplicant = async function(gigId) {
+        window.openApplyModal = function(gigId) {
+            selectedGigId = gigId;
+            document.getElementById('resumeUrlInput').value = '';
+            document.getElementById('applyModal').style.display = 'flex';
+        };
+
+        window.closeModal = function() {
+            document.getElementById('applyModal').style.display = 'none';
+            selectedGigId = null;
+        };
+
+        window.submitApplication = async function() {
+            const resumeUrl = document.getElementById('resumeUrlInput').value.trim();
+            if (!resumeUrl) {
+                alert("Please provide a valid resume link.");
+                return;
+            }
+
             try {
-                const gigRef = doc(db, 'gigs', gigId);
-                // Add current user to applicants array if not already present
+                const gigRef = doc(db, 'gigs', selectedGigId);
                 await updateDoc(gigRef, {
                     applicants: arrayUnion(activeUser.username)
                 });
+                alert("Application submitted successfully with your resume! 🎉");
+                closeModal();
             } catch (err) {
-                console.error("Error updating applicants:", err);
+                console.error("Error applying for gig:", err);
+                alert("Failed to submit application.");
             }
         };
 
-        // Function when owner marks deal done
         window.closeDeal = async function(gigId) {
-            if (confirm("Are you sure you want to close this gig? No further applications will be allowed.")) {
+            if (confirm("Are you sure you want to close this deal? No further applications will be allowed.")) {
                 try {
                     const gigRef = doc(db, 'gigs', gigId);
-                    await updateDoc(gigRef, {
-                        isClosed: true
-                    });
+                    await updateDoc(gigRef, { isClosed: true });
                 } catch (err) {
                     console.error("Error closing deal:", err);
-                    alert("Failed to close deal.");
                 }
             }
         };
