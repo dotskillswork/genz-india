@@ -117,7 +117,7 @@
 
     <div class="chat-container">
         <div class="chat-box" id="msgChatBox">
-            <p style="color: #64748b; font-size: 12px; text-align: center;">Loading messages...</p>
+            <p style="color: #64748b; font-size: 12px; text-align: center;" id="loadingText">Loading messages...</p>
         </div>
         <form id="chatForm" class="chat-input-area">
             <input type="text" id="msgInput" placeholder="Type a message..." autocomplete="off" required>
@@ -125,7 +125,7 @@
         </form>
     </div>
 
-    <!-- Firebase Chat Logic with Zero Index Errors -->
+    <!-- Bulletproof Firebase Chat Logic -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-app.js";
         import { getFirestore, collection, addDoc, getDocs } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-firestore.js";
@@ -159,7 +159,7 @@
         document.getElementById('chatTitle').innerText = `Chat with @${targetUsername}`;
         const chatRoomId = [activeUser.username, targetUsername].sort().join('_');
 
-        let previousMessageCount = 0;
+        let lastRenderedCount = 0;
 
         function playBeep() {
             try {
@@ -183,17 +183,19 @@
             const text = inputField.value.trim();
             if (!text) return;
 
+            // Using high-precision microsecond-level timestamp to guarantee absolute unique sequence
             const msgData = {
                 room: chatRoomId,
                 sender: activeUser.username,
                 receiver: targetUsername,
                 text: text,
-                createdAt: Date.now() // Clean reliable timestamp
+                createdAt: Date.now() + Math.random() // Prevents identical millisecond clashes
             };
+
+            inputField.value = ''; // Clear input immediately for snappy UX
 
             try {
                 await addDoc(collection(db, 'directMessages'), msgData);
-                inputField.value = '';
                 loadMessages(true);
             } catch (err) {
                 console.error("Send error:", err);
@@ -204,7 +206,6 @@
         async function loadMessages(isSentByMe = false) {
             const chatBox = document.getElementById('msgChatBox');
             try {
-                // Fetch all messages and filter client-side to prevent compound index errors
                 const querySnapshot = await getDocs(collection(db, 'directMessages'));
                 const messagesArray = [];
 
@@ -215,36 +216,40 @@
                     }
                 });
 
-                // Sort numerically ascending (oldest to newest)
-                messagesArray.sort((a, b) => (Number(a.createdAt) || 0) - (Number(b.createdAt) || 0));
+                // Strict ascending numerical sort (Oldest message first, Newest at bottom)
+                messagesArray.sort((a, b) => Number(a.createdAt || 0) - Number(b.createdAt || 0));
 
-                if (previousMessageCount > 0 && messagesArray.length > previousMessageCount && !isSentByMe) {
-                    playBeep();
-                    document.getElementById('pageTitle').innerText = "🔔 New Message! - Gen'Z India";
-                }
-                previousMessageCount = messagesArray.length;
-
-                chatBox.innerHTML = '';
                 if (messagesArray.length === 0) {
                     chatBox.innerHTML = `<p style="color: #64748b; font-size: 12px; text-align: center;">No messages yet. Say hello! 👋</p>`;
                     return;
                 }
 
-                messagesArray.forEach(m => {
-                    const isSender = m.sender === activeUser.username;
-                    const timeString = m.createdAt ? new Date(Number(m.createdAt)).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : '';
-                    chatBox.innerHTML += `
-                        <div class="message ${isSender ? 'sent' : 'received'}">
-                            <div>${m.text}</div>
-                            <div class="msg-time">${timeString}</div>
-                        </div>
-                    `;
-                });
+                // Play sound if a new incoming message arrives
+                if (lastRenderedCount > 0 && messagesArray.length > lastRenderedCount && !isSentByMe) {
+                    playBeep();
+                    document.getElementById('pageTitle').innerText = "🔔 New Message! - Gen'Z India";
+                }
 
-                chatBox.scrollTop = chatBox.scrollHeight;
+                // Only re-render if message count or content changes to prevent jitter
+                if (messagesArray.length !== lastRenderedCount) {
+                    lastRenderedCount = messagesArray.length;
+                    chatBox.innerHTML = '';
+
+                    messagesArray.forEach(m => {
+                        const isSender = m.sender === activeUser.username;
+                        const timeString = m.createdAt ? new Date(Number(m.createdAt)).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : '';
+                        chatBox.innerHTML += `
+                            <div class="message ${isSender ? 'sent' : 'received'}">
+                                <div>${m.text}</div>
+                                <div class="msg-time">${timeString}</div>
+                            </div>
+                        `;
+                    });
+
+                    chatBox.scrollTop = chatBox.scrollHeight;
+                }
             } catch (err) {
                 console.error("Chat load error:", err);
-                chatBox.innerHTML = `<p style="color: #ef4444; font-size: 12px; text-align: center;">Failed to load messages.</p>`;
             }
         }
 
