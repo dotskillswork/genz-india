@@ -1,0 +1,506 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gen'Z | Innovation & Talent Showcase</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+        body {
+            background-color: #0b0f19;
+            color: #f1f5f9;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        header {
+            background: #111827;
+            padding: 15px 30px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 1px solid #1f2937;
+        }
+        .back-btn {
+            color: #38bdf8;
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 600;
+        }
+        .container {
+            max-width: 900px;
+            width: 100%;
+            margin: 30px auto;
+            padding: 0 20px;
+            flex: 1;
+        }
+        .hero-banner {
+            background: #111827;
+            border: 1px solid #1f2937;
+            border-radius: 12px;
+            padding: 25px;
+            margin-bottom: 25px;
+            text-align: center;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+        .hero-banner-text {
+            text-align: left;
+        }
+        .hero-banner h1 {
+            font-size: 20px;
+            color: #f59e0b;
+            margin-bottom: 4px;
+        }
+        .hero-banner p {
+            font-size: 12px;
+            color: #94a3b8;
+        }
+        .add-talent-btn {
+            background: #f59e0b;
+            color: #0f172a;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 13px;
+            cursor: pointer;
+            white-space: nowrap;
+        }
+        .add-talent-btn:hover {
+            background: #d97706;
+        }
+        /* Modal Form */
+        .form-modal {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.85);
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+            padding: 15px;
+            overflow-y: auto;
+        }
+        .talent-form-box {
+            background: #111827;
+            border: 1px solid #334155;
+            border-radius: 12px;
+            padding: 25px;
+            width: 100%;
+            max-width: 550px;
+            position: relative;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+        .close-form-btn {
+            position: absolute;
+            top: 15px;
+            right: 20px;
+            background: none;
+            border: none;
+            color: #94a3b8;
+            font-size: 22px;
+            cursor: pointer;
+        }
+        .close-form-btn:hover {
+            color: #fff;
+        }
+        .talent-form-box input, .talent-form-box textarea, .talent-form-box select {
+            width: 100%;
+            background: #0b0f19;
+            border: 1px solid #334155;
+            border-radius: 8px;
+            padding: 12px;
+            color: #fff;
+            font-size: 13px;
+            margin-bottom: 12px;
+        }
+        .talent-form-box input:focus, .talent-form-box textarea:focus, .talent-form-box select:focus {
+            outline: none;
+            border-color: #f59e0b;
+        }
+        .file-upload-box {
+            background: #0b0f19;
+            border: 1px dashed #334155;
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 12px;
+        }
+        .file-upload-box label {
+            font-size: 12px;
+            color: #38bdf8;
+            display: block;
+            margin-bottom: 6px;
+            font-weight: 500;
+        }
+        .publish-btn {
+            background: #f59e0b;
+            color: #0f172a;
+            border: none;
+            padding: 10px 24px;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 13px;
+            cursor: pointer;
+            width: 100%;
+        }
+        .publish-btn:hover {
+            background: #d97706;
+        }
+        /* Talent Card Design */
+        .talent-card {
+            background: #111827;
+            border: 1px solid #1f2937;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        .talent-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 12px;
+        }
+        .author-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .author-avatar {
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            background: #334155;
+            object-fit: cover;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #f59e0b;
+            font-weight: 600;
+            font-size: 14px;
+        }
+        .category-badge {
+            background: #1e293b;
+            color: #38bdf8;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 600;
+        }
+        .talent-title {
+            font-size: 17px;
+            color: #f8fafc;
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+        .talent-desc {
+            font-size: 13px;
+            color: #cbd5e1;
+            margin-bottom: 12px;
+            line-height: 1.5;
+            word-break: break-word;
+        }
+        .talent-img {
+            width: 100%;
+            max-height: 350px;
+            object-fit: cover;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            border: 1px solid #1f2937;
+        }
+        .talent-footer {
+            border-top: 1px solid #1f2937;
+            padding-top: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        .opportunity-contact {
+            font-size: 12px;
+            color: #34d399;
+            background: #065f46;
+            padding: 4px 10px;
+            border-radius: 6px;
+            text-decoration: none;
+            font-weight: 500;
+        }
+        .opportunity-contact:hover {
+            background: #047857;
+        }
+        .card-actions {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+        .like-btn {
+            background: #1e293b;
+            border: 1px solid #334155;
+            color: #f87171;
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        .like-btn:hover {
+            background: #334155;
+        }
+        .chat-btn {
+            background: #38bdf8;
+            color: #0f172a;
+            border: none;
+            padding: 6px 14px;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            text-decoration: none;
+        }
+        .chat-btn:hover {
+            background: #0ea5e9;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <a href="makefriend.html" class="back-btn">← Back to Dashboard</a>
+        <h3 style="font-size: 16px; color: #fff;">💡 Innovation & Talent Showcase</h3>
+        <div style="width: 80px;"></div>
+    </header>
+
+    <div class="container">
+        <!-- Hero Banner -->
+        <div class="hero-banner">
+            <div class="hero-banner-text">
+                <h1>Showcase Your Innovation & Talent to the World</h1>
+                <p>Publish your projects, inventions or creative work. Attract opportunities & investors!</p>
+            </div>
+            <button class="add-talent-btn" id="openModalBtn">+ Showcase Innovation 🚀</button>
+        </div>
+
+        <!-- Hidden Upload Modal Form -->
+        <div class="form-modal" id="talentFormModal">
+            <div class="talent-form-box">
+                <button class="close-form-btn" id="closeModalBtn">&times;</button>
+                <h3 style="font-size: 16px; color: #f59e0b; margin-bottom: 15px;">Publish Your Innovation / Talent</h3>
+                <form id="talentForm">
+                    <input type="text" id="talentTitle" placeholder="Project / Innovation Title (e.g., Smart Solar Agriculture Bot)" required>
+                    
+                    <select id="talentCategory" required>
+                        <option value="">Select Category</option>
+                        <option value="Tech / AI / Software">Tech / AI / Software</option>
+                        <option value="Hardware / Robotics">Hardware / Robotics</option>
+                        <option value="Science / Research">Science / Research</option>
+                        <option value="Arts / Design / Media">Arts / Design / Media</option>
+                        <option value="Business / Startup Idea">Business / Startup Idea</option>
+                        <option value="Other Talent">Other Talent</option>
+                    </select>
+
+                    <input type="email" id="talentEmail" placeholder="Your Contact Email (for opportunity offers e.g., you@gmail.com)" required>
+
+                    <div class="file-upload-box">
+                        <label>🖼️ Upload Project Image / Screenshot</label>
+                        <input type="file" id="talentImageFile" accept="image/*" required style="border:none; padding:4px 0; background:transparent; font-size:12px; color:#94a3b8;">
+                        <p id="fileNameDisplay" style="font-size: 11px; color: #38bdf8; margin-top: 4px;"></p>
+                    </div>
+
+                    <textarea id="talentDesc" placeholder="Describe your innovation, how it works, and what problem it solves..." required style="min-height: 100px;"></textarea>
+                    
+                    <button type="submit" class="publish-btn" id="publishBtn">Showcase to World 🌟</button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Innovations Feed Container -->
+        <div id="talentFeedContainer">
+            <p style="color: #64748b; text-align: center; font-size: 13px; padding: 20px;">Loading innovations and talents...</p>
+        </div>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-app.js";
+        import { getFirestore, collection, addDoc, updateDoc, doc, getDoc, onSnapshot, query, orderBy } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-firestore.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyCNLwSjHq6LlX9uUovTRHrz9ZfUwEIUWQM",
+            authDomain: "genz-india.firebaseapp.com",
+            projectId: "genz-india",
+            storageBucket: "genz-india.firebasestorage.app",
+            messagingSenderId: "149959470783",
+            appId: "1:149959470783:web:71b7969ee2c8fc049c200a",
+            measurementId: "G-RBRSDRKSRH"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+
+        const activeUser = JSON.parse(localStorage.getItem('genzUser'));
+        if (!activeUser) {
+            window.location.href = 'login.html';
+        }
+
+        const modalBox = document.getElementById('talentFormModal');
+        document.getElementById('openModalBtn').addEventListener('click', () => {
+            modalBox.style.display = 'flex';
+        });
+        document.getElementById('closeModalBtn').addEventListener('click', () => {
+            modalBox.style.display = 'none';
+        });
+
+        document.getElementById('talentImageFile').addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                document.getElementById('fileNameDisplay').innerText = `Selected: ${file.name} (${(file.size/1024/1024).toFixed(2)} MB)`;
+            } else {
+                document.getElementById('fileNameDisplay').innerText = '';
+            }
+        });
+
+        // Fast image converter to Base64 for instant display & storage without errors
+        function convertImageToBase64(file) {
+            return new Promise((resolve, reject) => {
+                const reader = new FileReader();
+                reader.readAsDataURL(file);
+                reader.onload = () => resolve(reader.result);
+                reader.onerror = error => reject(error);
+            });
+        }
+
+        document.getElementById('talentForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            const title = document.getElementById('talentTitle').value.trim();
+            const category = document.getElementById('talentCategory').value;
+            const email = document.getElementById('talentEmail').value.trim();
+            const imageInput = document.getElementById('talentImageFile').files[0];
+            const desc = document.getElementById('talentDesc').value.trim();
+            const publishBtn = document.getElementById('publishBtn');
+
+            if (!title || !category || !email || !imageInput || !desc) return;
+
+            publishBtn.innerText = "Publishing Innovation... ⏳";
+            publishBtn.disabled = true;
+
+            try {
+                const imageUrl = await convertImageToBase64(imageInput);
+
+                const newTalent = {
+                    title: title,
+                    category: category,
+                    email: email,
+                    imageUrl: imageUrl,
+                    description: desc,
+                    author: activeUser.username,
+                    authorPic: activeUser.profilePic || "",
+                    likes: [],
+                    createdAt: Date.now()
+                };
+
+                await addDoc(collection(db, 'innovations'), newTalent);
+                document.getElementById('talentForm').reset();
+                document.getElementById('fileNameDisplay').innerText = '';
+                modalBox.style.display = 'none';
+                alert("Your innovation has been showcased to the world successfully! 🎉");
+            } catch (err) {
+                console.error("Error publishing innovation:", err);
+                alert("Failed to publish. Image might be too large, try a smaller image.");
+            } finally {
+                publishBtn.innerText = "Showcase to World 🌟";
+                publishBtn.disabled = false;
+            }
+        });
+
+        // Real-time Feed Listener
+        onSnapshot(query(collection(db, 'innovations'), orderBy('createdAt', 'desc')), (snapshot) => {
+            const container = document.getElementById('talentFeedContainer');
+            container.innerHTML = "";
+
+            let talentList = [];
+            snapshot.forEach((docSnap) => {
+                talentList.push({ id: docSnap.id, ...docSnap.data() });
+            });
+
+            if (talentList.length === 0) {
+                container.innerHTML = `<p style="color: #64748b; text-align: center; font-size: 13px; padding: 25px;">No innovations showcased yet. Be the first changemaker!</p>`;
+                return;
+            }
+
+            talentList.forEach((item) => {
+                const timeString = new Date(item.createdAt).toLocaleString([], { dateStyle: 'short', timeStyle: 'short' });
+                const authorInitial = item.author ? item.author.charAt(0).toUpperCase() : 'U';
+                const authorAvatar = item.authorPic ? `<img src="${item.authorPic}" class="author-avatar">` : `<div class="author-avatar">${authorInitial}</div>`;
+
+                const likesCount = item.likes ? item.likes.length : 0;
+                const hasLiked = item.likes && item.likes.includes(activeUser.username);
+                const likeHeart = hasLiked ? '❤️' : '🤍';
+
+                container.innerHTML += `
+                    <div class="talent-card">
+                        <div class="talent-header">
+                            <div class="author-info">
+                                ${authorAvatar}
+                                <div>
+                                    <h4 style="font-size: 13px; color: #f8fafc;">@${item.author}</h4>
+                                    <span style="font-size: 11px; color: #94a3b8;">${timeString}</span>
+                                </div>
+                            </div>
+                            <span class="category-badge">💡 ${item.category}</span>
+                        </div>
+
+                        <div class="talent-title">${item.title}</div>
+                        <div class="talent-desc">${item.description}</div>
+                        
+                        ${item.imageUrl ? `<img src="${item.imageUrl}" class="talent-img">` : ''}
+
+                        <div class="talent-footer">
+                            <a href="mailto:${item.email}?subject=Opportunity regarding your Innovation: ${encodeURIComponent(item.title)}" class="opportunity-contact">📧 Offer Opportunity (${item.email})</a>
+                            
+                            <div class="card-actions">
+                                <button class="like-btn" onclick="toggleLike('${item.id}')">${likeHeart} ${likesCount}</button>
+                                <a href="chat.html?with=${item.author}" class="chat-btn">Chat 💬</a>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+        });
+
+        // Global Like Function
+        window.toggleLike = async function(itemId) {
+            const docRef = doc(db, 'innovations', itemId);
+            try {
+                const docSnap = await getDoc(docRef);
+                if (docSnap.exists()) {
+                    let data = docSnap.data();
+                    let likes = data.likes || [];
+                    
+                    if (likes.includes(activeUser.username)) {
+                        likes = likes.filter(u => u !== activeUser.username);
+                    } else {
+                        likes.push(activeUser.username);
+                    }
+
+                    await updateDoc(docRef, { likes: likes });
+                }
+            } catch (err) {
+                console.error("Error updating like:", err);
+            }
+        };
+    </script>
+</body>
+</html>
