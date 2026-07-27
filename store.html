@@ -79,9 +79,35 @@
         .add-product-toggle-btn:hover {
             background: #d97706;
         }
+        /* Filter Tabs Bar */
+        .filter-tabs-bar {
+            display: flex;
+            gap: 8px;
+            overflow-x: auto;
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+        }
+        .filter-tab {
+            background: #111827;
+            border: 1px solid #334155;
+            color: #94a3b8;
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 500;
+            cursor: pointer;
+            white-space: nowrap;
+            transition: all 0.2s;
+        }
+        .filter-tab.active, .filter-tab:hover {
+            background: #38bdf8;
+            color: #0f172a;
+            border-color: #38bdf8;
+            font-weight: 600;
+        }
         /* Strict Hidden Modal Fix */
         .form-modal {
-            display: none !important;
+            display: none;
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
             background: rgba(0,0,0,0.85);
@@ -296,7 +322,7 @@
         }
         /* Modal */
         .modal {
-            display: none !important;
+            display: none;
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
             background: rgba(0,0,0,0.75);
@@ -367,6 +393,15 @@
                 <p>Share or buy study notes securely via Firebase Cloud Storage.</p>
             </div>
             <button class="add-product-toggle-btn" id="openModalBtn">+ Add Product / Notes 🚀</button>
+        </div>
+
+        <!-- Category Filter Tabs -->
+        <div class="filter-tabs-bar">
+            <button class="filter-tab active" data-filter="All">All Material</button>
+            <button class="filter-tab" data-filter="Handwritten Notes">Handwritten Notes</button>
+            <button class="filter-tab" data-filter="Previous Year Paper (PYQ)">PYQs (Papers)</button>
+            <button class="filter-tab" data-filter="E-Book / PDF">E-Books</button>
+            <button class="filter-tab" data-filter="Coding Snippets / Template">Coding Snippets</button>
         </div>
 
         <!-- Hidden Upload Modal Form -->
@@ -473,13 +508,25 @@
             window.location.href = 'login.html';
         }
 
-        // Direct Event Listeners inside module scope to guarantee click works
-        document.getElementById('openModalBtn').addEventListener('click', function() {
-            document.getElementById('uploadFormModal').style.display = 'flex';
+        // Guaranteed Modal Toggle Logic
+        const modalBox = document.getElementById('uploadFormModal');
+        document.getElementById('openModalBtn').addEventListener('click', () => {
+            modalBox.style.display = 'flex';
+        });
+        document.getElementById('closeModalBtn').addEventListener('click', () => {
+            modalBox.style.display = 'none';
         });
 
-        document.getElementById('closeModalBtn').addEventListener('click', function() {
-            document.getElementById('uploadFormModal').style.display = 'none';
+        // Category Filter Management
+        let currentFilter = 'All';
+        const filterButtons = document.querySelectorAll('.filter-tab');
+        filterButtons.forEach(btn => {
+            btn.addEventListener('click', function() {
+                filterButtons.forEach(b => b.classList.remove('active'));
+                this.classList.add('active');
+                currentFilter = this.getAttribute('data-filter');
+                renderStoreFeed(); // re-render feed with current items
+            });
         });
 
         document.getElementById('itemPdfFile').addEventListener('change', function(e) {
@@ -554,7 +601,7 @@
                         document.getElementById('storeForm').reset();
                         document.getElementById('fileNameDisplay').innerText = '';
                         document.getElementById('upiSection').style.display = 'none';
-                        document.getElementById('uploadFormModal').style.display = 'none';
+                        modalBox.style.display = 'none';
                         alert("Study material published successfully! 🎉");
                     } catch (err) {
                         console.error("Database error:", err);
@@ -567,104 +614,116 @@
             );
         });
 
+        let cachedStoreList = [];
+        let cachedOrdersList = [];
+
         onSnapshot(query(collection(db, 'store_items'), orderBy('createdAt', 'desc')), (storeSnapshot) => {
             onSnapshot(query(collection(db, 'store_orders'), orderBy('createdAt', 'desc')), (orderSnapshot) => {
-                const container = document.getElementById('storeFeedContainer');
-                container.innerHTML = "";
-
-                let storeList = [];
+                cachedStoreList = [];
                 storeSnapshot.forEach((docSnap) => {
-                    storeList.push({ id: docSnap.id, ...docSnap.data() });
+                    cachedStoreList.push({ id: docSnap.id, ...docSnap.data() });
                 });
 
-                let ordersList = [];
+                cachedOrdersList = [];
                 orderSnapshot.forEach((docSnap) => {
-                    ordersList.push({ id: docSnap.id, ...docSnap.data() });
+                    cachedOrdersList.push({ id: docSnap.id, ...docSnap.data() });
                 });
 
-                if (storeList.length === 0) {
-                    container.innerHTML = `<p style="color: #64748b; text-align: center; font-size: 13px; padding: 20px;">No study materials shared yet. Be the first to upload notes!</p>`;
-                    return;
-                }
-
-                storeList.forEach((item) => {
-                    const timeString = new Date(item.createdAt).toLocaleString([], { dateStyle: 'short', timeStyle: 'short' });
-                    const authorInitial = item.author ? item.author.charAt(0).toUpperCase() : 'U';
-                    const authorAvatar = item.authorPic ? `<img src="${item.authorPic}" class="uploader-avatar">` : `<div class="uploader-avatar">${authorInitial}</div>`;
-
-                    const isFree = item.price.toLowerCase() === 'free' || item.price === '0';
-                    const isOwner = item.author === activeUser.username;
-
-                    const userOrder = ordersList.find(o => o.itemId === item.id && o.buyer === activeUser.username);
-                    const isAccepted = userOrder && userOrder.status === 'accepted';
-
-                    let actionButtonHtml = "";
-                    if (isFree && item.fileUrl) {
-                        actionButtonHtml = `<a href="${item.fileUrl}" target="_blank" download="${item.fileName || 'notes.pdf'}" class="btn-access">Download PDF 📥</a>`;
-                    } else if (isAccepted && item.fileUrl) {
-                        actionButtonHtml = `<a href="${item.fileUrl}" target="_blank" download="${item.fileName || 'notes.pdf'}" class="btn-access">Download PDF Now 📥</a>`;
-                    } else if (userOrder && userOrder.status === 'pending') {
-                        actionButtonHtml = `<button class="btn-buy" style="background:#334155; color:#94a3b8; cursor:default;">Payment Pending Verification ⏳</button>`;
-                    } else {
-                        actionButtonHtml = `<button class="btn-buy" onclick="openPaymentModal('${item.id}', '${item.author}', '${item.upi}', '${item.title}')">Buy / Pay 💳</button>`;
-                    }
-
-                    let sellerPanelHtml = "";
-                    if (isOwner && !isFree) {
-                        const itemOrders = ordersList.filter(o => o.itemId === item.id);
-                        if (itemOrders.length > 0) {
-                            sellerPanelHtml += `<div class="seller-orders-box"><h4 style="font-size:12px; color:#f59e0b; margin-bottom:6px;">Incoming Buyer Payments:</h4>`;
-                            itemOrders.forEach(ord => {
-                                const statusColor = ord.status === 'accepted' ? '#34d399' : '#f87171';
-                                const actionControl = ord.status === 'pending' 
-                                    ? `<button onclick="acceptPayment('${ord.id}')" style="background:#10b981; color:#0f172a; border:none; padding:3px 8px; border-radius:4px; font-weight:600; cursor:pointer; font-size:11px;">Accept & Unlock ✅</button>`
-                                    : `<span style="color:#34d399; font-weight:600;">Accepted ✔️</span>`;
-
-                                sellerPanelHtml += `
-                                    <div class="order-row">
-                                        <span>@${ord.buyer}</span>
-                                        <span style="color:${statusColor}">${ord.status.toUpperCase()}</span>
-                                        ${actionControl}
-                                    </div>
-                                `;
-                            });
-                            sellerPanelHtml += `</div>`;
-                        }
-                    }
-
-                    container.innerHTML += `
-                        <div class="store-card">
-                            <div class="store-header">
-                                <div class="uploader-info">
-                                    ${authorAvatar}
-                                    <div>
-                                        <h4 style="font-size: 13px; color: #f8fafc;">@${item.author}</h4>
-                                        <span style="font-size: 11px; color: #94a3b8;">${timeString}</span>
-                                    </div>
-                                </div>
-                                <span class="${isFree ? 'free-badge' : 'price-badge'}">${isFree ? '🆓 Free' : '🏷️ ' + item.price}</span>
-                            </div>
-                            <div class="tags-row">
-                                <span class="tag">📁 ${item.category}</span>
-                                <span class="tag">📌 ${item.type}</span>
-                                <span class="tag">🎓 ${item.semester}</span>
-                            </div>
-                            <div class="item-title">${item.title}</div>
-                            <div class="item-desc">${item.description}</div>
-                            
-                            ${sellerPanelHtml}
-
-                            <div class="store-footer">
-                                <a href="chat.html?with=${item.author}" style="font-size: 12px; color: #38bdf8; text-decoration: none;">Chat with @${item.author} 💬</a>
-                                <div class="action-btns">
-                                    ${actionButtonHtml}
-                                </div>
-                            </div>
-                        </div>
-                    `;
-                });
+                renderStoreFeed();
             });
         });
+
+        function renderStoreFeed() {
+            const container = document.getElementById('storeFeedContainer');
+            container.innerHTML = "";
+
+            let filteredList = cachedStoreList;
+            if (currentFilter !== 'All') {
+                filteredList = cachedStoreList.filter(item => item.type === currentFilter);
+            }
+
+            if (filteredList.length === 0) {
+                container.innerHTML = `<p style="color: #64748b; text-align: center; font-size: 13px; padding: 20px;">No study materials found in this category.</p>`;
+                return;
+            }
+
+            filteredList.forEach((item) => {
+                const timeString = new Date(item.createdAt).toLocaleString([], { dateStyle: 'short', timeStyle: 'short' });
+                const authorInitial = item.author ? item.author.charAt(0).toUpperCase() : 'U';
+                const authorAvatar = item.authorPic ? `<img src="${item.authorPic}" class="uploader-avatar">` : `<div class="uploader-avatar">${authorInitial}</div>`;
+
+                const isFree = item.price.toLowerCase() === 'free' || item.price === '0';
+                const isOwner = item.author === activeUser.username;
+
+                const userOrder = cachedOrdersList.find(o => o.itemId === item.id && o.buyer === activeUser.username);
+                const isAccepted = userOrder && userOrder.status === 'accepted';
+
+                let actionButtonHtml = "";
+                if (isFree && item.fileUrl) {
+                    actionButtonHtml = `<a href="${item.fileUrl}" target="_blank" download="${item.fileName || 'notes.pdf'}" class="btn-access">Download PDF 📥</a>`;
+                } else if (isAccepted && item.fileUrl) {
+                    actionButtonHtml = `<a href="${item.fileUrl}" target="_blank" download="${item.fileName || 'notes.pdf'}" class="btn-access">Download PDF Now 📥</a>`;
+                } else if (userOrder && userOrder.status === 'pending') {
+                    actionButtonHtml = `<button class="btn-buy" style="background:#334155; color:#94a3b8; cursor:default;">Payment Pending Verification ⏳</button>`;
+                } else {
+                    actionButtonHtml = `<button class="btn-buy" onclick="openPaymentModal('${item.id}', '${item.author}', '${item.upi}', '${item.title}')">Buy / Pay 💳</button>`;
+                }
+
+                let sellerPanelHtml = "";
+                if (isOwner && !isFree) {
+                    const itemOrders = cachedOrdersList.filter(o => o.itemId === item.id);
+                    if (itemOrders.length > 0) {
+                        sellerPanelHtml += `<div class="seller-orders-box"><h4 style="font-size:12px; color:#f59e0b; margin-bottom:6px;">Incoming Buyer Payments:</h4>`;
+                        itemOrders.forEach(ord => {
+                            const statusColor = ord.status === 'accepted' ? '#34d399' : '#f87171';
+                            const actionControl = ord.status === 'pending' 
+                                ? `<button onclick="acceptPayment('${ord.id}')" style="background:#10b981; color:#0f172a; border:none; padding:3px 8px; border-radius:4px; font-weight:600; cursor:pointer; font-size:11px;">Accept & Unlock ✅</button>`
+                                : `<span style="color:#34d399; font-weight:600;">Accepted ✔️</span>`;
+
+                            sellerPanelHtml += `
+                                <div class="order-row">
+                                    <span>@${ord.buyer}</span>
+                                    <span style="color:${statusColor}">${ord.status.toUpperCase()}</span>
+                                    ${actionControl}
+                                </div>
+                            `;
+                        });
+                        sellerPanelHtml += `</div>`;
+                    }
+                }
+
+                container.innerHTML += `
+                    <div class="store-card">
+                        <div class="store-header">
+                            <div class="uploader-info">
+                                ${authorAvatar}
+                                <div>
+                                    <h4 style="font-size: 13px; color: #f8fafc;">@${item.author}</h4>
+                                    <span style="font-size: 11px; color: #94a3b8;">${timeString}</span>
+                                </div>
+                            </div>
+                            <span class="${isFree ? 'free-badge' : 'price-badge'}">${isFree ? '🆓 Free' : '🏷️ ' + item.price}</span>
+                        </div>
+                        <div class="tags-row">
+                            <span class="tag">📁 ${item.category}</span>
+                            <span class="tag">📌 ${item.type}</span>
+                            <span class="tag">🎓 ${item.semester}</span>
+                        </div>
+                        <div class="item-title">${item.title}</div>
+                        <div class="item-desc">${item.description}</div>
+                        
+                        ${sellerPanelHtml}
+
+                        <div class="store-footer">
+                            <a href="chat.html?with=${item.author}" style="font-size: 12px; color: #38bdf8; text-decoration: none;">Chat with @${item.author} 💬</a>
+                            <div class="action-btns">
+                                ${actionButtonHtml}
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+        }
 
         let activeItemIdForModal = null;
         let activeSellerForModal = null;
