@@ -71,7 +71,7 @@
         }
         .chat-user-info span {
             font-size: 11px;
-            color: #34d399;
+            color: #94a3b8;
         }
         .messages-box {
             flex: 1;
@@ -175,7 +175,7 @@
             <div class="chat-user-avatar" id="headerAvatar">U</div>
             <div class="chat-user-info">
                 <h4 id="headerUsername">Loading...</h4>
-                <span>● Active Now</span>
+                <span id="headerStatus">Loading status...</span>
             </div>
         </div>
         
@@ -194,7 +194,7 @@
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-app.js";
-        import { getFirestore, collection, addDoc, onSnapshot, query, orderBy, getDocs } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-firestore.js";
+        import { getFirestore, collection, addDoc, updateDoc, doc, onSnapshot, query, orderBy, getDocs } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-firestore.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyCNLwSjHq6LlX9uUovTRHrz9ZfUwEIUWQM",
@@ -221,26 +221,53 @@
             window.location.href = 'makefriend.html';
         }
 
-        // Fetch target user profile details for header
-        async function loadChatUserInfo() {
+        // Continuously update active user's lastSeen timestamp every 30 seconds
+        async function updateMyPresence() {
             try {
                 const querySnapshot = await getDocs(collection(db, 'users'));
-                querySnapshot.forEach((docSnap) => {
+                querySnapshot.forEach(async (docSnap) => {
+                    if (docSnap.data().username === activeUser.username) {
+                        await updateDoc(doc(db, 'users', docSnap.id), {
+                            lastSeen: Date.now()
+                        });
+                    }
+                });
+            } catch (err) {
+                console.error("Error updating presence:", err);
+            }
+        }
+        updateMyPresence();
+        setInterval(updateMyPresence, 30000); // every 30 seconds
+
+        // Fetch target user profile details and real-time status
+        function loadChatUserInfo() {
+            onSnapshot(collection(db, 'users'), (snapshot) => {
+                snapshot.forEach((docSnap) => {
                     const uData = docSnap.data();
                     if (uData.username === chatWith) {
                         document.getElementById('headerUsername').innerText = `@${uData.username}`;
+                        
                         if (uData.profilePic) {
                             document.getElementById('headerAvatar').innerHTML = `<img src="${uData.profilePic}" style="width:100%; height:100%; border-radius:50%; object-fit:cover;">`;
                         } else {
                             document.getElementById('headerAvatar').innerText = uData.username.charAt(0).toUpperCase();
                         }
+
+                        // Calculate status based on lastSeen (Active if within last 60 seconds)
+                        const lastSeenTime = uData.lastSeen || 0;
+                        const diffSec = (Date.now() - lastSeenTime) / 1000;
+                        const statusSpan = document.getElementById('headerStatus');
+
+                        if (diffSec < 60) {
+                            statusSpan.innerHTML = `<span style="color: #34d399;">● Active Now</span>`;
+                        } else {
+                            const dateObj = new Date(lastSeenTime);
+                            const timeStr = dateObj.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+                            statusSpan.innerHTML = `<span style="color: #94a3b8;">Last seen at ${timeStr}</span>`;
+                        }
                     }
                 });
-            } catch (err) {
-                console.error("Error loading user info:", err);
-                document.getElementById('headerUsername').innerText = `@${chatWith}`;
-                document.getElementById('headerAvatar').innerText = chatWith.charAt(0).toUpperCase();
-            }
+            });
         }
         loadChatUserInfo();
 
