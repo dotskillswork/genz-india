@@ -123,10 +123,10 @@
         </form>
     </div>
 
-    <!-- Firebase Chat Logic -->
+    <!-- Firebase Server Timestamp Chat Logic -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-app.js";
-        import { getFirestore, collection, addDoc, getDocs, query, orderBy } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-firestore.js";
+        import { getFirestore, collection, addDoc, getDocs, query, where, orderBy, serverTimestamp } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-firestore.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyCNLwSjHq6LlX9uUovTRHrz9ZfUwEIUWQM",
@@ -172,9 +172,7 @@
                 gainNode.connect(audioCtx.destination);
                 oscillator.start();
                 oscillator.stop(audioCtx.currentTime + 0.15);
-            } catch (err) {
-                console.log("Audio skipped", err);
-            }
+            } catch (err) {}
         }
 
         document.getElementById('chatForm').addEventListener('submit', async function(event) {
@@ -188,7 +186,7 @@
                 sender: activeUser.username,
                 receiver: targetUsername,
                 text: text,
-                createdAt: Date.now()
+                createdAt: serverTimestamp() // Official Firebase Server Time
             };
 
             try {
@@ -196,7 +194,7 @@
                 inputField.value = '';
                 loadMessages(true);
             } catch (err) {
-                console.error(err);
+                console.error("Send error:", err);
                 alert('Failed to send message.');
             }
         });
@@ -204,22 +202,18 @@
         async function loadMessages(isSentByMe = false) {
             const chatBox = document.getElementById('msgChatBox');
             try {
-                const q = query(collection(db, 'directMessages'), orderBy("createdAt", "asc"));
+                // Direct server-side filtering and sorting query
+                const q = query(
+                    collection(db, 'directMessages'),
+                    where("room", "==", chatRoomId),
+                    orderBy("createdAt", "asc")
+                );
+                
                 const querySnapshot = await getDocs(q);
                 const messagesArray = [];
 
                 querySnapshot.forEach((docSnap) => {
-                    const m = docSnap.data();
-                    if (m.room === chatRoomId) {
-                        messagesArray.push(m);
-                    }
-                });
-
-                // Enforce strict numerical sorting by timestamp
-                messagesArray.sort((a, b) => {
-                    const timeA = Number(a.createdAt) || 0;
-                    const timeB = Number(b.createdAt) || 0;
-                    return timeA - timeB;
+                    messagesArray.push(docSnap.data());
                 });
 
                 if (previousMessageCount > 0 && messagesArray.length > previousMessageCount && !isSentByMe) {
@@ -236,7 +230,14 @@
 
                 messagesArray.forEach(m => {
                     const isSender = m.sender === activeUser.username;
-                    const timeString = m.createdAt ? new Date(Number(m.createdAt)).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : '';
+                    // Handle serverTimestamp which might be null for a split second right after sending
+                    let timeString = "";
+                    if (m.createdAt && m.createdAt.toDate) {
+                        timeString = m.createdAt.toDate().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+                    } else {
+                        timeString = "Just now";
+                    }
+
                     chatBox.innerHTML += `
                         <div class="message ${isSender ? 'sent' : 'received'}">
                             <div>${m.text}</div>
