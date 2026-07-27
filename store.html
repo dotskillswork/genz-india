@@ -87,6 +87,20 @@
             flex: 1;
             min-width: 150px;
         }
+        .file-upload-box {
+            background: #0b0f19;
+            border: 1px dashed #334155;
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 12px;
+        }
+        .file-upload-box label {
+            font-size: 12px;
+            color: #38bdf8;
+            display: block;
+            margin-bottom: 6px;
+            font-weight: 500;
+        }
         .publish-btn {
             background: #f59e0b;
             color: #0f172a;
@@ -229,7 +243,6 @@
             padding: 6px 0;
             border-bottom: 1px solid #1f2937;
         }
-        /* Modal */
         .modal {
             display: none;
             position: fixed;
@@ -297,11 +310,11 @@
     <div class="container">
         <div class="hero-banner">
             <h1>Notes, PYQs & Study Material Exchange</h1>
-            <p>Secure peer-to-peer marketplace with seller-verified payment escrow.</p>
+            <p>Upload PDF notes or study papers directly from your device instantly.</p>
         </div>
 
         <div class="store-form-box">
-            <h3 style="font-size: 15px; color: #f59e0b; margin-bottom: 15px;">Upload Study Material / Notes</h3>
+            <h3 style="font-size: 15px; color: #f59e0b; margin-bottom: 15px;">Upload Study Material / PDF Notes</h3>
             <form id="storeForm">
                 <input type="text" id="itemTitle" placeholder="Title (e.g., Data Structures Complete Handwritten Notes)" required>
                 
@@ -338,7 +351,11 @@
                     <input type="text" id="itemPrice" placeholder="Price (e.g., Free or ₹49)" required>
                 </div>
 
-                <input type="url" id="itemLink" placeholder="Google Drive Link (Make sure sharing is Public/Anyone with link)" required>
+                <div class="file-upload-box">
+                    <label>📎 Select PDF Document File from Device</label>
+                    <input type="file" id="itemPdfFile" accept=".pdf,image/*" required style="border:none; padding:4px 0; background:transparent; font-size:12px; color:#94a3b8;">
+                    <p id="fileNameDisplay" style="font-size: 11px; color: #38bdf8; margin-top: 4px;"></p>
+                </div>
                 
                 <div id="upiSection" style="display: none;">
                     <input type="text" id="uploaderUpi" placeholder="Enter your UPI ID for payments (e.g., yourname@paytm)">
@@ -394,6 +411,18 @@
             window.location.href = 'login.html';
         }
 
+        document.getElementById('itemPdfFile').addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                if (file.size > 900000) { // ~900KB limit warning for smooth performance
+                    alert("Warning: File size is slightly large. For best results, keep PDFs under 800 KB.");
+                }
+                document.getElementById('fileNameDisplay').innerText = `Selected: ${file.name}`;
+            } else {
+                document.getElementById('fileNameDisplay').innerText = '';
+            }
+        });
+
         document.getElementById('itemPrice').addEventListener('input', function(e) {
             const val = e.target.value.trim().toLowerCase();
             const upiSec = document.getElementById('upiSection');
@@ -406,6 +435,15 @@
             }
         });
 
+        function convertFileToBase64(file) {
+            return new Promise((resolve, reject) => {
+                const reader = new FileReader();
+                reader.readAsDataURL(file);
+                reader.onload = () => resolve(reader.result);
+                reader.onerror = error => reject(error);
+            });
+        }
+
         document.getElementById('storeForm').addEventListener('submit', async function(e) {
             e.preventDefault();
             const title = document.getElementById('itemTitle').value.trim();
@@ -413,15 +451,26 @@
             const type = document.getElementById('itemType').value;
             const semester = document.getElementById('itemSemester').value;
             const price = document.getElementById('itemPrice').value.trim();
-            const link = document.getElementById('itemLink').value.trim();
+            const fileInput = document.getElementById('itemPdfFile').files[0];
             const upi = document.getElementById('uploaderUpi').value.trim();
             const desc = document.getElementById('itemDesc').value.trim();
             const publishBtn = document.getElementById('publishBtn');
 
-            if (!title || !category || !type || !semester || !price || !link || !desc) return;
+            if (!title || !category || !type || !semester || !price || !fileInput || !desc) return;
 
-            publishBtn.innerText = "Publishing...";
+            publishBtn.innerText = "Encoding & Publishing PDF...";
             publishBtn.disabled = true;
+
+            let fileDataUrl = "";
+            try {
+                fileDataUrl = await convertFileToBase64(fileInput);
+            } catch (err) {
+                console.error("File conversion error:", err);
+                alert("Failed to read file.");
+                publishBtn.innerText = "Publish to Store 🚀";
+                publishBtn.disabled = false;
+                return;
+            }
 
             const newItem = {
                 title: title,
@@ -429,7 +478,8 @@
                 type: type,
                 semester: semester,
                 price: price,
-                link: link,
+                fileUrl: fileDataUrl,
+                fileName: fileInput.name,
                 upi: upi || "",
                 description: desc,
                 author: activeUser.username,
@@ -440,17 +490,17 @@
             try {
                 await addDoc(collection(db, 'store_items'), newItem);
                 document.getElementById('storeForm').reset();
+                document.getElementById('fileNameDisplay').innerText = '';
                 document.getElementById('upiSection').style.display = 'none';
             } catch (err) {
                 console.error("Error publishing item:", err);
-                alert("Failed to publish item.");
+                alert("Failed to publish item. File might be too large for database size limit. Try a smaller PDF.");
             } finally {
                 publishBtn.innerText = "Publish to Store 🚀";
                 publishBtn.disabled = false;
             }
         });
 
-        // Listen to Store Items and Orders
         onSnapshot(query(collection(db, 'store_items'), orderBy('createdAt', 'desc')), (storeSnapshot) => {
             onSnapshot(query(collection(db, 'store_orders'), orderBy('createdAt', 'desc')), (orderSnapshot) => {
                 const container = document.getElementById('storeFeedContainer');
@@ -479,22 +529,20 @@
                     const isFree = item.price.toLowerCase() === 'free' || item.price === '0';
                     const isOwner = item.author === activeUser.username;
 
-                    // Check if current user has an accepted order for this item
                     const userOrder = ordersList.find(o => o.itemId === item.id && o.buyer === activeUser.username);
                     const isAccepted = userOrder && userOrder.status === 'accepted';
 
                     let actionButtonHtml = "";
-                    if (isFree) {
-                        actionButtonHtml = `<a href="${item.link}" target="_blank" class="btn-access">Access / Download 📥</a>`;
-                    } else if (isAccepted) {
-                        actionButtonHtml = `<a href="${item.link}" target="_blank" class="btn-access">Download Notes Now 📥</a>`;
+                    if (isFree && item.fileUrl) {
+                        actionButtonHtml = `<a href="${item.fileUrl}" download="${item.fileName || 'notes.pdf'}" class="btn-access">Download PDF 📥</a>`;
+                    } else if (isAccepted && item.fileUrl) {
+                        actionButtonHtml = `<a href="${item.fileUrl}" download="${item.fileName || 'notes.pdf'}" class="btn-access">Download PDF Now 📥</a>`;
                     } else if (userOrder && userOrder.status === 'pending') {
                         actionButtonHtml = `<button class="btn-buy" style="background:#334155; color:#94a3b8; cursor:default;">Payment Pending Verification ⏳</button>`;
                     } else {
                         actionButtonHtml = `<button class="btn-buy" onclick="openPaymentModal('${item.id}', '${item.author}', '${item.upi}', '${item.title}')">Buy / Pay 💳</button>`;
                     }
 
-                    // Seller incoming orders panel
                     let sellerPanelHtml = "";
                     if (isOwner && !isFree) {
                         const itemOrders = ordersList.filter(o => o.itemId === item.id);
