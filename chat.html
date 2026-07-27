@@ -215,7 +215,12 @@
                     }
                 });
 
-                messagesArray.sort((a, b) => (a.createdAt || 0) - (b.createdAt || 0));
+                // Enforce strict numerical sorting by timestamp
+                messagesArray.sort((a, b) => {
+                    const timeA = Number(a.createdAt) || 0;
+                    const timeB = Number(b.createdAt) || 0;
+                    return timeA - timeB;
+                });
 
                 if (previousMessageCount > 0 && messagesArray.length > previousMessageCount && !isSentByMe) {
                     playBeep();
@@ -231,7 +236,7 @@
 
                 messagesArray.forEach(m => {
                     const isSender = m.sender === activeUser.username;
-                    const timeString = m.createdAt ? new Date(m.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : '';
+                    const timeString = m.createdAt ? new Date(Number(m.createdAt)).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : '';
                     chatBox.innerHTML += `
                         <div class="message ${isSender ? 'sent' : 'received'}">
                             <div>${m.text}</div>
