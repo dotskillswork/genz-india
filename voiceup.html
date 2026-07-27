@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VoiceUp Hub | Gen'Z India</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+        body {
+            background-color: #0b0f19;
+            color: #f1f5f9;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        header {
+            background: #111827;
+            padding: 15px 30px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 1px solid #1f2937;
+        }
+        .back-btn {
+            color: #38bdf8;
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 600;
+        }
+        .container {
+            max-width: 800px;
+            width: 100%;
+            margin: 30px auto;
+            padding: 0 20px;
+            flex: 1;
+        }
+        .hero-banner {
+            background: #111827;
+            border: 1px solid #1f2937;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 25px;
+            text-align: center;
+        }
+        .hero-banner h1 {
+            font-size: 22px;
+            color: #f87171;
+            margin-bottom: 6px;
+        }
+        .hero-banner p {
+            font-size: 13px;
+            color: #94a3b8;
+        }
+        /* Report Form Box */
+        .report-box {
+            background: #111827;
+            border: 1px solid #1f2937;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 30px;
+        }
+        .report-box input, .report-box textarea {
+            width: 100%;
+            background: #0b0f19;
+            border: 1px solid #334155;
+            border-radius: 8px;
+            padding: 12px;
+            color: #fff;
+            font-size: 13px;
+            margin-bottom: 12px;
+        }
+        .report-box input:focus, .report-box textarea:focus {
+            outline: none;
+            border-color: #f87171;
+        }
+        .report-box textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+        .form-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+        .checkbox-label {
+            font-size: 13px;
+            color: #cbd5e1;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+        }
+        .file-label {
+            font-size: 13px;
+            color: #38bdf8;
+            cursor: pointer;
+        }
+        .report-btn {
+            background: #f87171;
+            color: #0f172a;
+            border: none;
+            padding: 10px 24px;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 13px;
+            cursor: pointer;
+        }
+        .report-btn:hover {
+            background: #ef4444;
+        }
+        /* Feed Cards */
+        .report-card {
+            background: #111827;
+            border: 1px solid #1f2937;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        .report-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 12px;
+        }
+        .reporter-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .reporter-avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: #334155;
+            object-fit: cover;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #f87171;
+            font-weight: 600;
+            font-size: 13px;
+        }
+        .badge {
+            background: #7f1d1d;
+            color: #fca5a5;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 600;
+        }
+        .report-title {
+            font-size: 16px;
+            color: #f8fafc;
+            margin-bottom: 6px;
+            font-weight: 600;
+        }
+        .report-meta {
+            font-size: 12px;
+            color: #38bdf8;
+            margin-bottom: 10px;
+        }
+        .report-desc {
+            font-size: 14px;
+            color: #cbd5e1;
+            margin-bottom: 12px;
+            line-height: 1.5;
+            word-break: break-word;
+        }
+        .report-img {
+            max-width: 100%;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            max-height: 300px;
+            object-fit: contain;
+            background: #000;
+        }
+        .support-section {
+            border-top: 1px solid #1f2937;
+            padding-top: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .support-btn {
+            background: #1e293b;
+            color: #38bdf8;
+            border: 1px solid #334155;
+            padding: 6px 14px;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .support-btn:hover {
+            background: #334155;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <a href="makefriend.html" class="back-btn">← Back to Dashboard</a>
+        <h3 style="font-size: 16px; color: #fff;">🚨 VoiceUp Whistleblower Hub</h3>
+        <div style="width: 80px;"></div>
+    </header>
+
+    <div class="container">
+        <div class="hero-banner">
+            <h1>Raise Your Voice Against Corruption & Wrongdoing</h1>
+            <p>Expose unfair fees, ragging, college corruption, or local issues securely with proofs.</p>
+        </div>
+
+        <!-- Report Form -->
+        <div class="report-box">
+            <form id="reportForm">
+                <input type="text" id="collegeName" placeholder="College / Institution / Organization Name" required>
+                <input type="text" id="reportTitle" placeholder="Issue Title (e.g., Unfair Exam Fee Hike, Ragging Incident)" required>
+                <textarea id="reportDesc" placeholder="Describe the issue in detail with facts and proof..." required></textarea>
+                
+                <div class="form-row">
+                    <label class="file-label">
+                        📷 Attach Proof Image
+                        <input type="file" id="reportImage" accept="image/*" style="display: none;">
+                    </label>
+                    <label class="checkbox-label">
+                        <input type="checkbox" id="anonymousCheck"> Post Anonymously (Hide Name)
+                    </label>
+                    <button type="submit" class="report-btn" id="submitBtn">Raise Voice 🚨</button>
+                </div>
+                <p id="fileNameDisplay" style="font-size: 11px; color: #38bdf8; margin-top: 8px;"></p>
+            </form>
+        </div>
+
+        <!-- Live Reports Feed -->
+        <div id="reportsFeedContainer">
+            <p style="color: #64748b; text-align: center; font-size: 13px;">Loading reports...</p>
+        </div>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-app.js";
+        import { getFirestore, collection, addDoc, updateDoc, doc, arrayUnion, onSnapshot, query, orderBy } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-firestore.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyCNLwSjHq6LlX9uUovTRHrz9ZfUwEIUWQM",
+            authDomain: "genz-india.firebaseapp.com",
+            projectId: "genz-india",
+            storageBucket: "genz-india.firebasestorage.app",
+            messagingSenderId: "149959470783",
+            appId: "1:149959470783:web:71b7969ee2c8fc049c200a",
+            measurementId: "G-RBRSDRKSRH"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+
+        const activeUser = JSON.parse(localStorage.getItem('genzUser'));
+        if (!activeUser) {
+            window.location.href = 'login.html';
+        }
+
+        document.getElementById('reportImage').addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            document.getElementById('fileNameDisplay').innerText = file ? `Attached: ${file.name}` : '';
+        });
+
+        function convertImageToBase64(file) {
+            return new Promise((resolve, reject) => {
+                const reader = new FileReader();
+                reader.readAsDataURL(file);
+                reader.onload = () => resolve(reader.result);
+                reader.onerror = error => reject(error);
+            });
+        }
+
+        // Submit Report
+        document.getElementById('reportForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            const college = document.getElementById('collegeName').value.trim();
+            const title = document.getElementById('reportTitle').value.trim();
+            const desc = document.getElementById('reportDesc').value.trim();
+            const isAnonymous = document.getElementById('anonymousCheck').checked;
+            const imageFile = document.getElementById('reportImage').files[0];
+            const submitBtn = document.getElementById('submitBtn');
+
+            if (!college || !title || !desc) return;
+
+            submitBtn.innerText = "Submitting...";
+            submitBtn.disabled = true;
+
+            let imageUrl = "";
+            if (imageFile) {
+                try {
+                    imageUrl = await convertImageToBase64(imageFile);
+                } catch (err) {
+                    console.error("Image error:", err);
+                }
+            }
+
+            const newReport = {
+                college: college,
+                title: title,
+                description: desc,
+                imageUrl: imageUrl,
+                author: isAnonymous ? "Anonymous Whistleblower" : activeUser.username,
+                authorPic: isAnonymous ? "" : (activeUser.profilePic || ""),
+                isAnonymous: isAnonymous,
+                createdAt: Date.now(),
+                supporters: []
+            };
+
+            try {
+                await addDoc(collection(db, 'voiceup_reports'), newReport);
+                document.getElementById('reportForm').reset();
+                document.getElementById('fileNameDisplay').innerText = '';
+            } catch (err) {
+                console.error("Error posting report:", err);
+                alert("Failed to submit report.");
+            } finally {
+                submitBtn.innerText = "Raise Voice 🚨";
+                submitBtn.disabled = false;
+            }
+        });
+
+        // Real-time Reports Feed
+        const q = query(collection(db, 'voiceup_reports'), orderBy('createdAt', 'desc'));
+        onSnapshot(q, (snapshot) => {
+            const container = document.getElementById('reportsFeedContainer');
+            container.innerHTML = "";
+
+            let reports = [];
+            snapshot.forEach((docSnap) => {
+                reports.push({ id: docSnap.id, ...docSnap.data() });
+            });
+
+            if (reports.length === 0) {
+                container.innerHTML = `<p style="color: #64748b; text-align: center; font-size: 13px; padding: 20px;">No reports raised yet. Be the fearless voice to expose wrongdoing!</p>`;
+                return;
+            }
+
+            reports.forEach((rep) => {
+                const timeStr = new Date(rep.createdAt).toLocaleString([], { dateStyle: 'short', timeStyle: 'short' });
+                const authorInit = rep.author ? rep.author.charAt(0).toUpperCase() : 'A';
+                const avatarHtml = rep.authorPic 
+                    ? `<img src="${rep.authorPic}" class="reporter-avatar">` 
+                    : `<div class="reporter-avatar">${authorInit}</div>`;
+
+                const supportersCount = rep.supporters ? rep.supporters.length : 0;
+                const hasSupported = rep.supporters && rep.supporters.includes(activeUser.username);
+
+                container.innerHTML += `
+                    <div class="report-card">
+                        <div class="report-header">
+                            <div class="reporter-info">
+                                ${avatarHtml}
+                                <div>
+                                    <h4 style="font-size: 13px; color: #f8fafc;">@${rep.author}</h4>
+                                    <span style="font-size: 11px; color: #94a3b8;">${timeStr}</span>
+                                </div>
+                            </div>
+                            <span class="badge">Whistleblower Report</span>
+                        </div>
+                        <div class="report-meta">📍 ${rep.college}</div>
+                        <div class="report-title">${rep.title}</div>
+                        <div class="report-desc">${rep.description}</div>
+                        ${rep.imageUrl ? `<img src="${rep.imageUrl}" class="report-img">` : ``}
+                        
+                        <div class="support-section">
+                            <button class="support-btn" onclick="toggleSupport('${rep.id}', ${hasSupported})">
+                                🔥 Support / Raise Voice (${supportersCount})
+                            </button>
+                            <span style="font-size: 11px; color: #64748b;">Stand against corruption</span>
+                        </div>
+                    </div>
+                `;
+            });
+        });
+
+        window.toggleSupport = async function(reportId, alreadySupported) {
+            try {
+                const reportRef = doc(db, 'voiceup_reports', reportId);
+                if (alreadySupported) {
+                    // Remove support
+                    const updatedSupporters = (await getDocIfExists(reportRef)).filter(u => u !== activeUser.username);
+                    await updateDoc(reportRef, { supporters: updatedSupporters });
+                } else {
+                    await updateDoc(reportRef, {
+                        supporters: arrayUnion(activeUser.username)
+                    });
+                }
+            } catch (err) {
+                console.error("Error updating support:", err);
+            }
+        };
+
+        async function getDocIfExists(ref) {
+            import("https://www.gstatic.com/firebasejs/12.16.0/firebase-firestore.js").then(async ({getDoc}) => {
+                const snap = await getDoc(ref);
+                return snap.exists() ? (snap.data().supporters || []) : [];
+            });
+        }
+    </script>
+</body>
+</html>
