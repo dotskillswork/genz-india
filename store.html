@@ -1,0 +1,521 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gen'Z Store | Notes & Study Hub</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+        body {
+            background-color: #0b0f19;
+            color: #f1f5f9;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        header {
+            background: #111827;
+            padding: 15px 30px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 1px solid #1f2937;
+        }
+        .back-btn {
+            color: #38bdf8;
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 600;
+        }
+        .container {
+            max-width: 900px;
+            width: 100%;
+            margin: 30px auto;
+            padding: 0 20px;
+            flex: 1;
+        }
+        .hero-banner {
+            background: #111827;
+            border: 1px solid #1f2937;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 25px;
+            text-align: center;
+        }
+        .hero-banner h1 {
+            font-size: 22px;
+            color: #f59e0b;
+            margin-bottom: 6px;
+        }
+        .hero-banner p {
+            font-size: 13px;
+            color: #94a3b8;
+        }
+        /* Store Form Box */
+        .store-form-box {
+            background: #111827;
+            border: 1px solid #1f2937;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 30px;
+        }
+        .store-form-box input, .store-form-box textarea, .store-form-box select {
+            width: 100%;
+            background: #0b0f19;
+            border: 1px solid #334155;
+            border-radius: 8px;
+            padding: 12px;
+            color: #fff;
+            font-size: 13px;
+            margin-bottom: 12px;
+        }
+        .store-form-box input:focus, .store-form-box textarea:focus, .store-form-box select:focus {
+            outline: none;
+            border-color: #f59e0b;
+        }
+        .form-row {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+        .form-row select, .form-row input {
+            flex: 1;
+            min-width: 150px;
+        }
+        .publish-btn {
+            background: #f59e0b;
+            color: #0f172a;
+            border: none;
+            padding: 10px 24px;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 13px;
+            cursor: pointer;
+            width: 100%;
+        }
+        .publish-btn:hover {
+            background: #d97706;
+        }
+        /* Store Item Cards */
+        .store-card {
+            background: #111827;
+            border: 1px solid #1f2937;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        .store-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 10px;
+        }
+        .uploader-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .uploader-avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: #334155;
+            object-fit: cover;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #f59e0b;
+            font-weight: 600;
+            font-size: 13px;
+        }
+        .price-badge {
+            background: #78350f;
+            color: #fde68a;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+        .free-badge {
+            background: #065f46;
+            color: #34d399;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+        .item-title {
+            font-size: 16px;
+            color: #f8fafc;
+            margin-bottom: 6px;
+            font-weight: 600;
+        }
+        .tags-row {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            margin-bottom: 10px;
+        }
+        .tag {
+            font-size: 11px;
+            color: #38bdf8;
+            background: #1e293b;
+            padding: 3px 8px;
+            border-radius: 4px;
+        }
+        .item-desc {
+            font-size: 13px;
+            color: #cbd5e1;
+            margin-bottom: 15px;
+            line-height: 1.5;
+            word-break: break-word;
+        }
+        .store-footer {
+            border-top: 1px solid #1f2937;
+            padding-top: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        .action-btns {
+            display: flex;
+            gap: 8px;
+        }
+        .btn-access {
+            background: #38bdf8;
+            color: #0f172a;
+            border: none;
+            padding: 6px 14px;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            text-decoration: none;
+        }
+        .btn-access:hover {
+            background: #0ea5e9;
+        }
+        .btn-buy {
+            background: #f59e0b;
+            color: #0f172a;
+            border: none;
+            padding: 6px 14px;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+        .btn-buy:hover {
+            background: #d97706;
+        }
+
+        /* Payment Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.75);
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            padding: 15px;
+        }
+        .modal-content {
+            background: #111827;
+            border: 1px solid #334155;
+            padding: 25px;
+            border-radius: 12px;
+            width: 100%;
+            max-width: 420px;
+            text-align: center;
+        }
+        .modal-content h3 {
+            color: #f59e0b;
+            font-size: 18px;
+            margin-bottom: 10px;
+        }
+        .modal-content p {
+            font-size: 13px;
+            color: #94a3b8;
+            margin-bottom: 15px;
+        }
+        .upi-box {
+            background: #0b0f19;
+            border: 1px dashed #334155;
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            font-size: 14px;
+            color: #38bdf8;
+            font-weight: 600;
+        }
+        .modal-btns {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+        }
+        .modal-btns button {
+            padding: 8px 16px;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            border: none;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <a href="makefriend.html" class="back-btn">← Back to Dashboard</a>
+        <h3 style="font-size: 16px; color: #fff;">📚 Gen'Z Store Hub</h3>
+        <div style="width: 80px;"></div>
+    </header>
+
+    <div class="container">
+        <div class="hero-banner">
+            <h1>Notes, PYQs & Study Material Exchange</h1>
+            <p>Share handwritten notes, previous year papers, and resources with consistent course & semester filters.</p>
+        </div>
+
+        <!-- Upload Item Form -->
+        <div class="store-form-box">
+            <h3 style="font-size: 15px; color: #f59e0b; margin-bottom: 15px;">Upload Study Material / Notes</h3>
+            <form id="storeForm">
+                <input type="text" id="itemTitle" placeholder="Title (e.g., Data Structures Complete Handwritten Notes)" required>
+                
+                <div class="form-row">
+                    <select id="itemCategory" required>
+                        <option value="">Select Category</option>
+                        <option value="Engineering / BTech">Engineering / BTech</option>
+                        <option value="BCA / MCA">BCA / MCA</option>
+                        <option value="UPSC / Govt Exams">UPSC / Govt Exams</option>
+                        <option value="Medical / NEET">Medical / NEET</option>
+                        <option value="Class 11th - 12th">Class 11th - 12th</option>
+                        <option value="Other">Other</option>
+                    </select>
+
+                    <select id="itemType" required>
+                        <option value="">Select Resource Type</option>
+                        <option value="Handwritten Notes">Handwritten Notes</option>
+                        <option value="Previous Year Paper (PYQ)">Previous Year Paper (PYQ)</option>
+                        <option value="E-Book / PDF">E-Book / PDF</option>
+                        <option value="Coding Snippets / Template">Coding Snippets / Template</option>
+                    </select>
+                </div>
+
+                <div class="form-row">
+                    <select id="itemSemester" required>
+                        <option value="">Select Semester / Year</option>
+                        <option value="1st Year / Sem 1-2">1st Year / Sem 1-2</option>
+                        <option value="2nd Year / Sem 3-4">2nd Year / Sem 3-4</option>
+                        <option value="3rd Year / Sem 5-6">3rd Year / Sem 5-6</option>
+                        <option value="Final Year / Sem 7-8">Final Year / Sem 7-8</option>
+                        <option value="General / All Years">General / All Years</option>
+                    </select>
+
+                    <input type="text" id="itemPrice" placeholder="Price (e.g., Free or ₹49)" required>
+                </div>
+
+                <input type="url" id="itemLink" placeholder="Resource Link (Google Drive / PDF Download Link)" required>
+                
+                <div id="upiSection" style="display: none;">
+                    <input type="text" id="uploaderUpi" placeholder="Enter your UPI ID for payments (e.g., yourname@paytm)">
+                </div>
+
+                <textarea id="itemDesc" placeholder="Describe what's included in these notes or papers..." required style="min-height: 80px;"></textarea>
+                
+                <button type="submit" class="publish-btn" id="publishBtn">Publish to Store 🚀</button>
+            </form>
+        </div>
+
+        <!-- Store Feed -->
+        <div id="storeFeedContainer">
+            <p style="color: #64748b; text-align: center; font-size: 13px;">Loading store materials...</p>
+        </div>
+    </div>
+
+    <!-- Secure UPI Payment Modal -->
+    <div class="modal" id="paymentModal">
+        <div class="modal-content">
+            <h3>Secure UPI Payment</h3>
+            <p id="modalItemDetails">Pay the uploader directly to get notes securely.</p>
+            <div class="upi-box" id="modalUpiDisplay">UPI ID: loading...</div>
+            <p style="font-size: 11px; color: #f87171; margin-bottom: 15px;">After payment, click below to open chat and send screenshot to receive the resource link.</p>
+            <div class="modal-btns">
+                <button type="button" style="background: #334155; color: #fff;" onclick="closeModal()">Cancel</button>
+                <button type="button" style="background: #38bdf8; color: #0f172a;" id="proceedChatBtn">I Have Paid - Open Chat 💬</button>
+            </div>
+        </div>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-app.js";
+        import { getFirestore, collection, addDoc, onSnapshot, query, orderBy } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-firestore.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyCNLwSjHq6LlX9uUovTRHrz9ZfUwEIUWQM",
+            authDomain: "genz-india.firebaseapp.com",
+            projectId: "genz-india",
+            storageBucket: "genz-india.firebasestorage.app",
+            messagingSenderId: "149959470783",
+            appId: "1:149959470783:web:71b7969ee2c8fc049c200a",
+            measurementId: "G-RBRSDRKSRH"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+
+        const activeUser = JSON.parse(localStorage.getItem('genzUser'));
+        if (!activeUser) {
+            window.location.href = 'login.html';
+        }
+
+        // Show/Hide UPI input if price is not free
+        document.getElementById('itemPrice').addEventListener('input', function(e) {
+            const val = e.target.value.trim().toLowerCase();
+            const upiSec = document.getElementById('upiSection');
+            if (val && val !== 'free' && val !== '0') {
+                upiSec.style.display = 'block';
+                document.getElementById('uploaderUpi').required = true;
+            } else {
+                upiSec.style.display = 'none';
+                document.getElementById('uploaderUpi').required = false;
+            }
+        });
+
+        // Publish Store Item
+        document.getElementById('storeForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            const title = document.getElementById('itemTitle').value.trim();
+            const category = document.getElementById('itemCategory').value;
+            const type = document.getElementById('itemType').value;
+            const semester = document.getElementById('itemSemester').value;
+            const price = document.getElementById('itemPrice').value.trim();
+            const link = document.getElementById('itemLink').value.trim();
+            const upi = document.getElementById('uploaderUpi').value.trim();
+            const desc = document.getElementById('itemDesc').value.trim();
+            const publishBtn = document.getElementById('publishBtn');
+
+            if (!title || !category || !type || !semester || !price || !link || !desc) return;
+
+            publishBtn.innerText = "Publishing...";
+            publishBtn.disabled = true;
+
+            const newItem = {
+                title: title,
+                category: category,
+                type: type,
+                semester: semester,
+                price: price,
+                link: link,
+                upi: upi || "",
+                description: desc,
+                author: activeUser.username,
+                authorPic: activeUser.profilePic || "",
+                createdAt: Date.now()
+            };
+
+            try {
+                await addDoc(collection(db, 'store_items'), newItem);
+                document.getElementById('storeForm').reset();
+                document.getElementById('upiSection').style.display = 'none';
+            } catch (err) {
+                console.error("Error publishing item:", err);
+                alert("Failed to publish item.");
+            } finally {
+                publishBtn.innerText = "Publish to Store 🚀";
+                publishBtn.disabled = false;
+            }
+        });
+
+        // Real-time Store Feed Listener
+        const q = query(collection(db, 'store_items'), orderBy('createdAt', 'desc'));
+        onSnapshot(q, (snapshot) => {
+            const container = document.getElementById('storeFeedContainer');
+            container.innerHTML = "";
+
+            let storeList = [];
+            snapshot.forEach((docSnap) => {
+                storeList.push({ id: docSnap.id, ...docSnap.data() });
+            });
+
+            if (storeList.length === 0) {
+                container.innerHTML = `<p style="color: #64748b; text-align: center; font-size: 13px; padding: 20px;">No study materials shared yet. Be the first to upload notes!</p>`;
+                return;
+            }
+
+            storeList.forEach((item) => {
+                const timeString = new Date(item.createdAt).toLocaleString([], { dateStyle: 'short', timeStyle: 'short' });
+                const authorInitial = item.author ? item.author.charAt(0).toUpperCase() : 'U';
+                const authorAvatar = item.authorPic ? `<img src="${item.authorPic}" class="uploader-avatar">` : `<div class="uploader-avatar">${authorInitial}</div>`;
+
+                const isFree = item.price.toLowerCase() === 'free' || item.price === '0';
+                const priceBadge = isFree 
+                    ? `<span class="free-badge">🆓 Free</span>` 
+                    : `<span class="price-badge">🏷️ ${item.price}</span>`;
+
+                let actionButtonHtml = "";
+                if (isFree) {
+                    actionButtonHtml = `<a href="${item.link}" target="_blank" class="btn-access">Download Free 📥</a>`;
+                } else {
+                    actionButtonHtml = `<button class="btn-buy" onclick="openPaymentModal('${item.author}', '${item.upi}', '${item.title}', '${item.link}')">Buy / Pay 💳</button>`;
+                }
+
+                container.innerHTML += `
+                    <div class="store-card">
+                        <div class="store-header">
+                            <div class="uploader-info">
+                                ${authorAvatar}
+                                <div>
+                                    <h4 style="font-size: 13px; color: #f8fafc;">@${item.author}</h4>
+                                    <span style="font-size: 11px; color: #94a3b8;">${timeString}</span>
+                                </div>
+                            </div>
+                            ${priceBadge}
+                        </div>
+                        <div class="tags-row">
+                            <span class="tag">📁 ${item.category}</span>
+                            <span class="tag">📌 ${item.type}</span>
+                            <span class="tag">🎓 ${item.semester}</span>
+                        </div>
+                        <div class="item-title">${item.title}</div>
+                        <div class="item-desc">${item.description}</div>
+                        
+                        <div class="store-footer">
+                            <a href="chat.html?with=${item.author}" style="font-size: 12px; color: #38bdf8; text-decoration: none;">Chat with @${item.author} 💬</a>
+                            <div class="action-btns">
+                                ${actionButtonHtml}
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+        });
+
+        window.openPaymentModal = function(author, upiId, title, resourceLink) {
+            document.getElementById('modalItemDetails').innerText = `Pay for: "${title}"`;
+            document.getElementById('modalUpiDisplay').innerText = `Uploader UPI ID: ${upiId || 'Not provided'}`;
+            
+            const chatBtn = document.getElementById('proceedChatBtn');
+            chatBtn.onclick = function() {
+                window.location.href = `chat.html?with=${author}`;
+            };
+
+            document.getElementById('paymentModal').style.display = 'flex';
+        };
+
+        window.closeModal = function() {
+            document.getElementById('paymentModal').style.display = 'none';
+        };
+    </script>
+</body>
+</html>
