@@ -352,7 +352,7 @@
                 </div>
 
                 <div class="file-upload-box">
-                    <label>📎 Select PDF Document File from Device (100% Safe Google Storage)</label>
+                    <label>📎 Select PDF Document File from Device</label>
                     <input type="file" id="itemPdfFile" accept=".pdf,image/*" required style="border:none; padding:4px 0; background:transparent; font-size:12px; color:#94a3b8;">
                     <p id="fileNameDisplay" style="font-size: 11px; color: #38bdf8; margin-top: 4px;"></p>
                 </div>
@@ -392,7 +392,7 @@
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-app.js";
         import { getFirestore, collection, addDoc, updateDoc, doc, onSnapshot, query, orderBy } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-firestore.js";
-        import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-storage.js";
+        import { getStorage, ref, uploadBytesResumable, getDownloadURL } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-storage.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyCNLwSjHq6LlX9uUovTRHrz9ZfUwEIUWQM",
@@ -434,7 +434,7 @@
             }
         });
 
-        document.getElementById('storeForm').addEventListener('submit', async function(e) {
+        document.getElementById('storeForm').addEventListener('submit', function(e) {
             e.preventDefault();
             const title = document.getElementById('itemTitle').value.trim();
             const category = document.getElementById('itemCategory').value;
@@ -448,42 +448,53 @@
 
             if (!title || !category || !type || !semester || !price || !fileInput || !desc) return;
 
-            publishBtn.innerText = "Uploading to Firebase Storage... ⏳";
             publishBtn.disabled = true;
+            const storageRef = ref(storage, `store_pdfs/${Date.now()}_${fileInput.name}`);
+            const uploadTask = uploadBytesResumable(storageRef, fileInput);
 
-            try {
-                // Upload to official Firebase Storage
-                const storageRef = ref(storage, `store_pdfs/${Date.now()}_${fileInput.name}`);
-                const snapshot = await uploadBytes(storageRef, fileInput);
-                const downloadURL = await getDownloadURL(snapshot.ref);
+            uploadTask.on('state_changed', 
+                (snapshot) => {
+                    const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+                    publishBtn.innerText = `Uploading to Cloud... ${Math.round(progress)}% ⏳`;
+                }, 
+                (error) => {
+                    console.error("Upload error:", error);
+                    alert("Failed to upload file.");
+                    publishBtn.innerText = "Publish to Store 🚀";
+                    publishBtn.disabled = false;
+                }, 
+                async () => {
+                    try {
+                        const downloadURL = await getDownloadURL(uploadTask.snapshot.ref);
+                        const newItem = {
+                            title: title,
+                            category: category,
+                            type: type,
+                            semester: semester,
+                            price: price,
+                            fileUrl: downloadURL,
+                            fileName: fileInput.name,
+                            upi: upi || "",
+                            description: desc,
+                            author: activeUser.username,
+                            authorPic: activeUser.profilePic || "",
+                            createdAt: Date.now()
+                        };
 
-                const newItem = {
-                    title: title,
-                    category: category,
-                    type: type,
-                    semester: semester,
-                    price: price,
-                    fileUrl: downloadURL,
-                    fileName: fileInput.name,
-                    upi: upi || "",
-                    description: desc,
-                    author: activeUser.username,
-                    authorPic: activeUser.profilePic || "",
-                    createdAt: Date.now()
-                };
-
-                await addDoc(collection(db, 'store_items'), newItem);
-                document.getElementById('storeForm').reset();
-                document.getElementById('fileNameDisplay').innerText = '';
-                document.getElementById('upiSection').style.display = 'none';
-                alert("Study material published successfully to Firebase Storage! 🎉");
-            } catch (err) {
-                console.error("Firebase Storage upload error:", err);
-                alert("Failed to upload file to Firebase Storage. Please check storage rules or try again.");
-            } finally {
-                publishBtn.innerText = "Publish to Store 🚀";
-                publishBtn.disabled = false;
-            }
+                        await addDoc(collection(db, 'store_items'), newItem);
+                        document.getElementById('storeForm').reset();
+                        document.getElementById('fileNameDisplay').innerText = '';
+                        document.getElementById('upiSection').style.display = 'none';
+                        alert("Study material published successfully! 🎉");
+                    } catch (err) {
+                        console.error("Database error:", err);
+                        alert("Failed to save item details.");
+                    } finally {
+                        publishBtn.innerText = "Publish to Store 🚀";
+                        publishBtn.disabled = false;
+                    }
+                }
+            );
         });
 
         onSnapshot(query(collection(db, 'store_items'), orderBy('createdAt', 'desc')), (storeSnapshot) => {
