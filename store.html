@@ -366,13 +366,13 @@
                 <h1>Notes, PYQs & Study Material Exchange</h1>
                 <p>Share or buy study notes securely via Firebase Cloud Storage.</p>
             </div>
-            <button class="add-product-toggle-btn" onclick="openUploadModal()">+ Add Product / Notes 🚀</button>
+            <button class="add-product-toggle-btn" id="openModalBtn">+ Add Product / Notes 🚀</button>
         </div>
 
         <!-- Hidden Upload Modal Form -->
         <div class="form-modal" id="uploadFormModal">
             <div class="store-form-box">
-                <button class="close-form-btn" onclick="closeUploadModal()">&times;</button>
+                <button class="close-form-btn" id="closeModalBtn">&times;</button>
                 <h3 style="font-size: 16px; color: #f59e0b; margin-bottom: 15px;">Upload Study Material / PDF Notes</h3>
                 <form id="storeForm">
                     <input type="text" id="itemTitle" placeholder="Title (e.g., Data Structures Complete Handwritten Notes)" required>
@@ -473,14 +473,14 @@
             window.location.href = 'login.html';
         }
 
-        // Modal Open/Close Functions with flex display override
-        window.openUploadModal = function() {
+        // Direct Event Listeners inside module scope to guarantee click works
+        document.getElementById('openModalBtn').addEventListener('click', function() {
             document.getElementById('uploadFormModal').style.display = 'flex';
-        };
+        });
 
-        window.closeUploadModal = function() {
+        document.getElementById('closeModalBtn').addEventListener('click', function() {
             document.getElementById('uploadFormModal').style.display = 'none';
-        };
+        });
 
         document.getElementById('itemPdfFile').addEventListener('change', function(e) {
             const file = e.target.files[0];
@@ -554,7 +554,7 @@
                         document.getElementById('storeForm').reset();
                         document.getElementById('fileNameDisplay').innerText = '';
                         document.getElementById('upiSection').style.display = 'none';
-                        closeUploadModal();
+                        document.getElementById('uploadFormModal').style.display = 'none';
                         alert("Study material published successfully! 🎉");
                     } catch (err) {
                         console.error("Database error:", err);
