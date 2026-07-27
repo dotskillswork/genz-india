@@ -57,7 +57,6 @@
             font-size: 13px;
             color: #94a3b8;
         }
-        /* Store Form Box */
         .store-form-box {
             background: #111827;
             border: 1px solid #1f2937;
@@ -102,7 +101,6 @@
         .publish-btn:hover {
             background: #d97706;
         }
-        /* Store Item Cards */
         .store-card {
             background: #111827;
             border: 1px solid #1f2937;
@@ -216,8 +214,6 @@
         .btn-buy:hover {
             background: #d97706;
         }
-
-        /* Payment Modal */
         .modal {
             display: none;
             position: fixed;
@@ -285,10 +281,9 @@
     <div class="container">
         <div class="hero-banner">
             <h1>Notes, PYQs & Study Material Exchange</h1>
-            <p>Share study notes and papers securely using Google Drive or PDF links.</p>
+            <p>Share study notes and papers securely. Ensure Google Drive link sharing is set to "Anyone with the link".</p>
         </div>
 
-        <!-- Upload Item Form -->
         <div class="store-form-box">
             <h3 style="font-size: 15px; color: #f59e0b; margin-bottom: 15px;">Upload Study Material / Notes</h3>
             <form id="storeForm">
@@ -327,7 +322,7 @@
                     <input type="text" id="itemPrice" placeholder="Price (e.g., Free or ₹49)" required>
                 </div>
 
-                <input type="url" id="itemLink" placeholder="PDF / Google Drive Resource Link (https://...)" required>
+                <input type="url" id="itemLink" placeholder="Google Drive Link (Make sure sharing is Public/Anyone with link)" required>
                 
                 <div id="upiSection" style="display: none;">
                     <input type="text" id="uploaderUpi" placeholder="Enter your UPI ID for payments (e.g., yourname@paytm)">
@@ -339,13 +334,11 @@
             </form>
         </div>
 
-        <!-- Store Feed -->
         <div id="storeFeedContainer">
             <p style="color: #64748b; text-align: center; font-size: 13px;">Loading store materials...</p>
         </div>
     </div>
 
-    <!-- Secure UPI Payment Modal -->
     <div class="modal" id="paymentModal">
         <div class="modal-content">
             <h3 id="modalHeaderTitle">Secure UPI Payment</h3>
@@ -353,18 +346,10 @@
             <div class="upi-box" id="modalUpiDisplay">UPI ID: loading...</div>
             
             <div id="paymentActionArea">
-                <p style="font-size: 11px; color: #f87171; margin-bottom: 15px;">After payment, click below to unlock your download link instantly or send screenshot in chat.</p>
+                <p style="font-size: 11px; color: #f87171; margin-bottom: 15px;">After paying via UPI, click below to open chat and send the payment screenshot to the uploader for verification.</p>
                 <div class="modal-btns">
                     <button type="button" style="background: #334155; color: #fff;" onclick="closeModal()">Cancel</button>
-                    <button type="button" style="background: #10b981; color: #0f172a;" id="paidUnlockBtn">I Have Paid - Unlock Download ✅</button>
-                </div>
-            </div>
-
-            <div id="unlockedDownloadArea" style="display: none;">
-                <p style="font-size: 12px; color: #34d399; margin-bottom: 15px; font-weight: 600;">Payment confirmed! Your resource is ready to download.</p>
-                <div class="modal-btns">
-                    <a id="finalDownloadLink" href="#" target="_blank" style="background: #38bdf8; color: #0f172a;">Download Resource Now 📥</a>
-                    <a id="finalChatLink" href="#" style="background: #334155; color: #fff;">Open Chat to Verify 💬</a>
+                    <button type="button" style="background: #38bdf8; color: #0f172a;" id="sendScreenshotChatBtn">Send Screenshot in Chat 💬</button>
                 </div>
             </div>
         </div>
@@ -392,7 +377,6 @@
             window.location.href = 'login.html';
         }
 
-        // Show/Hide UPI input if price is not free
         document.getElementById('itemPrice').addEventListener('input', function(e) {
             const val = e.target.value.trim().toLowerCase();
             const upiSec = document.getElementById('upiSection');
@@ -405,7 +389,6 @@
             }
         });
 
-        // Publish Store Item
         document.getElementById('storeForm').addEventListener('submit', async function(e) {
             e.preventDefault();
             const title = document.getElementById('itemTitle').value.trim();
@@ -450,7 +433,6 @@
             }
         });
 
-        // Real-time Store Feed Listener
         const q = query(collection(db, 'store_items'), orderBy('createdAt', 'desc'));
         onSnapshot(q, (snapshot) => {
             const container = document.getElementById('storeFeedContainer');
@@ -480,7 +462,7 @@
                 if (isFree) {
                     actionButtonHtml = `<a href="${item.link}" target="_blank" class="btn-access">Access / Download 📥</a>`;
                 } else {
-                    actionButtonHtml = `<button class="btn-buy" onclick="openPaymentModal('${item.author}', '${item.upi}', '${item.title}', '${item.link}')">Buy / Pay 💳</button>`;
+                    actionButtonHtml = `<button class="btn-buy" onclick="openPaymentModal('${item.author}', '${item.upi}', '${item.title}')">Buy / Pay 💳</button>`;
                 }
 
                 container.innerHTML += `
@@ -514,22 +496,13 @@
             });
         });
 
-        window.openPaymentModal = function(author, upiId, title, resourceLink) {
+        window.openPaymentModal = function(author, upiId, title) {
             document.getElementById('modalHeaderTitle').innerText = "Secure UPI Payment";
             document.getElementById('modalItemDetails').innerText = `Pay for: "${title}"`;
             document.getElementById('modalUpiDisplay').innerText = `Uploader UPI ID: ${upiId || 'Not provided'}`;
             
-            // Reset modal states
-            document.getElementById('paymentActionArea').style.display = 'block';
-            document.getElementById('unlockedDownloadArea').style.display = 'none';
-
-            document.getElementById('paidUnlockBtn').onclick = function() {
-                document.getElementById('modalHeaderTitle').innerText = "Payment Successful! 🎉";
-                document.getElementById('paymentActionArea').style.display = 'none';
-                document.getElementById('unlockedDownloadArea').style.display = 'block';
-
-                document.getElementById('finalDownloadLink').href = resourceLink;
-                document.getElementById('finalChatLink').href = `chat.html?with=${author}`;
+            document.getElementById('sendScreenshotChatBtn').onclick = function() {
+                window.location.href = `chat.html?with=${author}`;
             };
 
             document.getElementById('paymentModal').style.display = 'flex';
