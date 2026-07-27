@@ -310,7 +310,7 @@
     <div class="container">
         <div class="hero-banner">
             <h1>Notes, PYQs & Study Material Exchange</h1>
-            <p>Upload PDF notes or study papers directly from your device securely.</p>
+            <p>Upload PDF notes securely via official Firebase Cloud Storage.</p>
         </div>
 
         <div class="store-form-box">
@@ -352,7 +352,7 @@
                 </div>
 
                 <div class="file-upload-box">
-                    <label>📎 Select PDF Document File from Device</label>
+                    <label>📎 Select PDF Document File from Device (100% Safe Google Storage)</label>
                     <input type="file" id="itemPdfFile" accept=".pdf,image/*" required style="border:none; padding:4px 0; background:transparent; font-size:12px; color:#94a3b8;">
                     <p id="fileNameDisplay" style="font-size: 11px; color: #38bdf8; margin-top: 4px;"></p>
                 </div>
@@ -392,6 +392,7 @@
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-app.js";
         import { getFirestore, collection, addDoc, updateDoc, doc, onSnapshot, query, orderBy } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-firestore.js";
+        import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-storage.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyCNLwSjHq6LlX9uUovTRHrz9ZfUwEIUWQM",
@@ -405,6 +406,7 @@
 
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
+        const storage = getStorage(app);
 
         const activeUser = JSON.parse(localStorage.getItem('genzUser'));
         if (!activeUser) {
@@ -432,35 +434,6 @@
             }
         });
 
-        // Fast Free File Upload API
-        async function uploadPdfFile(file) {
-            const formData = new FormData();
-            formData.append('file', file);
-
-            try {
-                const response = await fetch('https://tmpfiles.org/api/v1/upload', {
-                    method: 'POST',
-                    body: formData
-                });
-                const result = await response.json();
-                if (result.status === 'success' && result.data && result.data.url) {
-                    // Convert standard tmpfiles URL to direct download URL
-                    let rawUrl = result.data.url;
-                    let fileUrl = rawUrl.replace('tmpfiles.org/', 'tmpfiles.org/dl/');
-                    return fileUrl;
-                } else {
-                    throw new Error("Upload failed");
-                }
-            } catch (err) {
-                console.error("API upload error, using secure Base64 compressed fallback:", err);
-                return new Promise((resolve) => {
-                    const reader = new FileReader();
-                    reader.readAsDataURL(file);
-                    reader.onload = () => resolve(reader.result);
-                });
-            }
-        }
-
         document.getElementById('storeForm').addEventListener('submit', async function(e) {
             e.preventDefault();
             const title = document.getElementById('itemTitle').value.trim();
@@ -475,44 +448,38 @@
 
             if (!title || !category || !type || !semester || !price || !fileInput || !desc) return;
 
-            publishBtn.innerText = "Uploading PDF File... ⏳";
+            publishBtn.innerText = "Uploading to Firebase Storage... ⏳";
             publishBtn.disabled = true;
 
-            let fileUrl = "";
             try {
-                fileUrl = await uploadPdfFile(fileInput);
-            } catch (err) {
-                console.error("File processing error:", err);
-                alert("Failed to process file.");
-                publishBtn.innerText = "Publish to Store 🚀";
-                publishBtn.disabled = false;
-                return;
-            }
+                // Upload to official Firebase Storage
+                const storageRef = ref(storage, `store_pdfs/${Date.now()}_${fileInput.name}`);
+                const snapshot = await uploadBytes(storageRef, fileInput);
+                const downloadURL = await getDownloadURL(snapshot.ref);
 
-            const newItem = {
-                title: title,
-                category: category,
-                type: type,
-                semester: semester,
-                price: price,
-                fileUrl: fileUrl,
-                fileName: fileInput.name,
-                upi: upi || "",
-                description: desc,
-                author: activeUser.username,
-                authorPic: activeUser.profilePic || "",
-                createdAt: Date.now()
-            };
+                const newItem = {
+                    title: title,
+                    category: category,
+                    type: type,
+                    semester: semester,
+                    price: price,
+                    fileUrl: downloadURL,
+                    fileName: fileInput.name,
+                    upi: upi || "",
+                    description: desc,
+                    author: activeUser.username,
+                    authorPic: activeUser.profilePic || "",
+                    createdAt: Date.now()
+                };
 
-            try {
                 await addDoc(collection(db, 'store_items'), newItem);
                 document.getElementById('storeForm').reset();
                 document.getElementById('fileNameDisplay').innerText = '';
                 document.getElementById('upiSection').style.display = 'none';
-                alert("Study material published successfully! 🎉");
+                alert("Study material published successfully to Firebase Storage! 🎉");
             } catch (err) {
-                console.error("Error publishing item to database:", err);
-                alert("Failed to publish item. Please try with a slightly smaller file or check your network.");
+                console.error("Firebase Storage upload error:", err);
+                alert("Failed to upload file to Firebase Storage. Please check storage rules or try again.");
             } finally {
                 publishBtn.innerText = "Publish to Store 🚀";
                 publishBtn.disabled = false;
