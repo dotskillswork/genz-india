@@ -117,7 +117,7 @@
 
     <div class="chat-container">
         <div class="chat-box" id="msgChatBox">
-            <p style="color: #64748b; font-size: 12px; text-align: center;" id="loadingText">Loading messages...</p>
+            <p style="color: #64748b; font-size: 12px; text-align: center;" id="loadingText">Connecting chat...</p>
         </div>
         <form id="chatForm" class="chat-input-area">
             <input type="text" id="msgInput" placeholder="Type a message..." autocomplete="off" required>
@@ -125,10 +125,10 @@
         </form>
     </div>
 
-    <!-- Bulletproof Firebase Chat Logic -->
+    <!-- Real-time Array-Based Bulletproof Chat Logic -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-app.js";
-        import { getFirestore, collection, addDoc, getDocs } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-firestore.js";
+        import { getFirestore, doc, getDoc, setDoc, updateDoc, arrayUnion, onSnapshot } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-firestore.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyCNLwSjHq6LlX9uUovTRHrz9ZfUwEIUWQM",
@@ -159,7 +159,11 @@
         document.getElementById('chatTitle').innerText = `Chat with @${targetUsername}`;
         const chatRoomId = [activeUser.username, targetUsername].sort().join('_');
 
-        let lastRenderedCount = 0;
+        // Reference to a single unified room document in a 'chatRooms' collection
+        const roomRef = doc(db, 'chatRooms', chatRoomId);
+
+        let isInitialLoad = true;
+        let lastCount = 0;
 
         function playBeep() {
             try {
@@ -177,84 +181,83 @@
             } catch (err) {}
         }
 
+        // Send Message using Atomic arrayUnion
         document.getElementById('chatForm').addEventListener('submit', async function(event) {
             event.preventDefault();
             const inputField = document.getElementById('msgInput');
             const text = inputField.value.trim();
             if (!text) return;
 
-            // Using high-precision microsecond-level timestamp to guarantee absolute unique sequence
-            const msgData = {
-                room: chatRoomId,
+            const newMessage = {
                 sender: activeUser.username,
-                receiver: targetUsername,
                 text: text,
-                createdAt: Date.now() + Math.random() // Prevents identical millisecond clashes
+                createdAt: Date.now()
             };
 
-            inputField.value = ''; // Clear input immediately for snappy UX
+            inputField.value = '';
 
             try {
-                await addDoc(collection(db, 'directMessages'), msgData);
-                loadMessages(true);
+                const docSnap = await getDoc(roomRef);
+                if (!docSnap.exists()) {
+                    // If room doesn't exist, create it with the first message array
+                    await setDoc(roomRef, { messages: [newMessage] });
+                } else {
+                    // Atomically push to the array, preserving exact sequential order
+                    await updateDoc(roomRef, {
+                        messages: arrayUnion(newMessage)
+                    });
+                }
             } catch (err) {
                 console.error("Send error:", err);
                 alert('Failed to send message.');
             }
         });
 
-        async function loadMessages(isSentByMe = false) {
+        // Real-time listener using onSnapshot (No polling needed!)
+        onSnapshot(roomRef, (docSnap) => {
             const chatBox = document.getElementById('msgChatBox');
-            try {
-                const querySnapshot = await getDocs(collection(db, 'directMessages'));
-                const messagesArray = [];
+            
+            if (!docSnap.exists()) {
+                chatBox.innerHTML = `<p style="color: #64748b; font-size: 12px; text-align: center;">No messages yet. Say hello! 👋</p>`;
+                return;
+            }
 
-                querySnapshot.forEach((docSnap) => {
-                    const m = docSnap.data();
-                    if (m.room === chatRoomId) {
-                        messagesArray.push(m);
-                    }
-                });
+            const data = docSnap.data();
+            const messagesArray = data.messages || [];
 
-                // Strict ascending numerical sort (Oldest message first, Newest at bottom)
-                messagesArray.sort((a, b) => Number(a.createdAt || 0) - Number(b.createdAt || 0));
+            if (messagesArray.length === 0) {
+                chatBox.innerHTML = `<p style="color: #64748b; font-size: 12px; text-align: center;">No messages yet. Say hello! 👋</p>`;
+                return;
+            }
 
-                if (messagesArray.length === 0) {
-                    chatBox.innerHTML = `<p style="color: #64748b; font-size: 12px; text-align: center;">No messages yet. Say hello! 👋</p>`;
-                    return;
-                }
-
-                // Play sound if a new incoming message arrives
-                if (lastRenderedCount > 0 && messagesArray.length > lastRenderedCount && !isSentByMe) {
+            // Play notification sound if new message arrives from someone else (after initial load)
+            if (!isInitialLoad && messagesArray.length > lastCount) {
+                const latestMsg = messagesArray[messagesArray.length - 1];
+                if (latestMsg.sender !== activeUser.username) {
                     playBeep();
                     document.getElementById('pageTitle').innerText = "🔔 New Message! - Gen'Z India";
                 }
-
-                // Only re-render if message count or content changes to prevent jitter
-                if (messagesArray.length !== lastRenderedCount) {
-                    lastRenderedCount = messagesArray.length;
-                    chatBox.innerHTML = '';
-
-                    messagesArray.forEach(m => {
-                        const isSender = m.sender === activeUser.username;
-                        const timeString = m.createdAt ? new Date(Number(m.createdAt)).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : '';
-                        chatBox.innerHTML += `
-                            <div class="message ${isSender ? 'sent' : 'received'}">
-                                <div>${m.text}</div>
-                                <div class="msg-time">${timeString}</div>
-                            </div>
-                        `;
-                    });
-
-                    chatBox.scrollTop = chatBox.scrollHeight;
-                }
-            } catch (err) {
-                console.error("Chat load error:", err);
             }
-        }
 
-        loadMessages();
-        setInterval(() => loadMessages(false), 3000);
+            isInitialLoad = false;
+            lastCount = messagesArray.length;
+
+            chatBox.innerHTML = '';
+            messagesArray.forEach(m => {
+                const isSender = m.sender === activeUser.username;
+                const timeString = m.createdAt ? new Date(Number(m.createdAt)).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : '';
+                chatBox.innerHTML += `
+                    <div class="message ${isSender ? 'sent' : 'received'}">
+                        <div>${m.text}</div>
+                        <div class="msg-time">${timeString}</div>
+                    </div>
+                `;
+            });
+
+            chatBox.scrollTop = chatBox.scrollHeight;
+        }, (error) => {
+            console.error("Realtime sync error:", error);
+        });
     </script>
 </body>
 </html>
