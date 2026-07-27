@@ -38,6 +38,7 @@
         nav {
             display: flex;
             gap: 15px;
+            align-items: center;
         }
         nav a {
             color: #94a3b8;
@@ -48,6 +49,15 @@
         }
         nav a:hover, nav a.active {
             color: #38bdf8;
+        }
+        .logout-btn {
+            background: #ef4444;
+            color: #fff;
+            border: none;
+            padding: 5px 12px;
+            border-radius: 6px;
+            font-size: 12px;
+            cursor: pointer;
         }
         .container {
             max-width: 700px;
@@ -86,15 +96,6 @@
             flex-wrap: wrap;
             gap: 10px;
         }
-        .tweet-controls input[type="text"] {
-            background: #0b0f19;
-            border: 1px solid #334155;
-            border-radius: 6px;
-            padding: 8px 10px;
-            color: #fff;
-            font-size: 13px;
-            width: 35%;
-        }
         .file-upload-wrapper {
             font-size: 12px;
             color: #94a3b8;
@@ -124,19 +125,24 @@
         }
         .feed-header {
             display: flex;
-            justify-content: space-between;
-            margin-bottom: 8px;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 10px;
         }
-        .feed-header h4 {
+        .feed-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 1px solid #38bdf8;
+        }
+        .feed-user-info h4 {
             color: #f8fafc;
-            font-size: 15px;
+            font-size: 14px;
         }
-        .feed-header span {
+        .feed-user-info span {
             font-size: 11px;
-            color: #38bdf8;
-            background: rgba(56, 189, 248, 0.1);
-            padding: 2px 6px;
-            border-radius: 4px;
+            color: #94a3b8;
         }
         .feed-card p {
             color: #cbd5e1;
@@ -186,20 +192,24 @@
             font-size: 12px;
             cursor: pointer;
         }
-        @media (max-width: 600px) {
-            .tweet-controls input[type="text"] {
-                width: 100%;
-            }
-        }
     </style>
 </head>
 <body>
+
+    <!-- Strict Auth Guard Script -->
+    <script>
+        const currentUser = localStorage.getItem('genzUser');
+        if (!currentUser) {
+            window.location.href = 'login.html';
+        }
+    </script>
 
     <header>
         <a href="index.html" class="logo">Gen'Z India ⚡</a>
         <nav>
             <a href="index.html">Home</a>
             <a href="voiceup.html" class="active">Voice Up</a>
+            <button class="logout-btn" onclick="logoutUser()">Logout</button>
         </nav>
     </header>
 
@@ -211,11 +221,10 @@
             <form onsubmit="postVoiceIssue(event)">
                 <textarea id="vText" placeholder="What is happening in your college or society? Speak up..." required></textarea>
                 <div class="tweet-controls">
-                    <input type="text" id="vName" placeholder="Name or type 'Anonymous'">
                     <div class="file-upload-wrapper">
                         <input type="file" id="vMedia" accept="image/*" style="font-size: 11px;">
                     </div>
-                    <button type="submit" class="post-btn">Post</button>
+                    <button type="submit" class="post-btn">Post Anonymously / Public</button>
                 </div>
             </form>
         </div>
@@ -244,6 +253,11 @@
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
 
+        window.logoutUser = function() {
+            localStorage.removeItem('genzUser');
+            window.location.href = 'login.html';
+        }
+
         function convertImageToBase64(fileInputId) {
             return new Promise((resolve) => {
                 const fileInput = document.getElementById(fileInputId);
@@ -259,13 +273,14 @@
 
         window.postVoiceIssue = async function(event) {
             event.preventDefault();
+            const user = JSON.parse(localStorage.getItem('genzUser'));
             let text = document.getElementById('vText').value;
-            let nameInput = document.getElementById('vName').value.trim();
-            let name = nameInput === "" ? "Anonymous" : nameInput;
             let mediaBase64 = await convertImageToBase64('vMedia');
 
             let data = {
-                name: name,
+                name: user.name,
+                username: "@" + user.username,
+                photo: user.photo || "https://cdn.jsdelivr.net/gh/twitter/twemoji@14.0.2/assets/72x72/1f464.png",
                 text: text,
                 media: mediaBase64,
                 replies: []
@@ -282,14 +297,17 @@
         }
 
         window.addVoiceReply = async function(docId) {
+            const user = JSON.parse(localStorage.getItem('genzUser'));
             const inputField = document.getElementById(`reply-text-${docId}`);
             const replyText = inputField.value.trim();
             if(!replyText) return;
 
+            const fullReply = `${user.name}: ${replyText}`;
+
             try {
                 const docRef = doc(db, 'voices', docId);
                 await updateDoc(docRef, {
-                    replies: arrayUnion(replyText)
+                    replies: arrayUnion(fullReply)
                 });
                 loadVoices();
             } catch(e) {
@@ -312,6 +330,7 @@
                     const d = document.data();
                     const docId = document.id;
                     let mediaHTML = d.media ? `<img src="${d.media}" alt="Attachment">` : '';
+                    let avatar = d.photo || "https://cdn.jsdelivr.net/gh/twitter/twemoji@14.0.2/assets/72x72/1f464.png";
 
                     let repliesHTML = '';
                     if(d.replies && d.replies.length > 0) {
@@ -325,8 +344,11 @@
                     container.innerHTML += `
                         <div class="feed-card">
                             <div class="feed-header">
-                                <h4>${d.name}</h4>
-                                <span>Voice Up</span>
+                                <img src="${avatar}" class="feed-avatar" alt="Avatar">
+                                <div class="feed-user-info">
+                                    <h4>${d.name}</h4>
+                                    <span>${d.username} • ${d.college || 'Student'}</span>
+                                </div>
                             </div>
                             <p>${d.text}</p>
                             ${mediaHTML}
