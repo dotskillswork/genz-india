@@ -261,14 +261,16 @@
             display: flex;
             gap: 10px;
             justify-content: center;
+            flex-wrap: wrap;
         }
-        .modal-btns button {
+        .modal-btns button, .modal-btns a {
             padding: 8px 16px;
             border-radius: 6px;
             font-size: 12px;
             font-weight: 600;
             cursor: pointer;
             border: none;
+            text-decoration: none;
         }
     </style>
 </head>
@@ -346,13 +348,24 @@
     <!-- Secure UPI Payment Modal -->
     <div class="modal" id="paymentModal">
         <div class="modal-content">
-            <h3>Secure UPI Payment</h3>
+            <h3 id="modalHeaderTitle">Secure UPI Payment</h3>
             <p id="modalItemDetails">Pay the uploader directly to get notes securely.</p>
             <div class="upi-box" id="modalUpiDisplay">UPI ID: loading...</div>
-            <p style="font-size: 11px; color: #f87171; margin-bottom: 15px;">After payment, click below to open chat and send payment screenshot to receive the resource.</p>
-            <div class="modal-btns">
-                <button type="button" style="background: #334155; color: #fff;" onclick="closeModal()">Cancel</button>
-                <button type="button" style="background: #38bdf8; color: #0f172a;" id="proceedChatBtn">I Have Paid - Open Chat 💬</button>
+            
+            <div id="paymentActionArea">
+                <p style="font-size: 11px; color: #f87171; margin-bottom: 15px;">After payment, click below to unlock your download link instantly or send screenshot in chat.</p>
+                <div class="modal-btns">
+                    <button type="button" style="background: #334155; color: #fff;" onclick="closeModal()">Cancel</button>
+                    <button type="button" style="background: #10b981; color: #0f172a;" id="paidUnlockBtn">I Have Paid - Unlock Download ✅</button>
+                </div>
+            </div>
+
+            <div id="unlockedDownloadArea" style="display: none;">
+                <p style="font-size: 12px; color: #34d399; margin-bottom: 15px; font-weight: 600;">Payment confirmed! Your resource is ready to download.</p>
+                <div class="modal-btns">
+                    <a id="finalDownloadLink" href="#" target="_blank" style="background: #38bdf8; color: #0f172a;">Download Resource Now 📥</a>
+                    <a id="finalChatLink" href="#" style="background: #334155; color: #fff;">Open Chat to Verify 💬</a>
+                </div>
             </div>
         </div>
     </div>
@@ -467,7 +480,7 @@
                 if (isFree) {
                     actionButtonHtml = `<a href="${item.link}" target="_blank" class="btn-access">Access / Download 📥</a>`;
                 } else {
-                    actionButtonHtml = `<button class="btn-buy" onclick="openPaymentModal('${item.author}', '${item.upi}', '${item.title}')">Buy / Pay 💳</button>`;
+                    actionButtonHtml = `<button class="btn-buy" onclick="openPaymentModal('${item.author}', '${item.upi}', '${item.title}', '${item.link}')">Buy / Pay 💳</button>`;
                 }
 
                 container.innerHTML += `
@@ -501,13 +514,22 @@
             });
         });
 
-        window.openPaymentModal = function(author, upiId, title) {
+        window.openPaymentModal = function(author, upiId, title, resourceLink) {
+            document.getElementById('modalHeaderTitle').innerText = "Secure UPI Payment";
             document.getElementById('modalItemDetails').innerText = `Pay for: "${title}"`;
             document.getElementById('modalUpiDisplay').innerText = `Uploader UPI ID: ${upiId || 'Not provided'}`;
             
-            const chatBtn = document.getElementById('proceedChatBtn');
-            chatBtn.onclick = function() {
-                window.location.href = `chat.html?with=${author}`;
+            // Reset modal states
+            document.getElementById('paymentActionArea').style.display = 'block';
+            document.getElementById('unlockedDownloadArea').style.display = 'none';
+
+            document.getElementById('paidUnlockBtn').onclick = function() {
+                document.getElementById('modalHeaderTitle').innerText = "Payment Successful! 🎉";
+                document.getElementById('paymentActionArea').style.display = 'none';
+                document.getElementById('unlockedDownloadArea').style.display = 'block';
+
+                document.getElementById('finalDownloadLink').href = resourceLink;
+                document.getElementById('finalChatLink').href = `chat.html?with=${author}`;
             };
 
             document.getElementById('paymentModal').style.display = 'flex';

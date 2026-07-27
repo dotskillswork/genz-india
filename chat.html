@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title id="pageTitle">Chat | Gen'Z India</title>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <title>Chat | Gen'Z India</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
         * {
             margin: 0;
@@ -15,13 +15,13 @@
         body {
             background-color: #0b0f19;
             color: #f1f5f9;
+            height: 100vh;
             display: flex;
             flex-direction: column;
-            height: 100vh;
         }
         header {
             background: #111827;
-            padding: 12px 20px;
+            padding: 15px 20px;
             display: flex;
             align-items: center;
             justify-content: space-between;
@@ -30,48 +30,47 @@
         .back-btn {
             color: #38bdf8;
             text-decoration: none;
-            font-size: 13px;
+            font-size: 14px;
             font-weight: 600;
-        }
-        .header-info {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
         }
         .chat-container {
             flex: 1;
-            max-width: 700px;
+            max-width: 800px;
             width: 100%;
             margin: 0 auto;
             display: flex;
             flex-direction: column;
-            padding: 15px;
-            overflow: hidden;
-        }
-        .chat-box {
-            flex: 1;
             background: #111827;
-            border: 1px solid #1f2937;
-            border-radius: 12px;
-            padding: 15px;
+            border-left: 1px solid #1f2937;
+            border-right: 1px solid #1f2937;
+        }
+        .chat-header {
+            padding: 15px 20px;
+            background: #1f2937;
+            font-size: 15px;
+            font-weight: 600;
+            color: #38bdf8;
+            border-bottom: 1px solid #334155;
+        }
+        .messages-box {
+            flex: 1;
+            padding: 20px;
             overflow-y: auto;
             display: flex;
             flex-direction: column;
-            gap: 10px;
-            margin-bottom: 12px;
+            gap: 12px;
         }
         .message {
-            max-width: 75%;
+            max-width: 70%;
             padding: 10px 14px;
             border-radius: 10px;
             font-size: 13px;
+            line-height: 1.4;
             word-break: break-word;
-            display: flex;
-            flex-direction: column;
         }
         .message.sent {
-            background: #38bdf8;
-            color: #0f172a;
+            background: #0284c7;
+            color: #fff;
             align-self: flex-end;
             border-bottom-right-radius: 2px;
         }
@@ -82,61 +81,87 @@
             border-bottom-left-radius: 2px;
             border: 1px solid #334155;
         }
-        .msg-time {
-            font-size: 9px;
-            margin-top: 3px;
-            text-align: right;
-            opacity: 0.7;
+        .message img {
+            max-width: 100%;
+            border-radius: 6px;
+            margin-top: 5px;
+            display: block;
         }
-        .chat-input-area {
+        .chat-input-box {
+            padding: 15px 20px;
+            background: #1f2937;
             display: flex;
             gap: 10px;
+            align-items: center;
+            border-top: 1px solid #334155;
         }
-        .chat-input-area input {
+        .chat-input-box input[type="text"] {
             flex: 1;
-            background: #111827;
+            background: #0b0f19;
             border: 1px solid #334155;
             border-radius: 8px;
-            padding: 12px 15px;
+            padding: 10px 14px;
             color: #fff;
             font-size: 13px;
+        }
+        .chat-input-box input[type="text"]:focus {
+            outline: none;
+            border-color: #38bdf8;
+        }
+        .file-upload-label {
+            background: #334155;
+            color: #38bdf8;
+            padding: 9px 12px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: 600;
+        }
+        .file-upload-label:hover {
+            background: #475569;
         }
         .send-btn {
             background: #38bdf8;
             color: #0f172a;
             border: none;
-            padding: 0 20px;
+            padding: 10px 18px;
             border-radius: 8px;
             font-weight: 600;
+            font-size: 13px;
             cursor: pointer;
+        }
+        .send-btn:hover {
+            background: #0ea5e9;
         }
     </style>
 </head>
 <body>
 
     <header>
-        <a href="makefriend.html" class="back-btn">← Back to Friends</a>
-        <div class="header-info">
-            <h3 id="chatTitle" style="font-size: 15px; color: #38bdf8;">Chat</h3>
-            <span style="font-size: 10px; color: #94a3b8;" id="chatStatus">Connecting...</span>
-        </div>
-        <div style="width: 70px;"></div> <!-- Spacer for center alignment -->
+        <a href="makefriend.html" class="back-btn">← Back to Dashboard</a>
+        <h3 style="font-size: 16px; color: #fff;">💬 Gen'Z Direct Chat</h3>
+        <div style="width: 80px;"></div>
     </header>
 
     <div class="chat-container">
-        <div class="chat-box" id="msgChatBox">
-            <p style="color: #64748b; font-size: 12px; text-align: center;">Loading messages...</p>
+        <div class="chat-header" id="chatTitle">Connecting to chat...</div>
+        
+        <div class="messages-box" id="messagesBox">
+            <!-- Messages load here -->
         </div>
-        <form id="chatForm" class="chat-input-area">
-            <input type="text" id="msgInput" placeholder="Type a message..." autocomplete="off" required>
-            <button type="submit" class="send-btn">Send</button>
-        </form>
+
+        <div class="chat-input-box">
+            <label class="file-upload-label" title="Upload Payment Screenshot">
+                📷 <input type="file" id="imageInput" accept="image/*" style="display: none;">
+            </label>
+            <input type="text" id="messageInput" placeholder="Type a message or description...">
+            <button class="send-btn" id="sendBtn">Send</button>
+        </div>
     </div>
 
-    <!-- Real-time Chat & Presence Logic -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-app.js";
-        import { getFirestore, doc, getDoc, setDoc, updateDoc, arrayUnion, onSnapshot } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-firestore.js";
+        import { getFirestore, collection, addDoc, onSnapshot, query, orderBy } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-firestore.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyCNLwSjHq6LlX9uUovTRHrz9ZfUwEIUWQM",
@@ -155,152 +180,85 @@
         if (!activeUser) {
             window.location.href = 'login.html';
         }
-        
-        const urlParams = new URLSearchParams(window.location.search);
-        const targetUsername = urlParams.get('with');
 
-        if (!targetUsername) {
-            alert('No chat selected!');
+        const urlParams = new URLSearchParams(window.location.search);
+        const chatWith = urlParams.get('with');
+
+        if (!chatWith) {
             window.location.href = 'makefriend.html';
         }
 
-        document.getElementById('chatTitle').innerText = `@${targetUsername}`;
-        const chatRoomId = [activeUser.username, targetUsername].sort().join('_');
-        const roomRef = doc(db, 'chatRooms', chatRoomId);
-        const userStatusRef = doc(db, 'userStatus', targetUsername);
+        document.getElementById('chatTitle').innerText = `Chat with @${chatWith}`;
 
-        let isInitialLoad = true;
-        let lastCount = 0;
+        // Unique Chat Room ID generation
+        const chatId = [activeUser.username, chatWith].sort().join('_');
 
-        function playBeep() {
-            try {
-                const AudioContextClass = window.AudioContext || window.webkitAudioContext;
-                const audioCtx = new AudioContextClass();
-                const oscillator = audioCtx.createOscillator();
-                const gainNode = audioCtx.createGain();
-                oscillator.type = 'sine';
-                oscillator.frequency.setValueAtTime(587.33, audioCtx.currentTime);
-                gainNode.gain.setValueAtTime(0.1, audioCtx.currentTime);
-                oscillator.connect(gainNode);
-                gainNode.connect(audioCtx.destination);
-                oscillator.start();
-                oscillator.stop(audioCtx.currentTime + 0.15);
-            } catch (err) {}
-        }
+        let selectedImageBase64 = "";
 
-        // Update own activity status
-        async function updatePresence() {
-            try {
-                const myStatusRef = doc(db, 'userStatus', activeUser.username);
-                await setDoc(myStatusRef, { lastActive: Date.now() }, { merge: true });
-            } catch (err) {}
-        }
-
-        updatePresence();
-        setInterval(updatePresence, 10000); // Ping every 10 seconds
-
-        // Check target user status
-        async function checkTargetStatus() {
-            const statusSpan = document.getElementById('chatStatus');
-            try {
-                const snap = await getDoc(userStatusRef);
-                if (!snap.exists()) {
-                    statusSpan.innerText = "Offline";
-                    return;
-                }
-                const data = snap.data();
-                const lastActive = data.lastActive || 0;
-                const diff = Date.now() - lastActive;
-
-                if (diff < 30000) {
-                    statusSpan.innerText = "Online";
-                    statusSpan.style.color = "#38bdf8";
-                } else {
-                    const lastDate = new Date(lastActive);
-                    const timeStr = lastDate.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-                    statusSpan.innerText = `Last seen at ${timeStr}`;
-                    statusSpan.style.color = "#94a3b8";
-                }
-            } catch (err) {
-                statusSpan.innerText = "Offline";
-            }
-        }
-
-        checkTargetStatus();
-        setInterval(checkTargetStatus, 5000);
-
-        // Send Message
-        document.getElementById('chatForm').addEventListener('submit', async function(event) {
-            event.preventDefault();
-            const inputField = document.getElementById('msgInput');
-            const text = inputField.value.trim();
-            if (!text) return;
-
-            const newMessage = {
-                sender: activeUser.username,
-                text: text,
-                createdAt: Date.now()
-            };
-
-            inputField.value = '';
-            updatePresence();
-
-            try {
-                const docSnap = await getDoc(roomRef);
-                if (!docSnap.exists()) {
-                    await setDoc(roomRef, { messages: [newMessage] });
-                } else {
-                    await updateDoc(roomRef, {
-                        messages: arrayUnion(newMessage)
-                    });
-                }
-            } catch (err) {
-                console.error("Send error:", err);
-                alert('Failed to send message.');
+        document.getElementById('imageInput').addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(uploadEvent) {
+                    selectedImageBase64 = uploadEvent.target.result;
+                    document.getElementById('messageInput').placeholder = "Screenshot attached! Click Send ->";
+                };
+                reader.readAsDataURL(file);
             }
         });
 
-        // Real-time chat listener
-        onSnapshot(roomRef, (docSnap) => {
-            const chatBox = document.getElementById('msgChatBox');
-            
-            if (!docSnap.exists()) {
-                chatBox.innerHTML = `<p style="color: #64748b; font-size: 12px; text-align: center;">No messages yet. Say hello! 👋</p>`;
-                return;
+        // Send Message Handler
+        async function sendMessage() {
+            const text = document.getElementById('messageInput').value.trim();
+            if (!text && !selectedImageBase64) return;
+
+            const messageData = {
+                chatId: chatId,
+                sender: activeUser.username,
+                receiver: chatWith,
+                text: text,
+                image: selectedImageBase64 || "",
+                createdAt: Date.now()
+            };
+
+            try {
+                await addDoc(collection(db, 'chats'), messageData);
+                document.getElementById('messageInput').value = "";
+                document.getElementById('messageInput').placeholder = "Type a message or description...";
+                selectedImageBase64 = "";
+                document.getElementById('imageInput').value = "";
+            } catch (err) {
+                console.error("Error sending message:", err);
+                alert("Failed to send message.");
             }
+        }
 
-            const data = docSnap.data();
-            const messagesArray = data.messages || [];
+        document.getElementById('sendBtn').addEventListener('click', sendMessage);
+        document.getElementById('messageInput').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') sendMessage();
+        });
 
-            if (messagesArray.length === 0) {
-                chatBox.innerHTML = `<p style="color: #64748b; font-size: 12px; text-align: center;">No messages yet. Say hello! 👋</p>`;
-                return;
-            }
+        // Listen for Real-time Messages
+        const q = query(collection(db, 'chats'), orderBy('createdAt', 'asc'));
+        onSnapshot(q, (snapshot) => {
+            const box = document.getElementById('messagesBox');
+            box.innerHTML = "";
 
-            if (!isInitialLoad && messagesArray.length > lastCount) {
-                const latestMsg = messagesArray[messagesArray.length - 1];
-                if (latestMsg.sender !== activeUser.username) {
-                    playBeep();
-                    document.getElementById('pageTitle').innerText = "🔔 New Message! - Gen'Z India";
+            snapshot.forEach((docSnap) => {
+                const msg = docSnap.data();
+                if (msg.chatId === chatId) {
+                    const isSent = msg.sender === activeUser.username;
+                    const imageTag = msg.image ? `<img src="${msg.image}">` : "";
+
+                    box.innerHTML += `
+                        <div class="message ${isSent ? 'sent' : 'received'}">
+                            ${msg.text ? `<div>${msg.text}</div>` : ""}
+                            ${imageTag}
+                        </div>
+                    `;
                 }
-            }
-
-            isInitialLoad = false;
-            lastCount = messagesArray.length;
-
-            chatBox.innerHTML = '';
-            messagesArray.forEach(m => {
-                const isSender = m.sender === activeUser.username;
-                const timeString = m.createdAt ? new Date(Number(m.createdAt)).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : '';
-                chatBox.innerHTML += `
-                    <div class="message ${isSender ? 'sent' : 'received'}">
-                        <div>${m.text}</div>
-                        <div class="msg-time">${timeString}</div>
-                    </div>
-                `;
             });
-
-            chatBox.scrollTop = chatBox.scrollHeight;
+            box.scrollTop = box.scrollHeight;
         });
     </script>
 </body>
