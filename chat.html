@@ -123,10 +123,10 @@
         </form>
     </div>
 
-    <!-- Firebase Chat Logic -->
+    <!-- Firebase Chat Logic with Correct Sorting -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-app.js";
-        import { getFirestore, collection, addDoc, getDocs, query } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-firestore.js";
+        import { getFirestore, collection, addDoc, getDocs } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-firestore.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyCNLwSjHq6LlX9uUovTRHrz9ZfUwEIUWQM",
@@ -141,13 +141,11 @@
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
 
-        // Check Login Guard & Get User Data safely once
         const currentUser = JSON.parse(localStorage.getItem('genzUser'));
         if (!currentUser) {
             window.location.href = 'login.html';
         }
         
-        // Get target user from URL parameters e.g. chat.html?with=rahul_dev
         const urlParams = new URLSearchParams(window.location.search);
         const targetUsername = urlParams.get('with');
 
@@ -158,7 +156,6 @@
 
         document.getElementById('chatTitle').innerText = `Chat with @${targetUsername}`;
 
-        // Unique chat room ID generator
         const chatRoomId = [currentUser.username, targetUsername].sort().join('_');
 
         window.sendDirectMessage = async function(event) {
@@ -171,7 +168,7 @@
                 sender: currentUser.username,
                 receiver: targetUsername,
                 text: text,
-                timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+                createdAt: Date.now() // Precise timestamp for sorting
             };
 
             try {
@@ -188,26 +185,35 @@
             const chatBox = document.getElementById('msgChatBox');
             try {
                 const querySnapshot = await getDocs(collection(db, 'directMessages'));
-                chatBox.innerHTML = '';
-                let found = 0;
+                let messagesArray = [];
 
                 querySnapshot.forEach((doc) => {
                     const m = doc.data();
                     if(m.room === chatRoomId) {
-                        found++;
-                        let isSender = m.sender === currentUser.username;
-                        chatBox.innerHTML += `
-                            <div class="message ${isSender ? 'sent' : 'received'}">
-                                <div>${m.text}</div>
-                                <div class="msg-time">${m.timestamp || ''}</div>
-                            </div>
-                        `;
+                        messagesArray.push(m);
                     }
                 });
 
-                if(found === 0) {
+                // Sort messages chronologically (Oldest first, Newest at bottom)
+                messagesArray.sort((a, b) => (a.createdAt || 0) - (b.createdAt || 0));
+
+                chatBox.innerHTML = '';
+                if(messagesArray.length === 0) {
                     chatBox.innerHTML = `<p style="color: #64748b; font-size: 12px; text-align: center;">No messages yet. Say hello! 👋</p>`;
+                    return;
                 }
+
+                messagesArray.forEach(m => {
+                    let isSender = m.sender === currentUser.username;
+                    let timeString = m.createdAt ? new Date(m.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : '';
+                    chatBox.innerHTML += `
+                        <div class="message ${isSender ? 'sent' : 'received'}">
+                            <div>${m.text}</div>
+                            <div class="msg-time">${timeString}</div>
+                        </div>
+                    `;
+                });
+
                 chatBox.scrollTop = chatBox.scrollHeight;
             } catch(e) {
                 console.error(e);
