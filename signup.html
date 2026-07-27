@@ -92,19 +92,18 @@
 
     <div class="auth-card">
         <h2>Join Gen'Z India ⚡</h2>
-        <form onsubmit="handleSignup(event)">
+        <form id="signupForm">
             <div class="form-group">
                 <label>Full Name</label>
                 <input type="text" id="sName" placeholder="e.g. Rahul Sharma" required>
             </div>
             <div class="form-group">
-                <label>Unique Username (e.g. @rahul_dev)</label>
+                <label>Unique Username (e.g. rahul_dev)</label>
                 <input type="text" id="sUsername" placeholder="rahul_dev" required>
             </div>
             <div class="row-group">
                 <div class="form-group">
                     <label>Email Address</label>
-                    <input type="email5" id="sEmail" placeholder="name@email.com" required style="display:none"> <!-- hidden dummy for safety -->
                     <input type="email" id="sEmailReal" placeholder="name@email.com" required>
                 </div>
                 <div class="form-group">
@@ -136,14 +135,14 @@
                 <label>Profile Photo</label>
                 <input type="file" id="sPhoto" accept="image/*" style="font-size: 11px; color: #94a3b8;">
             </div>
-            <button type="submit" class="submit-btn">Create Account</button>
+            <button type="submit" class="submit-btn" id="submitBtn">Create Account</button>
             <div class="auth-link">
                 Already have an account? <a href="login.html">Login here</a>
             </div>
         </form>
     </div>
 
-    <!-- Firebase Script for Registration & Unique Username Check -->
+    <!-- Firebase Script -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-app.js";
         import { getFirestore, collection, addDoc, getDocs, query, where } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-firestore.js";
@@ -174,8 +173,13 @@
             });
         }
 
-        window.handleSignup = async function(event) {
+        document.getElementById('signupForm').addEventListener('submit', async function(event) {
             event.preventDefault();
+            
+            const btn = document.getElementById('submitBtn');
+            btn.innerText = "Creating Account...";
+            btn.disabled = true;
+
             let name = document.getElementById('sName').value.trim();
             let username = document.getElementById('sUsername').value.trim().toLowerCase().replace('@','');
             let email = document.getElementById('sEmailReal').value.trim();
@@ -193,6 +197,8 @@
 
                 if (!querySnapshot.empty) {
                     alert('Username already taken! Please choose another unique username.');
+                    btn.innerText = "Create Account";
+                    btn.disabled = false;
                     return;
                 }
 
@@ -202,6 +208,8 @@
 
                 if (!emailSnapshot.empty) {
                     alert('This email is already registered! Please login.');
+                    btn.innerText = "Create Account";
+                    btn.disabled = false;
                     return;
                 }
 
@@ -223,10 +231,12 @@
                 window.location.href = 'login.html';
 
             } catch(e) {
-                console.error(e);
-                alert('Error creating account. Please try again.');
+                console.error("Signup Error: ", e);
+                alert('Error creating account. Check console or try again.');
+                btn.innerText = "Create Account";
+                btn.disabled = false;
             }
-        }
+        });
     </script>
 </body>
 </html>
