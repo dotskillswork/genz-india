@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DoubtBox Hub | Gen'Z India</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+        body {
+            background-color: #0b0f19;
+            color: #f1f5f9;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        header {
+            background: #111827;
+            padding: 15px 30px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 1px solid #1f2937;
+        }
+        .back-btn {
+            color: #38bdf8;
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 600;
+        }
+        .container {
+            max-width: 1100px;
+            width: 100%;
+            margin: 30px auto;
+            padding: 0 20px;
+            flex: 1;
+        }
+        .hero-section {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .hero-section h1 {
+            font-size: 26px;
+            color: #38bdf8;
+            margin-bottom: 8px;
+        }
+        .hero-section p {
+            color: #94a3b8;
+            font-size: 13px;
+        }
+        .search-bar {
+            width: 100%;
+            max-width: 500px;
+            margin: 0 auto 30px auto;
+            display: block;
+            background: #111827;
+            border: 1px solid #334155;
+            border-radius: 8px;
+            padding: 12px 18px;
+            color: #fff;
+            font-size: 14px;
+        }
+        .search-bar:focus {
+            outline: none;
+            border-color: #38bdf8;
+        }
+        .category-section {
+            margin-bottom: 40px;
+        }
+        .category-title {
+            font-size: 18px;
+            color: #f8fafc;
+            margin-bottom: 15px;
+            border-left: 4px solid #38bdf8;
+            padding-left: 10px;
+        }
+        .grid-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+            gap: 15px;
+        }
+        .card {
+            background: #111827;
+            border: 1px solid #1f2937;
+            border-radius: 10px;
+            padding: 18px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        .card:hover {
+            border-color: #38bdf8;
+            transform: translateY(-2px);
+            background: #1e293b;
+        }
+        .card h3 {
+            font-size: 15px;
+            color: #38bdf8;
+            margin-bottom: 5px;
+        }
+        .card p {
+            font-size: 12px;
+            color: #94a3b8;
+        }
+        /* Subject View container (Hidden initially) */
+        #subjectView {
+            display: none;
+        }
+        .subject-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 25px;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <a href="makefriend.html" class="back-btn" id="navBackBtn">← Back to Dashboard</a>
+        <h3 style="font-size: 16px; color: #fff;">🎓 Gen'Z DoubtBox</h3>
+        <div style="width: 80px;"></div>
+    </header>
+
+    <div class="container">
+        <!-- Main Course Selection View -->
+        <div id="courseView">
+            <div class="hero-section">
+                <h1>Select Your Course or Diploma</h1>
+                <p>Choose your academic stream to explore subjects and ask doubts</p>
+            </div>
+
+            <input type="text" id="courseSearch" class="search-bar" placeholder="Search course or diploma (e.g., BCA, B.Tech, Polytechnic)...">
+
+            <div class="category-section">
+                <div class="category-title">Engineering & Technical Degrees</div>
+                <div class="grid-container" id="engCourses"></div>
+            </div>
+
+            <div class="category-section">
+                <div class="category-title">Computers & Applications</div>
+                <div class="grid-container" id="compCourses"></div>
+            </div>
+
+            <div class="category-section">
+                <div class="category-title">Management & Commerce</div>
+                <div class="grid-container" id="mgmtCourses"></div>
+            </div>
+
+            <div class="category-section">
+                <div class="category-title">Science, Arts & Medical</div>
+                <div class="grid-container" id="sciArtsCourses"></div>
+            </div>
+
+            <div class="category-section">
+                <div class="category-title">Diplomas & Polytechnic</div>
+                <div class="grid-container" id="diplomaCourses"></div>
+            </div>
+        </div>
+
+        <!-- Subject Selection View (Loads on Course Click) -->
+        <div id="subjectView">
+            <div class="subject-header">
+                <button onclick="goBackToCourses()" class="back-btn" style="background: none; border: none; cursor: pointer; font-size: 14px;">← Change Course</button>
+                <h2 id="selectedCourseTitle" style="font-size: 20px; color: #38bdf8;"></h2>
+            </div>
+            <p style="color: #94a3b8; font-size: 13px; margin-bottom: 20px;">Select a subject to view doubts and discussions:</p>
+            <div class="grid-container" id="subjectsGrid"></div>
+        </div>
+    </div>
+
+    <script>
+        // Comprehensive Database of Indian Courses, Diplomas and their Subjects
+        const academicData = {
+            "B.Tech (Bachelor of Technology)": [
+                "Computer Science & Engineering", "Artificial Intelligence & ML", "Data Science & Cyber Security", 
+                "Mechanical Engineering", "Civil Engineering", "Electrical & Electronics Engineering", 
+                "Electronics & Communication", "Chemical Engineering", "Engineering Mathematics & Physics"
+            ],
+            "BCA (Bachelor of Computer Applications)": [
+                "Programming in C & C++", "Data Structures & Algorithms", "Database Management Systems (DBMS)", 
+                "Object Oriented Programming (Java)", "Web Development & HTML/JS", "Operating Systems", 
+                "Computer Networks", "Software Engineering", "Discrete Mathematics"
+            ],
+            "BBA (Bachelor of Business Administration)": [
+                "Principles of Management", "Business Economics", "Financial Accounting", 
+                "Business Statistics", "Marketing Management", "Human Resource Management", 
+                "Organizational Behavior", "Business Law", "Entrepreneurship"
+            ],
+            "B.Com (Bachelor of Commerce)": [
+                "Financial Accounting", "Corporate Accounting", "Cost & Management Accounting", 
+                "Business Law & Taxation", "Auditing", "Business Mathematics", "Economics", "Banking & Finance"
+            ],
+            "B.Sc (Bachelor of Science)": [
+                "Mathematics", "Physics", "Chemistry", "Botany & Zoology", 
+                "Biotechnology", "Microbiology", "Statistics", "Environmental Science"
+            ],
+            "B.A (Bachelor of Arts)": [
+                "English Literature", "Political Science", "History", "Sociology", 
+                "Economics", "Geography", "Psychology", "Public Administration", "Hindi Literature"
+            ],
+            "MBA (Master of Business Administration)": [
+                "Strategic Management", "Financial Management", "Marketing Management", 
+                "HR Management", "Business Analytics", "Operations Management", "Business Ethics"
+            ],
+            "MCA (Master of Computer Applications)": [
+                "Advanced Data Structures", "Design & Analysis of Algorithms", "Advanced DBMS", 
+                "Full Stack Web Development", "Cloud Computing & DevOps", "Python & Data Science"
+            ],
+            "Polytechnic / Diploma in Engineering": [
+                "Applied Mathematics & Physics", "Basic Electrical & Electronics", "Mechanical Drafting & CAD", 
+                "Computer Programming Basics", "Civil Construction & Surveying", "Digital Electronics"
+            ],
+            "Diploma in Pharmacy (D.Pharma)": [
+                "Pharmaceutics", "Pharmaceutical Chemistry", "Pharmacognosy", 
+                "Human Anatomy & Physiology", "Biochemistry & Clinical Pathology"
+            ],
+            "Paramedical & Nursing Diplomas (GNM/ANM/Lab Tech)": [
+                "Anatomy & Physiology", "Fundamental of Nursing", "Medical Laboratory Technology", 
+                "Community Health Nursing", "First Aid & Emergency Care"
+            ],
+            "Diploma in Computer Applications (DCA / ADCA)": [
+                "Fundamentals of Computers & OS", "MS Office (Word, Excel, PPT)", "Tally & Financial Accounting", 
+                "Desktop Publishing (DTP)", "Internet & Web Basics"
+            ],
+            "Diploma in Commercial Arts & Fashion Design": [
+                "Sketching & Illustration", "Fashion Styling & Garment Construction", 
+                "Graphic Design Fundamentals", "Textile Science", "Interior Space Design"
+            ]
+        };
+
+        // Categorized mapping for display cards
+        const categories = {
+            engCourses: ["B.Tech (Bachelor of Technology)", "MBA (Master of Business Administration)", "MCA (Master of Computer Applications)"],
+            compCourses: ["BCA (Bachelor of Computer Applications)"],
+            mgmtCourses: ["BBA (Bachelor of Business Administration)", "B.Com (Bachelor of Commerce)"],
+            sciArtsCourses: ["B.Sc (Bachelor of Science)", "B.A (Bachelor of Arts)"],
+            diplomaCourses: ["Polytechnic / Diploma in Engineering", "Diploma in Pharmacy (D.Pharma)", "Paramedical & Nursing Diplomas (GNM/ANM/Lab Tech)", "Diploma in Computer Applications (DCA / ADCA)", "Diploma in Commercial Arts & Fashion Design"]
+        };
+
+        function renderCourses() {
+            for (let catKey in categories) {
+                const container = document.getElementById(catKey);
+                container.innerHTML = "";
+                categories[catKey].forEach(courseName => {
+                    const subjectsCount = academicData[courseName] ? academicData[courseName].length : 0;
+                    container.innerHTML += `
+                        <div class="card" onclick="openCourse('${courseName}')">
+                            <h3>${courseName}</h3>
+                            <p>${subjectsCount} Core Subjects Available</p>
+                        </div>
+                    `;
+                });
+            }
+        }
+
+        function openCourse(courseName) {
+            document.getElementById('courseView').style.display = 'none';
+            document.getElementById('subjectView').style.display = 'block';
+            document.getElementById('selectedCourseTitle').innerText = courseName;
+
+            const subjectsGrid = document.getElementById('subjectsGrid');
+            subjectsGrid.innerHTML = "";
+
+            const subjects = academicData[courseName] || [];
+            subjects.forEach(subject => {
+                subjectsGrid.innerHTML += `
+                    <div class="card" onclick="openDoubtBox('${courseName}', '${subject}')">
+                        <h3>📖 ${subject}</h3>
+                        <p>Click to open DoubtBox & discussions</p>
+                    </div>
+                `;
+            });
+        }
+
+        function goBackToCourses() {
+            document.getElementById('subjectView').style.display = 'none';
+            document.getElementById('courseView').style.display = 'block';
+        }
+
+        function openDoubtBox(course, subject) {
+            // Redirect to doubt feed page passing course and subject as url parameters
+            window.location.href = `doubtfeed.html?course=${encodeURIComponent(course)}&subject=${encodeURIComponent(subject)}`;
+        }
+
+        // Search Filter Logic
+        document.getElementById('courseSearch').addEventListener('input', function(e) {
+            const query = e.target.value.toLowerCase();
+            const allCards = document.querySelectorAll('.grid-container .card');
+            allCards.forEach(card => {
+                const text = card.innerText.toLowerCase();
+                if (text.includes(query)) {
+                    card.style.display = "block";
+                } else {
+                    card.style.display = "none";
+                }
+            });
+        });
+
+        renderCourses();
+    </script>
+</body>
+</html>
