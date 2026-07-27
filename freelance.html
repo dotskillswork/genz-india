@@ -57,7 +57,7 @@
             font-size: 13px;
             color: #94a3b8;
         }
-        /* Post Gig Box */
+        /* Post Gig Form */
         .gig-form-box {
             background: #111827;
             border: 1px solid #1f2937;
@@ -112,6 +112,10 @@
             padding: 20px;
             margin-bottom: 20px;
         }
+        .gig-card.closed {
+            border-color: #7f1d1d;
+            opacity: 0.85;
+        }
         .gig-header {
             display: flex;
             align-items: center;
@@ -144,6 +148,14 @@
             font-size: 12px;
             font-weight: 600;
         }
+        .closed-badge {
+            background: #7f1d1d;
+            color: #fca5a5;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+        }
         .gig-title {
             font-size: 16px;
             color: #f8fafc;
@@ -162,9 +174,15 @@
         .gig-desc {
             font-size: 13px;
             color: #cbd5e1;
-            margin-bottom: 15px;
+            margin-bottom: 12px;
             line-height: 1.5;
             word-break: break-word;
+        }
+        .stats-info {
+            font-size: 12px;
+            color: #38bdf8;
+            margin-bottom: 15px;
+            font-weight: 500;
         }
         .gig-footer {
             border-top: 1px solid #1f2937;
@@ -172,6 +190,8 @@
             display: flex;
             align-items: center;
             justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 10px;
         }
         .connect-btn {
             background: #38bdf8;
@@ -186,6 +206,19 @@
         }
         .connect-btn:hover {
             background: #0ea5e9;
+        }
+        .close-deal-btn {
+            background: #7f1d1d;
+            color: #fca5a5;
+            border: 1px solid #991b1b;
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-size: 11px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+        .close-deal-btn:hover {
+            background: #991b1b;
         }
     </style>
 </head>
@@ -233,7 +266,7 @@
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-app.js";
-        import { getFirestore, collection, addDoc, onSnapshot, query, orderBy } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-firestore.js";
+        import { getFirestore, collection, addDoc, updateDoc, doc, arrayUnion, onSnapshot, query, orderBy } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-firestore.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyCNLwSjHq6LlX9uUovTRHrz9ZfUwEIUWQM",
@@ -274,7 +307,9 @@
                 description: desc,
                 author: activeUser.username,
                 authorPic: activeUser.profilePic || "",
-                createdAt: Date.now()
+                createdAt: Date.now(),
+                applicants: [], // Tracks who clicked connect/responded
+                isClosed: false  // Deal done status
             };
 
             try {
@@ -310,13 +345,30 @@
                 const authorInitial = gig.author ? gig.author.charAt(0).toUpperCase() : 'U';
                 const authorAvatar = gig.authorPic ? `<img src="${gig.authorPic}" class="poster-avatar">` : `<div class="poster-avatar">${authorInitial}</div>`;
 
-                // Hide Connect button if viewing own gig
-                const connectButton = gig.author === activeUser.username 
-                    ? `<span style="font-size: 11px; color: #64748b; font-style: italic;">Your Gig</span>`
-                    : `<a href="chat.html?with=${gig.author}" class="connect-btn">Connect & Chat</a>`;
+                const applicantsCount = gig.applicants ? gig.applicants.length : 0;
+                const isOwner = gig.author === activeUser.username;
+                const isClosed = gig.isClosed;
+
+                // Badge display
+                const badgeHtml = isClosed 
+                    ? `<span class="closed-badge">🔒 Deal Done (Closed)</span>` 
+                    : `<span class="budget-badge">💰 ${gig.budget}</span>`;
+
+                // Action buttons logic
+                let actionHtml = "";
+                if (isClosed) {
+                    actionHtml = `<span style="font-size: 12px; color: #f87171; font-weight: 600;">🚫 Applications Closed - Deal Done</span>`;
+                } else if (isOwner) {
+                    actionHtml = `
+                        <span style="font-size: 11px; color: #64748b; font-style: italic;">Your Gig</span>
+                        <button class="close-deal-btn" onclick="closeDeal('${gig.id}')">Mark Deal Done & Close 🔒</button>
+                    `;
+                } else {
+                    actionHtml = `<a href="chat.html?with=${gig.author}" class="connect-btn" onclick="registerApplicant('${gig.id}')">Connect & Chat</a>`;
+                }
 
                 container.innerHTML += `
-                    <div class="gig-card">
+                    <div class="gig-card ${isClosed ? 'closed' : ''}">
                         <div class="gig-header">
                             <div class="poster-info">
                                 ${authorAvatar}
@@ -325,20 +377,52 @@
                                     <span style="font-size: 11px; color: #94a3b8;">${timeString}</span>
                                 </div>
                             </div>
-                            <span class="budget-badge">💰 ${gig.budget}</span>
+                            ${badgeHtml}
                         </div>
                         <span class="gig-category">${gig.category}</span>
                         <div class="gig-title">${gig.title}</div>
                         <div class="gig-desc">${gig.description}</div>
                         
+                        <div class="stats-info">
+                            👥 Total Responses / Applicants: <strong>${applicantsCount}</strong> student(s)
+                        </div>
+
                         <div class="gig-footer">
-                            <span style="font-size: 11px; color: #64748b;">Direct peer-to-peer gig collaboration</span>
-                            ${connectButton}
+                            <span style="font-size: 11px; color: #64748b;">Direct peer-to-peer gig marketplace</span>
+                            ${actionHtml}
                         </div>
                     </div>
                 `;
             });
         });
+
+        // Function when a user clicks Connect & Chat
+        window.registerApplicant = async function(gigId) {
+            try {
+                const gigRef = doc(db, 'gigs', gigId);
+                // Add current user to applicants array if not already present
+                await updateDoc(gigRef, {
+                    applicants: arrayUnion(activeUser.username)
+                });
+            } catch (err) {
+                console.error("Error updating applicants:", err);
+            }
+        };
+
+        // Function when owner marks deal done
+        window.closeDeal = async function(gigId) {
+            if (confirm("Are you sure you want to close this gig? No further applications will be allowed.")) {
+                try {
+                    const gigRef = doc(db, 'gigs', gigId);
+                    await updateDoc(gigRef, {
+                        isClosed: true
+                    });
+                } catch (err) {
+                    console.error("Error closing deal:", err);
+                    alert("Failed to close deal.");
+                }
+            }
+        };
     </script>
 </body>
 </html>
