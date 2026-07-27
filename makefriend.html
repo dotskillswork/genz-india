@@ -366,8 +366,8 @@
         }
 
         window.startChat = function(username, name) {
-            alert(`Direct chat feature with ${name} (@${username}) is opening soon!`);
-        }
+    window.location.href = `chat.html?with=${username}`;
+}
 
         loadAllUsers();
     </script>

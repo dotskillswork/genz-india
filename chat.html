@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chat | Gen'Z India</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+        body {
+            background-color: #0b0f19;
+            color: #f1f5f9;
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+        }
+        header {
+            background: #111827;
+            padding: 12px 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 1px solid #1f2937;
+        }
+        .back-btn {
+            color: #38bdf8;
+            text-decoration: none;
+            font-size: 13px;
+            font-weight: 600;
+        }
+        .chat-container {
+            flex: 1;
+            max-width: 700px;
+            width: 100%;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            padding: 15px;
+            overflow: hidden;
+        }
+        .chat-box {
+            flex: 1;
+            background: #111827;
+            border: 1px solid #1f2937;
+            border-radius: 12px;
+            padding: 15px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-bottom: 12px;
+        }
+        .message {
+            max-width: 75%;
+            padding: 10px 14px;
+            border-radius: 10px;
+            font-size: 13px;
+            word-break: break-word;
+        }
+        .message.sent {
+            background: #38bdf8;
+            color: #0f172a;
+            align-self: flex-end;
+            border-bottom-right-radius: 2px;
+        }
+        .message.received {
+            background: #1e293b;
+            color: #f1f5f9;
+            align-self: flex-start;
+            border-bottom-left-radius: 2px;
+            border: 1px solid #334155;
+        }
+        .msg-time {
+            font-size: 9px;
+            margin-top: 3px;
+            text-align: right;
+            opacity: 0.7;
+        }
+        .chat-input-area {
+            display: flex;
+            gap: 10px;
+        }
+        .chat-input-area input {
+            flex: 1;
+            background: #111827;
+            border: 1px solid #334155;
+            border-radius: 8px;
+            padding: 12px 15px;
+            color: #fff;
+            font-size: 13px;
+        }
+        .send-btn {
+            background: #38bdf8;
+            color: #0f172a;
+            border: none;
+            padding: 0 20px;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <a href="makefriend.html" class="back-btn">← Back to Friends</a>
+        <h3 id="chatTitle" style="font-size: 15px; color: #38bdf8;">Chat</h3>
+        <span style="font-size: 11px; color: #94a3b8;" id="chatStatus">Online</span>
+    </header>
+
+    <div class="chat-container">
+        <div class="chat-box" id="msgChatBox">
+            <p style="color: #64748b; font-size: 12px; text-align: center;">Loading messages...</p>
+        </div>
+        <form onsubmit="sendDirectMessage(event)" class="chat-input-area">
+            <input type="text" id="msgInput" placeholder="Type a message..." autocomplete="off" required>
+            <button type="submit" class="send-btn">Send</button>
+        </form>
+    </div>
+
+    <!-- Firebase Chat Logic -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-app.js";
+        import { getFirestore, collection, addDoc, getDocs, query } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-firestore.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyCNLwSjHq6LlX9uUovTRHrz9ZfUwEIUWQM",
+            authDomain: "genz-india.firebaseapp.com",
+            projectId: "genz-india",
+            storageBucket: "genz-india.firebasestorage.app",
+            messagingSenderId: "149959470783",
+            appId: "1:149959470783:web:71b7969ee2c8fc049c200a",
+            measurementId: "G-RBRSDRKSRH"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+
+        // Check Login Guard & Get User Data safely once
+        const currentUser = JSON.parse(localStorage.getItem('genzUser'));
+        if (!currentUser) {
+            window.location.href = 'login.html';
+        }
+        
+        // Get target user from URL parameters e.g. chat.html?with=rahul_dev
+        const urlParams = new URLSearchParams(window.location.search);
+        const targetUsername = urlParams.get('with');
+
+        if(!targetUsername) {
+            alert('No chat selected!');
+            window.location.href = 'makefriend.html';
+        }
+
+        document.getElementById('chatTitle').innerText = `Chat with @${targetUsername}`;
+
+        // Unique chat room ID generator
+        const chatRoomId = [currentUser.username, targetUsername].sort().join('_');
+
+        window.sendDirectMessage = async function(event) {
+            event.preventDefault();
+            const text = document.getElementById('msgInput').value.trim();
+            if(!text) return;
+
+            let msgData = {
+                room: chatRoomId,
+                sender: currentUser.username,
+                receiver: targetUsername,
+                text: text,
+                timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+            };
+
+            try {
+                await addDoc(collection(db, 'directMessages'), msgData);
+                document.getElementById('msgInput').value = '';
+                loadMessages();
+            } catch(e) {
+                console.error(e);
+                alert('Failed to send message.');
+            }
+        }
+
+        async function loadMessages() {
+            const chatBox = document.getElementById('msgChatBox');
+            try {
+                const querySnapshot = await getDocs(collection(db, 'directMessages'));
+                chatBox.innerHTML = '';
+                let found = 0;
+
+                querySnapshot.forEach((doc) => {
+                    const m = doc.data();
+                    if(m.room === chatRoomId) {
+                        found++;
+                        let isSender = m.sender === currentUser.username;
+                        chatBox.innerHTML += `
+                            <div class="message ${isSender ? 'sent' : 'received'}">
+                                <div>${m.text}</div>
+                                <div class="msg-time">${m.timestamp || ''}</div>
+                            </div>
+                        `;
+                    }
+                });
+
+                if(found === 0) {
+                    chatBox.innerHTML = `<p style="color: #64748b; font-size: 12px; text-align: center;">No messages yet. Say hello! 👋</p>`;
+                }
+                chatBox.scrollTop = chatBox.scrollHeight;
+            } catch(e) {
+                console.error(e);
+            }
+        }
+
+        loadMessages();
+        setInterval(loadMessages, 3000);
+    </script>
+</body>
+</html>
