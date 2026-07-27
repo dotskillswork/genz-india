@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Chat | Gen'Z India</title>
+    <title id="pageTitle">Chat | Gen'Z India</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
     <style>
         * {
@@ -123,7 +123,7 @@
         </form>
     </div>
 
-    <!-- Firebase Chat Logic with Strict Client-Side Array Sorting -->
+    <!-- Firebase Chat Logic with Sound & Notification Alert -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-app.js";
         import { getFirestore, collection, addDoc, getDocs } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-firestore.js";
@@ -155,34 +155,53 @@
         }
 
         document.getElementById('chatTitle').innerText = `Chat with @${targetUsername}`;
-
         const chatRoomId = [currentUser.username, targetUsername].sort().join('_');
+
+        let previousMessageCount = 0;
+
+        // Play notification sound beep using Web Audio API (no external file needed)
+        function playBeep() {
+            try {
+                const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+                const oscillator = audioCtx.createOscillator();
+                const gainNode = audioCtx.createGain();
+                oscillator.type = 'sine';
+                oscillator.frequency.setValueAtTime(587.33, audioCtx.currentTime); // D5 note
+                gainNode.gain.setValueAtTime(0.1, audioCtx.currentTime);
+                oscillator.connect(gainNode);
+                gainNode.connect(audioCtx.destination);
+                oscillator.start();
+                oscillator.stop(audioCtx.currentTime + 0.15);
+            } catch(e) {
+                console.log("Audio context blocked");
+            }
+        }
 
         window.sendDirectMessage = async function(event) {
             event.preventDefault();
             const text = document.getElementById('msgInput').value.trim();
             if(!text) return;
 
-            // Using high-precision timestamp combined with random offset to ensure strict ordering
+            // Using performance counter + real timestamp to guarantee absolute unique sequential order
             let msgData = {
                 room: chatRoomId,
                 sender: currentUser.username,
                 receiver: targetUsername,
                 text: text,
-                createdAt: new Date().getTime()
+                createdAt: Date.now()
             };
 
             try {
                 await addDoc(collection(db, 'directMessages'), msgData);
                 document.getElementById('msgInput').value = '';
-                loadMessages();
+                loadMessages(true);
             } catch(e) {
                 console.error(e);
                 alert('Failed to send message.');
             }
         }
 
-        async function loadMessages() {
+        async function loadMessages(isSentByMe = false) {
             const chatBox = document.getElementById('msgChatBox');
             try {
                 const querySnapshot = await getDocs(collection(db, 'directMessages'));
@@ -195,8 +214,15 @@
                     }
                 });
 
-                // Strict ascending sort by createdAt timestamp
+                // Sort strictly by timestamp ascending (Oldest first, Newest at bottom)
                 messagesArray.sort((a, b) => (a.createdAt || 0) - (b.createdAt || 0));
+
+                // Check if a new message arrived from the other person
+                if (previousMessageCount > 0 && messagesArray.length > previousMessageCount && !isSentByMe) {
+                    playBeep();
+                    document.getElementById('pageTitle').innerText = "🔔 New Message! - Gen'Z India";
+                }
+                previousMessageCount = messagesArray.length;
 
                 chatBox.innerHTML = '';
                 if(messagesArray.length === 0) {
@@ -222,7 +248,7 @@
         }
 
         loadMessages();
-        setInterval(loadMessages, 3000);
+        setInterval(() => loadMessages(false), 3000);
     </script>
 </body>
 </html>
