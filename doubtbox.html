@@ -106,7 +106,6 @@
             font-size: 12px;
             color: #94a3b8;
         }
-        /* Subject View container (Hidden initially) */
         #subjectView {
             display: none;
         }
@@ -127,119 +126,110 @@
     </header>
 
     <div class="container">
-        <!-- Main Course Selection View -->
+        <!-- Main Category Selection View -->
         <div id="courseView">
             <div class="hero-section">
-                <h1>Select Your Course or Diploma</h1>
-                <p>Choose your academic stream to explore subjects and ask doubts</p>
+                <h1>Select Category, Course or Exam</h1>
+                <p>Choose your academic field or competitive exam stream to explore subjects & doubts</p>
             </div>
 
-            <input type="text" id="courseSearch" class="search-bar" placeholder="Search course or diploma (e.g., BCA, B.Tech, Polytechnic)...">
+            <input type="text" id="courseSearch" class="search-bar" placeholder="Search course, degree, exam (e.g., NEET, LLB, BCA, UPSC)...">
 
             <div class="category-section">
-                <div class="category-title">Engineering & Technical Degrees</div>
+                <div class="category-title">🎯 Competitive & Entrance Exams (Govt / Jobs / Entrance)</div>
+                <div class="grid-container" id="compExams"></div>
+            </div>
+
+            <div class="category-section">
+                <div class="category-title">⚖️ Law & Legal Studies</div>
+                <div class="grid-container" id="lawCourses"></div>
+            </div>
+
+            <div class="category-section">
+                <div class="category-title">💊 Medical, Pharmacy & Nursing</div>
+                <div class="grid-container" id="medCourses"></div>
+            </div>
+
+            <div class="category-section">
+                <div class="category-title">🛠️ Engineering & Tech (UG & PG)</div>
                 <div class="grid-container" id="engCourses"></div>
             </div>
 
             <div class="category-section">
-                <div class="category-title">Computers & Applications</div>
-                <div class="grid-container" id="compCourses"></div>
+                <div class="category-title">💻 Computers, IT & Management</div>
+                <div class="grid-container" id="techMgmtCourses"></div>
             </div>
 
             <div class="category-section">
-                <div class="category-title">Management & Commerce</div>
-                <div class="grid-container" id="mgmtCourses"></div>
-            </div>
-
-            <div class="category-section">
-                <div class="category-title">Science, Arts & Medical</div>
+                <div class="category-title">🔬 Science, Arts & Commerce (UG & PG)</div>
                 <div class="grid-container" id="sciArtsCourses"></div>
             </div>
 
             <div class="category-section">
-                <div class="category-title">Diplomas & Polytechnic</div>
+                <div class="category-title">📜 Diplomas & Polytechnic</div>
                 <div class="grid-container" id="diplomaCourses"></div>
             </div>
         </div>
 
-        <!-- Subject Selection View (Loads on Course Click) -->
+        <!-- Subject/Topic Selection View -->
         <div id="subjectView">
             <div class="subject-header">
-                <button onclick="goBackToCourses()" class="back-btn" style="background: none; border: none; cursor: pointer; font-size: 14px;">← Change Course</button>
+                <button onclick="goBackToCourses()" class="back-btn" style="background: none; border: none; cursor: pointer; font-size: 14px;">← Change Category</button>
                 <h2 id="selectedCourseTitle" style="font-size: 20px; color: #38bdf8;"></h2>
             </div>
-            <p style="color: #94a3b8; font-size: 13px; margin-bottom: 20px;">Select a subject to view doubts and discussions:</p>
+            <p style="color: #94a3b8; font-size: 13px; margin-bottom: 20px;">Select a subject or section to view doubts and discussions:</p>
             <div class="grid-container" id="subjectsGrid"></div>
         </div>
     </div>
 
     <script>
-        // Comprehensive Database of Indian Courses, Diplomas and their Subjects
+        // Massive Database covering Indian Competitive Exams, Law, Medical, Degrees & Diplomas
         const academicData = {
-            "B.Tech (Bachelor of Technology)": [
-                "Computer Science & Engineering", "Artificial Intelligence & ML", "Data Science & Cyber Security", 
-                "Mechanical Engineering", "Civil Engineering", "Electrical & Electronics Engineering", 
-                "Electronics & Communication", "Chemical Engineering", "Engineering Mathematics & Physics"
-            ],
-            "BCA (Bachelor of Computer Applications)": [
-                "Programming in C & C++", "Data Structures & Algorithms", "Database Management Systems (DBMS)", 
-                "Object Oriented Programming (Java)", "Web Development & HTML/JS", "Operating Systems", 
-                "Computer Networks", "Software Engineering", "Discrete Mathematics"
-            ],
-            "BBA (Bachelor of Business Administration)": [
-                "Principles of Management", "Business Economics", "Financial Accounting", 
-                "Business Statistics", "Marketing Management", "Human Resource Management", 
-                "Organizational Behavior", "Business Law", "Entrepreneurship"
-            ],
-            "B.Com (Bachelor of Commerce)": [
-                "Financial Accounting", "Corporate Accounting", "Cost & Management Accounting", 
-                "Business Law & Taxation", "Auditing", "Business Mathematics", "Economics", "Banking & Finance"
-            ],
-            "B.Sc (Bachelor of Science)": [
-                "Mathematics", "Physics", "Chemistry", "Botany & Zoology", 
-                "Biotechnology", "Microbiology", "Statistics", "Environmental Science"
-            ],
-            "B.A (Bachelor of Arts)": [
-                "English Literature", "Political Science", "History", "Sociology", 
-                "Economics", "Geography", "Psychology", "Public Administration", "Hindi Literature"
-            ],
-            "MBA (Master of Business Administration)": [
-                "Strategic Management", "Financial Management", "Marketing Management", 
-                "HR Management", "Business Analytics", "Operations Management", "Business Ethics"
-            ],
-            "MCA (Master of Computer Applications)": [
-                "Advanced Data Structures", "Design & Analysis of Algorithms", "Advanced DBMS", 
-                "Full Stack Web Development", "Cloud Computing & DevOps", "Python & Data Science"
-            ],
-            "Polytechnic / Diploma in Engineering": [
-                "Applied Mathematics & Physics", "Basic Electrical & Electronics", "Mechanical Drafting & CAD", 
-                "Computer Programming Basics", "Civil Construction & Surveying", "Digital Electronics"
-            ],
-            "Diploma in Pharmacy (D.Pharma)": [
-                "Pharmaceutics", "Pharmaceutical Chemistry", "Pharmacognosy", 
-                "Human Anatomy & Physiology", "Biochemistry & Clinical Pathology"
-            ],
-            "Paramedical & Nursing Diplomas (GNM/ANM/Lab Tech)": [
-                "Anatomy & Physiology", "Fundamental of Nursing", "Medical Laboratory Technology", 
-                "Community Health Nursing", "First Aid & Emergency Care"
-            ],
-            "Diploma in Computer Applications (DCA / ADCA)": [
-                "Fundamentals of Computers & OS", "MS Office (Word, Excel, PPT)", "Tally & Financial Accounting", 
-                "Desktop Publishing (DTP)", "Internet & Web Basics"
-            ],
-            "Diploma in Commercial Arts & Fashion Design": [
-                "Sketching & Illustration", "Fashion Styling & Garment Construction", 
-                "Graphic Design Fundamentals", "Textile Science", "Interior Space Design"
-            ]
+            // Competitive & Entrance Exams
+            "UPSC Civil Services (IAS/IPS)": ["General Studies Paper 1 (History, Geography, Polity)", "General Studies Paper 2 (CSAT, Aptitude)", "General Studies Paper 3 (Economy, Science & Tech, Security)", "General Studies Paper 4 (Ethics, Integrity & Aptitude)", "Optional Subjects & Essay Writing"],
+            "BPSC / State PSC Exams": ["General Studies (History & Geography of State)", "Indian Polity & Economy", "General Science & Mental Ability", "Current Affairs"],
+            "SSC CGL / CHSL / MTS": ["Quantitative Aptitude (Maths)", "General Intelligence & Reasoning", "English Comprehension", "General Awareness & Static GK"],
+            "NEET (UG & PG Medical Entrance)": ["Physics (Mechanics, Optics, Thermodynamics)", "Chemistry (Organic, Inorganic, Physical)", "Biology (Botany & Zoology)", "Medical PG Clinical Subjects"],
+            "JEE (Main & Advanced Engineering)": ["Physics", "Chemistry", "Mathematics"],
+            "NDA / CDS / Agniveer Defence Exams": ["Mathematics", "General Ability Test (GAT)", "English & General Knowledge", "Physics & Defence Science"],
+            "Banking Exams (IBPS / SBI / RBI PO/Clerk)": ["Quantitative Aptitude", "Reasoning Ability", "English Language", "Banking Awareness & Computer Aptitude"],
+
+            // Law
+            "LLB (3-Year & 5-Year Bachelor of Laws)": ["Constitutional Law", "Law of Contracts", "Criminal Law (IPC/BNS)", "Law of Torts", "Property Law", "Family Law", "Jurisprudence", "Company Law"],
+            "LLM (Master of Laws)": ["Comparative Public Law", "Law and Social Transformation", "Corporate Law & Governance", "International Trade Law", "Cyber Law & Intellectual Property Rights"],
+
+            // Medical, Pharmacy & Nursing
+            "MBBS / BDS (Medical & Dental Sciences)": ["Anatomy", "Physiology", "Biochemistry", "Pathology", "Pharmacology", "Microbiology", "Forensic Medicine", "Surgery & Medicine"],
+            "B.Pharma & M.Pharma (Pharmacy)": ["Pharmaceutics", "Pharmaceutical Chemistry", "Pharmacology", "Pharmacognosy", "Pharmaceutical Analysis", "Regulatory Affairs"],
+            "GNM & ANM Nursing": ["Anatomy & Physiology", "Nursing Foundations", "Community Health Nursing", "Midwifery & Obstetrical Nursing", "Pediatric Nursing"],
+            "B.Sc / M.Sc Nursing": ["Advanced Nursing Practice", "Medical-Surgical Nursing", "Mental Health Nursing", "Nursing Research & Statistics"],
+
+            // Engineering
+            "B.Tech / M.Tech (Engineering)": ["Computer Science & Engineering", "Artificial Intelligence & Data Science", "Mechanical Engineering", "Civil Engineering", "Electrical & Electronics", "Electronics & Communication"],
+
+            // Computers & Management
+            "BCA & MCA (Computer Applications)": ["Programming in C/C++ & Java", "Data Structures & Algorithms", "Database Management Systems", "Web Development", "Operating Systems & Networking"],
+            "BBA & MBA (Business Administration)": ["Principles of Management", "Financial Management", "Marketing Management", "HR Management", "Business Economics & Analytics"],
+            "B.Com & M.Com (Commerce)": ["Financial & Corporate Accounting", "Cost & Management Accounting", "Business Law & Taxation", "Auditing & Financial Markets"],
+
+            // Science, Arts
+            "B.Sc & M.Sc (Science Streams)": ["Mathematics", "Physics", "Chemistry", "Botany & Zoology", "Biotechnology & Microbiology", "Statistics"],
+            "B.A & M.A (Arts & Humanities)": ["English & Regional Literature", "Political Science", "History", "Sociology", "Economics", "Geography", "Psychology"],
+
+            // Diplomas
+            "Polytechnic / Diploma in Engineering": ["Applied Mathematics & Physics", "Basic Electrical & Mechanical", "Computer Programming Basics", "Civil Construction & Drafting"],
+            "Paramedical & Lab Technology Diplomas": ["Medical Laboratory Technology (DMLT)", "X-Ray & Radiology Technician", "Operation Theatre Technology (OTT)", "First Aid & Emergency Care"]
         };
 
-        // Categorized mapping for display cards
+        // UI Mapping Categories
         const categories = {
-            engCourses: ["B.Tech (Bachelor of Technology)", "MBA (Master of Business Administration)", "MCA (Master of Computer Applications)"],
-            compCourses: ["BCA (Bachelor of Computer Applications)"],
-            mgmtCourses: ["BBA (Bachelor of Business Administration)", "B.Com (Bachelor of Commerce)"],
-            sciArtsCourses: ["B.Sc (Bachelor of Science)", "B.A (Bachelor of Arts)"],
-            diplomaCourses: ["Polytechnic / Diploma in Engineering", "Diploma in Pharmacy (D.Pharma)", "Paramedical & Nursing Diplomas (GNM/ANM/Lab Tech)", "Diploma in Computer Applications (DCA / ADCA)", "Diploma in Commercial Arts & Fashion Design"]
+            compExams: ["UPSC Civil Services (IAS/IPS)", "BPSC / State PSC Exams", "SSC CGL / CHSL / MTS", "NEET (UG & PG Medical Entrance)", "JEE (Main & Advanced Engineering)", "NDA / CDS / Agniveer Defence Exams", "Banking Exams (IBPS / SBI / RBI PO/Clerk)"],
+            lawCourses: ["LLB (3-Year & 5-Year Bachelor of Laws)", "LLM (Master of Laws)"],
+            medCourses: ["MBBS / BDS (Medical & Dental Sciences)", "B.Pharma & M.Pharma (Pharmacy)", "GNM & ANM Nursing", "B.Sc / M.Sc Nursing"],
+            engCourses: ["B.Tech / M.Tech (Engineering)"],
+            techMgmtCourses: ["BCA & MCA (Computer Applications)", "BBA & MBA (Business Administration)", "B.Com & M.Com (Commerce)"],
+            sciArtsCourses: ["B.Sc & M.Sc (Science Streams)", "B.A & M.A (Arts & Humanities)"],
+            diplomaCourses: ["Polytechnic / Diploma in Engineering", "Paramedical & Lab Technology Diplomas"]
         };
 
         function renderCourses() {
@@ -251,7 +241,7 @@
                     container.innerHTML += `
                         <div class="card" onclick="openCourse('${courseName}')">
                             <h3>${courseName}</h3>
-                            <p>${subjectsCount} Core Subjects Available</p>
+                            <p>${subjectsCount} Sections / Subjects</p>
                         </div>
                     `;
                 });
@@ -283,7 +273,6 @@
         }
 
         function openDoubtBox(course, subject) {
-            // Redirect to doubt feed page passing course and subject as url parameters
             window.location.href = `doubtfeed.html?course=${encodeURIComponent(course)}&subject=${encodeURIComponent(subject)}`;
         }
 
