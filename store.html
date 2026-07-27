@@ -386,7 +386,7 @@
         <div class="hero-banner">
             <div class="hero-banner-text">
                 <h1>Notes, PYQs & Study Material Exchange</h1>
-                <p>Share or buy study notes instantly from your device.</p>
+                <p>Upload study notes & papers instantly from your device.</p>
             </div>
             <button class="add-product-toggle-btn" id="openModalBtn">+ Add Product / Notes 🚀</button>
         </div>
@@ -404,7 +404,7 @@
                 <button class="close-form-btn" id="closeModalBtn">&times;</button>
                 <h3 style="font-size: 16px; color: #f59e0b; margin-bottom: 15px;">Upload Study Material / PDF Notes</h3>
                 <form id="storeForm">
-                    <input type="text" id="itemTitle" placeholder="Title (e.g., Data Structures Complete Handwritten Notes)" required>
+                    <input type="text" id="itemTitle" placeholder="Title (e.g., Data Structures Notes)" required>
                     
                     <div class="form-row">
                         <select id="itemCategory" required>
@@ -440,7 +440,7 @@
                     </div>
 
                     <div class="file-upload-box">
-                        <label>📎 Select PDF Document File from Device</label>
+                        <label>📎 Select PDF Document File from Device (Any Size)</label>
                         <input type="file" id="itemPdfFile" accept=".pdf,image/*" required style="border:none; padding:4px 0; background:transparent; font-size:12px; color:#94a3b8;">
                         <p id="fileNameDisplay" style="font-size: 11px; color: #38bdf8; margin-top: 4px;"></p>
                     </div>
@@ -481,7 +481,6 @@
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-app.js";
         import { getFirestore, collection, addDoc, updateDoc, doc, onSnapshot, query, orderBy } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-firestore.js";
-        import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-storage.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyCNLwSjHq6LlX9uUovTRHrz9ZfUwEIUWQM",
@@ -495,7 +494,6 @@
 
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
-        const storage = getStorage(app);
 
         const activeUser = JSON.parse(localStorage.getItem('genzUser'));
         if (!activeUser) {
@@ -556,59 +554,50 @@
 
             if (!title || !category || !type || !semester || !price || !fileInput || !desc) return;
 
-            publishBtn.innerText = "Processing & Publishing... ⏳";
+            publishBtn.innerText = "Uploading to Cloud... ⏳";
             publishBtn.disabled = true;
 
-            let fileUrl = "";
-
             try {
-                // Try uploading to Firebase Storage with a 4-second safety timeout
-                const storageRef = ref(storage, `store_pdfs/${Date.now()}_${fileInput.name}`);
+                const formData = new FormData();
+                formData.append('file', fileInput);
+
+                const response = await fetch('https://tmpfiles.org/api/v1/upload', {
+                    method: 'POST',
+                    body: formData
+                });
+                const result = await response.json();
                 
-                const uploadPromise = uploadBytes(storageRef, fileInput).then(async (snapshot) => {
-                    return await getDownloadURL(snapshot.ref);
-                });
+                if (result.status === 'success' && result.data && result.data.url) {
+                    let rawUrl = result.data.url;
+                    let fileUrl = rawUrl.replace('tmpfiles.org/', 'tmpfiles.org/dl/');
 
-                const timeoutPromise = new Promise((_, reject) => 
-                    setTimeout(() => reject(new Error('Storage Timeout')), 4000)
-                );
+                    const newItem = {
+                        title: title,
+                        category: category,
+                        type: type,
+                        semester: semester,
+                        price: price,
+                        fileUrl: fileUrl,
+                        fileName: fileInput.name,
+                        upi: upi || "",
+                        description: desc,
+                        author: activeUser.username,
+                        authorPic: activeUser.profilePic || "",
+                        createdAt: Date.now()
+                    };
 
-                fileUrl = await Promise.race([uploadPromise, timeoutPromise]);
+                    await addDoc(collection(db, 'store_items'), newItem);
+                    document.getElementById('storeForm').reset();
+                    document.getElementById('fileNameDisplay').innerText = '';
+                    document.getElementById('upiSection').style.display = 'none';
+                    modalBox.style.display = 'none';
+                    alert("Study material published successfully! 🎉");
+                } else {
+                    throw new Error("Upload failed");
+                }
             } catch (err) {
-                console.warn("Storage restricted or timed out, switching to instant direct mode:", err);
-                // Fallback: Use direct reader data URL if storage is restricted
-                fileUrl = await new Promise((resolve) => {
-                    const reader = new FileReader();
-                    reader.readAsDataURL(fileInput);
-                    reader.onload = () => resolve(reader.result);
-                });
-            }
-
-            try {
-                const newItem = {
-                    title: title,
-                    category: category,
-                    type: type,
-                    semester: semester,
-                    price: price,
-                    fileUrl: fileUrl,
-                    fileName: fileInput.name,
-                    upi: upi || "",
-                    description: desc,
-                    author: activeUser.username,
-                    authorPic: activeUser.profilePic || "",
-                    createdAt: Date.now()
-                };
-
-                await addDoc(collection(db, 'store_items'), newItem);
-                document.getElementById('storeForm').reset();
-                document.getElementById('fileNameDisplay').innerText = '';
-                document.getElementById('upiSection').style.display = 'none';
-                modalBox.style.display = 'none';
-                alert("Study material published successfully! 🎉");
-            } catch (dbErr) {
-                console.error("Database error:", dbErr);
-                alert("Failed to save item. If the PDF is large, try a smaller file.");
+                console.error("Upload error:", err);
+                alert("Failed to upload file. Please try again.");
             } finally {
                 publishBtn.innerText = "Publish to Store 🚀";
                 publishBtn.disabled = false;
