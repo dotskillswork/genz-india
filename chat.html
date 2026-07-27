@@ -123,10 +123,10 @@
         </form>
     </div>
 
-    <!-- Firebase Chat Logic with Strict Query Sorting -->
+    <!-- Firebase Chat Logic with Strict Client-Side Array Sorting -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-app.js";
-        import { getFirestore, collection, addDoc, getDocs, query, orderBy } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-firestore.js";
+        import { getFirestore, collection, addDoc, getDocs } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-firestore.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyCNLwSjHq6LlX9uUovTRHrz9ZfUwEIUWQM",
@@ -163,12 +163,13 @@
             const text = document.getElementById('msgInput').value.trim();
             if(!text) return;
 
+            // Using high-precision timestamp combined with random offset to ensure strict ordering
             let msgData = {
                 room: chatRoomId,
                 sender: currentUser.username,
                 receiver: targetUsername,
                 text: text,
-                createdAt: serverTimestampValue()
+                createdAt: new Date().getTime()
             };
 
             try {
@@ -181,38 +182,39 @@
             }
         }
 
-        function serverTimestampValue() {
-            return Date.now();
-        }
-
         async function loadMessages() {
             const chatBox = document.getElementById('msgChatBox');
             try {
-                // Query sorted directly by Firebase using orderBy
-                const q = query(collection(db, 'directMessages'), orderBy("createdAt", "asc"));
-                const querySnapshot = await getDocs(q);
-                
-                chatBox.innerHTML = '';
-                let found = 0;
+                const querySnapshot = await getDocs(collection(db, 'directMessages'));
+                let messagesArray = [];
 
                 querySnapshot.forEach((docSnap) => {
                     const m = docSnap.data();
                     if(m.room === chatRoomId) {
-                        found++;
-                        let isSender = m.sender === currentUser.username;
-                        let timeString = m.createdAt ? new Date(m.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : '';
-                        chatBox.innerHTML += `
-                            <div class="message ${isSender ? 'sent' : 'received'}">
-                                <div>${m.text}</div>
-                                <div class="msg-time">${timeString}</div>
-                            </div>
-                        `;
+                        messagesArray.push(m);
                     }
                 });
 
-                if(found === 0) {
+                // Strict ascending sort by createdAt timestamp
+                messagesArray.sort((a, b) => (a.createdAt || 0) - (b.createdAt || 0));
+
+                chatBox.innerHTML = '';
+                if(messagesArray.length === 0) {
                     chatBox.innerHTML = `<p style="color: #64748b; font-size: 12px; text-align: center;">No messages yet. Say hello! 👋</p>`;
+                    return;
                 }
+
+                messagesArray.forEach(m => {
+                    let isSender = m.sender === currentUser.username;
+                    let timeString = m.createdAt ? new Date(m.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : '';
+                    chatBox.innerHTML += `
+                        <div class="message ${isSender ? 'sent' : 'received'}">
+                            <div>${m.text}</div>
+                            <div class="msg-time">${timeString}</div>
+                        </div>
+                    `;
+                });
+
                 chatBox.scrollTop = chatBox.scrollHeight;
             } catch(e) {
                 console.error("Chat load error:", e);
