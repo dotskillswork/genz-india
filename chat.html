@@ -33,6 +33,11 @@
             font-size: 13px;
             font-weight: 600;
         }
+        .header-info {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
         .chat-container {
             flex: 1;
             max-width: 700px;
@@ -111,12 +116,16 @@
 
     <header>
         <a href="makefriend.html" class="back-btn">← Back to Friends</a>
-        <h3 id="chatTitle" style="font-size: 15px; color: #38bdf8;">Chat</h3>
+        <div class="header-info">
+            <h3 id="chatTitle" style="font-size: 15px; color: #38bdf8;">Chat</h3>
+            <span style="font-size: 10px; color: #94a3b8;" id="chatStatus">Connecting...</span>
+        </div>
+        <div style="width: 70px;"></div> <!-- Spacer for center alignment -->
     </header>
 
     <div class="chat-container">
         <div class="chat-box" id="msgChatBox">
-            <p style="color: #64748b; font-size: 12px; text-align: center;" id="loadingText">Connecting chat...</p>
+            <p style="color: #64748b; font-size: 12px; text-align: center;">Loading messages...</p>
         </div>
         <form id="chatForm" class="chat-input-area">
             <input type="text" id="msgInput" placeholder="Type a message..." autocomplete="off" required>
@@ -124,7 +133,7 @@
         </form>
     </div>
 
-    <!-- Real-time Array-Based Bulletproof Chat Logic -->
+    <!-- Real-time Chat & Presence Logic -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-app.js";
         import { getFirestore, doc, getDoc, setDoc, updateDoc, arrayUnion, onSnapshot } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-firestore.js";
@@ -155,11 +164,10 @@
             window.location.href = 'makefriend.html';
         }
 
-        document.getElementById('chatTitle').innerText = `Chat with @${targetUsername}`;
+        document.getElementById('chatTitle').innerText = `@${targetUsername}`;
         const chatRoomId = [activeUser.username, targetUsername].sort().join('_');
-
-        // Reference to a single unified room document in a 'chatRooms' collection
         const roomRef = doc(db, 'chatRooms', chatRoomId);
+        const userStatusRef = doc(db, 'userStatus', targetUsername);
 
         let isInitialLoad = true;
         let lastCount = 0;
@@ -180,7 +188,48 @@
             } catch (err) {}
         }
 
-        // Send Message using Atomic arrayUnion
+        // Update own activity status
+        async function updatePresence() {
+            try {
+                const myStatusRef = doc(db, 'userStatus', activeUser.username);
+                await setDoc(myStatusRef, { lastActive: Date.now() }, { merge: true });
+            } catch (err) {}
+        }
+
+        updatePresence();
+        setInterval(updatePresence, 10000); // Ping every 10 seconds
+
+        // Check target user status
+        async function checkTargetStatus() {
+            const statusSpan = document.getElementById('chatStatus');
+            try {
+                const snap = await getDoc(userStatusRef);
+                if (!snap.exists()) {
+                    statusSpan.innerText = "Offline";
+                    return;
+                }
+                const data = snap.data();
+                const lastActive = data.lastActive || 0;
+                const diff = Date.now() - lastActive;
+
+                if (diff < 30000) {
+                    statusSpan.innerText = "Online";
+                    statusSpan.style.color = "#38bdf8";
+                } else {
+                    const lastDate = new Date(lastActive);
+                    const timeStr = lastDate.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+                    statusSpan.innerText = `Last seen at ${timeStr}`;
+                    statusSpan.style.color = "#94a3b8";
+                }
+            } catch (err) {
+                statusSpan.innerText = "Offline";
+            }
+        }
+
+        checkTargetStatus();
+        setInterval(checkTargetStatus, 5000);
+
+        // Send Message
         document.getElementById('chatForm').addEventListener('submit', async function(event) {
             event.preventDefault();
             const inputField = document.getElementById('msgInput');
@@ -194,14 +243,13 @@
             };
 
             inputField.value = '';
+            updatePresence();
 
             try {
                 const docSnap = await getDoc(roomRef);
                 if (!docSnap.exists()) {
-                    // If room doesn't exist, create it with the first message array
                     await setDoc(roomRef, { messages: [newMessage] });
                 } else {
-                    // Atomically push to the array, preserving exact sequential order
                     await updateDoc(roomRef, {
                         messages: arrayUnion(newMessage)
                     });
@@ -212,7 +260,7 @@
             }
         });
 
-        // Real-time listener using onSnapshot (No polling needed!)
+        // Real-time chat listener
         onSnapshot(roomRef, (docSnap) => {
             const chatBox = document.getElementById('msgChatBox');
             
@@ -229,7 +277,6 @@
                 return;
             }
 
-            // Play notification sound if new message arrives from someone else (after initial load)
             if (!isInitialLoad && messagesArray.length > lastCount) {
                 const latestMsg = messagesArray[messagesArray.length - 1];
                 if (latestMsg.sender !== activeUser.username) {
@@ -254,8 +301,6 @@
             });
 
             chatBox.scrollTop = chatBox.scrollHeight;
-        }, (error) => {
-            console.error("Realtime sync error:", error);
         });
     </script>
 </body>
