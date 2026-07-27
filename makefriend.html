@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Make Friends & Profiles | Gen'Z India</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+        body {
+            background-color: #0b0f19;
+            color: #f1f5f9;
+            line-height: 1.6;
+        }
+        header {
+            background: rgba(15, 23, 42, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 15px 25px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #1e293b;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+        .logo {
+            font-size: 20px;
+            font-weight: 700;
+            color: #38bdf8;
+            text-decoration: none;
+        }
+        nav {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+        }
+        nav a {
+            color: #94a3b8;
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 13px;
+            transition: 0.3s;
+        }
+        nav a:hover, nav a.active {
+            color: #38bdf8;
+        }
+        .container {
+            max-width: 1000px;
+            margin: 30px auto;
+            padding: 0 15px;
+        }
+        .page-title {
+            color: #38bdf8;
+            font-size: 24px;
+            margin-bottom: 20px;
+            font-weight: 700;
+        }
+        .users-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+        }
+        .user-card {
+            background: #111827;
+            border: 1px solid #1f2937;
+            border-radius: 16px;
+            padding: 20px;
+            text-align: center;
+            transition: 0.3s;
+        }
+        .user-card:hover {
+            border-color: #38bdf8;
+            transform: translateY(-3px);
+        }
+        .user-card img {
+            width: 75px;
+            height: 75px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid #38bdf8;
+            margin-bottom: 12px;
+        }
+        .user-card h3 {
+            font-size: 16px;
+            color: #fff;
+            margin-bottom: 2px;
+        }
+        .user-card .username {
+            font-size: 12px;
+            color: #38bdf8;
+            margin-bottom: 10px;
+        }
+        .user-card p {
+            font-size: 12.5px;
+            color: #94a3b8;
+            margin-bottom: 5px;
+        }
+        .card-btn-group {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+        }
+        .action-btn {
+            flex: 1;
+            padding: 8px;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 12px;
+            cursor: pointer;
+            border: none;
+            transition: 0.3s;
+        }
+        .btn-view {
+            background: rgba(56, 189, 248, 0.1);
+            color: #38bdf8;
+            border: 1px solid #38bdf8;
+        }
+        .btn-view:hover {
+            background: #38bdf8;
+            color: #0f172a;
+        }
+        .btn-chat {
+            background: #38bdf8;
+            color: #0f172a;
+        }
+        .btn-chat:hover {
+            background: #0ea5e9;
+        }
+
+        /* Modal for User Profile Details */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(5px);
+            justify-content: center;
+            align-items: center;
+            z-index: 2000;
+            padding: 15px;
+        }
+        .modal-content {
+            background: #111827;
+            border: 1px solid #334155;
+            border-radius: 16px;
+            width: 100%;
+            max-width: 550px;
+            max-height: 85vh;
+            overflow-y: auto;
+            padding: 25px;
+            position: relative;
+        }
+        .close-modal {
+            position: absolute;
+            top: 15px;
+            right: 20px;
+            background: none;
+            border: none;
+            color: #94a3b8;
+            font-size: 20px;
+            cursor: pointer;
+        }
+        .profile-header-modal {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 20px;
+            border-bottom: 1px solid #1f2937;
+            padding-bottom: 15px;
+        }
+        .profile-header-modal img {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid #38bdf8;
+        }
+        .profile-header-modal h3 {
+            color: #fff;
+            font-size: 18px;
+        }
+        .profile-header-modal span {
+            color: #38bdf8;
+            font-size: 12px;
+        }
+        .activity-section h4 {
+            color: #38bdf8;
+            font-size: 14px;
+            margin-bottom: 10px;
+            margin-top: 15px;
+        }
+        .activity-item {
+            background: #0b0f19;
+            padding: 10px 12px;
+            border-radius: 8px;
+            border: 1px solid #1f2937;
+            font-size: 12.5px;
+            color: #cbd5e1;
+            margin-bottom: 8px;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Auth Guard -->
+    <script>
+        const user = localStorage.getItem('genzUser');
+        if (!user) {
+            window.location.href = 'login.html';
+        }
+    </script>
+
+    <header>
+        <a href="index.html" class="logo">Gen'Z India ⚡</a>
+        <nav>
+            <a href="index.html">Dashboard</a>
+            <a href="makefriend.html" class="active">Make Friends</a>
+            <a href="voiceup.html">Voice Up</a>
+        </nav>
+    </header>
+
+    <div class="container">
+        <h2 class="page-title">🤝 Student Community & Profiles</h2>
+        <div class="users-grid" id="usersListContainer">
+            <p style="color: #94a3b8; font-size: 13px;">Loading student profiles...</p>
+        </div>
+    </div>
+
+    <!-- User Profile Modal -->
+    <div class="modal" id="profileModal">
+        <div class="modal-content">
+            <button class="close-modal" onclick="closeProfileModal()">&times;</button>
+            <div class="profile-header-modal" id="modalHeaderInfo">
+                <!-- Loaded dynamically -->
+            </div>
+            <div class="activity-section">
+                <h4>📌 Student Posts, Doubts & Innovations:</h4>
+                <div id="modalUserActivities">
+                    <p style="color: #94a3b8; font-size: 12px;">Loading activity...</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Firebase Scripts -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-app.js";
+        import { getFirestore, collection, getDocs, query, where } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-firestore.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyCNLwSjHq6LlX9uUovTRHrz9ZfUwEIUWQM",
+            authDomain: "genz-india.firebaseapp.com",
+            projectId: "genz-india",
+            storageBucket: "genz-india.firebasestorage.app",
+            messagingSenderId: "149959470783",
+            appId: "1:149959470783:web:71b7969ee2c8fc049c200a",
+            measurementId: "G-RBRSDRKSRH"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+
+        const currentLoggedInUser = JSON.parse(localStorage.getItem('genzUser'));
+
+        async function loadAllUsers() {
+            const container = document.getElementById('usersListContainer');
+            try {
+                const querySnapshot = await getDocs(collection(db, 'users'));
+                container.innerHTML = '';
+
+                if(querySnapshot.empty) {
+                    container.innerHTML = `<p style="color: #94a3b8; font-size: 13px;">No other students found yet.</p>`;
+                    return;
+                }
+
+                querySnapshot.forEach((docSnap) => {
+                    const u = docSnap.data();
+                    // Don't show own card in friend list if you want, or show all
+                    let avatar = u.photo || 'https://cdn.jsdelivr.net/gh/twitter/twemoji@14.0.2/assets/72x72/1f464.png';
+                    
+                    container.innerHTML += `
+                        <div class="user-card">
+                            <img src="${avatar}" alt="Avatar">
+                            <h3>${u.name}</h3>
+                            <div class="username">@${u.username}</div>
+                            <p>🎓 ${u.college || 'College not specified'}</p>
+                            <p>📚 ${u.course || 'Course not specified'}</p>
+                            <p>📍 ${u.city || ''}, ${u.state || ''}</p>
+                            <div class="card-btn-group">
+                                <button class="action-btn btn-view" onclick='openUserProfile(${JSON.stringify(u)})'>View Profile</button>
+                                <button class="action-btn btn-chat" onclick="startChat('${u.username}', '${u.name}')">Chat</button>
+                            </div>
+                        </div>
+                    `;
+                });
+            } catch(e) {
+                console.error(e);
+                container.innerHTML = `<p style="color: #ef4444; font-size: 13px;">Failed to load profiles.</p>`;
+            }
+        }
+
+        window.openUserProfile = async function(userObj) {
+            const modal = document.getElementById('profileModal');
+            const headerInfo = document.getElementById('modalHeaderInfo');
+            const activityContainer = document.getElementById('modalUserActivities');
+
+            let avatar = userObj.photo || 'https://cdn.jsdelivr.net/gh/twitter/twemoji@14.0.2/assets/72x72/1f464.png';
+            
+            headerInfo.innerHTML = `
+                <img src="${avatar}" alt="Avatar">
+                <div>
+                    <h3>${userObj.name}</h3>
+                    <span>@${userObj.username} • ${userObj.college || 'Student'}</span>
+                    <p style="font-size: 11.5px; color: #94a3b8; margin-top: 3px;">${userObj.course || ''} | ${userObj.city || ''}, ${userObj.state || ''}</p>
+                </div>
+            `;
+
+            modal.style.display = 'flex';
+            activityContainer.innerHTML = `<p style="color: #94a3b8; font-size: 12px;">Fetching user activities...</p>`;
+
+            try {
+                // Fetch doubts by this user
+                const qDoubts = query(collection(db, 'doubts'), where("username", "==", "@" + userObj.username));
+                const doubtsSnap = await getDocs(qDoubts);
+
+                // Fetch voices/issues by this user
+                const qVoices = query(collection(db, 'voices'), where("username", "==", "@" + userObj.username));
+                const voicesSnap = await getDocs(qVoices);
+
+                activityContainer.innerHTML = '';
+                let count = 0;
+
+                doubtsSnap.forEach(d => {
+                    count++;
+                    const data = d.data();
+                    activityContainer.innerHTML += `<div class="activity-item"><b>Doubt Asked:</b> ${data.text}</div>`;
+                });
+
+                voicesSnap.forEach(v => {
+                    count++;
+                    const data = v.data();
+                    activityContainer.innerHTML += `<div class="activity-item"><b>Voice Up / Issue:</b> ${data.text}</div>`;
+                });
+
+                if(count === 0) {
+                    activityContainer.innerHTML = `<p style="color: #94a3b8; font-size: 12px;">No posts or doubts found for this user yet.</p>`;
+                }
+
+            } catch(e) {
+                console.error(e);
+                activityContainer.innerHTML = `<p style="color: #ef4444; font-size: 12px;">Could not load activities.</p>`;
+            }
+        }
+
+        window.closeProfileModal = function() {
+            document.getElementById('profileModal').style.display = 'none';
+        }
+
+        window.startChat = function(username, name) {
+            alert(`Direct chat feature with ${name} (@${username}) is opening soon!`);
+        }
+
+        loadAllUsers();
+    </script>
+</body>
+</html>
