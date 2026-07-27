@@ -88,20 +88,6 @@
             flex: 1;
             min-width: 150px;
         }
-        .file-upload-section {
-            margin-bottom: 12px;
-            background: #0b0f19;
-            border: 1px solid #334155;
-            padding: 12px;
-            border-radius: 8px;
-        }
-        .file-upload-section label {
-            display: block;
-            font-size: 12px;
-            color: #38bdf8;
-            margin-bottom: 6px;
-            font-weight: 500;
-        }
         .publish-btn {
             background: #f59e0b;
             color: #0f172a;
@@ -297,12 +283,12 @@
     <div class="container">
         <div class="hero-banner">
             <h1>Notes, PYQs & Study Material Exchange</h1>
-            <p>Upload PDF notes or papers directly and share with campus peers seamlessly.</p>
+            <p>Share study notes and papers securely using Google Drive or PDF links.</p>
         </div>
 
         <!-- Upload Item Form -->
         <div class="store-form-box">
-            <h3 style="font-size: 15px; color: #f59e0b; margin-bottom: 15px;">Upload Study Material / PDF Notes</h3>
+            <h3 style="font-size: 15px; color: #f59e0b; margin-bottom: 15px;">Upload Study Material / Notes</h3>
             <form id="storeForm">
                 <input type="text" id="itemTitle" placeholder="Title (e.g., Data Structures Complete Handwritten Notes)" required>
                 
@@ -339,11 +325,7 @@
                     <input type="text" id="itemPrice" placeholder="Price (e.g., Free or ₹49)" required>
                 </div>
 
-                <div class="file-upload-section">
-                    <label>📎 Upload PDF / Study Document File</label>
-                    <input type="file" id="itemPdfFile" accept=".pdf,image/*" required style="font-size: 12px; color: #94a3b8; border: none; padding: 4px 0;">
-                    <p id="fileNameDisplay" style="font-size: 11px; color: #38bdf8; margin-top: 4px;"></p>
-                </div>
+                <input type="url" id="itemLink" placeholder="PDF / Google Drive Resource Link (https://...)" required>
                 
                 <div id="upiSection" style="display: none;">
                     <input type="text" id="uploaderUpi" placeholder="Enter your UPI ID for payments (e.g., yourname@paytm)">
@@ -367,7 +349,7 @@
             <h3>Secure UPI Payment</h3>
             <p id="modalItemDetails">Pay the uploader directly to get notes securely.</p>
             <div class="upi-box" id="modalUpiDisplay">UPI ID: loading...</div>
-            <p style="font-size: 11px; color: #f87171; margin-bottom: 15px;">After payment, click below to open chat and send payment screenshot to receive the PDF file.</p>
+            <p style="font-size: 11px; color: #f87171; margin-bottom: 15px;">After payment, click below to open chat and send payment screenshot to receive the resource.</p>
             <div class="modal-btns">
                 <button type="button" style="background: #334155; color: #fff;" onclick="closeModal()">Cancel</button>
                 <button type="button" style="background: #38bdf8; color: #0f172a;" id="proceedChatBtn">I Have Paid - Open Chat 💬</button>
@@ -397,11 +379,6 @@
             window.location.href = 'login.html';
         }
 
-        document.getElementById('itemPdfFile').addEventListener('change', function(e) {
-            const file = e.target.files[0];
-            document.getElementById('fileNameDisplay').innerText = file ? `Selected File: ${file.name}` : '';
-        });
-
         // Show/Hide UPI input if price is not free
         document.getElementById('itemPrice').addEventListener('input', function(e) {
             const val = e.target.value.trim().toLowerCase();
@@ -415,15 +392,6 @@
             }
         });
 
-        function convertFileToBase64(file) {
-            return new Promise((resolve, reject) => {
-                const reader = new FileReader();
-                reader.readAsDataURL(file);
-                reader.onload = () => resolve(reader.result);
-                reader.onerror = error => reject(error);
-            });
-        }
-
         // Publish Store Item
         document.getElementById('storeForm').addEventListener('submit', async function(e) {
             e.preventDefault();
@@ -432,26 +400,15 @@
             const type = document.getElementById('itemType').value;
             const semester = document.getElementById('itemSemester').value;
             const price = document.getElementById('itemPrice').value.trim();
-            const fileInput = document.getElementById('itemPdfFile').files[0];
+            const link = document.getElementById('itemLink').value.trim();
             const upi = document.getElementById('uploaderUpi').value.trim();
             const desc = document.getElementById('itemDesc').value.trim();
             const publishBtn = document.getElementById('publishBtn');
 
-            if (!title || !category || !type || !semester || !price || !fileInput || !desc) return;
+            if (!title || !category || !type || !semester || !price || !link || !desc) return;
 
-            publishBtn.innerText = "Uploading PDF & Publishing...";
+            publishBtn.innerText = "Publishing...";
             publishBtn.disabled = true;
-
-            let fileDataUrl = "";
-            try {
-                fileDataUrl = await convertFileToBase64(fileInput);
-            } catch (err) {
-                console.error("File conversion error:", err);
-                alert("Failed to process file.");
-                publishBtn.innerText = "Publish to Store 🚀";
-                publishBtn.disabled = false;
-                return;
-            }
 
             const newItem = {
                 title: title,
@@ -459,8 +416,7 @@
                 type: type,
                 semester: semester,
                 price: price,
-                fileUrl: fileDataUrl,
-                fileName: fileInput.name,
+                link: link,
                 upi: upi || "",
                 description: desc,
                 author: activeUser.username,
@@ -471,7 +427,6 @@
             try {
                 await addDoc(collection(db, 'store_items'), newItem);
                 document.getElementById('storeForm').reset();
-                document.getElementById('fileNameDisplay').innerText = '';
                 document.getElementById('upiSection').style.display = 'none';
             } catch (err) {
                 console.error("Error publishing item:", err);
@@ -509,8 +464,8 @@
                     : `<span class="price-badge">🏷️ ${item.price}</span>`;
 
                 let actionButtonHtml = "";
-                if (isFree && item.fileUrl) {
-                    actionButtonHtml = `<a href="${item.fileUrl}" download="${item.fileName || 'notes.pdf'}" class="btn-access">Download PDF 📥</a>`;
+                if (isFree) {
+                    actionButtonHtml = `<a href="${item.link}" target="_blank" class="btn-access">Access / Download 📥</a>`;
                 } else {
                     actionButtonHtml = `<button class="btn-buy" onclick="openPaymentModal('${item.author}', '${item.upi}', '${item.title}')">Buy / Pay 💳</button>`;
                 }
