@@ -158,80 +158,6 @@
             background: #38bdf8;
             color: #0f172a;
         }
-
-        /* Global Chat Section */
-        .chat-section {
-            background: #111827;
-            padding: 25px;
-            border-radius: 16px;
-            border: 1px solid #1f2937;
-        }
-        .chat-section h3 {
-            color: #38bdf8;
-            font-size: 20px;
-            margin-bottom: 15px;
-        }
-        .chat-box {
-            background: #0b0f19;
-            border: 1px solid #334155;
-            border-radius: 12px;
-            height: 300px;
-            overflow-y: auto;
-            padding: 15px;
-            margin-bottom: 15px;
-        }
-        .chat-message {
-            margin-bottom: 12px;
-            font-size: 13px;
-        }
-        .chat-message .c-header {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            margin-bottom: 4px;
-        }
-        .chat-message img {
-            width: 24px;
-            height: 24px;
-            border-radius: 50%;
-            object-fit: cover;
-        }
-        .chat-message .c-name {
-            font-weight: 600;
-            color: #38bdf8;
-            font-size: 12px;
-        }
-        .chat-message .c-time {
-            font-size: 10px;
-            color: #64748b;
-        }
-        .chat-message .c-text {
-            color: #cbd5e1;
-            padding-left: 32px;
-        }
-        .chat-input-area {
-            display: flex;
-            gap: 10px;
-        }
-        .chat-input-area input {
-            flex: 1;
-            background: #0b0f19;
-            border: 1px solid #334155;
-            border-radius: 8px;
-            padding: 10px 15px;
-            color: #fff;
-            font-size: 13px;
-        }
-        .chat-send-btn {
-            background: #38bdf8;
-            color: #0f172a;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 8px;
-            font-weight: 600;
-            font-size: 13px;
-            cursor: pointer;
-        }
     </style>
 </head>
 <body>
@@ -248,6 +174,8 @@
         <a href="index.html" class="logo">Gen'Z India ⚡</a>
         <nav>
             <a href="index.html" class="active">Dashboard</a>
+            <a href="makefriend.html">Make Friends</a>
+            <a href="voiceup.html">Voice Up</a>
             <button class="logout-btn" onclick="logoutUser()">Logout</button>
         </nav>
     </header>
@@ -257,7 +185,7 @@
         <div class="welcome-banner">
             <div>
                 <h2>Welcome to Student Hub 🚀</h2>
-                <p>Access all your campus tools, doubts, gigs, and talk with peers globally.</p>
+                <p>Access all your campus tools, doubts, gigs, and connect with peers.</p>
             </div>
             <div class="user-badge" id="userBadgeDiv">
                 <!-- Loaded via JS -->
@@ -266,6 +194,14 @@
 
         <!-- Hub Navigation Cards Grid -->
         <div class="hub-grid">
+            <a href="makefriend.html" class="hub-card" style="border-color: #38bdf8;">
+                <div>
+                    <h3>🤝 Make Friends & Profiles</h3>
+                    <p>Discover student profiles, check their doubts & innovations, follow and chat with them.</p>
+                </div>
+                <div class="hub-btn">Explore Community →</div>
+            </a>
+
             <a href="doubtbox.html" class="hub-card">
                 <div>
                     <h3>💬 DoubtBox</h3>
@@ -306,41 +242,11 @@
                 <div class="hub-btn">View Showcase →</div>
             </a>
         </div>
-
-        <!-- Global Student Chat Section -->
-        <div class="chat-section">
-            <h3>🌐 Global Student Community Chat</h3>
-            <div class="chat-box" id="globalChatBox">
-                <p style="color: #64748b; font-size: 12px;">Loading messages...</p>
-            </div>
-            <form onsubmit="sendChatMessage(event)" class="chat-input-area">
-                <input type="text" id="chatInputText" placeholder="Say something to fellow students..." required>
-                <button type="submit" class="chat-send-btn">Send</button>
-            </form>
-        </div>
     </div>
 
-    <!-- Firebase Scripts -->
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-app.js";
-        import { getFirestore, collection, addDoc, getDocs, query, orderBy } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-firestore.js";
-
-        const firebaseConfig = {
-            apiKey: "AIzaSyCNLwSjHq6LlX9uUovTRHrz9ZfUwEIUWQM",
-            authDomain: "genz-india.firebaseapp.com",
-            projectId: "genz-india",
-            storageBucket: "genz-india.firebasestorage.app",
-            messagingSenderId: "149959470783",
-            appId: "1:149959470783:web:71b7969ee2c8fc049c200a",
-            measurementId: "G-RBRSDRKSRH"
-        };
-
-        const app = initializeApp(firebaseConfig);
-        const db = getFirestore(app);
-
+    <!-- Firebase Script for User Badge -->
+    <script>
         const currentUser = JSON.parse(localStorage.getItem('genzUser'));
-
-        // Render User Profile Badge
         if(currentUser) {
             document.getElementById('userBadgeDiv').innerHTML = `
                 <img src="${currentUser.photo || 'https://cdn.jsdelivr.net/gh/twitter/twemoji@14.0.2/assets/72x72/1f464.png'}" alt="Avatar">
@@ -355,64 +261,6 @@
             localStorage.removeItem('genzUser');
             window.location.href = 'login.html';
         }
-
-        // Chat functionality
-        window.sendChatMessage = async function(event) {
-            event.preventDefault();
-            const text = document.getElementById('chatInputText').value.trim();
-            if(!text) return;
-
-            let chatData = {
-                name: currentUser.name,
-                username: "@" + currentUser.username,
-                photo: currentUser.photo || "https://cdn.jsdelivr.net/gh/twitter/twemoji@14.0.2/assets/72x72/1f464.png",
-                text: text,
-                timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
-            };
-
-            try {
-                await addDoc(collection(db, 'globalChat'), chatData);
-                document.getElementById('chatInputText').value = '';
-                loadChatMessages();
-            } catch(e) {
-                console.error(e);
-                alert('Error sending message.');
-            }
-        }
-
-        async function loadChatMessages() {
-            const chatBox = document.getElementById('globalChatBox');
-            try {
-                const querySnapshot = await getDocs(collection(db, 'globalChat'));
-                chatBox.innerHTML = '';
-
-                if(querySnapshot.empty) {
-                    chatBox.innerHTML = `<p style="color: #64748b; font-size: 12px;">No messages yet. Start the conversation!</p>`;
-                    return;
-                }
-
-                querySnapshot.forEach((doc) => {
-                    const c = doc.data();
-                    let avatar = c.photo || 'https://cdn.jsdelivr.net/gh/twitter/twemoji@14.0.2/assets/72x72/1f464.png';
-                    chatBox.innerHTML += `
-                        <div class="chat-message">
-                            <div class="c-header">
-                                <img src="${avatar}" alt="Avatar">
-                                <span class="c-name">${c.name} (${c.username})</span>
-                                <span class="c-time">${c.timestamp || ''}</span>
-                            </div>
-                            <div class="c-text">${c.text}</div>
-                        </div>
-                    `;
-                });
-                chatBox.scrollTop = chatBox.scrollHeight;
-            } catch(e) {
-                console.error(e);
-                chatBox.innerHTML = `<p style="color: #ef4444; font-size: 12px;">Failed to load chat.</p>`;
-            }
-        }
-
-        loadChatMessages();
     </script>
 </body>
 </html>
