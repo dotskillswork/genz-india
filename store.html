@@ -214,6 +214,22 @@
         .btn-buy:hover {
             background: #d97706;
         }
+        .seller-orders-box {
+            background: #0b0f19;
+            border: 1px solid #334155;
+            padding: 12px;
+            border-radius: 8px;
+            margin-top: 15px;
+        }
+        .order-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            font-size: 12px;
+            padding: 6px 0;
+            border-bottom: 1px solid #1f2937;
+        }
+        /* Modal */
         .modal {
             display: none;
             position: fixed;
@@ -281,7 +297,7 @@
     <div class="container">
         <div class="hero-banner">
             <h1>Notes, PYQs & Study Material Exchange</h1>
-            <p>Share study notes and papers securely. Ensure Google Drive link sharing is set to "Anyone with the link".</p>
+            <p>Secure peer-to-peer marketplace with seller-verified payment escrow.</p>
         </div>
 
         <div class="store-form-box">
@@ -339,6 +355,7 @@
         </div>
     </div>
 
+    <!-- Secure UPI Payment Modal -->
     <div class="modal" id="paymentModal">
         <div class="modal-content">
             <h3 id="modalHeaderTitle">Secure UPI Payment</h3>
@@ -346,10 +363,10 @@
             <div class="upi-box" id="modalUpiDisplay">UPI ID: loading...</div>
             
             <div id="paymentActionArea">
-                <p style="font-size: 11px; color: #f87171; margin-bottom: 15px;">After paying via UPI, click below to open chat and send the payment screenshot to the uploader for verification.</p>
+                <p style="font-size: 11px; color: #f87171; margin-bottom: 15px;">After paying via UPI, click below to notify seller and send screenshot in chat for verification.</p>
                 <div class="modal-btns">
                     <button type="button" style="background: #334155; color: #fff;" onclick="closeModal()">Cancel</button>
-                    <button type="button" style="background: #38bdf8; color: #0f172a;" id="sendScreenshotChatBtn">Send Screenshot in Chat 💬</button>
+                    <button type="button" style="background: #38bdf8; color: #0f172a;" id="notifySellerBtn">I Have Paid - Notify Seller 💳</button>
                 </div>
             </div>
         </div>
@@ -357,7 +374,7 @@
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-app.js";
-        import { getFirestore, collection, addDoc, onSnapshot, query, orderBy } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-firestore.js";
+        import { getFirestore, collection, addDoc, updateDoc, doc, onSnapshot, query, orderBy } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-firestore.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyCNLwSjHq6LlX9uUovTRHrz9ZfUwEIUWQM",
@@ -433,79 +450,148 @@
             }
         });
 
-        const q = query(collection(db, 'store_items'), orderBy('createdAt', 'desc'));
-        onSnapshot(q, (snapshot) => {
-            const container = document.getElementById('storeFeedContainer');
-            container.innerHTML = "";
+        // Listen to Store Items and Orders
+        onSnapshot(query(collection(db, 'store_items'), orderBy('createdAt', 'desc')), (storeSnapshot) => {
+            onSnapshot(query(collection(db, 'store_orders'), orderBy('createdAt', 'desc')), (orderSnapshot) => {
+                const container = document.getElementById('storeFeedContainer');
+                container.innerHTML = "";
 
-            let storeList = [];
-            snapshot.forEach((docSnap) => {
-                storeList.push({ id: docSnap.id, ...docSnap.data() });
-            });
+                let storeList = [];
+                storeSnapshot.forEach((docSnap) => {
+                    storeList.push({ id: docSnap.id, ...docSnap.data() });
+                });
 
-            if (storeList.length === 0) {
-                container.innerHTML = `<p style="color: #64748b; text-align: center; font-size: 13px; padding: 20px;">No study materials shared yet. Be the first to upload notes!</p>`;
-                return;
-            }
+                let ordersList = [];
+                orderSnapshot.forEach((docSnap) => {
+                    ordersList.push({ id: docSnap.id, ...docSnap.data() });
+                });
 
-            storeList.forEach((item) => {
-                const timeString = new Date(item.createdAt).toLocaleString([], { dateStyle: 'short', timeStyle: 'short' });
-                const authorInitial = item.author ? item.author.charAt(0).toUpperCase() : 'U';
-                const authorAvatar = item.authorPic ? `<img src="${item.authorPic}" class="uploader-avatar">` : `<div class="uploader-avatar">${authorInitial}</div>`;
-
-                const isFree = item.price.toLowerCase() === 'free' || item.price === '0';
-                const priceBadge = isFree 
-                    ? `<span class="free-badge">🆓 Free</span>` 
-                    : `<span class="price-badge">🏷️ ${item.price}</span>`;
-
-                let actionButtonHtml = "";
-                if (isFree) {
-                    actionButtonHtml = `<a href="${item.link}" target="_blank" class="btn-access">Access / Download 📥</a>`;
-                } else {
-                    actionButtonHtml = `<button class="btn-buy" onclick="openPaymentModal('${item.author}', '${item.upi}', '${item.title}')">Buy / Pay 💳</button>`;
+                if (storeList.length === 0) {
+                    container.innerHTML = `<p style="color: #64748b; text-align: center; font-size: 13px; padding: 20px;">No study materials shared yet. Be the first to upload notes!</p>`;
+                    return;
                 }
 
-                container.innerHTML += `
-                    <div class="store-card">
-                        <div class="store-header">
-                            <div class="uploader-info">
-                                ${authorAvatar}
-                                <div>
-                                    <h4 style="font-size: 13px; color: #f8fafc;">@${item.author}</h4>
-                                    <span style="font-size: 11px; color: #94a3b8;">${timeString}</span>
+                storeList.forEach((item) => {
+                    const timeString = new Date(item.createdAt).toLocaleString([], { dateStyle: 'short', timeStyle: 'short' });
+                    const authorInitial = item.author ? item.author.charAt(0).toUpperCase() : 'U';
+                    const authorAvatar = item.authorPic ? `<img src="${item.authorPic}" class="uploader-avatar">` : `<div class="uploader-avatar">${authorInitial}</div>`;
+
+                    const isFree = item.price.toLowerCase() === 'free' || item.price === '0';
+                    const isOwner = item.author === activeUser.username;
+
+                    // Check if current user has an accepted order for this item
+                    const userOrder = ordersList.find(o => o.itemId === item.id && o.buyer === activeUser.username);
+                    const isAccepted = userOrder && userOrder.status === 'accepted';
+
+                    let actionButtonHtml = "";
+                    if (isFree) {
+                        actionButtonHtml = `<a href="${item.link}" target="_blank" class="btn-access">Access / Download 📥</a>`;
+                    } else if (isAccepted) {
+                        actionButtonHtml = `<a href="${item.link}" target="_blank" class="btn-access">Download Notes Now 📥</a>`;
+                    } else if (userOrder && userOrder.status === 'pending') {
+                        actionButtonHtml = `<button class="btn-buy" style="background:#334155; color:#94a3b8; cursor:default;">Payment Pending Verification ⏳</button>`;
+                    } else {
+                        actionButtonHtml = `<button class="btn-buy" onclick="openPaymentModal('${item.id}', '${item.author}', '${item.upi}', '${item.title}')">Buy / Pay 💳</button>`;
+                    }
+
+                    // Seller incoming orders panel
+                    let sellerPanelHtml = "";
+                    if (isOwner && !isFree) {
+                        const itemOrders = ordersList.filter(o => o.itemId === item.id);
+                        if (itemOrders.length > 0) {
+                            sellerPanelHtml += `<div class="seller-orders-box"><h4 style="font-size:12px; color:#f59e0b; margin-bottom:6px;">Incoming Buyer Payments:</h4>`;
+                            itemOrders.forEach(ord => {
+                                const statusColor = ord.status === 'accepted' ? '#34d399' : '#f87171';
+                                const actionControl = ord.status === 'pending' 
+                                    ? `<button onclick="acceptPayment('${ord.id}')" style="background:#10b981; color:#0f172a; border:none; padding:3px 8px; border-radius:4px; font-weight:600; cursor:pointer; font-size:11px;">Accept & Unlock ✅</button>`
+                                    : `<span style="color:#34d399; font-weight:600;">Accepted ✔️</span>`;
+
+                                sellerPanelHtml += `
+                                    <div class="order-row">
+                                        <span>@${ord.buyer}</span>
+                                        <span style="color:${statusColor}">${ord.status.toUpperCase()}</span>
+                                        ${actionControl}
+                                    </div>
+                                `;
+                            });
+                            sellerPanelHtml += `</div>`;
+                        }
+                    }
+
+                    container.innerHTML += `
+                        <div class="store-card">
+                            <div class="store-header">
+                                <div class="uploader-info">
+                                    ${authorAvatar}
+                                    <div>
+                                        <h4 style="font-size: 13px; color: #f8fafc;">@${item.author}</h4>
+                                        <span style="font-size: 11px; color: #94a3b8;">${timeString}</span>
+                                    </div>
+                                </div>
+                                <span class="${isFree ? 'free-badge' : 'price-badge'}">${isFree ? '🆓 Free' : '🏷️ ' + item.price}</span>
+                            </div>
+                            <div class="tags-row">
+                                <span class="tag">📁 ${item.category}</span>
+                                <span class="tag">📌 ${item.type}</span>
+                                <span class="tag">🎓 ${item.semester}</span>
+                            </div>
+                            <div class="item-title">${item.title}</div>
+                            <div class="item-desc">${item.description}</div>
+                            
+                            ${sellerPanelHtml}
+
+                            <div class="store-footer">
+                                <a href="chat.html?with=${item.author}" style="font-size: 12px; color: #38bdf8; text-decoration: none;">Chat with @${item.author} 💬</a>
+                                <div class="action-btns">
+                                    ${actionButtonHtml}
                                 </div>
                             </div>
-                            ${priceBadge}
                         </div>
-                        <div class="tags-row">
-                            <span class="tag">📁 ${item.category}</span>
-                            <span class="tag">📌 ${item.type}</span>
-                            <span class="tag">🎓 ${item.semester}</span>
-                        </div>
-                        <div class="item-title">${item.title}</div>
-                        <div class="item-desc">${item.description}</div>
-                        
-                        <div class="store-footer">
-                            <a href="chat.html?with=${item.author}" style="font-size: 12px; color: #38bdf8; text-decoration: none;">Chat with @${item.author} 💬</a>
-                            <div class="action-btns">
-                                ${actionButtonHtml}
-                            </div>
-                        </div>
-                    </div>
-                `;
+                    `;
+                });
             });
         });
 
-        window.openPaymentModal = function(author, upiId, title) {
+        let activeItemIdForModal = null;
+        let activeSellerForModal = null;
+
+        window.openPaymentModal = function(itemId, author, upiId, title) {
+            activeItemIdForModal = itemId;
+            activeSellerForModal = author;
             document.getElementById('modalHeaderTitle').innerText = "Secure UPI Payment";
             document.getElementById('modalItemDetails').innerText = `Pay for: "${title}"`;
             document.getElementById('modalUpiDisplay').innerText = `Uploader UPI ID: ${upiId || 'Not provided'}`;
             
-            document.getElementById('sendScreenshotChatBtn').onclick = function() {
-                window.location.href = `chat.html?with=${author}`;
+            document.getElementById('notifySellerBtn').onclick = async function() {
+                try {
+                    await addDoc(collection(db, 'store_orders'), {
+                        itemId: activeItemIdForModal,
+                        buyer: activeUser.username,
+                        seller: activeSellerForModal,
+                        status: 'pending',
+                        createdAt: Date.now()
+                    });
+                    alert("Seller notified! Please also share your payment screenshot in chat.");
+                    window.location.href = `chat.html?with=${activeSellerForModal}`;
+                } catch (err) {
+                    console.error("Error creating order:", err);
+                    alert("Failed to notify seller.");
+                }
             };
 
             document.getElementById('paymentModal').style.display = 'flex';
+        };
+
+        window.acceptPayment = async function(orderId) {
+            try {
+                await updateDoc(doc(db, 'store_orders', orderId), {
+                    status: 'accepted'
+                });
+                alert("Payment accepted! Download link unlocked for the buyer.");
+            } catch (err) {
+                console.error("Error accepting payment:", err);
+                alert("Failed to accept payment.");
+            }
         };
 
         window.closeModal = function() {
