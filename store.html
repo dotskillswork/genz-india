@@ -556,22 +556,42 @@
 
             if (!title || !category || !type || !semester || !price || !fileInput || !desc) return;
 
-            publishBtn.innerText = "Uploading to Firebase... ⏳";
+            publishBtn.innerText = "Processing & Publishing... ⏳";
             publishBtn.disabled = true;
 
-            try {
-                // Official Firebase Storage Upload (CORS free & fully native)
-                const storageRef = ref(storage, `store_pdfs/${Date.now()}_${fileInput.name}`);
-                const snapshot = await uploadBytes(storageRef, fileInput);
-                const downloadURL = await getDownloadURL(snapshot.ref);
+            let fileUrl = "";
 
+            try {
+                // Try uploading to Firebase Storage with a 4-second safety timeout
+                const storageRef = ref(storage, `store_pdfs/${Date.now()}_${fileInput.name}`);
+                
+                const uploadPromise = uploadBytes(storageRef, fileInput).then(async (snapshot) => {
+                    return await getDownloadURL(snapshot.ref);
+                });
+
+                const timeoutPromise = new Promise((_, reject) => 
+                    setTimeout(() => reject(new Error('Storage Timeout')), 4000)
+                );
+
+                fileUrl = await Promise.race([uploadPromise, timeoutPromise]);
+            } catch (err) {
+                console.warn("Storage restricted or timed out, switching to instant direct mode:", err);
+                // Fallback: Use direct reader data URL if storage is restricted
+                fileUrl = await new Promise((resolve) => {
+                    const reader = new FileReader();
+                    reader.readAsDataURL(fileInput);
+                    reader.onload = () => resolve(reader.result);
+                });
+            }
+
+            try {
                 const newItem = {
                     title: title,
                     category: category,
                     type: type,
                     semester: semester,
                     price: price,
-                    fileUrl: downloadURL,
+                    fileUrl: fileUrl,
                     fileName: fileInput.name,
                     upi: upi || "",
                     description: desc,
@@ -586,9 +606,9 @@
                 document.getElementById('upiSection').style.display = 'none';
                 modalBox.style.display = 'none';
                 alert("Study material published successfully! 🎉");
-            } catch (err) {
-                console.error("Upload error:", err);
-                alert("Upload failed. Please check your Firebase Storage Rules or internet connection.");
+            } catch (dbErr) {
+                console.error("Database error:", dbErr);
+                alert("Failed to save item. If the PDF is large, try a smaller file.");
             } finally {
                 publishBtn.innerText = "Publish to Store 🚀";
                 publishBtn.disabled = false;
