@@ -249,7 +249,7 @@
             background: #991b1b;
         }
 
-        /* Modal Popup for Resume */
+        /* Modal Popup for Application */
         .modal {
             display: none;
             position: fixed;
@@ -258,6 +258,7 @@
             align-items: center;
             justify-content: center;
             z-index: 1000;
+            padding: 15px;
         }
         .modal-content {
             background: #111827;
@@ -265,9 +266,9 @@
             padding: 25px;
             border-radius: 12px;
             width: 100%;
-            max-width: 400px;
+            max-width: 450px;
         }
-        .modal-content input {
+        .modal-content textarea {
             width: 100%;
             background: #0b0f19;
             border: 1px solid #334155;
@@ -275,8 +276,21 @@
             padding: 10px;
             color: #fff;
             font-size: 13px;
+            margin-bottom: 12px;
+            margin-top: 6px;
+            min-height: 100px;
+            resize: vertical;
+        }
+        .file-upload-box {
             margin-bottom: 15px;
-            margin-top: 8px;
+        }
+        .file-upload-box label {
+            display: block;
+            font-size: 12px;
+            color: #38bdf8;
+            margin-bottom: 5px;
+            cursor: pointer;
+            font-weight: 500;
         }
         .modal-btns {
             display: flex;
@@ -338,12 +352,21 @@
     <!-- Apply Modal -->
     <div class="modal" id="applyModal">
         <div class="modal-content">
-            <h3 style="font-size: 16px; color: #38bdf8; margin-bottom: 10px;">Apply for this Gig</h3>
-            <p style="font-size: 12px; color: #94a3b8; margin-bottom: 10px;">Provide your Resume link (Google Drive, LinkedIn, Portfolio, etc.)</p>
-            <input type="url" id="resumeUrlInput" placeholder="https://..." required>
+            <h3 style="font-size: 16px; color: #38bdf8; margin-bottom: 6px;">Apply for this Gig</h3>
+            <p style="font-size: 12px; color: #94a3b8; margin-bottom: 12px;">Type your resume/details manually OR upload your resume file (PDF/Image).</p>
+            
+            <label style="font-size: 12px; color: #cbd5e1; font-weight: 500;">Manual Resume / Cover Letter</label>
+            <textarea id="manualResumeText" placeholder="Write about your skills, experience, or message for the poster..."></textarea>
+            
+            <div class="file-upload-box">
+                <label>📎 Or Upload Resume File (PDF / Image)</label>
+                <input type="file" id="resumeFileInput" accept=".pdf,image/*" style="font-size: 12px; color: #94a3b8;">
+                <p id="fileNameShow" style="font-size: 11px; color: #38bdf8; margin-top: 4px;"></p>
+            </div>
+
             <div class="modal-btns">
                 <button type="button" style="background: #334155; color: #fff;" onclick="closeModal()">Cancel</button>
-                <button type="button" style="background: #10b981; color: #0f172a;" onclick="submitApplication()">Submit Application ✅</button>
+                <button type="button" style="background: #10b981; color: #0f172a;" onclick="submitApplication()" id="submitAppBtn">Submit Application ✅</button>
             </div>
         </div>
     </div>
@@ -372,6 +395,11 @@
 
         let selectedGigId = null;
 
+        document.getElementById('resumeFileInput').addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            document.getElementById('fileNameShow').innerText = file ? `Selected File: ${file.name}` : '';
+        });
+
         // Post Gig Handler
         document.getElementById('gigForm').addEventListener('submit', async function(e) {
             e.preventDefault();
@@ -394,7 +422,7 @@
                 author: activeUser.username,
                 authorPic: activeUser.profilePic || "",
                 createdAt: Date.now(),
-                applicants: [], // Array of usernames who applied
+                applicants: [],
                 isClosed: false
             };
 
@@ -485,7 +513,7 @@
                         </div>
 
                         <div class="gig-footer">
-                            <span style="font-size: 11px; color: #64748b;">Submit resume to apply or chat with poster</span>
+                            <span style="font-size: 11px; color: #64748b;">Apply with manual text or resume file, or chat</span>
                             ${actionHtml}
                         </div>
                     </div>
@@ -495,7 +523,9 @@
 
         window.openApplyModal = function(gigId) {
             selectedGigId = gigId;
-            document.getElementById('resumeUrlInput').value = '';
+            document.getElementById('manualResumeText').value = '';
+            document.getElementById('resumeFileInput').value = '';
+            document.getElementById('fileNameShow').innerText = '';
             document.getElementById('applyModal').style.display = 'flex';
         };
 
@@ -504,23 +534,41 @@
             selectedGigId = null;
         };
 
+        function convertFileToBase64(file) {
+            return new Promise((resolve, reject) => {
+                const reader = new FileReader();
+                reader.readAsDataURL(file);
+                reader.onload = () => resolve(reader.result);
+                reader.onerror = error => reject(error);
+            });
+        }
+
         window.submitApplication = async function() {
-            const resumeUrl = document.getElementById('resumeUrlInput').value.trim();
-            if (!resumeUrl) {
-                alert("Please provide a valid resume link.");
+            const manualText = document.getElementById('manualResumeText').value.trim();
+            const fileInput = document.getElementById('resumeFileInput').files[0];
+
+            if (!manualText && !fileInput) {
+                alert("Please either type your resume/details or upload a resume file.");
                 return;
             }
+
+            const submitBtn = document.getElementById('submitAppBtn');
+            submitBtn.innerText = "Submitting...";
+            submitBtn.disabled = true;
 
             try {
                 const gigRef = doc(db, 'gigs', selectedGigId);
                 await updateDoc(gigRef, {
                     applicants: arrayUnion(activeUser.username)
                 });
-                alert("Application submitted successfully with your resume! 🎉");
+                alert("Application submitted successfully! 🎉");
                 closeModal();
             } catch (err) {
-                console.error("Error applying for gig:", err);
+                console.error("Error applying:", err);
                 alert("Failed to submit application.");
+            } finally {
+                submitBtn.innerText = "Submit Application ✅";
+                submitBtn.disabled = false;
             }
         };
 
