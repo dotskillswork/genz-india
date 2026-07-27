@@ -61,6 +61,8 @@
             border-radius: 10px;
             font-size: 13px;
             word-break: break-word;
+            display: flex;
+            flex-direction: column;
         }
         .message.sent {
             background: #38bdf8;
@@ -123,7 +125,7 @@
         </form>
     </div>
 
-    <!-- Firebase Server Timestamp Chat Logic -->
+    <!-- Firebase Chat Logic -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-app.js";
         import { getFirestore, collection, addDoc, getDocs, query, where, orderBy, serverTimestamp } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-firestore.js";
@@ -186,7 +188,7 @@
                 sender: activeUser.username,
                 receiver: targetUsername,
                 text: text,
-                createdAt: serverTimestamp() // Official Firebase Server Time
+                createdAt: serverTimestamp()
             };
 
             try {
@@ -202,7 +204,6 @@
         async function loadMessages(isSentByMe = false) {
             const chatBox = document.getElementById('msgChatBox');
             try {
-                // Direct server-side filtering and sorting query
                 const q = query(
                     collection(db, 'directMessages'),
                     where("room", "==", chatRoomId),
@@ -230,7 +231,6 @@
 
                 messagesArray.forEach(m => {
                     const isSender = m.sender === activeUser.username;
-                    // Handle serverTimestamp which might be null for a split second right after sending
                     let timeString = "";
                     if (m.createdAt && m.createdAt.toDate) {
                         timeString = m.createdAt.toDate().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
