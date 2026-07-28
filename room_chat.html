@@ -338,7 +338,6 @@
 
         document.getElementById('roomTitleHeader').innerText = `Room: ${activeRoom.name}`;
 
-        // Check if current user is admin (Creator of room)
         let isAdmin = activeRoom.admin === activeUser.name;
         const roleIndicator = document.getElementById('roleIndicator');
         const requestAccessBtn = document.getElementById('requestAccessBtn');
@@ -353,7 +352,7 @@
             requestAccessBtn.style.display = 'none';
             mediaControlRow.style.display = 'flex';
             videoLabel.innerText = "You (Admin)";
-            startCamera(); // Admin gets direct access
+            startCamera();
         } else {
             roleIndicator.innerText = "● Member";
             roleIndicator.style.color = "#38bdf8";
@@ -364,7 +363,6 @@
             requestAccessBtn.innerText = "Request Sent (Waiting)...";
             requestAccessBtn.disabled = true;
 
-            // Simulate Admin approval after 3 seconds for smooth testing
             setTimeout(() => {
                 if (confirm(`[Simulation] Admin (${activeRoom.admin}) has approved your Mic/Cam request. Enable now?`)) {
                     requestAccessBtn.style.display = 'none';
@@ -429,46 +427,41 @@
                 return;
             }
 
-            // Collect all users stored across possible localStorage keys
-            let allUsersMap = new Map();
+            const cleanQuery = query.replace('@', '').trim().toLowerCase();
+            let foundUsersSet = new Set();
 
-            // 1. Check genzRegisteredUsers
-            const rUsers = JSON.parse(localStorage.getItem('genzRegisteredUsers')) || [];
-            rUsers.forEach(u => {
-                const name = u.name || u.email || u.username;
-                if (name) allUsersMap.set(name.toLowerCase(), name);
-            });
+            function extractData(obj) {
+                if (!obj) return;
+                if (Array.isArray(obj)) {
+                    obj.forEach(item => extractData(item));
+                } else if (typeof obj === 'object') {
+                    const possibleName = obj.name || obj.username || obj.fullName || obj.displayName;
+                    const possibleHandle = obj.handle || obj.userHandle || obj.tag;
+                    
+                    if (possibleName) foundUsersSet.add(possibleName.trim());
+                    if (possibleHandle) foundUsersSet.add('@' + possibleHandle.replace('@', '').trim());
 
-            // 2. Check makefrirend or any other friend/user keys present in localStorage
-            for (let i = 0; i < localStorage.length; i++) {
-                const key = localStorage.key(i);
-                try {
-                    const data = JSON.parse(localStorage.getItem(key));
-                    if (Array.isArray(data)) {
-                        data.forEach(item => {
-                            const name = item.name || item.email || item.username;
-                            if (name) allUsersMap.set(name.toLowerCase(), name);
-                        });
-                    } else if (data && typeof data === 'object') {
-                        const name = data.name || data.email || data.username;
-                        if (name) allUsersMap.set(name.toLowerCase(), name);
-                    }
-                } catch (e) {
-                    // ignore non-json values
+                    Object.values(obj).forEach(val => {
+                        if (typeof val === 'object') extractData(val);
+                    });
                 }
             }
 
-            // Also include active user
-            const current = JSON.parse(localStorage.getItem('genzUser'));
-            if (current) {
-                const name = current.name || current.email || current.username;
-                if (name) allUsersMap.set(name.toLowerCase(), name);
+            for (let i = 0; i < localStorage.length; i++) {
+                const key = localStorage.key(i);
+                try {
+                    const rawData = localStorage.getItem(key);
+                    const parsedData = JSON.parse(rawData);
+                    extractData(parsedData);
+                } catch (e) {
+                    if (localStorage.getItem(key).toLowerCase().includes(cleanQuery)) {
+                        foundUsersSet.add(localStorage.getItem(key));
+                    }
+                }
             }
 
-            const uniqueUsers = Array.from(allUsersMap.values());
-
-            // Filter based on search query
-            const filtered = uniqueUsers.filter(name => name.toLowerCase().includes(query.toLowerCase()));
+            const allUniqueNames = Array.from(foundUsersSet);
+            const filtered = allUniqueNames.filter(name => name.toLowerCase().includes(cleanQuery));
 
             if (filtered.length === 0) {
                 resultsDiv.innerHTML = `<p style="font-size: 12px; color: #ef4444; text-align: center;">No registered user found.</p>`;
