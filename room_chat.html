@@ -38,18 +38,18 @@
             gap: 12px;
             align-items: center;
         }
-        .add-member-btn {
-            background: #10b981;
-            color: #fff;
-            border: none;
-            padding: 6px 14px;
+        .action-chip {
+            background: #1e293b;
+            color: #38bdf8;
+            border: 1px solid #334155;
+            padding: 6px 12px;
             border-radius: 6px;
             font-size: 12px;
             font-weight: 600;
             cursor: pointer;
         }
-        .add-member-btn:hover {
-            background: #059669;
+        .action-chip:hover {
+            background: #334155;
         }
         .workspace {
             display: flex;
@@ -169,21 +169,38 @@
         }
         .video-controls {
             display: flex;
-            gap: 10px;
+            flex-direction: column;
+            gap: 8px;
+        }
+        .control-row {
+            display: flex;
+            gap: 8px;
             justify-content: center;
         }
         .v-btn {
+            flex: 1;
             background: #ef4444;
             color: #fff;
             border: none;
-            padding: 8px 15px;
+            padding: 8px;
             border-radius: 6px;
-            font-size: 12px;
+            font-size: 11px;
             font-weight: 600;
             cursor: pointer;
         }
         .v-btn.active {
             background: #10b981;
+        }
+        .request-access-btn {
+            background: #f59e0b;
+            color: #0f172a;
+            border: none;
+            width: 100%;
+            padding: 8px;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
         }
         /* Modal Styles */
         .modal {
@@ -199,7 +216,7 @@
             padding: 25px;
             border-radius: 12px;
             width: 100%;
-            max-width: 420px;
+            max-width: 400px;
             border: 1px solid #1f2937;
         }
         .modal-content h3 {
@@ -262,15 +279,15 @@
         <a href="study_rooms.html" class="back-btn">← Leave Room</a>
         <h3 id="roomTitleHeader" style="font-size: 15px; color: #f59e0b;">Study Room</h3>
         <div class="header-actions">
-            <button class="add-member-btn" onclick="openInviteModal()">+ Add Member</button>
-            <span style="font-size: 12px; color: #10b981;">● Secure</span>
+            <button class="action-chip" onclick="openInviteModal()">+ Add Member</button>
+            <span id="roleIndicator" style="font-size: 12px; color: #10b981;">● Member</span>
         </div>
     </header>
 
     <div class="workspace">
         <div class="chat-section">
             <div class="chat-messages" id="chatMessages">
-                <div class="message peer-msg"><b>System:</b> Welcome! Click '+ Add Member' to search and invite peers by username.</div>
+                <div class="message peer-msg"><b>System:</b> Welcome to the room! Mic/Cam access can be requested from the admin if you want to speak or show video.</div>
             </div>
 
             <form class="chat-input-box" id="chatForm">
@@ -286,16 +303,20 @@
             <h4 style="font-size: 14px; color: #38bdf8;">Study Video Session</h4>
             <div class="video-box">
                 <video id="localVideo" autoplay muted></video>
-                <div class="video-label">You (Hidden Number)</div>
+                <div class="video-label" id="videoLabel">You (Access Pending)</div>
             </div>
+            
             <div class="video-controls">
-                <button class="v-btn active" id="camToggleBtn" onclick="toggleCamera()">Cam On</button>
-                <button class="v-btn active" id="micToggleBtn" onclick="toggleMic()">Mic On</button>
+                <button class="request-access-btn" id="requestAccessBtn" onclick="requestMicCamAccess()">Request Mic/Cam Access 🎙️</button>
+                <div class="control-row" id="mediaControlRow" style="display: none;">
+                    <button class="v-btn active" id="camToggleBtn" onclick="toggleCamera()">Cam On</button>
+                    <button class="v-btn active" id="micToggleBtn" onclick="toggleMic()">Mic On</button>
+                </div>
             </div>
         </div>
     </div>
 
-    <!-- Add Member / Search Modal -->
+    <!-- Add Member Modal -->
     <div class="modal" id="inviteModal">
         <div class="modal-content">
             <h3>Search & Invite Members</h3>
@@ -315,7 +336,47 @@
             window.location.href = 'study_rooms.html';
         }
 
-        document.getElementById('roomTitleHeader',).innerText = `Room: ${activeRoom.name}`;
+        document.getElementById('roomTitleHeader').innerText = `Room: ${activeRoom.name}`;
+
+        // Check if current user is admin (Creator of room)
+        let isAdmin = activeRoom.admin === activeUser.name;
+        const roleIndicator = document.getElementById('roleIndicator');
+        const requestAccessBtn = document.getElementById('requestAccessBtn');
+        const mediaControlRow = document.getElementById('mediaControlRow');
+        const videoLabel = document.getElementById('videoLabel');
+
+        let localStream;
+
+        if (isAdmin) {
+            roleIndicator.innerText = "● Admin (Full Control)";
+            roleIndicator.style.color = "#f59e0b";
+            requestAccessBtn.style.display = 'none';
+            mediaControlRow.style.display = 'flex';
+            videoLabel.innerText = "You (Admin)";
+            startCamera(); // Admin gets direct access
+        } else {
+            roleIndicator.innerText = "● Member";
+            roleIndicator.style.color = "#38bdf8";
+        }
+
+        function requestMicCamAccess() {
+            alert("Mic & Camera access request sent to the Admin (" + activeRoom.admin + ")!");
+            requestAccessBtn.innerText = "Request Sent (Waiting)...";
+            requestAccessBtn.disabled = true;
+
+            // Simulate Admin approval after 3 seconds for smooth testing
+            setTimeout(() => {
+                if (confirm(`[Simulation] Admin (${activeRoom.admin}) has approved your Mic/Cam request. Enable now?`)) {
+                    requestAccessBtn.style.display = 'none';
+                    mediaControlRow.style.display = 'flex';
+                    videoLabel.innerText = "You (Active)";
+                    startCamera();
+                } else {
+                    requestAccessBtn.innerText = "Request Mic/Cam Access 🎙️";
+                    requestAccessBtn.disabled = false;
+                }
+            }, 3000);
+        }
 
         const chatMessages = document.getElementById('chatMessages');
         const chatForm = document.getElementById('chatForm');
@@ -353,7 +414,6 @@
             chatMessages.scrollTop = chatMessages.scrollHeight;
         }
 
-        // Modal Controls for Search & Add Member
         function openInviteModal() {
             document.getElementById('inviteModal').style.display = 'flex';
         }
@@ -369,7 +429,6 @@
                 return;
             }
 
-            // Simulated user pool for searching
             const mockUsers = [
                 { username: 'Rahul_MSc', name: 'Rahul Sharma' },
                 { username: 'Priya_Dev', name: 'Priya Verma' },
@@ -396,12 +455,10 @@
         }
 
         function sendInvite(username) {
-            alert(`Join request / invite successfully sent to ${username}!`);
+            alert(`Invite successfully sent to ${username}!`);
             closeInviteModal();
         }
 
-        // WebRTC Video Setup
-        let localStream;
         async function startCamera() {
             try {
                 localStream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
@@ -428,8 +485,6 @@
             btn.classList.toggle('active');
             btn.innerText = audioTrack.enabled ? "Mic On" : "Mic Off";
         }
-
-        startCamera();
     </script>
 </body>
 </html>
