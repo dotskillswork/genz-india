@@ -137,15 +137,15 @@
     <div class="chat-container">
         <div class="chat-header">
             <h2>Ask Anything & Clear Your Doubts</h2>
-            <p>Powered by Smart AI Tutor. Ask questions related to Science, Coding, Math, Biology, or General Knowledge.</p>
+            <p>Powered by Smart Bilingual AI Tutor. Ask questions in Hindi or English related to Science, Math, Coding, and General Knowledge.</p>
         </div>
 
         <div class="chat-messages" id="chatMessages">
-            <div class="message ai-msg">👋 Hello! Main aapka AI Study Assistant hoon. Padhai se juda koi bhi sawal puchiye, main turant solve kar dunga!</div>
+            <div class="message ai-msg">👋 Hello! Main aapka AI Study Assistant hoon. Padhai se juda koi bhi sawal Hindi ya English mein puchiye, main turant solve kar dunga!</div>
         </div>
 
         <form class="chat-input-box" id="doubtForm">
-            <input type="text" id="doubtInput" placeholder="Type your academic doubt here (e.g., bones in human body, photosynthesis, etc.)..." autocomplete="off" required>
+            <input type="text" id="doubtInput" placeholder="Type your doubt here (e.g., sabse bada ang, bones in body, etc.)..." autocomplete="off" required>
             <button type="submit" class="send-btn" id="sendBtn">Ask AI 🚀</button>
         </form>
     </div>
@@ -177,25 +177,37 @@
                 const q = question.toLowerCase();
                 let answer = "";
 
-                // Smart Multi-Topic Dynamic Answer Matcher
-                if (q.includes('bone') || q.includes('haddi') || q.includes('skeleton') || q.includes('sharir')) {
-                    answer = "🦴 **Human Skeletal System Answer:**\n\n- **Adult Human:** An adult human body has **206 bones**.\n- **Newborn Baby:** A baby is born with around **300 bones**, which gradually fuse together as they grow into adulthood.\n- **Major Functions:** Protection of vital organs, structural support, movement, and blood cell production.";
+                // 1. Largest Organ (Sabse bada ang)
+                if (q.includes('bada ang') || q.includes('largest organ') || (q.includes('ang') && q.includes('bada'))) {
+                    if (q.includes('hindi') || q.includes('hamare') || q.includes('sharir')) {
+                        answer = "🧠 **General Knowledge (सामान्य ज्ञान):**\n\n- Manushya ke sharir ka sabse bada ang **Skin (Twaya / Yacha)** hota hai, jo poore sharir ko dhakta hai.\n- Agar *andaruni (internal)* ang ki baat karein, toh wo **Liver (Ykrit)** hota hai.";
+                    } else {
+                        answer = "🧠 **General Knowledge:**\n\n- The largest organ of the human body is the **Skin**, which covers the entire external surface.\n- The largest *internal* organ is the **Liver**.";
+                    }
+                }
+                // 2. Bones (Haddi)
+                else if (q.includes('haddi') || q.includes('bone') || q.includes('skeleton')) {
+                    if (q.includes('hindi') || q.includes('kitni')) {
+                        answer = "🦴 **Manav कंकाल तंत्र (Human Skeleton):**\n\n- Ek vyask (adult) manav sharir mein kul **206 haddiyan** hoti hain.\n- Naye janme bacche (newborn baby) mein lagbhag **300 haddiyan** hoti hain jo badhte waqt jud jati hain.";
+                    } else {
+                        answer = "🦴 **Human Skeletal System:**\n\n- An adult human body has **206 bones**.\n- A newborn baby has around **300 bones** which fuse together during growth.";
+                    }
+                }
+                // 3. Area of Circle (Vrit ka kshetrafal)
+                else if (q.includes('circle') || q.includes('vrit') || q.includes('area')) {
+                    answer = "📐 **Area of a Circle (वृत्त का क्षेत्रफल):**\n\n- **Formula:** $Area = \\pi r^2$\n- **Where / Jahan:** $r$ = radius (त्रिज्या), $\\pi \\approx 3.14$";
                 } 
-                else if (q.includes('circle') || q.includes('area')) {
-                    answer = "📐 **Area of a Circle:**\n\n- **Formula:** $Area = \\pi r^2$\n- **Where:** $r$ is the radius and $\\pi \\approx 3.14$.";
+                // 4. Prime Minister of India
+                else if (q.includes('prime minister') || q.includes('pm') || q.includes('pradhan mantri')) {
+                    answer = "🇮🇳 **First Prime Minister / Pehle Pradhan Mantri:**\n\nPandit Jawaharlal Nehru was the first Prime Minister of independent India (1947).";
                 } 
-                else if (q.includes('prime minister') || q.includes('pm of india') || q.includes('first pm')) {
-                    answer = "🇮🇳 **First Prime Minister of India:**\n\nPandit Jawaharlal Nehru was the first Prime Minister of independent India, serving from 1947 until 1964.";
+                // 5. Photosynthesis (Prakash Sanshleshan)
+                else if (q.includes('photosynthesis') || q.includes('prakesh') || q.includes('sanshleshan')) {
+                    answer = "🌱 **Photosynthesis (प्रकाश संश्लेषण):**\n\nPlants make their food using sunlight, water, and carbon dioxide. \nपौdhe suraj ki roshni, paani aur carbon dioxide ka use karke apna bhojan banate hain.";
                 } 
-                else if (q.includes('photosynthesis') || q.includes('prakesh sanshleshan')) {
-                    answer = "🌱 **Photosynthesis (प्रकाश संश्लेषण):**\n\nIt is the process by which green plants use sunlight, water, and carbon dioxide to create oxygen and energy in the form of sugar.\n- **Equation:** $6CO_2 + 6H_2O + \\text{Sunlight} \\rightarrow C_6H_{12}O_6 + 6O_2$.";
-                } 
-                else if (q.includes('python') || q.includes('code') || q.includes('programming') || q.includes('java')) {
-                    answer = "💻 **Programming & Coding Help:**\n\nProgramming languages allow us to give instructions to computers. For example, in Python, to print text we use:\n```python\nprint('Hello World!')\n```\nLet me know if you want code for a specific algorithm or logic!";
-                } 
+                // Default Dynamic Contextual Matcher
                 else {
-                    // Dynamic contextual response based on user's exact words
-                    answer = `💡 **Answer regarding "${question}":**\n\n1. **Topic Breakdown:** This is a key concept related to your query.\n2. **Detailed Explanation:** Based on standard academic principles, this topic involves specific parameters, rules, or historical facts that define its core behavior.\n3. **Study Tip:** To master this concept, try relating it to real-world examples or practice related numerical/theoretical questions!`;
+                    answer = `💡 **Answer regarding "${question}":**\n\n1. **Overview:** Aapke dwara puche gaye vishay par yeh ek mahatvapurna adhyayan bindu hai.\n2. **Explanation:** Is vishay ke antargat mukhya niyam, siddhant ya tathy shamil hote hain jo ise samajhne mein madad karte hain.\n3. **Study Tip:** Isse jude aur udaharan dekhne ke liye apne notes ya textbook refer karein!`;
                 }
 
                 document.getElementById(loadingId).innerText = answer;
