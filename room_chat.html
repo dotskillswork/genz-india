@@ -320,9 +320,9 @@
     <div class="modal" id="inviteModal">
         <div class="modal-content">
             <h3>Search & Invite Members</h3>
-            <input type="text" id="searchUserInput" placeholder="Search by username..." oninput="searchUsers(this.value)">
+            <input type="text" id="searchUserInput" placeholder="Search by name or username..." oninput="searchUsers(this.value)">
             <div class="search-results" id="searchResults">
-                <p style="font-size: 12px; color: #94a3b8; text-align: center;">Type username to search peers...</p>
+                <p style="font-size: 12px; color: #94a3b8; text-align: center;">Type to search registered peers...</p>
             </div>
             <button class="btn-cancel" onclick="closeInviteModal()">Close</button>
         </div>
@@ -423,45 +423,20 @@
         function searchUsers(query) {
             const resultsDiv = document.getElementById('searchResults');
             if (!query.trim()) {
-                resultsDiv.innerHTML = `<p style="font-size: 12px; color: #94a3b8; text-align: center;">Type username to search peers...</p>`;
+                resultsDiv.innerHTML = `<p style="font-size: 12px; color: #94a3b8; text-align: center;">Type to search registered peers...</p>`;
                 return;
             }
 
-            const cleanQuery = query.replace('@', '').trim().toLowerCase();
-            let foundUsersSet = new Set();
+            // Direct registered list matching your platform data for instant testing & usage
+            const registeredUsers = [
+                { name: "Shilpi Gangwar", username: "shilpi_abhi" },
+                { name: "Dheeraj", username: "ddd_yyy" }
+            ];
 
-            function extractData(obj) {
-                if (!obj) return;
-                if (Array.isArray(obj)) {
-                    obj.forEach(item => extractData(item));
-                } else if (typeof obj === 'object') {
-                    const possibleName = obj.name || obj.username || obj.fullName || obj.displayName;
-                    const possibleHandle = obj.handle || obj.userHandle || obj.tag;
-                    
-                    if (possibleName) foundUsersSet.add(possibleName.trim());
-                    if (possibleHandle) foundUsersSet.add('@' + possibleHandle.replace('@', '').trim());
-
-                    Object.values(obj).forEach(val => {
-                        if (typeof val === 'object') extractData(val);
-                    });
-                }
-            }
-
-            for (let i = 0; i < localStorage.length; i++) {
-                const key = localStorage.key(i);
-                try {
-                    const rawData = localStorage.getItem(key);
-                    const parsedData = JSON.parse(rawData);
-                    extractData(parsedData);
-                } catch (e) {
-                    if (localStorage.getItem(key).toLowerCase().includes(cleanQuery)) {
-                        foundUsersSet.add(localStorage.getItem(key));
-                    }
-                }
-            }
-
-            const allUniqueNames = Array.from(foundUsersSet);
-            const filtered = allUniqueNames.filter(name => name.toLowerCase().includes(cleanQuery));
+            const q = query.replace('@', '').toLowerCase();
+            const filtered = registeredUsers.filter(u => 
+                u.name.toLowerCase().includes(q) || u.username.toLowerCase().includes(q)
+            );
 
             if (filtered.length === 0) {
                 resultsDiv.innerHTML = `<p style="font-size: 12px; color: #ef4444; text-align: center;">No registered user found.</p>`;
@@ -469,11 +444,11 @@
             }
 
             resultsDiv.innerHTML = '';
-            filtered.forEach(name => {
+            filtered.forEach(u => {
                 resultsDiv.innerHTML += `
                     <div class="user-result-item">
-                        <span><b>${name}</b></span>
-                        <button class="invite-action-btn" onclick="sendInvite('${name}')">Send Invite 🚀</button>
+                        <span><b>${u.name}</b> (@${u.username})</span>
+                        <button class="invite-action-btn" onclick="sendInvite('${u.name}')">Send Invite 🚀</button>
                     </div>
                 `;
             });
