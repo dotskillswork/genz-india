@@ -287,7 +287,7 @@
     <div class="workspace">
         <div class="chat-section">
             <div class="chat-messages" id="chatMessages">
-                <div class="message peer-msg"><b>System:</b> Welcome to the room! You have full admin control over mic/cam and chat.</div>
+                <div class="message peer-msg"><b>System:</b> Welcome to the room! Camera and mic will only activate when you manually turn them on.</div>
             </div>
 
             <form class="chat-input-box" id="chatForm">
@@ -302,15 +302,15 @@
         <div class="video-section">
             <h4 style="font-size: 14px; color: #38bdf8;">Study Video Session</h4>
             <div class="video-box">
-                <video id="localVideo" autoplay muted></video>
-                <div class="video-label" id="videoLabel">You (Admin)</div>
+                <video id="localVideo" autoplay playsinline></video>
+                <div class="video-label" id="videoLabel">You (Camera Off)</div>
             </div>
             
             <div class="video-controls">
                 <button class="request-access-btn" id="requestAccessBtn" onclick="requestMicCamAccess()" style="display: none;">Request Mic/Cam Access 🎙️</button>
                 <div class="control-row" id="mediaControlRow" style="display: flex;">
-                    <button class="v-btn active" id="camToggleBtn" onclick="toggleCamera()">Cam On</button>
-                    <button class="v-btn active" id="micToggleBtn" onclick="toggleMic()">Mic On</button>
+                    <button class="v-btn" id="camToggleBtn" onclick="toggleCamera()">Cam Off</button>
+                    <button class="v-btn" id="micToggleBtn" onclick="toggleMic()">Mic Off</button>
                 </div>
             </div>
         </div>
@@ -338,9 +338,8 @@
 
         document.getElementById('roomTitleHeader').innerText = `Room: ${activeRoom.name}`;
 
-        // Forced Admin Mode for smooth control as requested
         let isAdmin = true;
-        let localStream;
+        let localStream = null;
 
         const chatMessages = document.getElementById('chatMessages');
         const chatForm = document.getElementById('chatForm');
@@ -424,34 +423,52 @@
             closeInviteModal();
         }
 
-        async function startCamera() {
-            try {
-                localStream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
-                document.getElementById('localVideo').srcObject = localStream;
-            } catch (err) {
-                console.log("Camera access denied.");
+        async function toggleCamera() {
+            const camBtn = document.getElementById('camToggleBtn');
+            const videoLabel = document.getElementById('videoLabel');
+            const videoElem = document.getElementById('localVideo');
+
+            if (localStream && localStream.getVideoTracks().some(track => track.readyState === 'live')) {
+                // Turn off camera completely and release hardware
+                localStream.getVideoTracks().forEach(track => track.stop());
+                videoElem.srcObject = null;
+                camBtn.classList.remove('active');
+                camBtn.innerText = "Cam Off";
+                videoLabel.innerText = "You (Camera Off)";
+            } else {
+                try {
+                    // Request camera access only when user clicks
+                    localStream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
+                    videoElem.srcObject = localStream;
+                    camBtn.classList.add('active');
+                    camBtn.innerText = "Cam On";
+                    document.getElementById('micToggleBtn').classList.add('active');
+                    document.getElementById('micToggleBtn').innerText = "Mic On";
+                    videoLabel.innerText = "You (Admin Active)";
+                } catch (err) {
+                    alert("Camera access denied or unavailable.");
+                }
             }
         }
 
-        function toggleCamera() {
-            if (!localStream) return;
-            const videoTrack = localStream.getVideoTracks()[0];
-            videoTrack.enabled = !videoTrack.enabled;
-            const btn = document.getElementById('camToggleBtn');
-            btn.classList.toggle('active');
-            btn.innerText = videoTrack.enabled ? "Cam On" : "Cam Off";
-        }
-
         function toggleMic() {
-            if (!localStream) return;
-            const audioTrack = localStream.getAudioTracks()[0];
-            audioTrack.enabled = !audioTrack.enabled;
-            const btn = document.getElementById('micToggleBtn');
-            btn.classList.toggle('active');
-            btn.innerText = audioTrack.enabled ? "Mic On" : "Mic Off";
+            if (!localStream) {
+                alert("Please turn on your camera/mic session first by clicking 'Cam Off'.");
+                return;
+            }
+            const audioTracks = localStream.getAudioTracks();
+            if (audioTracks.length > 0) {
+                audioTracks[0].enabled = !audioTracks[0].enabled;
+                const micBtn = document.getElementById('micToggleBtn');
+                if (audioTracks[0].enabled) {
+                    micBtn.classList.add('active');
+                    micBtn.innerText = "Mic On";
+                } else {
+                    micBtn.classList.remove('active');
+                    micBtn.innerText = "Mic Off";
+                }
+            }
         }
-
-        startCamera();
     </script>
 </body>
 </html>
