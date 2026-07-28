@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gen'Z | Virtual Study Rooms</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+        body {
+            background-color: #0b0f19;
+            color: #f1f5f9;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        header {
+            background: #111827;
+            padding: 15px 30px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 1px solid #1f2937;
+        }
+        .back-btn {
+            color: #38bdf8;
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 600;
+        }
+        .main-container {
+            max-width: 1000px;
+            width: 100%;
+            margin: 30px auto;
+            padding: 0 20px;
+            flex: 1;
+        }
+        .section-title {
+            font-size: 22px;
+            color: #f59e0b;
+            margin-bottom: 8px;
+        }
+        .section-desc {
+            font-size: 13px;
+            color: #94a3b8;
+            margin-bottom: 25px;
+        }
+        .action-bar {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+        .create-btn {
+            background: #10b981;
+            color: #fff;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            font-size: 13px;
+        }
+        .create-btn:hover {
+            background: #059669;
+        }
+        .rooms-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 20px;
+        }
+        .room-card {
+            background: #111827;
+            border: 1px solid #1f2937;
+            border-radius: 12px;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+        .room-card h3 {
+            font-size: 16px;
+            color: #f8fafc;
+            margin-bottom: 6px;
+        }
+        .room-card p {
+            font-size: 12px;
+            color: #94a3b8;
+            margin-bottom: 15px;
+        }
+        .join-room-btn {
+            background: #38bdf8;
+            color: #0f172a;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 6px;
+            font-weight: 600;
+            font-size: 12px;
+            cursor: pointer;
+            text-align: center;
+        }
+        .join-room-btn:hover {
+            background: #0ea5e9;
+        }
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.7);
+            justify-content: center;
+            align-items: center;
+        }
+        .modal-content {
+            background: #111827;
+            padding: 25px;
+            border-radius: 12px;
+            width: 100%;
+            max-width: 400px;
+            border: 1px solid #1f2937;
+        }
+        .modal-content h3 {
+            color: #f59e0b;
+            margin-bottom: 15px;
+            font-size: 18px;
+        }
+        .modal-content input {
+            width: 100%;
+            background: #0b0f19;
+            border: 1px solid #334155;
+            border-radius: 8px;
+            padding: 10px;
+            color: #fff;
+            margin-bottom: 15px;
+            font-size: 13px;
+        }
+        .modal-buttons {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+        }
+        .btn-cancel {
+            background: #334155;
+            color: #fff;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 12px;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <a href="index.html" class="back-btn">← Back to Dashboard</a>
+        <h3 style="font-size: 16px; color: #fff;">👥 Study Rooms & Collaboration</h3>
+        <div style="width: 80px;"></div>
+    </header>
+
+    <div class="main-container">
+        <h2 class="section-title">Active Study Rooms</h2>
+        <p class="section-desc">Create your own room, invite peers, chat, share notes via images, and start video study sessions securely.</p>
+
+        <div class="action-bar">
+            <button class="create-btn" onclick="openModal()">+ Create Study Room</button>
+        </div>
+
+        <div class="rooms-grid" id="roomsGrid">
+            <!-- Dynamic Rooms will load here -->
+        </div>
+    </div>
+
+    <!-- Create Room Modal -->
+    <div class="modal" id="createRoomModal">
+        <div class="modal-content">
+            <h3>Create New Study Room</h3>
+            <input type="text" id="roomNameInput" placeholder="Enter Room Name (e.g. Physics Final Prep)...">
+            <div class="modal-buttons">
+                <button class="btn-cancel" onclick="closeModal()">Cancel</button>
+                <button class="create-btn" onclick="createRoom()">Create Room</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const activeUser = JSON.parse(localStorage.getItem('genzUser'));
+        if (!activeUser) {
+            window.location.href = 'login.html';
+        }
+
+        // Load rooms from localStorage or default list
+        let studyRooms = JSON.parse(localStorage.getItem('genzStudyRooms')) || [
+            { id: 1, name: 'JEE / NEET Advanced Physics Hub', admin: 'Rahul Sharma', members: 4 },
+            { id: 2, name: 'Python & Web Dev Study Group', admin: 'Priya Verma', members: 6 }
+        ];
+
+        function renderRooms() {
+            const grid = document.getElementById('roomsGrid');
+            grid.innerHTML = '';
+            studyRooms.forEach(room => {
+                grid.innerHTML += `
+                    <div class="room-card">
+                        <div>
+                            <h3>${room.name}</h3>
+                            <p>Admin: <b>${room.admin}</b> | Members: ${room.members}</p>
+                        </div>
+                        <button class="join-room-btn" onclick="joinRoom(${room.id}, '${room.name}')">Enter Room 🚀</button>
+                    </div>
+                `;
+            });
+        }
+
+        function openModal() {
+            document.getElementById('createRoomModal').style.display = 'flex';
+        }
+
+        function closeModal() {
+            document.getElementById('createRoomModal').style.display = 'none';
+        }
+
+        function createRoom() {
+            const name = document.getElementById('roomNameInput').value.trim();
+            if (!name) return alert('Please enter a room name');
+
+            const newRoom = {
+                id: Date.now(),
+                name: name,
+                admin: activeUser.name || 'User',
+                members: 1
+            };
+
+            studyRooms.push(newRoom);
+            localStorage.setItem('genzStudyRooms', JSON.stringify(studyRooms));
+            closeModal();
+            document.getElementById('roomNameInput').value = '';
+            renderRooms();
+        }
+
+        function joinRoom(roomId, roomName) {
+            // Store active room session and redirect to chat/video room interface
+            localStorage.setItem('activeStudyRoom', JSON.stringify({ id: roomId, name: roomName }));
+            window.location.href = 'room_chat.html';
+        }
+
+        renderRooms();
+    </script>
+</body>
+</html>
