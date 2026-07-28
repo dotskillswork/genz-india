@@ -280,14 +280,14 @@
         <h3 id="roomTitleHeader" style="font-size: 15px; color: #f59e0b;">Study Room</h3>
         <div class="header-actions">
             <button class="action-chip" onclick="openInviteModal()">+ Add Member</button>
-            <span id="roleIndicator" style="font-size: 12px; color: #10b981;">● Member</span>
+            <span id="roleIndicator" style="font-size: 12px; color: #f59e0b;">● Admin (Full Control)</span>
         </div>
     </header>
 
     <div class="workspace">
         <div class="chat-section">
             <div class="chat-messages" id="chatMessages">
-                <div class="message peer-msg"><b>System:</b> Welcome to the room! Mic/Cam access can be requested from the admin if you want to speak or show video.</div>
+                <div class="message peer-msg"><b>System:</b> Welcome to the room! You have full admin control over mic/cam and chat.</div>
             </div>
 
             <form class="chat-input-box" id="chatForm">
@@ -303,12 +303,12 @@
             <h4 style="font-size: 14px; color: #38bdf8;">Study Video Session</h4>
             <div class="video-box">
                 <video id="localVideo" autoplay muted></video>
-                <div class="video-label" id="videoLabel">You (Access Pending)</div>
+                <div class="video-label" id="videoLabel">You (Admin)</div>
             </div>
             
             <div class="video-controls">
-                <button class="request-access-btn" id="requestAccessBtn" onclick="requestMicCamAccess()">Request Mic/Cam Access 🎙️</button>
-                <div class="control-row" id="mediaControlRow" style="display: none;">
+                <button class="request-access-btn" id="requestAccessBtn" onclick="requestMicCamAccess()" style="display: none;">Request Mic/Cam Access 🎙️</button>
+                <div class="control-row" id="mediaControlRow" style="display: flex;">
                     <button class="v-btn active" id="camToggleBtn" onclick="toggleCamera()">Cam On</button>
                     <button class="v-btn active" id="micToggleBtn" onclick="toggleMic()">Mic On</button>
                 </div>
@@ -338,43 +338,9 @@
 
         document.getElementById('roomTitleHeader').innerText = `Room: ${activeRoom.name}`;
 
-        let isAdmin = activeRoom.admin === activeUser.name;
-        const roleIndicator = document.getElementById('roleIndicator');
-        const requestAccessBtn = document.getElementById('requestAccessBtn');
-        const mediaControlRow = document.getElementById('mediaControlRow');
-        const videoLabel = document.getElementById('videoLabel');
-
+        // Forced Admin Mode for smooth control as requested
+        let isAdmin = true;
         let localStream;
-
-        if (isAdmin) {
-            roleIndicator.innerText = "● Admin (Full Control)";
-            roleIndicator.style.color = "#f59e0b";
-            requestAccessBtn.style.display = 'none';
-            mediaControlRow.style.display = 'flex';
-            videoLabel.innerText = "You (Admin)";
-            startCamera();
-        } else {
-            roleIndicator.innerText = "● Member";
-            roleIndicator.style.color = "#38bdf8";
-        }
-
-        function requestMicCamAccess() {
-            alert("Mic & Camera access request sent to the Admin (" + activeRoom.admin + ")!");
-            requestAccessBtn.innerText = "Request Sent (Waiting)...";
-            requestAccessBtn.disabled = true;
-
-            setTimeout(() => {
-                if (confirm(`[Simulation] Admin (${activeRoom.admin}) has approved your Mic/Cam request. Enable now?`)) {
-                    requestAccessBtn.style.display = 'none';
-                    mediaControlRow.style.display = 'flex';
-                    videoLabel.innerText = "You (Active)";
-                    startCamera();
-                } else {
-                    requestAccessBtn.innerText = "Request Mic/Cam Access 🎙️";
-                    requestAccessBtn.disabled = false;
-                }
-            }, 3000);
-        }
 
         const chatMessages = document.getElementById('chatMessages');
         const chatForm = document.getElementById('chatForm');
@@ -427,7 +393,6 @@
                 return;
             }
 
-            // Direct registered list matching your platform data for instant testing & usage
             const registeredUsers = [
                 { name: "Shilpi Gangwar", username: "shilpi_abhi" },
                 { name: "Dheeraj", username: "ddd_yyy" }
@@ -485,6 +450,8 @@
             btn.classList.toggle('active');
             btn.innerText = audioTrack.enabled ? "Mic On" : "Mic Off";
         }
+
+        startCamera();
     </script>
 </body>
 </html>
