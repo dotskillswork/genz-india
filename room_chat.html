@@ -429,26 +429,37 @@
                 return;
             }
 
-            const mockUsers = [
-                { username: 'Rahul_MSc', name: 'Rahul Sharma' },
-                { username: 'Priya_Dev', name: 'Priya Verma' },
-                { username: 'Aman_Physics', name: 'Aman Singh' },
-                { username: 'Neha_Psychology', name: 'Neha Gupta' }
-            ];
+            // Fetch actual registered users from localStorage (assuming registered users are stored here)
+            let registeredUsers = [];
+            
+            // Check if there's a global registered users list in localStorage, else use activeUser
+            const storedList = localStorage.getItem('genzRegisteredUsers');
+            if (storedList) {
+                registeredUsers = JSON.parse(storedList);
+            } else {
+                // Fallback: use active user or create a dynamic list from storage
+                const current = JSON.parse(localStorage.getItem('genzUser'));
+                if (current) registeredUsers = [current];
+            }
 
-            const filtered = mockUsers.filter(u => u.username.toLowerCase().includes(query.toLowerCase()) || u.name.toLowerCase().includes(query.toLowerCase()));
+            // Filter users based on query
+            const filtered = registeredUsers.filter(u => 
+                (u.name && u.name.toLowerCase().includes(query.toLowerCase())) || 
+                (u.email && u.email.toLowerCase().includes(query.toLowerCase()))
+            );
 
             if (filtered.length === 0) {
-                resultsDiv.innerHTML = `<p style="font-size: 12px; color: #ef4444; text-align: center;">No user found.</p>`;
+                resultsDiv.innerHTML = `<p style="font-size: 12px; color: #ef4444; text-align: center;">No registered user found.</p>`;
                 return;
             }
 
             resultsDiv.innerHTML = '';
             filtered.forEach(u => {
+                const displayName = u.name || u.email || 'User';
                 resultsDiv.innerHTML += `
                     <div class="user-result-item">
-                        <span><b>${u.name}</b> (@${u.username})</span>
-                        <button class="invite-action-btn" onclick="sendInvite('${u.name}')">Send Invite 🚀</button>
+                        <span><b>${displayName}</b></span>
+                        <button class="invite-action-btn" onclick="sendInvite('${displayName}')">Send Invite 🚀</button>
                     </div>
                 `;
             });
