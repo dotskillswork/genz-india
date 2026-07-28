@@ -33,6 +33,24 @@
             font-size: 13px;
             font-weight: 600;
         }
+        .header-actions {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+        }
+        .add-member-btn {
+            background: #10b981;
+            color: #fff;
+            border: none;
+            padding: 6px 14px;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+        .add-member-btn:hover {
+            background: #059669;
+        }
         .workspace {
             display: flex;
             flex: 1;
@@ -104,9 +122,6 @@
             cursor: pointer;
             font-size: 13px;
         }
-        .file-upload-label:hover {
-            background: #475569;
-        }
         .send-btn {
             background: #f59e0b;
             color: #0f172a;
@@ -117,12 +132,9 @@
             font-size: 13px;
             cursor: pointer;
         }
-        .send-btn:hover {
-            background: #d97706;
-        }
         /* Video Call Panel */
         .video-section {
-            width: 350px;
+            width: 320px;
             background: #111827;
             display: flex;
             flex-direction: column;
@@ -173,6 +185,75 @@
         .v-btn.active {
             background: #10b981;
         }
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.7);
+            justify-content: center;
+            align-items: center;
+        }
+        .modal-content {
+            background: #111827;
+            padding: 25px;
+            border-radius: 12px;
+            width: 100%;
+            max-width: 420px;
+            border: 1px solid #1f2937;
+        }
+        .modal-content h3 {
+            color: #f59e0b;
+            margin-bottom: 15px;
+            font-size: 18px;
+        }
+        .modal-content input {
+            width: 100%;
+            background: #0b0f19;
+            border: 1px solid #334155;
+            border-radius: 8px;
+            padding: 10px;
+            color: #fff;
+            margin-bottom: 12px;
+            font-size: 13px;
+        }
+        .search-results {
+            max-height: 150px;
+            overflow-y: auto;
+            margin-bottom: 15px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        .user-result-item {
+            background: #1e293b;
+            padding: 8px 12px;
+            border-radius: 6px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 13px;
+        }
+        .invite-action-btn {
+            background: #38bdf8;
+            color: #0f172a;
+            border: none;
+            padding: 4px 10px;
+            border-radius: 4px;
+            font-weight: 600;
+            cursor: pointer;
+            font-size: 11px;
+        }
+        .btn-cancel {
+            background: #334155;
+            color: #fff;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 12px;
+            width: 100%;
+        }
     </style>
 </head>
 <body>
@@ -180,18 +261,20 @@
     <header>
         <a href="study_rooms.html" class="back-btn">← Leave Room</a>
         <h3 id="roomTitleHeader" style="font-size: 15px; color: #f59e0b;">Study Room</h3>
-        <span style="font-size: 12px; color: #10b981;">● Secure & Anonymous</span>
+        <div class="header-actions">
+            <button class="add-member-btn" onclick="openInviteModal()">+ Add Member</button>
+            <span style="font-size: 12px; color: #10b981;">● Secure</span>
+        </div>
     </header>
 
     <div class="workspace">
-        <!-- Chat & Image Sharing Area -->
         <div class="chat-section">
             <div class="chat-messages" id="chatMessages">
-                <div class="message peer-msg"><b>System:</b> Welcome to the study room! Your mobile number is completely hidden to ensure privacy. Chat and share notes freely.</div>
+                <div class="message peer-msg"><b>System:</b> Welcome! Click '+ Add Member' to search and invite peers by username.</div>
             </div>
 
             <form class="chat-input-box" id="chatForm">
-                <label class="file-upload-label" title="Share Image/Notes">
+                <label class="file-upload-label" title="Share Notes Image">
                     📷 <input type="file" id="imageInput" accept="image/*" style="display: none;">
                 </label>
                 <input type="text" id="messageInput" placeholder="Type a message or doubt..." autocomplete="off">
@@ -199,17 +282,28 @@
             </form>
         </div>
 
-        <!-- Video Call Area -->
         <div class="video-section">
             <h4 style="font-size: 14px; color: #38bdf8;">Study Video Session</h4>
             <div class="video-box">
                 <video id="localVideo" autoplay muted></video>
-                <div class="video-label">You (Number Hidden)</div>
+                <div class="video-label">You (Hidden Number)</div>
             </div>
             <div class="video-controls">
                 <button class="v-btn active" id="camToggleBtn" onclick="toggleCamera()">Cam On</button>
                 <button class="v-btn active" id="micToggleBtn" onclick="toggleMic()">Mic On</button>
             </div>
+        </div>
+    </div>
+
+    <!-- Add Member / Search Modal -->
+    <div class="modal" id="inviteModal">
+        <div class="modal-content">
+            <h3>Search & Invite Members</h3>
+            <input type="text" id="searchUserInput" placeholder="Search by username..." oninput="searchUsers(this.value)">
+            <div class="search-results" id="searchResults">
+                <p style="font-size: 12px; color: #94a3b8; text-align: center;">Type username to search peers...</p>
+            </div>
+            <button class="btn-cancel" onclick="closeInviteModal()">Close</button>
         </div>
     </div>
 
@@ -221,7 +315,7 @@
             window.location.href = 'study_rooms.html';
         }
 
-        document.getElementById('roomTitleHeader').innerText = `Room: ${activeRoom.name}`;
+        document.getElementById('roomTitleHeader',).innerText = `Room: ${activeRoom.name}`;
 
         const chatMessages = document.getElementById('chatMessages');
         const chatForm = document.getElementById('chatForm');
@@ -232,7 +326,6 @@
             e.preventDefault();
             const text = messageInput.value.trim();
             const file = imageInput.files[0];
-
             if (!text && !file) return;
 
             if (file) {
@@ -244,7 +337,6 @@
             } else {
                 appendMessage(text, null, 'user-msg', activeUser.name);
             }
-
             messageInput.value = '';
             imageInput.value = '';
         });
@@ -261,13 +353,61 @@
             chatMessages.scrollTop = chatMessages.scrollHeight;
         }
 
+        // Modal Controls for Search & Add Member
+        function openInviteModal() {
+            document.getElementById('inviteModal').style.display = 'flex';
+        }
+
+        function closeInviteModal() {
+            document.getElementById('inviteModal').style.display = 'none';
+        }
+
+        function searchUsers(query) {
+            const resultsDiv = document.getElementById('searchResults');
+            if (!query.trim()) {
+                resultsDiv.innerHTML = `<p style="font-size: 12px; color: #94a3b8; text-align: center;">Type username to search peers...</p>`;
+                return;
+            }
+
+            // Simulated user pool for searching
+            const mockUsers = [
+                { username: 'Rahul_MSc', name: 'Rahul Sharma' },
+                { username: 'Priya_Dev', name: 'Priya Verma' },
+                { username: 'Aman_Physics', name: 'Aman Singh' },
+                { username: 'Neha_Psychology', name: 'Neha Gupta' }
+            ];
+
+            const filtered = mockUsers.filter(u => u.username.toLowerCase().includes(query.toLowerCase()) || u.name.toLowerCase().includes(query.toLowerCase()));
+
+            if (filtered.length === 0) {
+                resultsDiv.innerHTML = `<p style="font-size: 12px; color: #ef4444; text-align: center;">No user found.</p>`;
+                return;
+            }
+
+            resultsDiv.innerHTML = '';
+            filtered.forEach(u => {
+                resultsDiv.innerHTML += `
+                    <div class="user-result-item">
+                        <span><b>${u.name}</b> (@${u.username})</span>
+                        <button class="invite-action-btn" onclick="sendInvite('${u.name}')">Send Invite 🚀</button>
+                    </div>
+                `;
+            });
+        }
+
+        function sendInvite(username) {
+            alert(`Join request / invite successfully sent to ${username}!`);
+            closeInviteModal();
+        }
+
+        // WebRTC Video Setup
         let localStream;
         async function startCamera() {
             try {
                 localStream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
                 document.getElementById('localVideo').srcObject = localStream;
             } catch (err) {
-                console.log("Camera access denied or unavailable.");
+                console.log("Camera access denied.");
             }
         }
 
