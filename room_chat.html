@@ -429,24 +429,46 @@
                 return;
             }
 
-            // Fetch actual registered users from localStorage (assuming registered users are stored here)
-            let registeredUsers = [];
-            
-            // Check if there's a global registered users list in localStorage, else use activeUser
-            const storedList = localStorage.getItem('genzRegisteredUsers');
-            if (storedList) {
-                registeredUsers = JSON.parse(storedList);
-            } else {
-                // Fallback: use active user or create a dynamic list from storage
-                const current = JSON.parse(localStorage.getItem('genzUser'));
-                if (current) registeredUsers = [current];
+            // Collect all users stored across possible localStorage keys
+            let allUsersMap = new Map();
+
+            // 1. Check genzRegisteredUsers
+            const rUsers = JSON.parse(localStorage.getItem('genzRegisteredUsers')) || [];
+            rUsers.forEach(u => {
+                const name = u.name || u.email || u.username;
+                if (name) allUsersMap.set(name.toLowerCase(), name);
+            });
+
+            // 2. Check makefrirend or any other friend/user keys present in localStorage
+            for (let i = 0; i < localStorage.length; i++) {
+                const key = localStorage.key(i);
+                try {
+                    const data = JSON.parse(localStorage.getItem(key));
+                    if (Array.isArray(data)) {
+                        data.forEach(item => {
+                            const name = item.name || item.email || item.username;
+                            if (name) allUsersMap.set(name.toLowerCase(), name);
+                        });
+                    } else if (data && typeof data === 'object') {
+                        const name = data.name || data.email || data.username;
+                        if (name) allUsersMap.set(name.toLowerCase(), name);
+                    }
+                } catch (e) {
+                    // ignore non-json values
+                }
             }
 
-            // Filter users based on query
-            const filtered = registeredUsers.filter(u => 
-                (u.name && u.name.toLowerCase().includes(query.toLowerCase())) || 
-                (u.email && u.email.toLowerCase().includes(query.toLowerCase()))
-            );
+            // Also include active user
+            const current = JSON.parse(localStorage.getItem('genzUser'));
+            if (current) {
+                const name = current.name || current.email || current.username;
+                if (name) allUsersMap.set(name.toLowerCase(), name);
+            }
+
+            const uniqueUsers = Array.from(allUsersMap.values());
+
+            // Filter based on search query
+            const filtered = uniqueUsers.filter(name => name.toLowerCase().includes(query.toLowerCase()));
 
             if (filtered.length === 0) {
                 resultsDiv.innerHTML = `<p style="font-size: 12px; color: #ef4444; text-align: center;">No registered user found.</p>`;
@@ -454,12 +476,11 @@
             }
 
             resultsDiv.innerHTML = '';
-            filtered.forEach(u => {
-                const displayName = u.name || u.email || 'User';
+            filtered.forEach(name => {
                 resultsDiv.innerHTML += `
                     <div class="user-result-item">
-                        <span><b>${displayName}</b></span>
-                        <button class="invite-action-btn" onclick="sendInvite('${displayName}')">Send Invite 🚀</button>
+                        <span><b>${name}</b></span>
+                        <button class="invite-action-btn" onclick="sendInvite('${name}')">Send Invite 🚀</button>
                     </div>
                 `;
             });
