@@ -15,7 +15,8 @@
 
         html, body {
             width: 100%;
-            height: 100%;
+            height: 100vh;
+            height: 100dvh;
             background-color: #0b0f19;
             color: #f1f5f9;
             overflow: hidden;
@@ -28,6 +29,8 @@
         .chat-container {
             width: 100%;
             height: 100%;
+            max-width: 100%;
+            max-height: 100%;
             display: flex;
             flex-direction: column;
             background: #111827;
@@ -93,6 +96,7 @@
             flex-direction: column;
             gap: 12px;
             width: 100%;
+            -webkit-overflow-scrolling: touch;
         }
 
         .message {
@@ -383,7 +387,7 @@
 
         const TWENTY_FOUR_HOURS_MS = 24 * 60 * 60 * 1000;
 
-        // Real-time Message Listener (Auto Refresh & Live Sync)
+        // Real-time Message Listener (Auto Refresh & Live Sync optimized)
         const q = query(collection(db, 'chats'), orderBy('createdAt', 'asc'));
         
         onSnapshot(q, (snapshot) => {
@@ -404,7 +408,6 @@
                     const isSent = msg.sender === activeUser.username;
                     const timeString = new Date(msg.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
                     
-                    // Create message element safely using DOM to avoid any click conflicts
                     const msgDiv = document.createElement('div');
                     msgDiv.className = `message ${isSent ? 'sent' : 'received'}`;
 
@@ -417,13 +420,16 @@
                     if (msg.image) {
                         const imgElem = document.createElement('img');
                         imgElem.src = msg.image;
-                        // Image click will strictly open the modal and NOT trigger unsend/delete popup
-                        imgElem.addEventListener('click', (e) => {
+                        
+                        // Stop propagation completely prevents unsend/delete prompt on image click
+                        imgElem.onclick = (e) => {
+                            e.stopImmediatePropagation();
                             e.stopPropagation();
                             document.getElementById('imageModal').style.display = 'flex';
                             document.getElementById('modalImg').src = msg.image;
                             document.getElementById('downloadBtn').href = msg.image;
-                        });
+                        };
+                        
                         msgDiv.appendChild(imgElem);
                     }
 
@@ -431,7 +437,7 @@
                         const unsendHint = document.createElement('span');
                         unsendHint.className = 'unsend-hint';
                         unsendHint.innerText = 'Tap to unsend 🗑️';
-                        unsendHint.addEventListener('click', async (e) => {
+                        unsendHint.onclick = async (e) => {
                             e.stopPropagation();
                             if (confirm("Kya aap is message ko unsend karna chahte hain?")) {
                                 try {
@@ -440,7 +446,7 @@
                                     alert("Could not delete.");
                                 }
                             }
-                        });
+                        };
                         msgDiv.appendChild(unsendHint);
                     }
 
