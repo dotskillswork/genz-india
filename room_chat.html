@@ -200,10 +200,10 @@
             color: #0f172a;
             border: none;
             width: 100%;
-            padding: 8px;
+            padding: 10px;
             border-radius: 6px;
-            font-size: 12px;
-            font-weight: 600;
+            font-size: 13px;
+            font-weight: 700;
             cursor: pointer;
         }
         .modal {
@@ -311,7 +311,10 @@
             </div>
             
             <div class="video-controls">
-                <button class="request-access-btn" id="requestAccessBtn" onclick="requestMicCamAccess()" style="display: none;">Request Mic/Cam Access 🎙️</button>
+                <!-- Request Access Button for Members -->
+                <button class="request-access-btn" id="requestAccessBtn" onclick="requestMicCamAccess()">Request Mic/Cam Access 🎙️</button>
+                
+                <!-- Direct Controls for Admin (Hidden by default for members) -->
                 <div class="control-row" id="mediaControlRow" style="display: none;">
                     <button class="v-btn" id="camToggleBtn" onclick="toggleCamera()">Cam Off</button>
                     <button class="v-btn" id="micToggleBtn" onclick="toggleMic()">Mic Off</button>
@@ -333,7 +336,6 @@
     </div>
 
     <script>
-        // --- FIREBASE INITIALIZATION ---
         const firebaseConfig = {
             apiKey: "AIzaSyCNLwSjHq6LlX9uUovTRHrz9ZfUWeIUWQM",
             authDomain: "genz-india.firebaseapp.com",
@@ -358,7 +360,6 @@
 
         document.getElementById('roomTitleHeader').innerText = `Room: ${activeRoom.name}`;
 
-        // ROBUST ADMIN CHECK: Compare normalized names and usernames
         const roomAdmin = (activeRoom.admin || "").trim().toLowerCase();
         const currentName = (activeUser.name || "").trim().toLowerCase();
         const currentUsername = (activeUser.username || "").trim().toLowerCase();
@@ -391,7 +392,6 @@
         const messageInput = document.getElementById('messageInput');
         const imageInput = document.getElementById('imageInput');
 
-        // Load Real-time messages for this specific room from Firestore
         db.collection("studyRooms").doc(activeRoom.id || activeRoom.name).collection("messages").orderBy("createdAt", "asc")
         .onSnapshot((snapshot) => {
             chatMessages.innerHTML = `<div class="message peer-msg"><b>System:</b> Welcome to the room session! Respect privacy and study together.</div>`;
