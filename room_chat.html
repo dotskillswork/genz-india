@@ -280,14 +280,14 @@
         <h3 id="roomTitleHeader" style="font-size: 15px; color: #f59e0b;">Study Room</h3>
         <div class="header-actions">
             <button class="action-chip" onclick="openInviteModal()">+ Add Member</button>
-            <span id="roleIndicator" style="font-size: 12px; color: #f59e0b;">● Admin (Full Control)</span>
+            <span id="roleIndicator" style="font-size: 12px; color: #f59e0b;">● Loading...</span>
         </div>
     </header>
 
     <div class="workspace">
         <div class="chat-section">
             <div class="chat-messages" id="chatMessages">
-                <div class="message peer-msg"><b>System:</b> Welcome to the room! Camera and mic will only activate when you manually turn them on.</div>
+                <div class="message peer-msg"><b>System:</b> Welcome to the room session! Respect privacy and study together.</div>
             </div>
 
             <form class="chat-input-box" id="chatForm">
@@ -308,7 +308,7 @@
             
             <div class="video-controls">
                 <button class="request-access-btn" id="requestAccessBtn" onclick="requestMicCamAccess()" style="display: none;">Request Mic/Cam Access 🎙️</button>
-                <div class="control-row" id="mediaControlRow" style="display: flex;">
+                <div class="control-row" id="mediaControlRow" style="display: none;">
                     <button class="v-btn" id="camToggleBtn" onclick="toggleCamera()">Cam Off</button>
                     <button class="v-btn" id="micToggleBtn" onclick="toggleMic()">Mic Off</button>
                 </div>
@@ -338,8 +338,29 @@
 
         document.getElementById('roomTitleHeader').innerText = `Room: ${activeRoom.name}`;
 
-        let isAdmin = true;
+        // STRICT ROLE CHECK: Only the user who created the room gets Admin
+        let isAdmin = (activeRoom.admin && activeUser.name && activeRoom.admin.toLowerCase() === activeUser.name.toLowerCase());
+        
         let localStream = null;
+
+        const roleIndicator = document.getElementById('roleIndicator');
+        const requestAccessBtn = document.getElementById('requestAccessBtn');
+        const mediaControlRow = document.getElementById('mediaControlRow');
+        const videoLabel = document.getElementById('videoLabel');
+
+        if (isAdmin) {
+            roleIndicator.innerText = "● Admin (Full Control)";
+            roleIndicator.style.color = "#f59e0b";
+            requestAccessBtn.style.display = 'none';
+            mediaControlRow.style.display = 'flex';
+            videoLabel.innerText = "You (Admin - Cam Off)";
+        } else {
+            roleIndicator.innerText = "● Member";
+            roleIndicator.style.color = "#38bdf8";
+            requestAccessBtn.style.display = 'block';
+            mediaControlRow.style.display = 'none';
+            videoLabel.innerText = "You (Member)";
+        }
 
         const chatMessages = document.getElementById('chatMessages');
         const chatForm = document.getElementById('chatForm');
@@ -421,7 +442,7 @@
         function sendInvite(username) {
             let notifs = JSON.parse(localStorage.getItem('genzNotifications')) || [];
             notifs.push({
-                targetUser: username, // Specific user target
+                targetUser: username,
                 title: "Study Room Request",
                 message: `${activeUser.name} invited you to join room: ${activeRoom.name}`,
                 time: new Date().toLocaleTimeString()
@@ -430,6 +451,24 @@
 
             alert(`Invite successfully sent to ${username}!`);
             closeInviteModal();
+        }
+
+        function requestMicCamAccess() {
+            alert(`Access request sent to room admin (${activeRoom.admin})!`);
+            requestAccessBtn.innerText = "Request Sent (Waiting)...";
+            requestAccessBtn.disabled = true;
+
+            setTimeout(() => {
+                if (confirm(`[Simulation] Admin (${activeRoom.admin}) approved your mic/cam access. Enable now?`)) {
+                    requestAccessBtn.style.display = 'none';
+                    mediaControlRow.style.display = 'flex';
+                    videoLabel.innerText = "You (Member Active)";
+                    toggleCamera();
+                } else {
+                    requestAccessBtn.innerText = "Request Mic/Cam Access 🎙️";
+                    requestAccessBtn.disabled = false;
+                }
+            }, 3000);
         }
 
         async function toggleCamera() {
@@ -451,7 +490,7 @@
                     camBtn.innerText = "Cam On";
                     document.getElementById('micToggleBtn').classList.add('active');
                     document.getElementById('micToggleBtn').innerText = "Mic On";
-                    videoLabel.innerText = "You (Admin Active)";
+                    videoLabel.innerText = isAdmin ? "You (Admin Active)" : "You (Member Active)";
                 } catch (err) {
                     alert("Camera access denied or unavailable.");
                 }
