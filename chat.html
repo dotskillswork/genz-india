@@ -15,14 +15,12 @@
 
         html, body {
             width: 100%;
-            height: 100vh;
-            height: 100dvh;
+            height: 100%;
             background-color: #0b0f19;
             color: #f1f5f9;
             overflow: hidden;
             display: flex;
-            justify-content: center;
-            align-items: center;
+            flex-direction: column;
             user-select: none;
             -webkit-user-select: none;
         }
@@ -30,21 +28,10 @@
         .chat-container {
             width: 100%;
             height: 100%;
-            max-width: 100%;
-            max-height: 100%;
             display: flex;
             flex-direction: column;
             background: #111827;
-        }
-
-        @media (min-width: 768px) {
-            .chat-container {
-                max-width: 800px;
-                height: 90vh;
-                border-radius: 12px;
-                border: 1px solid #1f2937;
-                box-shadow: 0 10px 25px rgba(0,0,0,0.5);
-            }
+            overflow: hidden;
         }
 
         header {
@@ -109,7 +96,7 @@
         }
 
         .message {
-            max-width: 75%;
+            max-width: 78%;
             padding: 10px 14px;
             border-radius: 10px;
             font-size: 13px;
@@ -144,27 +131,28 @@
 
         .unsend-hint {
             font-size: 9px;
-            color: rgba(255,255,255,0.6);
+            color: rgba(255,255,255,0.7);
             display: block;
-            margin-top: 2px;
+            margin-top: 4px;
             text-align: right;
             font-style: italic;
             cursor: pointer;
+            text-decoration: underline;
         }
 
         .msg-time {
             font-size: 9px;
             color: rgba(255,255,255,0.7);
-            margin-top: 3px;
+            margin-top: 2px;
             text-align: right;
         }
 
-        /* 100% Mobile Safe Input Bar */
+        /* Mobile First Input Bar - Send button will never go outside */
         .chat-input-box {
-            padding: 10px 12px;
+            padding: 10px;
             background: #1f2937;
             display: flex;
-            gap: 8px;
+            gap: 6px;
             align-items: center;
             border-top: 1px solid #334155;
             width: 100%;
@@ -177,7 +165,7 @@
             background: #0b0f19;
             border: 1px solid #334155;
             border-radius: 8px;
-            padding: 10px 12px;
+            padding: 10px;
             color: #fff;
             font-size: 13px;
         }
@@ -190,7 +178,7 @@
         .file-upload-label {
             background: #334155;
             color: #38bdf8;
-            padding: 9px 12px;
+            padding: 9px 10px;
             border-radius: 8px;
             cursor: pointer;
             font-size: 14px;
@@ -201,7 +189,7 @@
             background: #38bdf8;
             color: #0f172a;
             border: none;
-            padding: 10px 16px;
+            padding: 10px 14px;
             border-radius: 8px;
             font-weight: 600;
             font-size: 13px;
@@ -432,11 +420,11 @@
                     const isSent = msg.sender === activeUser.username;
                     const timeString = new Date(msg.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
                     
-                    // Image par click karne par sirf modal khulega, unsend nahi hoga
-                    const imageTag = msg.image ? `<img src="${msg.image}" onclick="window.openImageModal('${msg.image}'); event.stopPropagation();">` : "";
+                    // Image par click karne se ab sirf modal khulega, delete popup nahi aayega!
+                    const imageTag = msg.image ? `<img src="${msg.image}" onclick="window.openImageModal('${msg.image}')">` : "";
                     
-                    // Unsend hint sirf text ya unsend-hint par click karne par chalega
-                    const unsendHint = isSent ? `<span class="unsend-hint" onclick="window.unsendMessage('${docId}', '${msg.sender}')">Tap here to unsend 🗑️</span>` : "";
+                    // Unsend karne ke liye ab niche chhota sa "Tap to unsend" text link diya hai
+                    const unsendHint = isSent ? `<span class="unsend-hint" onclick="window.unsendMessage('${docId}', '${msg.sender}')">Tap to unsend 🗑️</span>` : "";
 
                     box.innerHTML += `
                         <div class="message ${isSent ? 'sent' : 'received'}">
