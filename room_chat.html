@@ -9,9 +9,6 @@
     <!-- Firebase SDKs -->
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
-    
-    <!-- Jitsi Meet External API -->
-    <script src="https://8x8.vc/vpaas-magic-cookie-92931293a91240a5a81e920d32f419c8/external_api.js" async></script>
 
     <style>
         * {
@@ -26,6 +23,7 @@
             height: 100vh;
             display: flex;
             flex-direction: column;
+            overflow: hidden;
         }
         header {
             background: #111827;
@@ -76,7 +74,7 @@
             background: #0b0f19;
             border-bottom: 1px solid #1f2937;
             padding: 10px;
-            max-height: 45vh;
+            max-height: 50vh;
         }
         @media(min-width: 768px) {
             .chat-section {
@@ -123,6 +121,22 @@
             text-align: center;
             width: 100%;
             font-weight: 600;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            padding: 10px;
+            border-radius: 8px;
+        }
+        .accept-req-btn {
+            background: #10b981;
+            color: #fff;
+            border: none;
+            padding: 5px 12px;
+            border-radius: 5px;
+            font-weight: 600;
+            font-size: 11px;
+            cursor: pointer;
+            align-self: center;
         }
         .message img {
             max-width: 180px;
@@ -173,7 +187,7 @@
         }
         @media(min-width: 768px) {
             .video-section {
-                width: 380px;
+                width: 340px;
                 flex: none;
                 padding: 15px;
                 gap: 15px;
@@ -188,12 +202,47 @@
             align-items: center;
             position: relative;
             border: 1px solid #1f2937;
-            min-height: 200px;
+            min-height: 160px;
             overflow: hidden;
         }
-        #jitsi-container {
+        .video-box video {
             width: 100%;
             height: 100%;
+            object-fit: cover;
+        }
+        .video-label {
+            position: absolute;
+            bottom: 8px;
+            left: 8px;
+            background: rgba(0,0,0,0.6);
+            color: #fff;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 10px;
+        }
+        .video-controls {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+        .control-row {
+            display: flex;
+            gap: 6px;
+            justify-content: center;
+        }
+        .v-btn {
+            flex: 1;
+            background: #ef4444;
+            color: #fff;
+            border: none;
+            padding: 8px;
+            border-radius: 6px;
+            font-size: 11px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+        .v-btn.active {
+            background: #10b981;
         }
         .request-access-btn {
             background: #f59e0b;
@@ -312,13 +361,18 @@
         </div>
 
         <div class="video-section">
-            <h4 style="font-size: 13px; color: #38bdf8;">Live Study Video Session</h4>
+            <h4 style="font-size: 13px; color: #38bdf8;">Gen'Z Study Session</h4>
             <div class="video-box">
-                <div id="jitsi-container"></div>
+                <video id="localVideo" autoplay playsinline></video>
+                <div class="video-label" id="videoLabel">You (Camera Off)</div>
             </div>
             
             <div class="video-controls">
-                <button class="request-access-btn" id="requestAccessBtn" onclick="requestMicCamAccess()">Request Mic/Cam Access 🎙️</button>
+                <button class="request-access-btn" id="requestAccessBtn" onclick="requestMicCamAccess()" style="display: none;">Request Mic/Cam Access 🎙️</button>
+                <div class="control-row" id="mediaControlRow" style="display: none;">
+                    <button class="v-btn" id="camToggleBtn" onclick="toggleCamera()">Cam Off</button>
+                    <button class="v-btn" id="micToggleBtn" onclick="toggleMic()">Mic Off</button>
+                </div>
             </div>
         </div>
     </div>
@@ -365,59 +419,50 @@
         const currentUsername = (activeUser.username || "").trim().toLowerCase();
 
         let isAdmin = (roomAdmin === currentName || (currentUsername && roomAdmin === currentUsername));
-        
+        let localStream = null;
+
         const roleIndicator = document.getElementById('roleIndicator');
         const requestAccessBtn = document.getElementById('requestAccessBtn');
+        const mediaControlRow = document.getElementById('mediaControlRow');
+        const videoLabel = document.getElementById('videoLabel');
 
         if (isAdmin) {
             roleIndicator.innerText = "● Admin (Full Control)";
             roleIndicator.style.color = "#f59e0b";
             requestAccessBtn.style.display = 'none';
+            mediaControlRow.style.display = 'flex';
+            videoLabel.innerText = "You (Admin - Cam Off)";
         } else {
             roleIndicator.innerText = "● Member";
             roleIndicator.style.color = "#38bdf8";
             requestAccessBtn.style.display = 'block';
+            mediaControlRow.style.display = 'none';
+            videoLabel.innerText = "You (Member)";
         }
-
-        // --- JITSI MEET LIVE VIDEO EMBED ---
-        window.onload = function () {
-            const domain = "meet.jit.si";
-            // Unique room name based on study room name
-            const roomName = "GenZStudyRoom_" + (activeRoom.id || activeRoom.name).replace(/\s+/g, '_');
-            
-            const options = {
-                roomName: roomName,
-                width: '100%',
-                height: '100%',
-                parentNode: document.querySelector('#jitsi-container'),
-                userInfo: {
-                    displayName: activeUser.name + (isAdmin ? " [Admin]" : " [Member]")
-                },
-                configOverwrite: {
-                    startWithAudioMuted: !isAdmin, // Members start muted, Admin has control
-                    startWithVideoMuted: !isAdmin
-                },
-                interfaceConfigOverwrite: {
-                    DEFAULT_BACKGROUND: '#111827',
-                    DISABLE_JOIN_LEAVE_NOTIFICATIONS: true
-                }
-            };
-            
-            const api = new JitsiMeetExternalAPI(domain, options);
-        };
 
         const chatMessages = document.getElementById('chatMessages');
         const chatForm = document.getElementById('chatForm');
         const messageInput = document.getElementById('messageInput');
         const imageInput = document.getElementById('imageInput');
 
+        // Real-time messages sync with Accept Request option for Admin
         db.collection("studyRooms").doc(activeRoom.id || activeRoom.name).collection("messages").orderBy("createdAt", "asc")
         .onSnapshot((snapshot) => {
-            chatMessages.innerHTML = `<div class="message peer-msg"><b>System:</b> Welcome to the live room session!</div>`;
+            chatMessages.innerHTML = `<div class="message peer-msg"><b>System:</b> Welcome to the room session! Respect privacy and study together.</div>`;
             snapshot.forEach((doc) => {
                 const msg = doc.data();
                 if (msg.type === 'request') {
-                    chatMessages.innerHTML += `<div class="message system-req-msg">🔔 <b>${msg.sender}</b> has requested Mic/Cam Access!</div>`;
+                    let acceptButtonHTML = '';
+                    if (isAdmin) {
+                        acceptButtonHTML = `<button class="accept-req-btn" onclick="acceptMemberRequest('${msg.sender}')">Accept & Grant Access ✓</button>`;
+                    }
+                    chatMessages.innerHTML += `
+                        <div class="message system-req-msg">
+                            🔔 <b>${msg.sender}</b> has requested Mic/Cam Access!
+                            ${acceptButtonHTML}
+                        </div>`;
+                } else if (msg.type === 'granted') {
+                    chatMessages.innerHTML += `<div class="message" style="background:#10b981; color:#fff; align-self:center; text-align:center; width:100%;">✅ Admin granted access to <b>${msg.target}</b>! You can now turn on your camera.</div>`;
                 } else {
                     appendMessage(msg.text, msg.image, msg.sender === activeUser.name ? 'user-msg' : 'peer-msg', msg.sender);
                 }
@@ -444,12 +489,13 @@
             imageInput.value = '';
         });
 
-        function saveMessageToFirestore(text, imgSrc, type) {
+        function saveMessageToFirestore(text, imgSrc, type, targetUser) {
             db.collection("studyRooms").doc(activeRoom.id || activeRoom.name).collection("messages").add({
                 sender: activeUser.name,
                 text: text || "",
                 image: imgSrc || "",
                 type: type || 'chat',
+                target: targetUser || "",
                 createdAt: firebase.firestore.FieldValue.serverTimestamp()
             });
         }
@@ -529,19 +575,58 @@
 
         function requestMicCamAccess() {
             saveMessageToFirestore("Requested Mic/Cam Access", null, 'request');
+            requestAccessBtn.innerText = "Request Sent (Waiting for Admin)...";
+            requestAccessBtn.disabled = true;
+        }
 
-            db.collection("notifications").add({
-                targetUser: activeRoom.admin,
-                title: "Mic/Cam Access Request 🎙️",
-                message: `${activeUser.name} is requesting mic/cam access in room: ${activeRoom.name}`,
-                time: new Date().toLocaleTimeString(),
-                createdAt: firebase.firestore.FieldValue.serverTimestamp(),
-                broadcast: false
-            }).then(() => {
-                alert(`Access request sent to room admin (${activeRoom.admin})!`);
-                requestAccessBtn.innerText = "Request Sent (Waiting)...";
-                requestAccessBtn.disabled = true;
-            });
+        function acceptMemberRequest(memberName) {
+            saveMessageToFirestore("", null, 'granted', memberName);
+            alert(`Access granted to ${memberName}!`);
+        }
+
+        async function toggleCamera() {
+            const camBtn = document.getElementById('camToggleBtn');
+            const videoLabel = document.getElementById('videoLabel');
+            const videoElem = document.getElementById('localVideo');
+
+            if (localStream && localStream.getVideoTracks().some(track => track.readyState === 'live')) {
+                localStream.getVideoTracks().forEach(track => track.stop());
+                videoElem.srcObject = null;
+                camBtn.classList.remove('active');
+                camBtn.innerText = "Cam Off";
+                videoLabel.innerText = "You (Camera Off)";
+            } else {
+                try {
+                    localStream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
+                    videoElem.srcObject = localStream;
+                    camBtn.classList.add('active');
+                    camBtn.innerText = "Cam On";
+                    document.getElementById('micToggleBtn').classList.add('active');
+                    document.getElementById('micToggleBtn').innerText = "Mic On";
+                    videoLabel.innerText = isAdmin ? "You (Admin Active)" : "You (Member Active)";
+                } catch (err) {
+                    alert("Camera access denied or unavailable.");
+                }
+            }
+        }
+
+        function toggleMic() {
+            if (!localStream) {
+                alert("Please turn on your camera/mic session first by clicking 'Cam Off'.");
+                return;
+            }
+            const audioTracks = localStream.getAudioTracks();
+            if (audioTracks.length > 0) {
+                audioTracks[0].enabled = !audioTracks[0].enabled;
+                const micBtn = document.getElementById('micToggleBtn');
+                if (audioTracks[0].enabled) {
+                    micBtn.classList.add('active');
+                    micBtn.innerText = "Mic On";
+                } else {
+                    micBtn.classList.remove('active');
+                    micBtn.innerText = "Mic Off";
+                }
+            }
         }
     </script>
 </body>
