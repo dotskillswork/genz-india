@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Chat | Gen'Z India</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
@@ -13,7 +13,6 @@
             font-family: 'Poppins', sans-serif;
         }
 
-        /* Prevent Text Selection for Screenshot Protection */
         body {
             background-color: #0b0f19;
             color: #f1f5f9;
@@ -22,14 +21,12 @@
             flex-direction: column;
             user-select: none;
             -webkit-user-select: none;
-            -moz-user-select: none;
-            -ms-user-select: none;
             transition: filter 0.2s ease;
         }
 
         header {
             background: #111827;
-            padding: 15px 20px;
+            padding: 12px 15px;
             display: flex;
             align-items: center;
             justify-content: space-between;
@@ -39,7 +36,7 @@
         .back-btn {
             color: #38bdf8;
             text-decoration: none;
-            font-size: 14px;
+            font-size: 13px;
             font-weight: 600;
         }
 
@@ -53,20 +50,21 @@
             background: #111827;
             border-left: 1px solid #1f2937;
             border-right: 1px solid #1f2937;
+            overflow: hidden;
         }
 
         .chat-header {
-            padding: 12px 20px;
+            padding: 10px 15px;
             background: #1f2937;
             display: flex;
             align-items: center;
-            gap: 12px;
+            gap: 10px;
             border-bottom: 1px solid #334155;
         }
 
         .chat-user-avatar {
-            width: 40px;
-            height: 40px;
+            width: 35px;
+            height: 35px;
             border-radius: 50%;
             background: #334155;
             object-fit: cover;
@@ -75,31 +73,31 @@
             justify-content: center;
             color: #38bdf8;
             font-weight: 600;
-            font-size: 14px;
+            font-size: 13px;
         }
 
         .chat-user-info h4 {
-            font-size: 14px;
+            font-size: 13px;
             color: #f8fafc;
         }
 
         .chat-user-info span {
-            font-size: 11px;
+            font-size: 10px;
             color: #94a3b8;
         }
 
         .messages-box {
             flex: 1;
-            padding: 20px;
+            padding: 15px;
             overflow-y: auto;
             display: flex;
             flex-direction: column;
-            gap: 14px;
+            gap: 12px;
         }
 
         .message {
-            max-width: 70%;
-            padding: 10px 14px;
+            max-width: 75%;
+            padding: 10px 12px;
             border-radius: 12px;
             font-size: 13px;
             line-height: 1.4;
@@ -124,54 +122,38 @@
 
         .message img {
             max-width: 100%;
-            max-height: 250px;
-            border-radius: 8px;
+            max-height: 220px;
+            border-radius: 6px;
             margin-top: 5px;
             display: block;
             cursor: pointer;
-            transition: transform 0.2s;
         }
 
-        .message img:hover {
-            transform: scale(1.02);
-        }
-
-        /* Unsend Button (Instagram Style) */
-        .unsend-btn {
-            display: none;
-            position: absolute;
-            top: 50%;
-            left: -28px;
-            transform: translateY(-50%);
-            background: #ef4444;
-            color: white;
-            border: none;
-            border-radius: 50%;
-            width: 22px;
-            height: 22px;
-            font-size: 11px;
+        /* Mobile Friendly Tap-to-Unsend Action Bar */
+        .message.sent {
             cursor: pointer;
-            align-items: center;
-            justify-content: center;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.3);
         }
-
-        .message.sent:hover .unsend-btn {
-            display: flex;
+        .unsend-hint {
+            font-size: 9px;
+            color: rgba(255,255,255,0.6);
+            display: block;
+            margin-top: 2px;
+            text-align: right;
+            font-style: italic;
         }
 
         .msg-time {
             font-size: 9px;
             color: rgba(255,255,255,0.7);
-            margin-top: 4px;
+            margin-top: 3px;
             text-align: right;
         }
 
         .chat-input-box {
-            padding: 15px 20px;
+            padding: 10px 15px;
             background: #1f2937;
             display: flex;
-            gap: 10px;
+            gap: 8px;
             align-items: center;
             border-top: 1px solid #334155;
         }
@@ -181,7 +163,7 @@
             background: #0b0f19;
             border: 1px solid #334155;
             border-radius: 8px;
-            padding: 10px 14px;
+            padding: 10px 12px;
             color: #fff;
             font-size: 13px;
         }
@@ -194,30 +176,21 @@
         .file-upload-label {
             background: #334155;
             color: #38bdf8;
-            padding: 9px 12px;
+            padding: 8px 10px;
             border-radius: 8px;
             cursor: pointer;
-            font-size: 13px;
-            font-weight: 600;
-        }
-
-        .file-upload-label:hover {
-            background: #475569;
+            font-size: 14px;
         }
 
         .send-btn {
             background: #38bdf8;
             color: #0f172a;
             border: none;
-            padding: 10px 18px;
+            padding: 10px 15px;
             border-radius: 8px;
             font-weight: 600;
             font-size: 13px;
             cursor: pointer;
-        }
-
-        .send-btn:hover {
-            background: #0ea5e9;
         }
 
         /* Fullscreen Image Lightbox Modal */
@@ -226,22 +199,22 @@
             position: fixed;
             top: 0; left: 0;
             width: 100%; height: 100%;
-            background: rgba(0, 0, 0, 0.9);
+            background: rgba(0, 0, 0, 0.95);
             z-index: 10000;
             flex-direction: column;
             align-items: center;
             justify-content: center;
+            padding: 20px;
         }
 
         .image-modal img {
-            max-width: 90%;
-            max-height: 80vh;
-            border-radius: 10px;
-            box-shadow: 0 0 20px rgba(0,0,0,0.8);
+            max-width: 100%;
+            max-height: 75vh;
+            border-radius: 8px;
         }
 
         .modal-actions {
-            margin-top: 15px;
+            margin-top: 20px;
             display: flex;
             gap: 15px;
         }
@@ -249,32 +222,22 @@
         .modal-btn {
             background: #38bdf8;
             color: #0b0f19;
-            padding: 8px 18px;
-            border-radius: 6px;
+            padding: 10px 20px;
+            border-radius: 8px;
             text-decoration: none;
             font-size: 13px;
             font-weight: 600;
             cursor: pointer;
             border: none;
         }
-
-        .modal-close {
-            position: absolute;
-            top: 20px;
-            right: 25px;
-            color: #fff;
-            font-size: 28px;
-            font-weight: bold;
-            cursor: pointer;
-        }
     </style>
 </head>
 <body>
 
     <header>
-        <a href="makefriend.html" class="back-btn">← Back to Dashboard</a>
-        <h3 style="font-size: 16px; color: #fff;">💬 Gen'Z Direct Chat</h3>
-        <div style="width: 80px;"></div>
+        <a href="makefriend.html" class="back-btn">← Back</a>
+        <h3 style="font-size: 14px; color: #fff;">💬 Gen'Z Direct Chat</h3>
+        <div style="width: 40px;"></div>
     </header>
 
     <div class="chat-container">
@@ -282,7 +245,7 @@
             <div class="chat-user-avatar" id="headerAvatar">U</div>
             <div class="chat-user-info">
                 <h4 id="headerUsername">Loading...</h4>
-                <span id="headerStatus">Loading status...</span>
+                <span id="headerStatus">Loading...</span>
             </div>
         </div>
         
@@ -294,17 +257,16 @@
             <label class="file-upload-label" title="Upload Image">
                 📷 <input type="file" id="imageInput" accept="image/*" style="display: none;">
             </label>
-            <input type="text" id="messageInput" placeholder="Type a message or description...">
+            <input type="text" id="messageInput" placeholder="Type a message...">
             <button class="send-btn" id="sendBtn">Send</button>
         </div>
     </div>
 
     <!-- Fullscreen Image Modal -->
     <div id="imageModal" class="image-modal">
-        <span class="modal-close" onclick="closeImageModal()">&times;</span>
         <img id="modalImg" src="" alt="Full View">
         <div class="modal-actions">
-            <a id="downloadBtn" class="modal-btn" download="chat-image.png">📥 Download Image</a>
+            <a id="downloadBtn" class="modal-btn" download="genz_chat.png">📥 Download</a>
             <button class="modal-btn" style="background: #ef4444; color: #fff;" onclick="closeImageModal()">Close</button>
         </div>
     </div>
@@ -327,82 +289,44 @@
         const db = getFirestore(app);
 
         const activeUser = JSON.parse(localStorage.getItem('genzUser'));
-        if (!activeUser) {
-            window.location.href = 'login.html';
-        }
+        if (!activeUser) window.location.href = 'login.html';
 
         const urlParams = new URLSearchParams(window.location.search);
         const chatWith = urlParams.get('with');
+        if (!chatWith) window.location.href = 'makefriend.html';
 
-        if (!chatWith) {
-            window.location.href = 'makefriend.html';
-        }
-
-        // --- 1. ANTI-SCREENSHOT & SECURITY PROTECTION ---
+        // Security
         document.addEventListener('contextmenu', e => e.preventDefault());
+        window.addEventListener('blur', () => document.body.style.filter = "blur(15px)");
+        window.addEventListener('focus', () => document.body.style.filter = "none");
 
-        document.addEventListener('keydown', (e) => {
-            if (e.key === 'PrintScreen' || 
-               (e.ctrlKey && (e.key === 'p' || e.key === 'P' || e.key === 's' || e.key === 'S')) ||
-               (e.ctrlKey && e.shiftKey && (e.key === 'I' || e.key === 'i')) ||
-               e.key === 'F12') {
-                e.preventDefault();
-                alert("🔒 Screenshots and saving are disabled for privacy protection!");
-                return false;
-            }
-        });
-
-        // Blur screen if user switches tab or opens external recorder/snipping tool
-        window.addEventListener('blur', () => {
-            document.body.style.filter = "blur(15px)";
-        });
-        window.addEventListener('focus', () => {
-            document.body.style.filter = "none";
-        });
-
-        // --- 2. PRESENCE UPDATER ---
+        // Presence
         async function updateMyPresence() {
             try {
                 const querySnapshot = await getDocs(collection(db, 'users'));
                 querySnapshot.forEach(async (docSnap) => {
                     if (docSnap.data().username === activeUser.username) {
-                        await updateDoc(doc(db, 'users', docSnap.id), {
-                            lastSeen: Date.now()
-                        });
+                        await updateDoc(doc(db, 'users', docSnap.id), { lastSeen: Date.now() });
                     }
                 });
-            } catch (err) {
-                console.error("Error updating presence:", err);
-            }
+            } catch (err) { console.error(err); }
         }
         updateMyPresence();
         setInterval(updateMyPresence, 30000);
 
-        // --- 3. FETCH USER HEADER INFO ---
         function loadChatUserInfo() {
             onSnapshot(collection(db, 'users'), (snapshot) => {
                 snapshot.forEach((docSnap) => {
                     const uData = docSnap.data();
                     if (uData.username === chatWith) {
                         document.getElementById('headerUsername').innerText = `@${uData.username}`;
-                        
                         if (uData.profilePic) {
                             document.getElementById('headerAvatar').innerHTML = `<img src="${uData.profilePic}" style="width:100%; height:100%; border-radius:50%; object-fit:cover;">`;
                         } else {
                             document.getElementById('headerAvatar').innerText = uData.username.charAt(0).toUpperCase();
                         }
-
-                        const lastSeenTime = uData.lastSeen || 0;
-                        const diffSec = (Date.now() - lastSeenTime) / 1000;
-                        const statusSpan = document.getElementById('headerStatus');
-
-                        if (diffSec < 60) {
-                            statusSpan.innerHTML = `<span style="color: #34d399;">● Active Now</span>`;
-                        } else {
-                            const dateObj = new Date(lastSeenTime);
-                            const timeStr = dateObj.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-                            statusSpan.innerHTML = `<span style="color: #94a3b8;">Last seen at ${timeStr}</span>`;
-                        }
+                        const diffSec = (Date.now() - (uData.lastSeen || 0)) / 1000;
+                        document.getElementById('headerStatus').innerHTML = diffSec < 60 ? `<span style="color: #34d399;">● Active</span>` : `<span style="color: #94a3b8;">Offline</span>`;
                     }
                 });
             });
@@ -412,20 +336,18 @@
         const chatId = [activeUser.username, chatWith].sort().join('_');
         let selectedImageBase64 = "";
 
-        // Image Selection Handler
         document.getElementById('imageInput').addEventListener('change', function(e) {
             const file = e.target.files[0];
             if (file) {
                 const reader = new FileReader();
                 reader.onload = function(uploadEvent) {
                     selectedImageBase64 = uploadEvent.target.result;
-                    document.getElementById('messageInput').placeholder = "Photo attached! Click Send ->";
+                    document.getElementById('messageInput').placeholder = "Photo attached! Tap Send";
                 };
                 reader.readAsDataURL(file);
             }
         });
 
-        // --- 4. SEND MESSAGE ---
         async function sendMessage() {
             const text = document.getElementById('messageInput').value.trim();
             if (!text && !selectedImageBase64) return;
@@ -442,12 +364,11 @@
             try {
                 await addDoc(collection(db, 'chats'), messageData);
                 document.getElementById('messageInput').value = "";
-                document.getElementById('messageInput').placeholder = "Type a message or description...";
+                document.getElementById('messageInput').placeholder = "Type a message...";
                 selectedImageBase64 = "";
                 document.getElementById('imageInput').value = "";
             } catch (err) {
-                console.error("Error sending message:", err);
-                alert("Failed to send message.");
+                alert("Failed to send.");
             }
         }
 
@@ -456,36 +377,30 @@
             if (e.key === 'Enter') sendMessage();
         });
 
-        // --- 5. UNSEND FUNCTION (INSTAGRAM STYLE) ---
-        window.unsendMessage = async (docId) => {
-            if (confirm("Kya aap is message ko unsend karna chahte hain?")) {
-                try {
-                    await deleteDoc(doc(db, 'chats', docId));
-                } catch (err) {
-                    console.error("Error unsending message:", err);
-                    alert("Could not unsend message.");
+        // Tap on own message to Unsend
+        window.unsendMessage = async (docId, sender) => {
+            if (sender === activeUser.username) {
+                if (confirm("Kya aap is message ko unsend (delete) karna chahte hain?")) {
+                    try {
+                        await deleteDoc(doc(db, 'chats', docId));
+                    } catch (err) {
+                        alert("Could not delete.");
+                    }
                 }
             }
         };
 
-        // --- 6. FULLSCREEN IMAGE & DOWNLOAD ---
         window.openImageModal = (src) => {
-            const modal = document.getElementById('imageModal');
-            const modalImg = document.getElementById('modalImg');
-            const downloadBtn = document.getElementById('downloadBtn');
-
-            modal.style.display = 'flex';
-            modalImg.src = src;
-            downloadBtn.href = src;
-            downloadBtn.download = `genz_chat_${Date.now()}.png`;
+            document.getElementById('imageModal').style.display = 'flex';
+            document.getElementById('modalImg').src = src;
+            document.getElementById('downloadBtn').href = src;
         };
 
         window.closeImageModal = () => {
             document.getElementById('imageModal').style.display = 'none';
         };
 
-        // --- 7. REAL-TIME MESSAGES & 24-HOUR AUTO DELETE ---
-        const TWENTY_FOUR_HOURS_MS = 24 * 60 * 60 * 1000; // 24 Hours in Milliseconds
+        const TWENTY_FOUR_HOURS_MS = 24 * 60 * 60 * 1000;
 
         const q = query(collection(db, 'chats'), orderBy('createdAt', 'asc'));
         onSnapshot(q, (snapshot) => {
@@ -498,25 +413,23 @@
                 const docId = docSnap.id;
 
                 if (msg.chatId === chatId) {
-                    // Check if message is older than 24 hours
-                    const age = currentTime - msg.createdAt;
-                    if (age > TWENTY_FOUR_HOURS_MS) {
-                        // Delete permanently from Firebase
-                        deleteDoc(doc(db, 'chats', docId)).catch(err => console.error("Auto delete failed:", err));
-                        return; // Skip rendering
+                    if (currentTime - msg.createdAt > TWENTY_FOUR_HOURS_MS) {
+                        deleteDoc(doc(db, 'chats', docId)).catch(() => {});
+                        return;
                     }
 
                     const isSent = msg.sender === activeUser.username;
                     const timeString = new Date(msg.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-                    
                     const imageTag = msg.image ? `<img src="${msg.image}" onclick="window.openImageModal('${msg.image}')">` : "";
-                    const unsendTag = isSent ? `<button class="unsend-btn" onclick="window.unsendMessage('${docId}')" title="Unsend Message">🗑️</button>` : "";
+                    
+                    // Agar message aapka bheja hua hai, toh us par tap karke unsend karne ka option milega aur hint dikhegi
+                    const unsendHint = isSent ? `<span class="unsend-hint">Tap to unsend 🗑️</span>` : "";
 
                     box.innerHTML += `
-                        <div class="message ${isSent ? 'sent' : 'received'}">
-                            ${unsendTag}
+                        <div class="message ${isSent ? 'sent' : 'received'}" ${isSent ? `onclick="window.unsendMessage('${docId}', '${msg.sender}')"` : ''}>
                             ${msg.text ? `<div>${msg.text}</div>` : ""}
                             ${imageTag}
+                            ${unsendHint}
                             <div class="msg-time">${timeString}</div>
                         </div>
                     `;
