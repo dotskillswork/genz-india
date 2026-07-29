@@ -23,68 +23,81 @@
             height: 100vh;
             display: flex;
             flex-direction: column;
-            overflow: hidden;
         }
         header {
             background: #111827;
-            padding: 12px 25px;
+            padding: 10px 15px;
             display: flex;
             align-items: center;
             justify-content: space-between;
             border-bottom: 1px solid #1f2937;
+            flex-wrap: wrap;
+            gap: 8px;
         }
         .back-btn {
             color: #38bdf8;
             text-decoration: none;
-            font-size: 13px;
+            font-size: 12px;
             font-weight: 600;
         }
         .header-actions {
             display: flex;
-            gap: 12px;
+            gap: 8px;
             align-items: center;
         }
         .action-chip {
             background: #1e293b;
             color: #38bdf8;
             border: 1px solid #334155;
-            padding: 6px 12px;
+            padding: 5px 10px;
             border-radius: 6px;
-            font-size: 12px;
+            font-size: 11px;
             font-weight: 600;
             cursor: pointer;
-        }
-        .action-chip:hover {
-            background: #334155;
         }
         .workspace {
             display: flex;
             flex: 1;
             overflow: hidden;
+            flex-direction: column;
+        }
+        @media(min-width: 768px) {
+            .workspace {
+                flex-direction: row;
+            }
         }
         .chat-section {
             flex: 1;
             display: flex;
             flex-direction: column;
             background: #0b0f19;
-            border-right: 1px solid #1f2937;
-            padding: 15px;
+            border-bottom: 1px solid #1f2937;
+            padding: 10px;
+            max-height: 50vh;
+        }
+        @media(min-width: 768px) {
+            .chat-section {
+                border-bottom: none;
+                border-right: 1px solid #1f2937;
+                padding: 15px;
+                max-height: none;
+            }
         }
         .chat-messages {
             flex: 1;
             overflow-y: auto;
             display: flex;
             flex-direction: column;
-            gap: 10px;
+            gap: 8px;
             padding-right: 5px;
-            margin-bottom: 12px;
+            margin-bottom: 10px;
         }
         .message {
-            max-width: 75%;
-            padding: 10px 14px;
+            max-width: 80%;
+            padding: 8px 12px;
             border-radius: 8px;
-            font-size: 13px;
-            line-height: 1.5;
+            font-size: 12px;
+            line-height: 1.4;
             word-break: break-word;
         }
         .user-msg {
@@ -100,14 +113,14 @@
             border: 1px solid #334155;
         }
         .message img {
-            max-width: 200px;
+            max-width: 180px;
             border-radius: 6px;
-            margin-top: 5px;
+            margin-top: 4px;
             display: block;
         }
         .chat-input-box {
             display: flex;
-            gap: 10px;
+            gap: 8px;
             align-items: center;
         }
         .chat-input-box input[type="text"] {
@@ -115,35 +128,44 @@
             background: #111827;
             border: 1px solid #334155;
             border-radius: 8px;
-            padding: 10px;
+            padding: 8px 10px;
             color: #fff;
-            font-size: 13px;
+            font-size: 12px;
         }
         .file-upload-label {
             background: #334155;
             color: #fff;
-            padding: 10px 14px;
+            padding: 8px 10px;
             border-radius: 8px;
             cursor: pointer;
-            font-size: 13px;
+            font-size: 12px;
         }
         .send-btn {
             background: #f59e0b;
             color: #0f172a;
             border: none;
-            padding: 10px 18px;
+            padding: 8px 14px;
             border-radius: 8px;
             font-weight: 600;
-            font-size: 13px;
+            font-size: 12px;
             cursor: pointer;
         }
         .video-section {
-            width: 320px;
+            width: 100%;
             background: #111827;
             display: flex;
             flex-direction: column;
-            padding: 15px;
-            gap: 15px;
+            padding: 10px;
+            gap: 10px;
+            flex: 1;
+        }
+        @media(min-width: 768px) {
+            .video-section {
+                width: 320px;
+                flex: none;
+                padding: 15px;
+                gap: 15px;
+            }
         }
         .video-box {
             flex: 1;
@@ -154,6 +176,7 @@
             align-items: center;
             position: relative;
             border: 1px solid #1f2937;
+            min-height: 140px;
             overflow: hidden;
         }
         .video-box video {
@@ -163,22 +186,22 @@
         }
         .video-label {
             position: absolute;
-            bottom: 10px;
-            left: 10px;
+            bottom: 8px;
+            left: 8px;
             background: rgba(0,0,0,0.6);
             color: #fff;
-            padding: 3px 8px;
+            padding: 2px 6px;
             border-radius: 4px;
-            font-size: 11px;
+            font-size: 10px;
         }
         .video-controls {
             display: flex;
             flex-direction: column;
-            gap: 8px;
+            gap: 6px;
         }
         .control-row {
             display: flex;
-            gap: 8px;
+            gap: 6px;
             justify-content: center;
         }
         .v-btn {
@@ -202,7 +225,7 @@
             width: 100%;
             padding: 10px;
             border-radius: 6px;
-            font-size: 13px;
+            font-size: 12px;
             font-weight: 700;
             cursor: pointer;
         }
@@ -217,62 +240,62 @@
         }
         .modal-content {
             background: #111827;
-            padding: 25px;
+            padding: 20px;
             border-radius: 12px;
-            width: 100%;
-            max-width: 400px;
+            width: 90%;
+            max-width: 380px;
             border: 1px solid #1f2937;
         }
         .modal-content h3 {
             color: #f59e0b;
-            margin-bottom: 15px;
-            font-size: 18px;
+            margin-bottom: 12px;
+            font-size: 16px;
         }
         .modal-content input {
             width: 100%;
             background: #0b0f19;
             border: 1px solid #334155;
             border-radius: 8px;
-            padding: 10px;
+            padding: 8px 10px;
             color: #fff;
-            margin-bottom: 12px;
-            font-size: 13px;
+            margin-bottom: 10px;
+            font-size: 12px;
         }
         .search-results {
-            max-height: 150px;
+            max-height: 140px;
             overflow-y: auto;
-            margin-bottom: 15px;
+            margin-bottom: 12px;
             display: flex;
             flex-direction: column;
-            gap: 8px;
+            gap: 6px;
         }
         .user-result-item {
             background: #1e293b;
-            padding: 8px 12px;
+            padding: 6px 10px;
             border-radius: 6px;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            font-size: 13px;
+            font-size: 12px;
         }
         .invite-action-btn {
             background: #38bdf8;
             color: #0f172a;
             border: none;
-            padding: 4px 10px;
+            padding: 4px 8px;
             border-radius: 4px;
             font-weight: 600;
             cursor: pointer;
-            font-size: 11px;
+            font-size: 10px;
         }
         .btn-cancel {
             background: #334155;
             color: #fff;
             border: none;
-            padding: 8px 15px;
+            padding: 8px;
             border-radius: 6px;
             cursor: pointer;
-            font-size: 12px;
+            font-size: 11px;
             width: 100%;
         }
     </style>
@@ -281,10 +304,10 @@
 
     <header>
         <a href="study_rooms.html" class="back-btn">← Leave Room</a>
-        <h3 id="roomTitleHeader" style="font-size: 15px; color: #f59e0b;">Study Room</h3>
+        <h3 id="roomTitleHeader" style="font-size: 13px; color: #f59e0b;">Study Room</h3>
         <div class="header-actions">
-            <button class="action-chip" onclick="openInviteModal()">+ Add Member</button>
-            <span id="roleIndicator" style="font-size: 12px; color: #f59e0b;">● Checking...</span>
+            <button class="action-chip" onclick="openInviteModal()">+ Add</button>
+            <span id="roleIndicator" style="font-size: 11px; color: #f59e0b;">● Checking...</span>
         </div>
     </header>
 
@@ -304,7 +327,7 @@
         </div>
 
         <div class="video-section">
-            <h4 style="font-size: 14px; color: #38bdf8;">Study Video Session</h4>
+            <h4 style="font-size: 13px; color: #38bdf8;">Study Video Session</h4>
             <div class="video-box">
                 <video id="localVideo" autoplay playsinline></video>
                 <div class="video-label" id="videoLabel">You (Camera Off)</div>
@@ -314,7 +337,7 @@
                 <!-- Request Access Button for Members -->
                 <button class="request-access-btn" id="requestAccessBtn" onclick="requestMicCamAccess()">Request Mic/Cam Access 🎙️</button>
                 
-                <!-- Direct Controls for Admin (Hidden by default for members) -->
+                <!-- Direct Controls for Admin -->
                 <div class="control-row" id="mediaControlRow" style="display: none;">
                     <button class="v-btn" id="camToggleBtn" onclick="toggleCamera()">Cam Off</button>
                     <button class="v-btn" id="micToggleBtn" onclick="toggleMic()">Mic Off</button>
@@ -329,7 +352,7 @@
             <h3>Search & Invite Members</h3>
             <input type="text" id="searchUserInput" placeholder="Search by name..." oninput="searchUsers(this.value)">
             <div class="search-results" id="searchResults">
-                <p style="font-size: 12px; color: #94a3b8; text-align: center;">Type to search registered peers...</p>
+                <p style="font-size: 11px; color: #94a3b8; text-align: center;">Type to search registered peers...</p>
             </div>
             <button class="btn-cancel" onclick="closeInviteModal()">Close</button>
         </div>
@@ -452,7 +475,7 @@
         function searchUsers(query) {
             const resultsDiv = document.getElementById('searchResults');
             if (!query.trim()) {
-                resultsDiv.innerHTML = `<p style="font-size: 12px; color: #94a3b8; text-align: center;">Type to search registered peers...</p>`;
+                resultsDiv.innerHTML = `<p style="font-size: 11px; color: #94a3b8; text-align: center;">Type to search registered peers...</p>`;
                 return;
             }
 
@@ -468,7 +491,7 @@
                 );
 
                 if (filtered.length === 0) {
-                    resultsDiv.innerHTML = `<p style="font-size: 12px; color: #ef4444; text-align: center;">No registered user found.</p>`;
+                    resultsDiv.innerHTML = `<p style="font-size: 11px; color: #ef4444; text-align: center;">No registered user found.</p>`;
                     return;
                 }
 
