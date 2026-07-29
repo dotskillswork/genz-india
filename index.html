@@ -352,6 +352,20 @@
             window.location.href = 'login.html';
         }
 
+        // --- BROWSER PUSH NOTIFICATION PERMISSION REQUEST ON LOAD ---
+        document.addEventListener('DOMContentLoaded', function() {
+            if ("Notification" in window) {
+                if (Notification.permission !== "granted" && Notification.permission !== "denied") {
+                    Notification.requestPermission().then(permission => {
+                        console.log("Notification permission:", permission);
+                    });
+                }
+            }
+            loadNotifications();
+            // Poll for new notifications every 3 seconds to trigger mobile screen popup even if inactive
+            setInterval(checkAndTriggerSystemNotification, 3000);
+        });
+
         function toggleNotifDropdown(e) {
             e.stopPropagation();
             const dropdown = document.getElementById('notifDropdown');
@@ -371,7 +385,14 @@
             if (!currentUser) return;
 
             let allNotifs = JSON.parse(localStorage.getItem('genzNotifications')) || [];
-            let userNotifs = allNotifs.filter(n => !n.targetUser || n.targetUser.toLowerCase() === currentUser.name.toLowerCase() || n.targetUser.toLowerCase() === currentUser.username?.toLowerCase());
+            
+            let userNotifs = allNotifs.filter(n => {
+                if (n.broadcast === true) return true;
+                if (n.targetUser && (n.targetUser.toLowerCase() === currentUser.name.toLowerCase() || n.targetUser.toLowerCase() === currentUser.username?.toLowerCase())) {
+                    return true;
+                }
+                return false;
+            });
 
             if (userNotifs.length === 0) {
                 listContainer.innerHTML = `<div style="padding: 15px; text-align: center; color: #94a3b8; font-size: 12px;">No new alerts</div>`;
@@ -393,15 +414,51 @@
             });
         }
 
+        // Function to trigger system / mobile screen popups when new notifications arrive
+        function checkAndTriggerSystemNotification() {
+            if (!currentUser || !("Notification" in window) || Notification.permission !== "granted") return;
+
+            let allNotifs = JSON.parse(localStorage.getItem('genzNotifications')) || [];
+            let lastShownId = localStorage.getItem('lastShownNotifCount') || 0;
+
+            let userNotifs = allNotifs.filter(n => {
+                if (n.broadcast === true) return true;
+                if (n.targetUser && (n.targetUser.toLowerCase() === currentUser.name.toLowerCase() || n.targetUser.toLowerCase() === currentUser.username?.toLowerCase())) {
+                    return true;
+                }
+                return false;
+            });
+
+            if (userNotifs.length > lastShownId) {
+                // Show system notification popup on mobile/desktop screen for the latest unread alert
+                const latest = userNotifs[userNotifs.length - 1];
+                try {
+                    new Notification(latest.title, {
+                        body: latest.message,
+                        icon: 'https://cdn.jsdelivr.net/gh/twitter/twemoji@14.0.2/assets/72x72/1f514.png'
+                    });
+                } catch(e) {
+                    console.log("System notification error:", e);
+                }
+                localStorage.setItem('lastShownNotifCount', userNotifs.length);
+            }
+        }
+
         function clearNotifications() {
             if (!currentUser) return;
             let allNotifs = JSON.parse(localStorage.getItem('genzNotifications')) || [];
-            let filteredNotifs = allNotifs.filter(n => n.targetUser && n.targetUser.toLowerCase() !== currentUser.name.toLowerCase() && n.targetUser.toLowerCase() !== currentUser.username?.toLowerCase());
+            
+            let filteredNotifs = allNotifs.filter(n => {
+                if (n.broadcast === true) return true;
+                if (n.targetUser && n.targetUser.toLowerCase() !== currentUser.name.toLowerCase() && n.targetUser.toLowerCase() !== currentUser.username?.toLowerCase()) {
+                    return true;
+                }
+                return false;
+            });
             localStorage.setItem('genzNotifications', JSON.stringify(filteredNotifs));
+            localStorage.setItem('lastShownNotifCount', 0);
             loadNotifications();
         }
-
-        document.addEventListener('DOMContentLoaded', loadNotifications);
     </script>
 </body>
 </html>
