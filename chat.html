@@ -12,13 +12,21 @@
             box-sizing: border-box;
             font-family: 'Poppins', sans-serif;
         }
+
+        /* Prevent Text Selection for Screenshot Protection */
         body {
             background-color: #0b0f19;
             color: #f1f5f9;
             height: 100vh;
             display: flex;
             flex-direction: column;
+            user-select: none;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            transition: filter 0.2s ease;
         }
+
         header {
             background: #111827;
             padding: 15px 20px;
@@ -27,12 +35,14 @@
             justify-content: space-between;
             border-bottom: 1px solid #1f2937;
         }
+
         .back-btn {
             color: #38bdf8;
             text-decoration: none;
             font-size: 14px;
             font-weight: 600;
         }
+
         .chat-container {
             flex: 1;
             max-width: 800px;
@@ -44,6 +54,7 @@
             border-left: 1px solid #1f2937;
             border-right: 1px solid #1f2937;
         }
+
         .chat-header {
             padding: 12px 20px;
             background: #1f2937;
@@ -52,6 +63,7 @@
             gap: 12px;
             border-bottom: 1px solid #334155;
         }
+
         .chat-user-avatar {
             width: 40px;
             height: 40px;
@@ -65,36 +77,43 @@
             font-weight: 600;
             font-size: 14px;
         }
+
         .chat-user-info h4 {
             font-size: 14px;
             color: #f8fafc;
         }
+
         .chat-user-info span {
             font-size: 11px;
             color: #94a3b8;
         }
+
         .messages-box {
             flex: 1;
             padding: 20px;
             overflow-y: auto;
             display: flex;
             flex-direction: column;
-            gap: 12px;
+            gap: 14px;
         }
+
         .message {
             max-width: 70%;
             padding: 10px 14px;
-            border-radius: 10px;
+            border-radius: 12px;
             font-size: 13px;
             line-height: 1.4;
             word-break: break-word;
+            position: relative;
         }
+
         .message.sent {
             background: #0284c7;
             color: #fff;
             align-self: flex-end;
             border-bottom-right-radius: 2px;
         }
+
         .message.received {
             background: #1e293b;
             color: #f1f5f9;
@@ -102,18 +121,52 @@
             border-bottom-left-radius: 2px;
             border: 1px solid #334155;
         }
+
         .message img {
             max-width: 100%;
-            border-radius: 6px;
+            max-height: 250px;
+            border-radius: 8px;
             margin-top: 5px;
             display: block;
+            cursor: pointer;
+            transition: transform 0.2s;
         }
+
+        .message img:hover {
+            transform: scale(1.02);
+        }
+
+        /* Unsend Button (Instagram Style) */
+        .unsend-btn {
+            display: none;
+            position: absolute;
+            top: 50%;
+            left: -28px;
+            transform: translateY(-50%);
+            background: #ef4444;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 22px;
+            height: 22px;
+            font-size: 11px;
+            cursor: pointer;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.3);
+        }
+
+        .message.sent:hover .unsend-btn {
+            display: flex;
+        }
+
         .msg-time {
             font-size: 9px;
             color: rgba(255,255,255,0.7);
             margin-top: 4px;
             text-align: right;
         }
+
         .chat-input-box {
             padding: 15px 20px;
             background: #1f2937;
@@ -122,6 +175,7 @@
             align-items: center;
             border-top: 1px solid #334155;
         }
+
         .chat-input-box input[type="text"] {
             flex: 1;
             background: #0b0f19;
@@ -131,10 +185,12 @@
             color: #fff;
             font-size: 13px;
         }
+
         .chat-input-box input[type="text"]:focus {
             outline: none;
             border-color: #38bdf8;
         }
+
         .file-upload-label {
             background: #334155;
             color: #38bdf8;
@@ -144,9 +200,11 @@
             font-size: 13px;
             font-weight: 600;
         }
+
         .file-upload-label:hover {
             background: #475569;
         }
+
         .send-btn {
             background: #38bdf8;
             color: #0f172a;
@@ -157,8 +215,57 @@
             font-size: 13px;
             cursor: pointer;
         }
+
         .send-btn:hover {
             background: #0ea5e9;
+        }
+
+        /* Fullscreen Image Lightbox Modal */
+        .image-modal {
+            display: none;
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            z-index: 10000;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .image-modal img {
+            max-width: 90%;
+            max-height: 80vh;
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(0,0,0,0.8);
+        }
+
+        .modal-actions {
+            margin-top: 15px;
+            display: flex;
+            gap: 15px;
+        }
+
+        .modal-btn {
+            background: #38bdf8;
+            color: #0b0f19;
+            padding: 8px 18px;
+            border-radius: 6px;
+            text-decoration: none;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            border: none;
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 20px;
+            right: 25px;
+            color: #fff;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
         }
     </style>
 </head>
@@ -184,7 +291,7 @@
         </div>
 
         <div class="chat-input-box">
-            <label class="file-upload-label" title="Upload Payment Screenshot">
+            <label class="file-upload-label" title="Upload Image">
                 📷 <input type="file" id="imageInput" accept="image/*" style="display: none;">
             </label>
             <input type="text" id="messageInput" placeholder="Type a message or description...">
@@ -192,9 +299,19 @@
         </div>
     </div>
 
+    <!-- Fullscreen Image Modal -->
+    <div id="imageModal" class="image-modal">
+        <span class="modal-close" onclick="closeImageModal()">&times;</span>
+        <img id="modalImg" src="" alt="Full View">
+        <div class="modal-actions">
+            <a id="downloadBtn" class="modal-btn" download="chat-image.png">📥 Download Image</a>
+            <button class="modal-btn" style="background: #ef4444; color: #fff;" onclick="closeImageModal()">Close</button>
+        </div>
+    </div>
+
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-app.js";
-        import { getFirestore, collection, addDoc, updateDoc, doc, onSnapshot, query, orderBy, getDocs } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-firestore.js";
+        import { getFirestore, collection, addDoc, updateDoc, deleteDoc, doc, onSnapshot, query, orderBy, getDocs } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-firestore.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyCNLwSjHq6LlX9uUovTRHrz9ZfUwEIUWQM",
@@ -221,7 +338,29 @@
             window.location.href = 'makefriend.html';
         }
 
-        // Continuously update active user's lastSeen timestamp every 30 seconds
+        // --- 1. ANTI-SCREENSHOT & SECURITY PROTECTION ---
+        document.addEventListener('contextmenu', e => e.preventDefault());
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'PrintScreen' || 
+               (e.ctrlKey && (e.key === 'p' || e.key === 'P' || e.key === 's' || e.key === 'S')) ||
+               (e.ctrlKey && e.shiftKey && (e.key === 'I' || e.key === 'i')) ||
+               e.key === 'F12') {
+                e.preventDefault();
+                alert("🔒 Screenshots and saving are disabled for privacy protection!");
+                return false;
+            }
+        });
+
+        // Blur screen if user switches tab or opens external recorder/snipping tool
+        window.addEventListener('blur', () => {
+            document.body.style.filter = "blur(15px)";
+        });
+        window.addEventListener('focus', () => {
+            document.body.style.filter = "none";
+        });
+
+        // --- 2. PRESENCE UPDATER ---
         async function updateMyPresence() {
             try {
                 const querySnapshot = await getDocs(collection(db, 'users'));
@@ -237,9 +376,9 @@
             }
         }
         updateMyPresence();
-        setInterval(updateMyPresence, 30000); // every 30 seconds
+        setInterval(updateMyPresence, 30000);
 
-        // Fetch target user profile details and real-time status
+        // --- 3. FETCH USER HEADER INFO ---
         function loadChatUserInfo() {
             onSnapshot(collection(db, 'users'), (snapshot) => {
                 snapshot.forEach((docSnap) => {
@@ -253,7 +392,6 @@
                             document.getElementById('headerAvatar').innerText = uData.username.charAt(0).toUpperCase();
                         }
 
-                        // Calculate status based on lastSeen (Active if within last 60 seconds)
                         const lastSeenTime = uData.lastSeen || 0;
                         const diffSec = (Date.now() - lastSeenTime) / 1000;
                         const statusSpan = document.getElementById('headerStatus');
@@ -274,18 +412,20 @@
         const chatId = [activeUser.username, chatWith].sort().join('_');
         let selectedImageBase64 = "";
 
+        // Image Selection Handler
         document.getElementById('imageInput').addEventListener('change', function(e) {
             const file = e.target.files[0];
             if (file) {
                 const reader = new FileReader();
                 reader.onload = function(uploadEvent) {
                     selectedImageBase64 = uploadEvent.target.result;
-                    document.getElementById('messageInput').placeholder = "Screenshot attached! Click Send ->";
+                    document.getElementById('messageInput').placeholder = "Photo attached! Click Send ->";
                 };
                 reader.readAsDataURL(file);
             }
         });
 
+        // --- 4. SEND MESSAGE ---
         async function sendMessage() {
             const text = document.getElementById('messageInput').value.trim();
             if (!text && !selectedImageBase64) return;
@@ -316,20 +456,65 @@
             if (e.key === 'Enter') sendMessage();
         });
 
+        // --- 5. UNSEND FUNCTION (INSTAGRAM STYLE) ---
+        window.unsendMessage = async (docId) => {
+            if (confirm("Kya aap is message ko unsend karna chahte hain?")) {
+                try {
+                    await deleteDoc(doc(db, 'chats', docId));
+                } catch (err) {
+                    console.error("Error unsending message:", err);
+                    alert("Could not unsend message.");
+                }
+            }
+        };
+
+        // --- 6. FULLSCREEN IMAGE & DOWNLOAD ---
+        window.openImageModal = (src) => {
+            const modal = document.getElementById('imageModal');
+            const modalImg = document.getElementById('modalImg');
+            const downloadBtn = document.getElementById('downloadBtn');
+
+            modal.style.display = 'flex';
+            modalImg.src = src;
+            downloadBtn.href = src;
+            downloadBtn.download = `genz_chat_${Date.now()}.png`;
+        };
+
+        window.closeImageModal = () => {
+            document.getElementById('imageModal').style.display = 'none';
+        };
+
+        // --- 7. REAL-TIME MESSAGES & 24-HOUR AUTO DELETE ---
+        const TWENTY_FOUR_HOURS_MS = 24 * 60 * 60 * 1000; // 24 Hours in Milliseconds
+
         const q = query(collection(db, 'chats'), orderBy('createdAt', 'asc'));
         onSnapshot(q, (snapshot) => {
             const box = document.getElementById('messagesBox');
             box.innerHTML = "";
+            const currentTime = Date.now();
 
             snapshot.forEach((docSnap) => {
                 const msg = docSnap.data();
+                const docId = docSnap.id;
+
                 if (msg.chatId === chatId) {
+                    // Check if message is older than 24 hours
+                    const age = currentTime - msg.createdAt;
+                    if (age > TWENTY_FOUR_HOURS_MS) {
+                        // Delete permanently from Firebase
+                        deleteDoc(doc(db, 'chats', docId)).catch(err => console.error("Auto delete failed:", err));
+                        return; // Skip rendering
+                    }
+
                     const isSent = msg.sender === activeUser.username;
                     const timeString = new Date(msg.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-                    const imageTag = msg.image ? `<img src="${msg.image}">` : "";
+                    
+                    const imageTag = msg.image ? `<img src="${msg.image}" onclick="window.openImageModal('${msg.image}')">` : "";
+                    const unsendTag = isSent ? `<button class="unsend-btn" onclick="window.unsendMessage('${docId}')" title="Unsend Message">🗑️</button>` : "";
 
                     box.innerHTML += `
                         <div class="message ${isSent ? 'sent' : 'received'}">
+                            ${unsendTag}
                             ${msg.text ? `<div>${msg.text}</div>` : ""}
                             ${imageTag}
                             <div class="msg-time">${timeString}</div>
