@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gen'Z | Study Room Session</title>
+    <title>Gen'Z | Study Room Chat</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     
     <!-- Firebase SDKs -->
@@ -27,32 +27,30 @@
         }
         header {
             background: #111827;
-            padding: 10px 15px;
+            padding: 12px 20px;
             display: flex;
             align-items: center;
             justify-content: space-between;
             border-bottom: 1px solid #1f2937;
-            flex-wrap: wrap;
-            gap: 8px;
         }
         .back-btn {
             color: #38bdf8;
             text-decoration: none;
-            font-size: 12px;
+            font-size: 13px;
             font-weight: 600;
         }
         .header-actions {
             display: flex;
-            gap: 8px;
+            gap: 10px;
             align-items: center;
         }
         .action-chip {
             background: #1e293b;
             color: #38bdf8;
             border: 1px solid #334155;
-            padding: 5px 10px;
+            padding: 6px 12px;
             border-radius: 6px;
-            font-size: 11px;
+            font-size: 12px;
             font-weight: 600;
             cursor: pointer;
         }
@@ -61,44 +59,36 @@
             flex: 1;
             overflow: hidden;
             flex-direction: column;
-        }
-        @media(min-width: 768px) {
-            .workspace {
-                flex-direction: row;
-            }
+            max-width: 900px;
+            width: 100%;
+            margin: 0 auto;
+            padding: 15px;
         }
         .chat-section {
             flex: 1;
             display: flex;
             flex-direction: column;
-            background: #0b0f19;
-            border-bottom: 1px solid #1f2937;
-            padding: 10px;
-            max-height: 50vh;
-        }
-        @media(min-width: 768px) {
-            .chat-section {
-                border-bottom: none;
-                border-right: 1px solid #1f2937;
-                padding: 15px;
-                max-height: none;
-            }
+            background: #111827;
+            border: 1px solid #1f2937;
+            border-radius: 12px;
+            padding: 15px;
+            overflow: hidden;
         }
         .chat-messages {
             flex: 1;
             overflow-y: auto;
             display: flex;
             flex-direction: column;
-            gap: 8px;
+            gap: 10px;
             padding-right: 5px;
-            margin-bottom: 10px;
+            margin-bottom: 15px;
         }
         .message {
             max-width: 80%;
-            padding: 8px 12px;
-            border-radius: 8px;
-            font-size: 12px;
-            line-height: 1.4;
+            padding: 10px 14px;
+            border-radius: 10px;
+            font-size: 13px;
+            line-height: 1.5;
             word-break: break-word;
         }
         .user-msg {
@@ -113,146 +103,57 @@
             align-self: flex-start;
             border: 1px solid #334155;
         }
-        .system-req-msg {
-            background: rgba(245, 158, 11, 0.15);
+        .system-msg {
+            background: rgba(245, 158, 11, 0.1);
             border: 1px solid #f59e0b;
             color: #f59e0b;
             align-self: center;
             text-align: center;
             width: 100%;
-            font-weight: 600;
-            display: flex;
-            flex-direction: column;
-            gap: 6px;
-            padding: 10px;
-            border-radius: 8px;
-        }
-        .accept-req-btn {
-            background: #10b981;
-            color: #fff;
-            border: none;
-            padding: 5px 12px;
-            border-radius: 5px;
-            font-weight: 600;
-            font-size: 11px;
-            cursor: pointer;
-            align-self: center;
+            font-size: 12px;
         }
         .message img {
-            max-width: 180px;
-            border-radius: 6px;
-            margin-top: 4px;
+            max-width: 220px;
+            border-radius: 8px;
+            margin-top: 6px;
             display: block;
         }
         .chat-input-box {
             display: flex;
-            gap: 8px;
+            gap: 10px;
             align-items: center;
+            background: #0b0f19;
+            padding: 8px;
+            border-radius: 10px;
+            border: 1px solid #334155;
         }
         .chat-input-box input[type="text"] {
             flex: 1;
-            background: #111827;
-            border: 1px solid #334155;
-            border-radius: 8px;
-            padding: 8px 10px;
+            background: transparent;
+            border: none;
+            outline: none;
             color: #fff;
-            font-size: 12px;
+            font-size: 13px;
+            padding: 5px;
         }
         .file-upload-label {
-            background: #334155;
-            color: #fff;
-            padding: 8px 10px;
+            background: #1e293b;
+            color: #38bdf8;
+            padding: 8px 12px;
             border-radius: 8px;
             cursor: pointer;
-            font-size: 12px;
+            font-size: 13px;
+            font-weight: 600;
+            border: 1px solid #334155;
         }
         .send-btn {
             background: #f59e0b;
             color: #0f172a;
             border: none;
-            padding: 8px 14px;
+            padding: 9px 18px;
             border-radius: 8px;
             font-weight: 600;
-            font-size: 12px;
-            cursor: pointer;
-        }
-        .video-section {
-            width: 100%;
-            background: #111827;
-            display: flex;
-            flex-direction: column;
-            padding: 10px;
-            gap: 10px;
-            flex: 1;
-        }
-        @media(min-width: 768px) {
-            .video-section {
-                width: 340px;
-                flex: none;
-                padding: 15px;
-                gap: 15px;
-            }
-        }
-        .video-box {
-            flex: 1;
-            background: #000;
-            border-radius: 8px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            position: relative;
-            border: 1px solid #1f2937;
-            min-height: 160px;
-            overflow: hidden;
-        }
-        .video-box video {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-        .video-label {
-            position: absolute;
-            bottom: 8px;
-            left: 8px;
-            background: rgba(0,0,0,0.6);
-            color: #fff;
-            padding: 2px 6px;
-            border-radius: 4px;
-            font-size: 10px;
-        }
-        .video-controls {
-            display: flex;
-            flex-direction: column;
-            gap: 6px;
-        }
-        .control-row {
-            display: flex;
-            gap: 6px;
-            justify-content: center;
-        }
-        .v-btn {
-            flex: 1;
-            background: #ef4444;
-            color: #fff;
-            border: none;
-            padding: 8px;
-            border-radius: 6px;
-            font-size: 11px;
-            font-weight: 600;
-            cursor: pointer;
-        }
-        .v-btn.active {
-            background: #10b981;
-        }
-        .request-access-btn {
-            background: #f59e0b;
-            color: #0f172a;
-            border: none;
-            width: 100%;
-            padding: 10px;
-            border-radius: 6px;
-            font-size: 12px;
-            font-weight: 700;
+            font-size: 13px;
             cursor: pointer;
         }
         .modal {
@@ -282,10 +183,10 @@
             background: #0b0f19;
             border: 1px solid #334155;
             border-radius: 8px;
-            padding: 8px 10px;
+            padding: 10px;
             color: #fff;
             margin-bottom: 10px;
-            font-size: 12px;
+            font-size: 13px;
         }
         .search-results {
             max-height: 140px;
@@ -297,7 +198,7 @@
         }
         .user-result-item {
             background: #1e293b;
-            padding: 6px 10px;
+            padding: 8px 12px;
             border-radius: 6px;
             display: flex;
             justify-content: space-between;
@@ -308,11 +209,11 @@
             background: #38bdf8;
             color: #0f172a;
             border: none;
-            padding: 4px 8px;
+            padding: 4px 10px;
             border-radius: 4px;
             font-weight: 600;
             cursor: pointer;
-            font-size: 10px;
+            font-size: 11px;
         }
         .joined-tag {
             background: #10b981;
@@ -329,7 +230,7 @@
             padding: 8px;
             border-radius: 6px;
             cursor: pointer;
-            font-size: 11px;
+            font-size: 12px;
             width: 100%;
         }
     </style>
@@ -338,17 +239,17 @@
 
     <header>
         <a href="study_rooms.html" class="back-btn">← Leave Room</a>
-        <h3 id="roomTitleHeader" style="font-size: 13px; color: #f59e0b;">Study Room</h3>
+        <h3 id="roomTitleHeader" style="font-size: 15px; color: #f59e0b;">Study Room</h3>
         <div class="header-actions">
-            <button class="action-chip" onclick="openInviteModal()">+ Add</button>
-            <span id="roleIndicator" style="font-size: 11px; color: #f59e0b;">● Checking...</span>
+            <button class="action-chip" onclick="openInviteModal()">+ Add Member</button>
+            <span id="roleIndicator" style="font-size: 12px; color: #38bdf8;">● Member</span>
         </div>
     </header>
 
     <div class="workspace">
         <div class="chat-section">
             <div class="chat-messages" id="chatMessages">
-                <div class="message peer-msg"><b>System:</b> Welcome to the room session! Respect privacy and study together.</div>
+                <div class="message system-msg"><b>System:</b> Welcome to the study room chat! Share notes, doubts and discuss together.</div>
             </div>
 
             <form class="chat-input-box" id="chatForm">
@@ -358,22 +259,6 @@
                 <input type="text" id="messageInput" placeholder="Type a message or doubt..." autocomplete="off">
                 <button type="submit" class="send-btn">Send</button>
             </form>
-        </div>
-
-        <div class="video-section">
-            <h4 style="font-size: 13px; color: #38bdf8;">Gen'Z Study Session</h4>
-            <div class="video-box">
-                <video id="localVideo" autoplay playsinline></video>
-                <div class="video-label" id="videoLabel">You (Camera Off)</div>
-            </div>
-            
-            <div class="video-controls">
-                <button class="request-access-btn" id="requestAccessBtn" onclick="requestMicCamAccess()" style="display: none;">Request Mic/Cam Access 🎙️</button>
-                <div class="control-row" id="mediaControlRow" style="display: none;">
-                    <button class="v-btn" id="camToggleBtn" onclick="toggleCamera()">Cam Off</button>
-                    <button class="v-btn" id="micToggleBtn" onclick="toggleMic()">Mic Off</button>
-                </div>
-            </div>
         </div>
     </div>
 
@@ -419,25 +304,14 @@
         const currentUsername = (activeUser.username || "").trim().toLowerCase();
 
         let isAdmin = (roomAdmin === currentName || (currentUsername && roomAdmin === currentUsername));
-        let localStream = null;
-
+        
         const roleIndicator = document.getElementById('roleIndicator');
-        const requestAccessBtn = document.getElementById('requestAccessBtn');
-        const mediaControlRow = document.getElementById('mediaControlRow');
-        const videoLabel = document.getElementById('videoLabel');
-
         if (isAdmin) {
-            roleIndicator.innerText = "● Admin (Full Control)";
+            roleIndicator.innerText = "● Admin";
             roleIndicator.style.color = "#f59e0b";
-            requestAccessBtn.style.display = 'none';
-            mediaControlRow.style.display = 'flex';
-            videoLabel.innerText = "You (Admin - Cam Off)";
         } else {
             roleIndicator.innerText = "● Member";
             roleIndicator.style.color = "#38bdf8";
-            requestAccessBtn.style.display = 'block';
-            mediaControlRow.style.display = 'none';
-            videoLabel.innerText = "You (Member)";
         }
 
         const chatMessages = document.getElementById('chatMessages');
@@ -445,27 +319,13 @@
         const messageInput = document.getElementById('messageInput');
         const imageInput = document.getElementById('imageInput');
 
-        // Real-time messages sync with Accept Request option for Admin
+        // Real-time chat & image sync via Firestore
         db.collection("studyRooms").doc(activeRoom.id || activeRoom.name).collection("messages").orderBy("createdAt", "asc")
         .onSnapshot((snapshot) => {
-            chatMessages.innerHTML = `<div class="message peer-msg"><b>System:</b> Welcome to the room session! Respect privacy and study together.</div>`;
+            chatMessages.innerHTML = `<div class="message system-msg"><b>System:</b> Welcome to the study room chat! Share notes, doubts and discuss together.</div>`;
             snapshot.forEach((doc) => {
                 const msg = doc.data();
-                if (msg.type === 'request') {
-                    let acceptButtonHTML = '';
-                    if (isAdmin) {
-                        acceptButtonHTML = `<button class="accept-req-btn" onclick="acceptMemberRequest('${msg.sender}')">Accept & Grant Access ✓</button>`;
-                    }
-                    chatMessages.innerHTML += `
-                        <div class="message system-req-msg">
-                            🔔 <b>${msg.sender}</b> has requested Mic/Cam Access!
-                            ${acceptButtonHTML}
-                        </div>`;
-                } else if (msg.type === 'granted') {
-                    chatMessages.innerHTML += `<div class="message" style="background:#10b981; color:#fff; align-self:center; text-align:center; width:100%;">✅ Admin granted access to <b>${msg.target}</b>! You can now turn on your camera.</div>`;
-                } else {
-                    appendMessage(msg.text, msg.image, msg.sender === activeUser.name ? 'user-msg' : 'peer-msg', msg.sender);
-                }
+                appendMessage(msg.text, msg.image, msg.sender === activeUser.name ? 'user-msg' : 'peer-msg', msg.sender);
             });
             chatMessages.scrollTop = chatMessages.scrollHeight;
         });
@@ -479,23 +339,21 @@
             if (file) {
                 const reader = new FileReader();
                 reader.onload = function(event) {
-                    saveMessageToFirestore(text, event.target.result, 'chat');
+                    saveMessageToFirestore(text, event.target.result);
                 };
                 reader.readAsDataURL(file);
             } else {
-                saveMessageToFirestore(text, null, 'chat');
+                saveMessageToFirestore(text, null);
             }
             messageInput.value = '';
             imageInput.value = '';
         });
 
-        function saveMessageToFirestore(text, imgSrc, type, targetUser) {
+        function saveMessageToFirestore(text, imgSrc) {
             db.collection("studyRooms").doc(activeRoom.id || activeRoom.name).collection("messages").add({
                 sender: activeUser.name,
                 text: text || "",
                 image: imgSrc || "",
-                type: type || 'chat',
-                target: targetUser || "",
                 createdAt: firebase.firestore.FieldValue.serverTimestamp()
             });
         }
@@ -571,62 +429,6 @@
                 }
                 alert(`Invite successfully sent to ${username}!`);
             });
-        }
-
-        function requestMicCamAccess() {
-            saveMessageToFirestore("Requested Mic/Cam Access", null, 'request');
-            requestAccessBtn.innerText = "Request Sent (Waiting for Admin)...";
-            requestAccessBtn.disabled = true;
-        }
-
-        function acceptMemberRequest(memberName) {
-            saveMessageToFirestore("", null, 'granted', memberName);
-            alert(`Access granted to ${memberName}!`);
-        }
-
-        async function toggleCamera() {
-            const camBtn = document.getElementById('camToggleBtn');
-            const videoLabel = document.getElementById('videoLabel');
-            const videoElem = document.getElementById('localVideo');
-
-            if (localStream && localStream.getVideoTracks().some(track => track.readyState === 'live')) {
-                localStream.getVideoTracks().forEach(track => track.stop());
-                videoElem.srcObject = null;
-                camBtn.classList.remove('active');
-                camBtn.innerText = "Cam Off";
-                videoLabel.innerText = "You (Camera Off)";
-            } else {
-                try {
-                    localStream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
-                    videoElem.srcObject = localStream;
-                    camBtn.classList.add('active');
-                    camBtn.innerText = "Cam On";
-                    document.getElementById('micToggleBtn').classList.add('active');
-                    document.getElementById('micToggleBtn').innerText = "Mic On";
-                    videoLabel.innerText = isAdmin ? "You (Admin Active)" : "You (Member Active)";
-                } catch (err) {
-                    alert("Camera access denied or unavailable.");
-                }
-            }
-        }
-
-        function toggleMic() {
-            if (!localStream) {
-                alert("Please turn on your camera/mic session first by clicking 'Cam Off'.");
-                return;
-            }
-            const audioTracks = localStream.getAudioTracks();
-            if (audioTracks.length > 0) {
-                audioTracks[0].enabled = !audioTracks[0].enabled;
-                const micBtn = document.getElementById('micToggleBtn');
-                if (audioTracks[0].enabled) {
-                    micBtn.classList.add('active');
-                    micBtn.innerText = "Mic On";
-                } else {
-                    micBtn.classList.remove('active');
-                    micBtn.innerText = "Mic Off";
-                }
-            }
         }
     </script>
 </body>
