@@ -269,7 +269,7 @@
         <img id="modalImg" src="" alt="Full View">
         <div class="modal-actions">
             <a id="downloadBtn" class="modal-btn" download="genz_chat.png">📥 Download</a>
-            <button class="modal-btn" style="background: #ef4444; color: #fff;" onclick="closeImageModal()">Close</button>
+            <button class="modal-btn" style="background: #ef4444; color: #fff;" id="closeModalBtn">Close</button>
         </div>
     </div>
 
@@ -376,32 +376,14 @@
             if (e.key === 'Enter') sendMessage();
         });
 
-        window.unsendMessage = async (docId, sender) => {
-            if (sender === activeUser.username) {
-                if (confirm("Kya aap is message ko unsend karna chahte hain?")) {
-                    try {
-                        await deleteDoc(doc(db, 'chats', docId));
-                    } catch (err) {
-                        alert("Could not delete.");
-                    }
-                }
-            }
-        };
-
-        window.openImageModal = (event, src) => {
-            event.stopPropagation();
-            document.getElementById('imageModal').style.display = 'flex';
-            document.getElementById('modalImg').src = src;
-            document.getElementById('downloadBtn').href = src;
-        };
-
-        window.closeImageModal = () => {
+        // Modal Close Setup
+        document.getElementById('closeModalBtn').addEventListener('click', () => {
             document.getElementById('imageModal').style.display = 'none';
-        };
+        });
 
         const TWENTY_FOUR_HOURS_MS = 24 * 60 * 60 * 1000;
 
-        // Clean & Working Query without requiring Firebase Index errors
+        // Real-time Message Listener (Auto Refresh & Live Sync)
         const q = query(collection(db, 'chats'), orderBy('createdAt', 'asc'));
         
         onSnapshot(q, (snapshot) => {
@@ -422,17 +404,52 @@
                     const isSent = msg.sender === activeUser.username;
                     const timeString = new Date(msg.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
                     
-                    const imageTag = msg.image ? `<img src="${msg.image}" onclick="window.openImageModal(event, '${msg.image}')">` : "";
-                    const unsendHint = isSent ? `<span class="unsend-hint" onclick="window.unsendMessage('${docId}', '${msg.sender}')">Tap to unsend 🗑️</span>` : "";
+                    // Create message element safely using DOM to avoid any click conflicts
+                    const msgDiv = document.createElement('div');
+                    msgDiv.className = `message ${isSent ? 'sent' : 'received'}`;
 
-                    box.innerHTML += `
-                        <div class="message ${isSent ? 'sent' : 'received'}">
-                            ${msg.text ? `<div>${msg.text}</div>` : ""}
-                            ${imageTag}
-                            ${unsendHint}
-                            <div class="msg-time">${timeString}</div>
-                        </div>
-                    `;
+                    if (msg.text) {
+                        const textDiv = document.createElement('div');
+                        textDiv.innerText = msg.text;
+                        msgDiv.appendChild(textDiv);
+                    }
+
+                    if (msg.image) {
+                        const imgElem = document.createElement('img');
+                        imgElem.src = msg.image;
+                        // Image click will strictly open the modal and NOT trigger unsend/delete popup
+                        imgElem.addEventListener('click', (e) => {
+                            e.stopPropagation();
+                            document.getElementById('imageModal').style.display = 'flex';
+                            document.getElementById('modalImg').src = msg.image;
+                            document.getElementById('downloadBtn').href = msg.image;
+                        });
+                        msgDiv.appendChild(imgElem);
+                    }
+
+                    if (isSent) {
+                        const unsendHint = document.createElement('span');
+                        unsendHint.className = 'unsend-hint';
+                        unsendHint.innerText = 'Tap to unsend 🗑️';
+                        unsendHint.addEventListener('click', async (e) => {
+                            e.stopPropagation();
+                            if (confirm("Kya aap is message ko unsend karna chahte hain?")) {
+                                try {
+                                    await deleteDoc(doc(db, 'chats', docId));
+                                } catch (err) {
+                                    alert("Could not delete.");
+                                }
+                            }
+                        });
+                        msgDiv.appendChild(unsendHint);
+                    }
+
+                    const timeDiv = document.createElement('div');
+                    timeDiv.className = 'msg-time';
+                    timeDiv.innerText = timeString;
+                    msgDiv.appendChild(timeDiv);
+
+                    box.appendChild(msgDiv);
                 }
             });
             box.scrollTop = box.scrollHeight;
