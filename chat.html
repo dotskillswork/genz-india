@@ -94,7 +94,7 @@
             display: flex;
             flex-direction: column;
             gap: 12px;
-            padding-bottom: 80px; /* Input box ke peeche message chup na ho isliye padding */
+            padding-bottom: 80px;
         }
 
         .message {
@@ -149,55 +149,66 @@
             text-align: right;
         }
 
-        /* Fixed Bottom Input Bar jo screen ke andar 100% fit rahegi */
         .chat-input-box {
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    width: 100vw; /* Screen ki width ka 100% */
-    max-width: 100%;
-    background: #1f2937;
-    padding: 8px 10px;
-    display: flex;
-    gap: 6px;
-    align-items: center;
-    border-top: 1px solid #334155;
-    z-index: 999;
-    box-sizing: border-box;
-}
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            background: #1f2937;
+            padding: 8px 10px;
+            display: flex;
+            gap: 6px;
+            align-items: center;
+            border-top: 1px solid #334155;
+            z-index: 999;
+            box-sizing: border-box;
+        }
 
-.chat-input-box input[type="text"] {
-    flex: 1;
-    min-width: 0; /* Text input ko shrink hone mein madad karega */
-    background: #0b0f19;
-    border: 1px solid #334155;
-    border-radius: 8px;
-    padding: 8px 10px;
-    color: #fff;
-    font-size: 13px;
-}
+        @media (min-width: 800px) {
+            .chat-input-box {
+                width: 800px;
+                left: 50%;
+                transform: translateX(-50%);
+            }
+        }
 
-.file-upload-label {
-    background: #334155;
-    color: #38bdf8;
-    padding: 8px 10px;
-    border-radius: 8px;
-    cursor: pointer;
-    font-size: 14px;
-    flex-shrink: 0; /* Button ko dabne nahi dega */
-}
+        .chat-input-box input[type="text"] {
+            flex: 1;
+            min-width: 0;
+            background: #0b0f19;
+            border: 1px solid #334155;
+            border-radius: 8px;
+            padding: 8px 10px;
+            color: #fff;
+            font-size: 13px;
+        }
 
-.send-btn {
-    background: #38bdf8;
-    color: #0f172a;
-    border: none;
-    padding: 8px 12px;
-    border-radius: 8px;
-    font-weight: 600;
-    font-size: 13px;
-    cursor: pointer;
-    flex-shrink: 0; /* Send button ko kabhi screen se bahar nahi jane dega */
-}
+        .chat-input-box input[type="text"]:focus {
+            outline: none;
+            border-color: #38bdf8;
+        }
+
+        .file-upload-label {
+            background: #334155;
+            color: #38bdf8;
+            padding: 8px 10px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            flex-shrink: 0;
+        }
+
+        .send-btn {
+            background: #38bdf8;
+            color: #0f172a;
+            border: none;
+            padding: 8px 12px;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 13px;
+            cursor: pointer;
+            flex-shrink: 0;
+        }
 
         .image-modal {
             display: none;
@@ -279,6 +290,7 @@
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-app.js";
         import { getFirestore, collection, addDoc, updateDoc, deleteDoc, doc, onSnapshot, query, orderBy, getDocs } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-firestore.js";
+        import { getMessaging, getToken } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-messaging.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyCNLwSjHq6LlX9uUovTRHrz9ZfUwEIUWQM",
@@ -292,9 +304,43 @@
 
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
+        const messaging = getMessaging(app);
+
+        // Service Worker Registration for Push Notifications
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('/firebase-messaging-sw.js')
+                    .then((reg) => console.log('Service Worker registered successfully'))
+                    .catch((err) => console.log('Service Worker registration failed:', err));
+            });
+        }
 
         const activeUser = JSON.parse(localStorage.getItem('genzUser'));
         if (!activeUser) window.location.href = 'login.html';
+
+        // Request Notification Permission and Save FCM Token
+        async function requestNotificationPermission() {
+            try {
+                const permission = await Notification.requestPermission();
+                if (permission === 'granted') {
+                    const token = await getToken(messaging, { 
+                        vapidKey: "BHAI_YAHAN_APNI_FIREBASE_WEB_PUSH_CERTIFICATE_KEY_DALNI_HOGI" 
+                    });
+                    
+                    if (token) {
+                        const querySnapshot = await getDocs(collection(db, 'users'));
+                        querySnapshot.forEach(async (docSnap) => {
+                            if (docSnap.data().username === activeUser.username) {
+                                await updateDoc(doc(db, 'users', docSnap.id), { fcmToken: token });
+                            }
+                        });
+                    }
+                }
+            } catch (err) {
+                console.log('Notification permission or token error:', err);
+            }
+        }
+        requestNotificationPermission();
 
         const urlParams = new URLSearchParams(window.location.search);
         const chatWith = urlParams.get('with');
@@ -418,7 +464,6 @@
                         const imgElem = document.createElement('img');
                         imgElem.src = msg.image;
                         
-                        // Image click par ab 100% sirf modal khulega, koi delete popup nahi aayega
                         imgElem.onclick = (e) => {
                             e.stopImmediatePropagation();
                             e.stopPropagation();
