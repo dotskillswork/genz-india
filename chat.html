@@ -147,7 +147,6 @@
             text-align: right;
         }
 
-        /* 100% Mobile Safe Input Bar */
         .chat-input-box {
             padding: 8px 10px;
             background: #1f2937;
@@ -197,7 +196,6 @@
             flex-shrink: 0;
         }
 
-        /* Fullscreen Image Lightbox Modal */
         .image-modal {
             display: none;
             position: fixed;
@@ -277,7 +275,7 @@
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-app.js";
-        import { getFirestore, collection, addDoc, updateDoc, deleteDoc, doc, onSnapshot, query, orderBy, where, getDocs } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-firestore.js";
+        import { getFirestore, collection, addDoc, updateDoc, deleteDoc, doc, onSnapshot, query, orderBy, getDocs } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-firestore.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyCNLwSjHq6LlX9uUovTRHrz9ZfUwEIUWQM",
@@ -403,8 +401,8 @@
 
         const TWENTY_FOUR_HOURS_MS = 24 * 60 * 60 * 1000;
 
-        // Optimized Real-time Query to instantly refresh messages for this chat only
-        const q = query(collection(db, 'chats'), where('chatId', '==', chatId), orderBy('createdAt', 'asc'));
+        // Clean & Working Query without requiring Firebase Index errors
+        const q = query(collection(db, 'chats'), orderBy('createdAt', 'asc'));
         
         onSnapshot(q, (snapshot) => {
             const box = document.getElementById('messagesBox');
@@ -415,25 +413,27 @@
                 const msg = docSnap.data();
                 const docId = docSnap.id;
 
-                if (currentTime - msg.createdAt > TWENTY_FOUR_HOURS_MS) {
-                    deleteDoc(doc(db, 'chats', docId)).catch(() => {});
-                    return;
+                if (msg.chatId === chatId) {
+                    if (currentTime - msg.createdAt > TWENTY_FOUR_HOURS_MS) {
+                        deleteDoc(doc(db, 'chats', docId)).catch(() => {});
+                        return;
+                    }
+
+                    const isSent = msg.sender === activeUser.username;
+                    const timeString = new Date(msg.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+                    
+                    const imageTag = msg.image ? `<img src="${msg.image}" onclick="window.openImageModal(event, '${msg.image}')">` : "";
+                    const unsendHint = isSent ? `<span class="unsend-hint" onclick="window.unsendMessage('${docId}', '${msg.sender}')">Tap to unsend 🗑️</span>` : "";
+
+                    box.innerHTML += `
+                        <div class="message ${isSent ? 'sent' : 'received'}">
+                            ${msg.text ? `<div>${msg.text}</div>` : ""}
+                            ${imageTag}
+                            ${unsendHint}
+                            <div class="msg-time">${timeString}</div>
+                        </div>
+                    `;
                 }
-
-                const isSent = msg.sender === activeUser.username;
-                const timeString = new Date(msg.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-                
-                const imageTag = msg.image ? `<img src="${msg.image}" onclick="window.openImageModal(event, '${msg.image}')">` : "";
-                const unsendHint = isSent ? `<span class="unsend-hint" onclick="window.unsendMessage('${docId}', '${msg.sender}')">Tap to unsend 🗑️</span>` : "";
-
-                box.innerHTML += `
-                    <div class="message ${isSent ? 'sent' : 'received'}">
-                        ${msg.text ? `<div>${msg.text}</div>` : ""}
-                        ${imageTag}
-                        ${unsendHint}
-                        <div class="msg-time">${timeString}</div>
-                    </div>
-                `;
             });
             box.scrollTop = box.scrollHeight;
         });
