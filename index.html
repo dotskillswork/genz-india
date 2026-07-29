@@ -16,11 +16,12 @@
             background-color: #0b0f19;
             color: #f1f5f9;
             line-height: 1.6;
+            overflow-x: hidden;
         }
         header {
-            background: rgba(15, 23, 42, 0.95);
+            background: rgba(15, 23, 42, 0.98);
             backdrop-filter: blur(10px);
-            padding: 15px 25px;
+            padding: 12px 15px;
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -30,21 +31,21 @@
             z-index: 1000;
         }
         .logo {
-            font-size: 20px;
+            font-size: 18px;
             font-weight: 700;
             color: #38bdf8;
             text-decoration: none;
         }
         nav {
             display: flex;
-            gap: 15px;
+            gap: 8px;
             align-items: center;
         }
         nav a {
             color: #94a3b8;
             text-decoration: none;
             font-weight: 500;
-            font-size: 13px;
+            font-size: 11px;
             transition: 0.3s;
         }
         nav a:hover, nav a.active {
@@ -54,23 +55,23 @@
             background: #ef4444;
             color: #fff;
             border: none;
-            padding: 6px 14px;
+            padding: 5px 10px;
             border-radius: 6px;
-            font-size: 12px;
+            font-size: 11px;
             cursor: pointer;
             font-weight: 600;
         }
         .container {
             max-width: 1000px;
-            margin: 30px auto;
+            margin: 20px auto;
             padding: 0 15px;
         }
         .welcome-banner {
             background: linear-gradient(135deg, #1e293b, #111827);
-            padding: 30px;
+            padding: 20px;
             border-radius: 16px;
             border: 1px solid #334155;
-            margin-bottom: 30px;
+            margin-bottom: 25px;
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -79,49 +80,51 @@
         }
         .welcome-banner h2 {
             color: #38bdf8;
-            font-size: 24px;
+            font-size: 20px;
             margin-bottom: 5px;
         }
         .welcome-banner p {
             color: #94a3b8;
-            font-size: 13.5px;
+            font-size: 12.5px;
         }
         .user-badge {
             display: flex;
             align-items: center;
-            gap: 12px;
+            gap: 10px;
             background: #0b0f19;
-            padding: 8px 15px;
+            padding: 6px 12px;
             border-radius: 30px;
             border: 1px solid #1f2937;
+            max-width: 100%;
         }
         .user-badge img {
-            width: 40px;
-            height: 40px;
+            width: 35px;
+            height: 35px;
             border-radius: 50%;
             object-fit: cover;
             border: 1px solid #38bdf8;
+            flex-shrink: 0;
         }
         .user-badge h4 {
-            font-size: 14px;
+            font-size: 13px;
             color: #fff;
         }
         .user-badge span {
-            font-size: 11px;
+            font-size: 10px;
             color: #38bdf8;
         }
 
-        /* Hub Feature Cards Grid */
+        /* Hub Cards */
         .hub-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 20px;
-            margin-bottom: 40px;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 15px;
+            margin-bottom: 30px;
         }
         .hub-card {
             background: #111827;
-            padding: 25px;
-            border-radius: 16px;
+            padding: 20px;
+            border-radius: 14px;
             border: 1px solid #1f2937;
             transition: 0.3s;
             text-decoration: none;
@@ -131,35 +134,31 @@
         }
         .hub-card:hover {
             border-color: #38bdf8;
-            transform: translateY(-3px);
+            transform: translateY(-2px);
         }
         .hub-card h3 {
             color: #f8fafc;
-            font-size: 18px;
-            margin-bottom: 8px;
+            font-size: 16px;
+            margin-bottom: 6px;
         }
         .hub-card p {
             color: #94a3b8;
-            font-size: 13px;
-            margin-bottom: 20px;
+            font-size: 12px;
+            margin-bottom: 15px;
         }
         .hub-btn {
             background: rgba(56, 189, 248, 0.1);
             color: #38bdf8;
             border: 1px solid #38bdf8;
-            padding: 8px 15px;
-            border-radius: 8px;
-            font-size: 13px;
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-size: 12px;
             font-weight: 600;
             text-align: center;
             transition: 0.3s;
         }
-        .hub-card:hover .hub-btn {
-            background: #38bdf8;
-            color: #0f172a;
-        }
 
-        /* Notification Bell Styles Added Securely */
+        /* Notification Bell */
         .notif-container {
             position: relative;
             cursor: pointer;
@@ -168,9 +167,9 @@
             background: #1e293b;
             border: 1px solid #334155;
             color: #38bdf8;
-            padding: 7px 12px;
-            border-radius: 8px;
-            font-size: 13px;
+            padding: 5px 10px;
+            border-radius: 6px;
+            font-size: 11px;
             font-weight: 600;
         }
         .notif-badge {
@@ -179,23 +178,34 @@
             right: -5px;
             background: #ef4444;
             color: #fff;
-            font-size: 10px;
-            padding: 2px 6px;
+            font-size: 9px;
+            padding: 2px 5px;
             border-radius: 50%;
             font-weight: 700;
         }
         .notif-dropdown {
             display: none;
-            position: absolute;
-            right: 0;
-            top: 45px;
-            width: 300px;
+            position: fixed;
+            left: 5%;
+            right: 5%;
+            top: 60px;
+            max-width: 350px;
+            margin: 0 auto;
             background: #111827;
             border: 1px solid #334155;
             border-radius: 10px;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.5);
-            z-index: 1000;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.7);
+            z-index: 2000;
             overflow: hidden;
+        }
+        @media(min-width: 600px) {
+            .notif-dropdown {
+                position: absolute;
+                left: auto;
+                right: 0;
+                top: 40px;
+                width: 280px;
+            }
         }
         .notif-header {
             padding: 10px 15px;
@@ -223,9 +233,6 @@
             flex-direction: column;
             gap: 2px;
         }
-        .notif-item:hover {
-            background: #1e293b;
-        }
         .notif-time {
             font-size: 9px;
             color: #94a3b8;
@@ -234,7 +241,6 @@
 </head>
 <body>
 
-    <!-- Auth Guard -->
     <script>
         const user = localStorage.getItem('genzUser');
         if (!user) {
@@ -243,20 +249,19 @@
     </script>
 
     <header>
-        <a href="index.html" class="logo">Gen'Z India ⚡</a>
+        <a href="index.html" class="logo">Gen'Z ⚡</a>
         <nav>
-            <a href="index.html" class="active">Dashboard</a>
-            <a href="makefriend.html">Make Friends</a>
-            <a href="voiceup.html">Voice Up</a>
+            <a href="index.html" class="active">Home</a>
+            <a href="makefriend.html">Friends</a>
+            <a href="voiceup.html">VoiceUp</a>
             
-            <!-- Notification Bell Widget Added in Navbar -->
             <div class="notif-container" onclick="toggleNotifDropdown(event)">
                 <div class="notif-bell">🔔 Alerts</div>
                 <span class="notif-badge" id="notifBadge" style="display: none;">0</span>
                 
                 <div class="notif-dropdown" id="notifDropdown" onclick="event.stopPropagation()">
                     <div class="notif-header">
-                        <span>Activity & Requests</span>
+                        <span>Alerts & Requests</span>
                         <span style="font-size: 10px; cursor: pointer; color: #38bdf8;" onclick="clearNotifications()">Clear</span>
                     </div>
                     <div class="notif-list" id="notifList">
@@ -265,78 +270,71 @@
                 </div>
             </div>
 
-            <a href="study_rooms.html" class="dashboard-btn" style="background: #10b981; color: white; padding: 8px 15px; border-radius: 8px; text-decoration: none; font-weight: 600; display: inline-block;">
-                👥 Join Study Rooms
-            </a>
+            <a href="study_rooms.html" style="background: #10b981; color: white; padding: 5px 8px; border-radius: 6px; text-decoration: none; font-weight: 600;">Rooms</a>
             <button class="logout-btn" onclick="logoutUser()">Logout</button>
         </nav>
     </header>
 
     <div class="container">
-        <!-- Welcome Banner with User Profile -->
         <div class="welcome-banner">
             <div>
                 <h2>Welcome to Student Hub 🚀</h2>
-                <p>Access all your campus tools, doubts, gigs, and connect with peers.</p>
+                <p>Access your campus tools, study rooms, store & connect with peers.</p>
             </div>
-            <div class="user-badge" id="userBadgeDiv">
-                <!-- Loaded via JS -->
-            </div>
+            <div class="user-badge" id="userBadgeDiv"></div>
         </div>
 
-        <!-- Hub Navigation Cards Grid -->
         <div class="hub-grid">
             <a href="makefriend.html" class="hub-card" style="border-color: #38bdf8;">
                 <div>
-                    <h3>🤝 Make Friends & Profiles</h3>
-                    <p>Discover student profiles, check their doubts & innovations, follow and chat with them.</p>
+                    <h3>🤝 Make Friends</h3>
+                    <p>Discover student profiles, follow and chat with peers.</p>
                 </div>
-                <div class="hub-btn">Explore Community →</div>
+                <div class="hub-btn">Explore →</div>
             </a>
 
             <a href="doubtbox.html" class="hub-card">
                 <div>
                     <h3>💬 DoubtBox</h3>
-                    <p>Ask academic & coding doubts, get verified peer answers instantly.</p>
+                    <p>Ask academic & coding doubts, get verified answers.</p>
                 </div>
-                <div class="hub-btn">Open DoubtBox →</div>
+                <div class="hub-btn">Open →</div>
             </a>
 
             <a href="voiceup.html" class="hub-card">
                 <div>
                     <h3>✊ Voice Up</h3>
-                    <p>Share campus issues, social updates, and participate in discussions.</p>
+                    <p>Share campus issues, updates, and participate.</p>
                 </div>
-                <div class="hub-btn">Open Voice Feed →</div>
+                <div class="hub-btn">Open →</div>
             </a>
 
             <a href="freelance.html" class="hub-card">
                 <div>
                     <h3>💼 Freelance & Gigs</h3>
-                    <p>Find student projects, design tasks, and micro-internship gigs.</p>
+                    <p>Find student projects and micro-internships.</p>
                 </div>
-                <div class="hub-btn">Explore Gigs →</div>
+                <div class="hub-btn">Explore →</div>
             </a>
 
             <a href="store.html" class="hub-card">
                 <div>
                     <h3>📦 Gen'Z Store</h3>
-                    <p>Exchange handwritten notes, study materials, and tech resources.</p>
+                    <p>Exchange handwritten notes and study materials.</p>
                 </div>
-                <div class="hub-btn">Visit Store →</div>
+                <div class="hub-btn">Visit →</div>
             </a>
 
             <a href="innovation.html" class="hub-card">
                 <div>
-                    <h3>💡 Innovations & Talent</h3>
-                    <p>Showcase your tech projects, startup ideas, and creative builds.</p>
+                    <h3>💡 Innovations</h3>
+                    <p>Showcase your tech projects and startup ideas.</p>
                 </div>
-                <div class="hub-btn">View Showcase →</div>
+                <div class="hub-btn">View →</div>
             </a>
         </div>
     </div>
 
-    <!-- Script for User Badge & Notifications -->
     <script>
         const currentUser = JSON.parse(localStorage.getItem('genzUser'));
         if(currentUser) {
@@ -344,7 +342,7 @@
                 <img src="${currentUser.photo || 'https://cdn.jsdelivr.net/gh/twitter/twemoji@14.0.2/assets/72x72/1f464.png'}" alt="Avatar">
                 <div>
                     <h4>${currentUser.name}</h4>
-                    <span>@${currentUser.username} • ${currentUser.college || 'Student'}</span>
+                    <span>@${currentUser.username || currentUser.name}</span>
                 </div>
             `;
         }
@@ -354,7 +352,6 @@
             window.location.href = 'login.html';
         }
 
-        // Notification System Logic
         function toggleNotifDropdown(e) {
             e.stopPropagation();
             const dropdown = document.getElementById('notifDropdown');
@@ -371,19 +368,22 @@
             const listContainer = document.getElementById('notifList');
             const badge = document.getElementById('notifBadge');
             
-            let notifs = JSON.parse(localStorage.getItem('genzNotifications')) || [];
+            if (!currentUser) return;
 
-            if (notifs.length === 0) {
+            let allNotifs = JSON.parse(localStorage.getItem('genzNotifications')) || [];
+            let userNotifs = allNotifs.filter(n => !n.targetUser || n.targetUser.toLowerCase() === currentUser.name.toLowerCase() || n.targetUser.toLowerCase() === currentUser.username?.toLowerCase());
+
+            if (userNotifs.length === 0) {
                 listContainer.innerHTML = `<div style="padding: 15px; text-align: center; color: #94a3b8; font-size: 12px;">No new alerts</div>`;
                 badge.style.display = 'none';
                 return;
             }
 
             badge.style.display = 'inline-block';
-            badge.innerText = notifs.length;
+            badge.innerText = userNotifs.length;
 
             listContainer.innerHTML = '';
-            notifs.slice().reverse().forEach(n => {
+            userNotifs.slice().reverse().forEach(n => {
                 listContainer.innerHTML += `
                     <div class="notif-item">
                         <span><b>${n.title}</b>: ${n.message}</span>
@@ -394,11 +394,13 @@
         }
 
         function clearNotifications() {
-            localStorage.setItem('genzNotifications', JSON.stringify([]));
+            if (!currentUser) return;
+            let allNotifs = JSON.parse(localStorage.getItem('genzNotifications')) || [];
+            let filteredNotifs = allNotifs.filter(n => n.targetUser && n.targetUser.toLowerCase() !== currentUser.name.toLowerCase() && n.targetUser.toLowerCase() !== currentUser.username?.toLowerCase());
+            localStorage.setItem('genzNotifications', JSON.stringify(filteredNotifs));
             loadNotifications();
         }
 
-        // Check alerts on load
         document.addEventListener('DOMContentLoaded', loadNotifications);
     </script>
 </body>

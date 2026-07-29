@@ -419,16 +419,16 @@
         }
 
         function sendInvite(username) {
-            // Push notification to shared list so target user sees it in index.html notification bell
             let notifs = JSON.parse(localStorage.getItem('genzNotifications')) || [];
             notifs.push({
-                title: "Study Room Invite",
+                targetUser: username, // Specific user target
+                title: "Study Room Request",
                 message: `${activeUser.name} invited you to join room: ${activeRoom.name}`,
                 time: new Date().toLocaleTimeString()
             });
             localStorage.setItem('genzNotifications', JSON.stringify(notifs));
 
-            alert(`Invite successfully sent to ${username}! Notification triggered.`);
+            alert(`Invite successfully sent to ${username}!`);
             closeInviteModal();
         }
 
