@@ -151,64 +151,53 @@
 
         /* Fixed Bottom Input Bar jo screen ke andar 100% fit rahegi */
         .chat-input-box {
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            width: 100%;
-            background: #1f2937;
-            padding: 10px 15px;
-            display: flex;
-            gap: 8px;
-            align-items: center;
-            border-top: 1px solid #334155;
-            z-index: 999;
-        }
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100vw; /* Screen ki width ka 100% */
+    max-width: 100%;
+    background: #1f2937;
+    padding: 8px 10px;
+    display: flex;
+    gap: 6px;
+    align-items: center;
+    border-top: 1px solid #334155;
+    z-index: 999;
+    box-sizing: border-box;
+}
 
-        @media (min-width: 800px) {
-            .chat-input-box {
-                width: 800px;
-                left: 50%;
-                transform: translateX(-50%);
-            }
-        }
+.chat-input-box input[type="text"] {
+    flex: 1;
+    min-width: 0; /* Text input ko shrink hone mein madad karega */
+    background: #0b0f19;
+    border: 1px solid #334155;
+    border-radius: 8px;
+    padding: 8px 10px;
+    color: #fff;
+    font-size: 13px;
+}
 
-        .chat-input-box input[type="text"] {
-            flex: 1;
-            min-width: 0;
-            background: #0b0f19;
-            border: 1px solid #334155;
-            border-radius: 8px;
-            padding: 10px;
-            color: #fff;
-            font-size: 13px;
-        }
+.file-upload-label {
+    background: #334155;
+    color: #38bdf8;
+    padding: 8px 10px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 14px;
+    flex-shrink: 0; /* Button ko dabne nahi dega */
+}
 
-        .chat-input-box input[type="text"]:focus {
-            outline: none;
-            border-color: #38bdf8;
-        }
-
-        .file-upload-label {
-            background: #334155;
-            color: #38bdf8;
-            padding: 9px 12px;
-            border-radius: 8px;
-            cursor: pointer;
-            font-size: 14px;
-            flex-shrink: 0;
-        }
-
-        .send-btn {
-            background: #38bdf8;
-            color: #0f172a;
-            border: none;
-            padding: 10px 16px;
-            border-radius: 8px;
-            font-weight: 600;
-            font-size: 13px;
-            cursor: pointer;
-            flex-shrink: 0;
-        }
+.send-btn {
+    background: #38bdf8;
+    color: #0f172a;
+    border: none;
+    padding: 8px 12px;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 13px;
+    cursor: pointer;
+    flex-shrink: 0; /* Send button ko kabhi screen se bahar nahi jane dega */
+}
 
         .image-modal {
             display: none;
