@@ -112,6 +112,15 @@
             align-self: flex-start;
             border: 1px solid #334155;
         }
+        .system-req-msg {
+            background: rgba(245, 158, 11, 0.15);
+            border: 1px solid #f59e0b;
+            color: #f59e0b;
+            align-self: center;
+            text-align: center;
+            width: 100%;
+            font-weight: 600;
+        }
         .message img {
             max-width: 180px;
             border-radius: 6px;
@@ -288,6 +297,14 @@
             cursor: pointer;
             font-size: 10px;
         }
+        .joined-tag {
+            background: #10b981;
+            color: #fff;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-weight: 600;
+            font-size: 10px;
+        }
         .btn-cancel {
             background: #334155;
             color: #fff;
@@ -327,17 +344,14 @@
         </div>
 
         <div class="video-section">
-            <h4 style="font-size: 13px; color: #38bdf8;">Study Video Session</h4>
+            <h4 style="font-size: 13px; color: #38bdf8;" id="videoHeaderTitle">Study Video Session</h4>
             <div class="video-box">
                 <video id="localVideo" autoplay playsinline></video>
                 <div class="video-label" id="videoLabel">You (Camera Off)</div>
             </div>
             
             <div class="video-controls">
-                <!-- Request Access Button for Members -->
                 <button class="request-access-btn" id="requestAccessBtn" onclick="requestMicCamAccess()">Request Mic/Cam Access 🎙️</button>
-                
-                <!-- Direct Controls for Admin -->
                 <div class="control-row" id="mediaControlRow" style="display: none;">
                     <button class="v-btn" id="camToggleBtn" onclick="toggleCamera()">Cam Off</button>
                     <button class="v-btn" id="micToggleBtn" onclick="toggleMic()">Mic Off</button>
@@ -415,13 +429,19 @@
         const messageInput = document.getElementById('messageInput');
         const imageInput = document.getElementById('imageInput');
 
+        // Real-time messages sync including Admin/Member requests in chat
         db.collection("studyRooms").doc(activeRoom.id || activeRoom.name).collection("messages").orderBy("createdAt", "asc")
         .onSnapshot((snapshot) => {
             chatMessages.innerHTML = `<div class="message peer-msg"><b>System:</b> Welcome to the room session! Respect privacy and study together.</div>`;
             snapshot.forEach((doc) => {
                 const msg = doc.data();
-                appendMessage(msg.text, msg.image, msg.sender === activeUser.name ? 'user-msg' : 'peer-msg', msg.sender);
+                if (msg.type === 'request') {
+                    chatMessages.innerHTML += `<div class="message system-req-msg">🔔 <b>${msg.sender}</b> has requested Mic/Cam Access!</div>`;
+                } else {
+                    appendMessage(msg.text, msg.image, msg.sender === activeUser.name ? 'user-msg' : 'peer-msg', msg.sender);
+                }
             });
+            chatMessages.scrollTop = chatMessages.scrollHeight;
         });
 
         chatForm.addEventListener('submit', function(e) {
@@ -433,21 +453,22 @@
             if (file) {
                 const reader = new FileReader();
                 reader.onload = function(event) {
-                    saveMessageToFirestore(text, event.target.result);
+                    saveMessageToFirestore(text, event.target.result, 'chat');
                 };
                 reader.readAsDataURL(file);
             } else {
-                saveMessageToFirestore(text, null);
+                saveMessageToFirestore(text, null, 'chat');
             }
             messageInput.value = '';
             imageInput.value = '';
         });
 
-        function saveMessageToFirestore(text, imgSrc) {
+        function saveMessageToFirestore(text, imgSrc, type) {
             db.collection("studyRooms").doc(activeRoom.id || activeRoom.name).collection("messages").add({
                 sender: activeUser.name,
-                text: text,
+                text: text || "",
                 image: imgSrc || "",
+                type: type || 'chat',
                 createdAt: firebase.firestore.FieldValue.serverTimestamp()
             });
         }
@@ -461,7 +482,6 @@
             }
             div.innerHTML = content;
             chatMessages.appendChild(div);
-            chatMessages.scrollTop = chatMessages.scrollHeight;
         }
 
         function openInviteModal() {
@@ -497,10 +517,13 @@
 
                 resultsDiv.innerHTML = '';
                 filtered.forEach(u => {
+                    // Check if user is already admin or current user
+                    let isSelfOrAdmin = (u.name.toLowerCase() === activeUser.name.toLowerCase() || u.name.toLowerCase() === roomAdmin);
+                    
                     resultsDiv.innerHTML += `
                         <div class="user-result-item">
                             <span><b>${u.name}</b> (@${u.username || 'user'})</span>
-                            <button class="invite-action-btn" onclick="sendInvite('${u.name}')">Send Invite 🚀</button>
+                            ${isSelfOrAdmin ? '<span class="joined-tag" style="background:#334155;">Admin</span>' : `<button class="invite-action-btn" id="btn_${u.name.replace(/\s+/g,'')}" onclick="sendInvite('${u.name}')">Send Invite 🚀</button>`}
                         </div>
                     `;
                 });
@@ -516,12 +539,19 @@
                 createdAt: firebase.firestore.FieldValue.serverTimestamp(),
                 broadcast: false
             }).then(() => {
+                const btn = document.getElementById(`btn_${username.replace(/\s+/g,'')}`);
+                if(btn) {
+                    btn.outerHTML = `<span class="joined-tag">Joined</span>`;
+                }
                 alert(`Invite successfully sent to ${username}!`);
-                closeInviteModal();
             });
         }
 
         function requestMicCamAccess() {
+            // Save request as a message in room chat so Admin sees it instantly
+            saveMessageToFirestore("Requested Mic/Cam Access", null, 'request');
+
+            // Also send notification to Admin
             db.collection("notifications").add({
                 targetUser: activeRoom.admin,
                 title: "Mic/Cam Access Request 🎙️",
@@ -555,7 +585,7 @@
                     camBtn.innerText = "Cam On";
                     document.getElementById('micToggleBtn').classList.add('active');
                     document.getElementById('micToggleBtn').innerText = "Mic On";
-                    videoLabel.innerText = isAdmin ? "You (Admin Active)" : "You (Member Active)";
+                    videoLabel.innerText = isAdmin ? "You (Admin Live 🔴)" : "You (Member Active)";
                 } catch (err) {
                     alert("Camera access denied or unavailable.");
                 }
