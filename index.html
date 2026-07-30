@@ -466,7 +466,7 @@
                     actionBtns = `
                         <div style="display:flex; gap:6px; margin-top:6px;">
                             <button onclick="acceptRequest('${n.id}', '${n.senderUsername}')" style="background:#10b981; color:#fff; border:none; padding:4px 8px; border-radius:4px; font-size:10px; cursor:pointer; font-weight:600;">Accept</button>
-                            <button onclick="rejectRequest('${n.id}')" style="background:#ef4444; color:#fff; border:none; padding:4px 8px; border-radius:4px; font-size:10px; cursor:pointer; font-weight:600;">Reject</button>
+                            <button onclick="rejectRequest('${n.id}', '${n.senderUsername}')" style="background:#ef4444; color:#fff; border:none; padding:4px 8px; border-radius:4px; font-size:10px; cursor:pointer; font-weight:600;">Reject</button>
                         </div>
                     `;
                 }
@@ -483,47 +483,44 @@
 
         window.acceptRequest = async function(notifId, senderUsername) {
             try {
-                // 1. Notification ko delete karo
+                // 1. Notification delete karo
                 await db.collection("notifications").doc(notifId).delete();
 
-                // 2. Sender (jisne request bheji thi) ke document ko update karo ki ab wo friend ban gaya hai
-                const senderQuery = db.collection("users").where("username", "==", senderUsername);
-                const senderSnap = await senderQuery.get();
-                
-                if (!senderSnap.empty) {
-                    const senderDocRef = senderSnap.docs[0].ref;
-                    const senderData = senderSnap.docs[0].data();
-                    
+                // 2. Sender ka data update karo (sentRequests se hata kar friends mein daalo)
+                const senderQuery = await db.collection("users").where("username", "==", senderUsername).get();
+                if (!senderQuery.empty) {
+                    const senderDoc = senderQuery.docs[0];
+                    const senderData = senderDoc.data();
                     let sentReqs = senderData.sentRequests || [];
                     let senderFriends = senderData.friends || [];
                     
-                    // Sent requests se hatao aur friends mein add karo
                     sentReqs = sentReqs.filter(u => u !== currentUser.username);
                     if (!senderFriends.includes(currentUser.username)) {
                         senderFriends.push(currentUser.username);
                     }
 
-                    await senderDocRef.update({
+                    await senderDoc.ref.update({
                         sentRequests: sentReqs,
                         friends: senderFriends
                     });
                 }
 
-                // 3. Current user (jo accept kar raha hai) ke document ko update karo
-                const meQuery = db.collection("users").where("username", "==", currentUser.username);
-                const meSnap = await meQuery.get();
-
-                if (!meSnap.empty) {
-                    const meDocRef = meSnap.docs[0].ref;
-                    const meData = meSnap.docs[0].data();
-                    
+                // 3. Current User ka data update karo (requestsReceived se hata kar friends mein daalo)
+                const meQuery = await db.collection("users").where("username", "==", currentUser.username).get();
+                if (!meQuery.empty) {
+                    const meDoc = meQuery.docs[0];
+                    const meData = meDoc.data();
                     let myFriends = meData.friends || [];
+                    let myReceived = meData.requestsReceived || [];
+
                     if (!myFriends.includes(senderUsername)) {
                         myFriends.push(senderUsername);
                     }
+                    myReceived = myReceived.filter(u => u !== senderUsername);
 
-                    await meDocRef.update({
-                        friends: myFriends
+                    await meDoc.ref.update({
+                        friends: myFriends,
+                        requestsReceived: myReceived
                     });
                 }
 
@@ -535,10 +532,21 @@
             }
         }
 
-        window.rejectRequest = async function(notifId) {
+        window.rejectRequest = async function(notifId, senderUsername) {
             try {
                 await db.collection("notifications").doc(notifId).delete();
+
+                // Current user ke requestsReceived se sender ko hatao
+                const meQuery = await db.collection("users").where("username", "==", currentUser.username).get();
+                if (!meQuery.empty) {
+                    const meData = meQuery.docs[0].data();
+                    let myReceived = meData.requestsReceived || [];
+                    myReceived = myReceived.filter(u => u !== senderUsername);
+                    await meQuery.docs[0].ref.update({ requestsReceived: myReceived });
+                }
+
                 alert("Request rejected.");
+                location.reload();
             } catch(e) { 
                 console.error(e); 
             }

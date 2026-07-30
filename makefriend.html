@@ -129,15 +129,15 @@
         }
         .card-btn-group {
             display: flex;
-            gap: 8px;
+            gap: 6px;
             margin-top: 18px;
         }
         .action-btn {
             flex: 1;
-            padding: 8px 6px;
+            padding: 8px 4px;
             border-radius: 8px;
             font-weight: 600;
-            font-size: 11.5px;
+            font-size: 11px;
             cursor: pointer;
             border: none;
             transition: 0.3s;
@@ -147,28 +147,26 @@
             color: #0284c7;
             border: 1px solid #bae6fd;
         }
-        .btn-view:hover {
-            background: #0284c7;
-            color: #fff;
-        }
         .btn-friend {
             background: #10b981;
             color: #fff;
-        }
-        .btn-friend:hover {
-            background: #059669;
         }
         .btn-sent {
             background: #94a3b8;
             color: #fff;
             cursor: not-allowed;
         }
+        .btn-accept {
+            background: #10b981;
+            color: #fff;
+        }
+        .btn-reject {
+            background: #ef4444;
+            color: #fff;
+        }
         .btn-chat {
             background: #0284c7;
             color: #fff;
-        }
-        .btn-chat:hover {
-            background: #0369a1;
         }
 
         /* Modal Styles */
@@ -222,15 +220,6 @@
             object-fit: cover;
             border: 2px solid #0284c7;
         }
-        .activity-item {
-            background: #f8fafc;
-            padding: 12px 14px;
-            border-radius: 8px;
-            border: 1px solid #e2e8f0;
-            font-size: 13px;
-            color: #334155;
-            margin-bottom: 8px;
-        }
     </style>
 </head>
 <body>
@@ -280,7 +269,7 @@
     <!-- Firebase Scripts -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-app.js";
-        import { getFirestore, collection, getDocs, addDoc, query, where, serverTimestamp, updateDoc, doc } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-firestore.js";
+        import { getFirestore, collection, getDocs, addDoc, query, where, serverTimestamp, updateDoc, doc, getDoc } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-firestore.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyCNLwSjHq6LlX9uUovTRHrz9ZfUWeIUWQM",
@@ -297,7 +286,7 @@
 
         const currentLoggedInUser = JSON.parse(localStorage.getItem('genzUser'));
         let allUsersList = [];
-        let myConnections = { sent: [], friends: [] };
+        let myConnections = { sent: [], friends: [], received: [] };
         let myDocId = null;
 
         async function loadUserDataAndUsers() {
@@ -309,6 +298,7 @@
                     const userData = userSnap.docs[0].data();
                     myConnections.sent = userData.sentRequests || [];
                     myConnections.friends = userData.friends || [];
+                    myConnections.received = userData.requestsReceived || [];
                 }
 
                 const querySnapshot = await getDocs(collection(db, 'users'));
@@ -341,13 +331,20 @@
                 let avatar = u.photo || 'https://cdn.jsdelivr.net/gh/twitter/twemoji@14.0.2/assets/72x72/1f464.png';
                 
                 let isFriend = myConnections.friends.includes(u.username);
-                let isRequested = myConnections.sent.includes(u.username);
+                let isRequestedByMe = myConnections.sent.includes(u.username);
+                let isReceivedByThem = myConnections.received.includes(u.username);
 
                 let btnHtml = '';
                 if (isFriend) {
                     btnHtml = `<button class="action-btn" style="background:#10b981; color:#fff; cursor:default;" disabled>✓ Friends</button>`;
-                } else if (isRequested) {
+                } else if (isRequestedByMe) {
                     btnHtml = `<button class="action-btn btn-sent" disabled>Request Sent</button>`;
+                } else if (isReceivedByThem) {
+                    // Agar usne request bhej rakhi hai toh Accept / Reject option dikhao
+                    btnHtml = `
+                        <button class="action-btn btn-accept" onclick="acceptDirectRequest('${u.username}')">Accept</button>
+                        <button class="action-btn btn-reject" onclick="rejectDirectRequest('${u.username}')">Reject</button>
+                    `;
                 } else {
                     btnHtml = `<button class="action-btn btn-friend" onclick="sendFriendRequest('${u.username}', '${u.name}', this)">Add Friend</button>`;
                 }
@@ -372,7 +369,7 @@
 
         window.sendFriendRequest = async function(targetUsername, targetName, btnElement) {
             try {
-                // 1. Send notification to target user
+                // 1. Notification add karo target user ke liye
                 await addDoc(collection(db, 'notifications'), {
                     title: "Friend Request 🤝",
                     message: `${currentLoggedInUser.name} (@${currentLoggedInUser.username}) sent you a friend request.`,
@@ -385,15 +382,26 @@
                     broadcast: false
                 });
 
-                // 2. Update current user's sentRequests in Firestore so it persists across refreshes
+                // 2. Target user ke database mein requestsReceived update karo
+                const targetQuery = query(collection(db, 'users'), where("username", "==", targetUsername));
+                const targetSnap = await getDocs(targetQuery);
+                if (!targetSnap.empty) {
+                    const targetDocRef = targetSnap.docs[0].ref;
+                    const targetData = targetSnap.docs[0].data();
+                    let targetReceived = targetData.requestsReceived || [];
+                    if (!targetReceived.includes(currentLoggedInUser.username)) {
+                        targetReceived.push(currentLoggedInUser.username);
+                    }
+                    await updateDoc(targetDocRef, { requestsReceived: targetReceived });
+                }
+
+                // 3. Current user ke sentRequests update karo
                 if (myDocId) {
                     if (!myConnections.sent.includes(targetUsername)) {
                         myConnections.sent.push(targetUsername);
                     }
                     const userRef = doc(db, 'users', myDocId);
-                    await updateDoc(userRef, {
-                        sentRequests: myConnections.sent
-                    });
+                    await updateDoc(userRef, { sentRequests: myConnections.sent });
                 }
 
                 btnElement.innerText = "Request Sent";
@@ -404,6 +412,60 @@
             } catch(err) {
                 console.error(err);
                 alert("Failed to send request.");
+            }
+        }
+
+        // Makefriend page se direct Accept karne ka function
+        window.acceptDirectRequest = async function(senderUsername) {
+            try {
+                // Update My Data
+                myConnections.received = myConnections.received.filter(u => u !== senderUsername);
+                if (!myConnections.friends.includes(senderUsername)) {
+                    myConnections.friends.push(senderUsername);
+                }
+                const myRef = doc(db, 'users', myDocId);
+                await updateDoc(myRef, {
+                    requestsReceived: myConnections.received,
+                    friends: myConnections.friends
+                });
+
+                // Update Sender's Data
+                const senderQuery = query(collection(db, 'users'), where("username", "==", senderUsername));
+                const senderSnap = await getDocs(senderQuery);
+                if (!senderSnap.empty) {
+                    const senderDoc = senderSnap.docs[0];
+                    const senderData = senderDoc.data();
+                    let senderSent = senderData.sentRequests || [];
+                    let senderFriends = senderData.friends || [];
+
+                    senderSent = senderSent.filter(u => u !== currentLoggedInUser.username);
+                    if (!senderFriends.includes(currentLoggedInUser.username)) {
+                        senderFriends.push(currentLoggedInUser.username);
+                    }
+                    await updateDoc(senderDoc.ref, {
+                        sentRequests: senderSent,
+                        friends: senderFriends
+                    });
+                }
+
+                alert("Friend request accepted! 🎉");
+                location.reload();
+            } catch(e) {
+                console.error(e);
+                alert("Error accepting request.");
+            }
+        }
+
+        window.rejectDirectRequest = async function(senderUsername) {
+            try {
+                myConnections.received = myConnections.received.filter(u => u !== senderUsername);
+                const myRef = doc(db, 'users', myDocId);
+                await updateDoc(myRef, { requestsReceived: myConnections.received });
+
+                alert("Request rejected.");
+                location.reload();
+            } catch(e) {
+                console.error(e);
             }
         }
 
