@@ -195,13 +195,56 @@
             line-height: 1.6;
             word-break: break-word;
         }
+
+        /* Centered & Responsive Doubt Image */
         .doubt-img {
+            display: block;
             max-width: 100%;
-            border-radius: 10px;
-            margin-bottom: 15px;
-            max-height: 300px;
+            width: 100%;
+            max-height: 400px;
             object-fit: contain;
-            background: #f1f5f9;
+            border-radius: 12px;
+            margin: 15px auto;
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            cursor: pointer;
+            transition: opacity 0.2s;
+        }
+        .doubt-img:hover {
+            opacity: 0.9;
+        }
+
+        /* Fullscreen Image Modal (Lightbox) */
+        .image-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.85);
+            backdrop-filter: blur(5px);
+            justify-content: center;
+            align-items: center;
+            z-index: 3000;
+            padding: 20px;
+        }
+        .image-modal img {
+            max-width: 100%;
+            max-height: 90vh;
+            border-radius: 12px;
+            object-fit: contain;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.5);
+        }
+        .close-img-modal {
+            position: absolute;
+            top: 20px;
+            right: 25px;
+            background: none;
+            border: none;
+            color: #fff;
+            font-size: 32px;
+            cursor: pointer;
         }
 
         /* Answers Section */
@@ -240,7 +283,7 @@
         }
         .answer-input-box input {
             flex: 1;
-            min-width: 0; /* Prevents input from overflowing flex container on mobile */
+            min-width: 0;
             background: #f8fafc;
             border: 1px solid #cbd5e1;
             border-radius: 8px;
@@ -261,7 +304,7 @@
             font-weight: 600;
             font-size: 12.5px;
             cursor: pointer;
-            flex-shrink: 0; /* Prevents button from shrinking or going out of screen */
+            flex-shrink: 0;
             transition: 0.2s;
         }
         .ans-btn:hover {
@@ -308,6 +351,12 @@
         </div>
     </div>
 
+    <!-- Fullscreen Image Zoom Modal -->
+    <div class="image-modal" id="imageModal" onclick="closeImageModal()">
+        <button class="close-img-modal">&times;</button>
+        <img id="modalFullImg" src="" alt="Zoomed Doubt Image">
+    </div>
+
     <!-- Firebase & Doubt Feed Logic -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-app.js";
@@ -348,6 +397,18 @@
                 box.style.display = 'block';
                 btn.innerText = "✖ Close Doubt Box";
             }
+        }
+
+        // Image Zoom Modal Functions
+        window.openImageModal = function(imgSrc) {
+            const modal = document.getElementById('imageModal');
+            const modalImg = document.getElementById('modalFullImg');
+            modalImg.src = imgSrc;
+            modal.style.display = 'flex';
+        }
+
+        window.closeImageModal = function() {
+            document.getElementById('imageModal').style.display = 'none';
         }
 
         // Image file name display
@@ -402,7 +463,7 @@
                 document.getElementById('doubtText').value = '';
                 document.getElementById('doubtImage').value = '';
                 document.getElementById('imageFileName').innerText = '';
-                toggleDoubtBox(); // Auto close box after posting
+                toggleDoubtBox();
             } catch (err) {
                 console.error("Error posting doubt:", err);
                 alert("Failed to post doubt.");
@@ -466,7 +527,7 @@
                             </div>
                         </div>
                         <div class="doubt-text">${doubt.text}</div>
-                        ${doubt.imageUrl ? `<img src="${doubt.imageUrl}" class="doubt-img">` : ``}
+                        ${doubt.imageUrl ? `<img src="${doubt.imageUrl}" class="doubt-img" onclick="openImageModal('${doubt.imageUrl}')" title="Click to view full screen">` : ``}
                         
                         <div class="answers-container">
                             <h5 style="font-size: 13px; color: #64748b; margin-bottom: 10px; font-weight: 600;">Answers & Replies:</h5>
