@@ -89,6 +89,10 @@
         .submit-btn:hover {
             background: #0369a1;
         }
+        .submit-btn:disabled {
+            background: #94a3b8;
+            cursor: not-allowed;
+        }
         .auth-link {
             text-align: center;
             margin-top: 20px;
@@ -149,7 +153,7 @@
                 </div>
             </div>
             <div class="form-group">
-                <label>Profile Photo</label>
+                <label>Profile Photo (Optional)</label>
                 <input type="file" id="sPhoto" accept="image/*" style="font-size: 12px; color: #64748b; background: transparent; border: none; padding: 4px 0;">
             </div>
             <button type="submit" class="submit-btn" id="submitBtn">Create Account</button>
@@ -165,7 +169,7 @@
         import { getFirestore, collection, addDoc, getDocs, query, where } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-firestore.js";
 
         const firebaseConfig = {
-            apiKey: "AIzaSyCNLwSjHq6LlX9uUovTRHrz9ZfUWeIUWQM",
+            apiKey: "AIzaSyCNLwSjHq6LlX9uUovTRHrz9ZfUwEIUWQM",
             authDomain: "genz-india.firebaseapp.com",
             projectId: "genz-india",
             storageBucket: "genz-india.firebasestorage.app",
@@ -177,13 +181,46 @@
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
 
-        function convertImageToBase64(fileInputId) {
+        // Compress and resize image before converting to Base64 (Prevents Firestore document size limit error)
+        function convertAndCompressImage(fileInputId) {
             return new Promise((resolve) => {
                 const fileInput = document.getElementById(fileInputId);
-                if(fileInput && fileInput.files && fileInput.files[0]) {
+                if (fileInput && fileInput.files && fileInput.files[0]) {
+                    const file = fileInput.files[0];
                     const reader = new FileReader();
-                    reader.onload = (e) => resolve(e.target.result);
-                    reader.readAsDataURL(fileInput.files[0]);
+                    reader.onload = function(e) {
+                        const img = new Image();
+                        img.onload = function() {
+                            const canvas = document.createElement('canvas');
+                            let width = img.width;
+                            let height = img.height;
+                            const maxDim = 300; // Resize to max 300px for profile photo
+
+                            if (width > height) {
+                                if (width > maxDim) {
+                                    height = Math.round((height * maxDim) / width);
+                                    width = maxDim;
+                                }
+                            } else {
+                                if (height > maxDim) {
+                                    width = Math.round((width * maxDim) / height);
+                                    height = maxDim;
+                                }
+                            }
+
+                            canvas.width = width;
+                            canvas.height = height;
+                            const ctx = canvas.getContext('2d');
+                            ctx.drawImage(img, 0, 0, width, height);
+
+                            // Compress image to JPEG quality 0.7
+                            resolve(canvas.toDataURL('image/jpeg', 0.7));
+                        };
+                        img.onerror = () => resolve("");
+                        img.src = e.target.result;
+                    };
+                    reader.onerror = () => resolve("");
+                    reader.readAsDataURL(file);
                 } else {
                     resolve("");
                 }
@@ -199,20 +236,22 @@
 
             let name = document.getElementById('sName').value.trim();
             let username = document.getElementById('sUsername').value.trim().toLowerCase().replace('@','');
-            let email = document.getElementById('sEmailReal').value.trim();
+            let email = document.getElementById('sEmailReal').value.trim().toLowerCase();
             let password = document.getElementById('sPass').value.trim();
             let city = document.getElementById('sCity').value.trim();
             let state = document.getElementById('sState').value.trim();
             let college = document.getElementById('sCollege').value.trim();
             let course = document.getElementById('sCourse').value.trim();
-            let photoBase64 = await convertImageToBase64('sPhoto');
 
             try {
-                // Check if Username is already taken
-                const q = query(collection(db, "users"), where("username", "==", username));
-                const querySnapshot = await getDocs(q);
+                // Compress profile photo safely
+                let photoBase64 = await convertAndCompressImage('sPhoto');
 
-                if (!querySnapshot.empty) {
+                // Check if Username is already taken
+                const qUser = query(collection(db, "users"), where("username", "==", username));
+                const queryUserSnapshot = await getDocs(qUser);
+
+                if (!queryUserSnapshot.empty) {
                     alert('Username already taken! Please choose another unique username.');
                     btn.innerText = "Create Account";
                     btn.disabled = false;
@@ -232,15 +271,17 @@
 
                 // Save user to Firestore
                 let userData = {
-                    name,
-                    username,
-                    email,
-                    password,
-                    city,
-                    state,
-                    college,
-                    course,
-                    photo: photoBase64
+                    name: name,
+                    username: username,
+                    email: email,
+                    password: password,
+                    city: city,
+                    state: state,
+                    college: college,
+                    course: course,
+                    photo: photoBase64,
+                    profilePic: photoBase64,
+                    createdAt: Date.now()
                 };
 
                 await addDoc(collection(db, "users"), userData);
@@ -249,7 +290,7 @@
 
             } catch(e) {
                 console.error("Signup Error: ", e);
-                alert('Error creating account. Check console or try again.');
+                alert('Signup Failed: ' + (e.message || 'Please try again.'));
                 btn.innerText = "Create Account";
                 btn.disabled = false;
             }
