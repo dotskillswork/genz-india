@@ -483,7 +483,50 @@
 
         window.acceptRequest = async function(notifId, senderUsername) {
             try {
+                // 1. Notification ko delete karo
                 await db.collection("notifications").doc(notifId).delete();
+
+                // 2. Sender (jisne request bheji thi) ke document ko update karo ki ab wo friend ban gaya hai
+                const senderQuery = db.collection("users").where("username", "==", senderUsername);
+                const senderSnap = await senderQuery.get();
+                
+                if (!senderSnap.empty) {
+                    const senderDocRef = senderSnap.docs[0].ref;
+                    const senderData = senderSnap.docs[0].data();
+                    
+                    let sentReqs = senderData.sentRequests || [];
+                    let senderFriends = senderData.friends || [];
+                    
+                    // Sent requests se hatao aur friends mein add karo
+                    sentReqs = sentReqs.filter(u => u !== currentUser.username);
+                    if (!senderFriends.includes(currentUser.username)) {
+                        senderFriends.push(currentUser.username);
+                    }
+
+                    await senderDocRef.update({
+                        sentRequests: sentReqs,
+                        friends: senderFriends
+                    });
+                }
+
+                // 3. Current user (jo accept kar raha hai) ke document ko update karo
+                const meQuery = db.collection("users").where("username", "==", currentUser.username);
+                const meSnap = await meQuery.get();
+
+                if (!meSnap.empty) {
+                    const meDocRef = meSnap.docs[0].ref;
+                    const meData = meSnap.docs[0].data();
+                    
+                    let myFriends = meData.friends || [];
+                    if (!myFriends.includes(senderUsername)) {
+                        myFriends.push(senderUsername);
+                    }
+
+                    await meDocRef.update({
+                        friends: myFriends
+                    });
+                }
+
                 alert("Friend request accepted! 🎉");
                 location.reload();
             } catch(e) { 

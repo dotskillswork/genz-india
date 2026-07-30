@@ -280,7 +280,7 @@
     <!-- Firebase Scripts -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-app.js";
-        import { getFirestore, collection, getDocs, addDoc, query, where, serverTimestamp } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-firestore.js";
+        import { getFirestore, collection, getDocs, addDoc, query, where, serverTimestamp, updateDoc, doc } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-firestore.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyCNLwSjHq6LlX9uUovTRHrz9ZfUWeIUWQM",
@@ -298,12 +298,14 @@
         const currentLoggedInUser = JSON.parse(localStorage.getItem('genzUser'));
         let allUsersList = [];
         let myConnections = { sent: [], friends: [] };
+        let myDocId = null;
 
         async function loadUserDataAndUsers() {
             try {
                 const userQuery = query(collection(db, 'users'), where("username", "==", currentLoggedInUser.username));
                 const userSnap = await getDocs(userQuery);
                 if (!userSnap.empty) {
+                    myDocId = userSnap.docs[0].id;
                     const userData = userSnap.docs[0].data();
                     myConnections.sent = userData.sentRequests || [];
                     myConnections.friends = userData.friends || [];
@@ -343,7 +345,7 @@
 
                 let btnHtml = '';
                 if (isFriend) {
-                    btnHtml = `<button class="action-btn btn-sent" style="background:#10b981; color:#fff;" disabled>✓ Friends</button>`;
+                    btnHtml = `<button class="action-btn" style="background:#10b981; color:#fff; cursor:default;" disabled>✓ Friends</button>`;
                 } else if (isRequested) {
                     btnHtml = `<button class="action-btn btn-sent" disabled>Request Sent</button>`;
                 } else {
@@ -369,28 +371,39 @@
         }
 
         window.sendFriendRequest = async function(targetUsername, targetName, btnElement) {
-    try {
-        await addDoc(collection(db, 'notifications'), {
-            title: "Friend Request 🤝",
-            message: `${currentLoggedInUser.name} (@${currentLoggedInUser.username}) sent you a friend request.`,
-            targetUser: targetUsername,
-            senderUsername: currentLoggedInUser.username,
-            senderName: currentLoggedInUser.name,
-            type: "friend_request", // Yeh important hai
-            createdAt: serverTimestamp(),
-            time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-            broadcast: false
-        });
+            try {
+                // 1. Send notification to target user
+                await addDoc(collection(db, 'notifications'), {
+                    title: "Friend Request 🤝",
+                    message: `${currentLoggedInUser.name} (@${currentLoggedInUser.username}) sent you a friend request.`,
+                    targetUser: targetUsername,
+                    senderUsername: currentLoggedInUser.username,
+                    senderName: currentLoggedInUser.name,
+                    type: "friend_request",
+                    createdAt: serverTimestamp(),
+                    time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+                    broadcast: false
+                });
 
-        myConnections.sent.push(targetUsername);
-        btnElement.innerText = "Request Sent";
-        btnElement.className = "action-btn btn-sent";
-        btnElement.disabled = true;
+                // 2. Update current user's sentRequests in Firestore so it persists across refreshes
+                if (myDocId) {
+                    if (!myConnections.sent.includes(targetUsername)) {
+                        myConnections.sent.push(targetUsername);
+                    }
+                    const userRef = doc(db, 'users', myDocId);
+                    await updateDoc(userRef, {
+                        sentRequests: myConnections.sent
+                    });
+                }
 
-            alert(`Friend request successfully sent to ${targetName}! 🎉`);
+                btnElement.innerText = "Request Sent";
+                btnElement.className = "action-btn btn-sent";
+                btnElement.disabled = true;
+
+                alert(`Friend request successfully sent to ${targetName}! 🎉`);
             } catch(err) {
-            console.error(err);
-            alert("Failed to send request.");
+                console.error(err);
+                alert("Failed to send request.");
             }
         }
 
