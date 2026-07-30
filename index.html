@@ -18,15 +18,15 @@
             font-family: 'Poppins', sans-serif;
         }
         body {
-            background-color: #f8fafc; /* Clean Light Modern Background */
-            color: #1e293b; /* Dark Slate Text for high readability */
+            background-color: #f8fafc;
+            color: #1e293b;
             line-height: 1.6;
             overflow-x: hidden;
         }
         header {
             background: rgba(255, 255, 255, 0.95);
             backdrop-filter: blur(10px);
-            padding: 12px 20px;
+            padding: 12px 15px;
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -37,33 +37,23 @@
             box-shadow: 0 2px 4px rgba(0,0,0,0.02);
         }
         .logo {
-            font-size: 20px;
+            font-size: 18px;
             font-weight: 700;
             color: #0284c7;
             text-decoration: none;
         }
         nav {
             display: flex;
-            gap: 12px;
+            gap: 8px;
             align-items: center;
-        }
-        nav a {
-            color: #64748b;
-            text-decoration: none;
-            font-weight: 500;
-            font-size: 13px;
-            transition: 0.3s;
-        }
-        nav a:hover, nav a.active {
-            color: #0284c7;
         }
         .logout-btn {
             background: #ef4444;
             color: #fff;
             border: none;
-            padding: 6px 12px;
+            padding: 5px 10px;
             border-radius: 6px;
-            font-size: 12px;
+            font-size: 11px;
             cursor: pointer;
             font-weight: 600;
             transition: 0.2s;
@@ -73,15 +63,15 @@
         }
         .container {
             max-width: 1000px;
-            margin: 30px auto;
-            padding: 0 20px;
+            margin: 20px auto;
+            padding: 0 15px;
         }
         .welcome-banner {
             background: linear-gradient(135deg, #ffffff 0%, #f1f5f9 100%);
-            padding: 25px;
+            padding: 20px;
             border-radius: 16px;
             border: 1px solid #e2e8f0;
-            margin-bottom: 30px;
+            margin-bottom: 25px;
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -91,40 +81,40 @@
         }
         .welcome-banner h2 {
             color: #0284c7;
-            font-size: 22px;
+            font-size: 20px;
             margin-bottom: 5px;
             font-weight: 700;
         }
         .welcome-banner p {
             color: #64748b;
-            font-size: 13.5px;
+            font-size: 12.5px;
         }
         .user-badge {
             display: flex;
             align-items: center;
-            gap: 12px;
+            gap: 10px;
             background: #ffffff;
-            padding: 8px 16px;
+            padding: 6px 12px;
             border-radius: 30px;
             border: 1px solid #e2e8f0;
             box-shadow: 0 2px 4px rgba(0,0,0,0.03);
             max-width: 100%;
         }
         .user-badge img {
-            width: 40px;
-            height: 40px;
+            width: 35px;
+            height: 35px;
             border-radius: 50%;
             object-fit: cover;
             border: 2px solid #0284c7;
             flex-shrink: 0;
         }
         .user-badge h4 {
-            font-size: 14px;
+            font-size: 13px;
             color: #0f172a;
             font-weight: 600;
         }
         .user-badge span {
-            font-size: 11px;
+            font-size: 10px;
             color: #0284c7;
             font-weight: 500;
         }
@@ -132,14 +122,14 @@
         /* Hub Cards */
         .hub-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 20px;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 15px;
             margin-bottom: 30px;
         }
         .hub-card {
             background: #ffffff;
-            padding: 24px;
-            border-radius: 16px;
+            padding: 20px;
+            border-radius: 14px;
             border: 1px solid #e2e8f0;
             transition: all 0.3s ease;
             text-decoration: none;
@@ -150,27 +140,27 @@
         }
         .hub-card:hover {
             border-color: #0284c7;
-            transform: translateY(-4px);
+            transform: translateY(-3px);
             box-shadow: 0 10px 15px -3px rgba(2, 132, 199, 0.1);
         }
         .hub-card h3 {
             color: #0f172a;
-            font-size: 18px;
-            margin-bottom: 8px;
+            font-size: 16px;
+            margin-bottom: 6px;
             font-weight: 600;
         }
         .hub-card p {
             color: #64748b;
-            font-size: 13px;
-            margin-bottom: 20px;
+            font-size: 12px;
+            margin-bottom: 15px;
         }
         .hub-btn {
             background: rgba(2, 132, 199, 0.08);
             color: #0284c7;
             border: 1px solid #bae6fd;
-            padding: 8px 16px;
-            border-radius: 8px;
-            font-size: 13px;
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-size: 12px;
             font-weight: 600;
             text-align: center;
             transition: 0.3s;
@@ -186,14 +176,14 @@
             display: flex;
             gap: 20px;
             justify-content: center;
-            margin-top: 40px;
-            padding-top: 20px;
+            margin-top: 30px;
+            padding-top: 15px;
             border-top: 1px solid #e2e8f0;
         }
         .footer-links a {
             color: #64748b;
             text-decoration: none;
-            font-size: 13px;
+            font-size: 12px;
             font-weight: 500;
             transition: 0.2s;
         }
@@ -210,19 +200,19 @@
             background: #f1f5f9;
             border: 1px solid #cbd5e1;
             color: #0284c7;
-            padding: 6px 12px;
+            padding: 5px 10px;
             border-radius: 6px;
-            font-size: 12px;
+            font-size: 11px;
             font-weight: 600;
         }
         .notif-badge {
             position: absolute;
-            top: -6px;
-            right: -6px;
+            top: -5px;
+            right: -5px;
             background: #ef4444;
             color: #fff;
-            font-size: 10px;
-            padding: 2px 6px;
+            font-size: 9px;
+            padding: 2px 5px;
             border-radius: 50%;
             font-weight: 700;
         }
@@ -231,12 +221,12 @@
             position: fixed;
             left: 5%;
             right: 5%;
-            top: 65px;
+            top: 60px;
             max-width: 350px;
             margin: 0 auto;
             background: #ffffff;
             border: 1px solid #cbd5e1;
-            border-radius: 12px;
+            border-radius: 10px;
             box-shadow: 0 10px 25px rgba(0,0,0,0.1);
             z-index: 2000;
             overflow: hidden;
@@ -246,14 +236,14 @@
                 position: absolute;
                 left: auto;
                 right: 0;
-                top: 45px;
-                width: 300px;
+                top: 40px;
+                width: 280px;
             }
         }
         .notif-header {
-            padding: 12px 15px;
+            padding: 10px 15px;
             background: #f8fafc;
-            font-size: 13px;
+            font-size: 12px;
             font-weight: 600;
             color: #d97706;
             border-bottom: 1px solid #e2e8f0;
@@ -268,16 +258,16 @@
             flex-direction: column;
         }
         .notif-item {
-            padding: 12px 15px;
+            padding: 10px 15px;
             border-bottom: 1px solid #f1f5f9;
-            font-size: 12.5px;
+            font-size: 12px;
             color: #334155;
             display: flex;
             flex-direction: column;
-            gap: 3px;
+            gap: 2px;
         }
         .notif-time {
-            font-size: 10px;
+            font-size: 9px;
             color: #94a3b8;
         }
     </style>
@@ -285,7 +275,6 @@
 <body>
 
     <script>
-        // Check if user has seen welcome page
         if (!localStorage.getItem('hasSeenWelcome')) {
             window.location.href = 'welcome.html';
         }
@@ -299,10 +288,6 @@
     <header>
         <a href="index.html" class="logo">Gen'Z ⚡</a>
         <nav>
-            <a href="index.html" class="active">Home</a>
-            <a href="makefriend.html">Friends</a>
-            <a href="voiceup.html">VoiceUp</a>
-            
             <div class="notif-container" onclick="toggleNotifDropdown(event)">
                 <div class="notif-bell">🔔 Alerts</div>
                 <span class="notif-badge" id="notifBadge" style="display: none;">0</span>
@@ -310,15 +295,15 @@
                 <div class="notif-dropdown" id="notifDropdown" onclick="event.stopPropagation()">
                     <div class="notif-header">
                         <span>Alerts & Requests</span>
-                        <span style="font-size: 11px; cursor: pointer; color: #0284c7;" onclick="clearNotifications()">Clear</span>
+                        <span style="font-size: 10px; cursor: pointer; color: #0284c7;" onclick="clearNotifications()">Clear</span>
                     </div>
                     <div class="notif-list" id="notifList">
-                        <div style="padding: 15px; text-align: center; color: #94a3b8; font-size: 13px;">No new alerts</div>
+                        <div style="padding: 15px; text-align: center; color: #94a3b8; font-size: 12px;">No new alerts</div>
                     </div>
                 </div>
             </div>
 
-            <a href="study_rooms.html" style="background: #10b981; color: white; padding: 6px 12px; border-radius: 6px; text-decoration: none; font-weight: 600;">Rooms</a>
+            <a href="study_rooms.html" style="background: #10b981; color: white; padding: 5px 8px; border-radius: 6px; text-decoration: none; font-weight: 600; font-size: 11px;">Rooms</a>
             <button class="logout-btn" onclick="logoutUser()">Logout</button>
         </nav>
     </header>
@@ -389,7 +374,6 @@
     </div>
 
     <script>
-        // --- FIREBASE INITIALIZATION ---
         const firebaseConfig = {
             apiKey: "AIzaSyCNLwSjHq6LlX9uUovTRHrz9ZfUWeIUWQM",
             authDomain: "genz-india.firebaseapp.com",
@@ -421,7 +405,6 @@
             window.location.href = 'login.html';
         }
 
-        // --- BROWSER PUSH NOTIFICATION PERMISSION ---
         document.addEventListener('DOMContentLoaded', function() {
             if ("Notification" in window) {
                 if (Notification.permission !== "granted" && Notification.permission !== "denied") {
@@ -442,14 +425,13 @@
             if(dropdown) dropdown.style.display = 'none';
         });
 
-        // --- REAL-TIME FIRESTORE NOTIFICATIONS LISTENER ---
         function setupRealtimeNotifications() {
             if (!currentUser) return;
 
             db.collection("notifications").orderBy("createdAt", "desc").onSnapshot((snapshot) => {
                 let allNotifs = [];
                 snapshot.forEach((doc) => {
-                    allNotifs.push(doc.data());
+                    allNotifs.push({ id: doc.id, ...doc.data() });
                 });
 
                 let userNotifs = allNotifs.filter(n => {
@@ -469,7 +451,7 @@
             const badge = document.getElementById('notifBadge');
 
             if (notifs.length === 0) {
-                listContainer.innerHTML = `<div style="padding: 15px; text-align: center; color: #94a3b8; font-size: 13px;">No new alerts</div>`;
+                listContainer.innerHTML = `<div style="padding: 15px; text-align: center; color: #94a3b8; font-size: 12px;">No new alerts</div>`;
                 badge.style.display = 'none';
                 return;
             }
@@ -479,33 +461,42 @@
 
             listContainer.innerHTML = '';
             notifs.forEach((n, index) => {
+                let actionBtns = '';
+                if (n.type === 'friend_request') {
+                    actionBtns = `
+                        <div style="display:flex; gap:6px; margin-top:6px;">
+                            <button onclick="acceptRequest('${n.id}', '${n.senderUsername}')" style="background:#10b981; color:#fff; border:none; padding:3px 8px; border-radius:4px; font-size:10px; cursor:pointer;">Accept</button>
+                            <button onclick="rejectRequest('${n.id}')" style="background:#ef4444; color:#fff; border:none; padding:3px 8px; border-radius:4px; font-size:10px; cursor:pointer;">Reject</button>
+                        </div>
+                    `;
+                }
+
                 listContainer.innerHTML += `
                     <div class="notif-item">
                         <span><b>${n.title}</b>: ${n.message}</span>
+                        ${actionBtns}
                         <span class="notif-time">${n.time}</span>
                     </div>
                 `;
-
-                if (index === 0 && "Notification" in window && Notification.permission === "granted") {
-                    if (lastNotifIdCheck(n.id)) {
-                        try {
-                            new Notification(n.title, {
-                                body: n.message,
-                                icon: 'https://cdn.jsdelivr.net/gh/twitter/twemoji@14.0.2/assets/72x72/1f514.png'
-                            });
-                            localStorage.setItem('lastNotifId', n.id);
-                        } catch(err) { console.log(err); }
-                    }
-                }
             });
         }
 
-        function lastNotifIdCheck(id) {
-            return localStorage.getItem('lastNotifId') !== id;
+        window.acceptRequest = async function(notifId, senderUsername) {
+            try {
+                await db.collection("notifications").doc(notifId).delete();
+                alert("Friend request accepted! 🎉");
+            } catch(e) { console.error(e); }
+        }
+
+        window.rejectRequest = async function(notifId) {
+            try {
+                await db.collection("notifications").doc(notifId).delete();
+                alert("Request rejected.");
+            } catch(e) { console.error(e); }
         }
 
         function clearNotifications() {
-            document.getElementById('notifList').innerHTML = `<div style="padding: 15px; text-align: center; color: #94a3b8; font-size: 13px;">No new alerts</div>`;
+            document.getElementById('notifList').innerHTML = `<div style="padding: 15px; text-align: center; color: #94a3b8; font-size: 12px;">No new alerts</div>`;
             document.getElementById('notifBadge').style.display = 'none';
         }
     </script>
