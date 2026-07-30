@@ -118,10 +118,11 @@
         </form>
     </div>
 
-    <!-- Firebase Login Script -->
+    <!-- Firebase Secure Login Script -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-app.js";
-        import { getFirestore, collection, getDocs, query, where } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-firestore.js";
+        import { getAuth, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-auth.js";
+        import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-firestore.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyCNLwSjHq6LlX9uUovTRHrz9ZfUwEIUWQM",
@@ -134,6 +135,7 @@
         };
 
         const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
         const db = getFirestore(app);
 
         window.handleLogin = async function(event) {
@@ -146,28 +148,22 @@
             btn.disabled = true;
 
             try {
-                const q = query(collection(db, "users"), where("email", "==", email), where("password", "==", password));
-                const querySnapshot = await getDocs(q);
+                // Firebase Standard Secure Authentication (Yeh phishing warning ko jad se hatayega)
+                const userCredential = await signInWithEmailAndPassword(auth, email, password);
+                const user = userCredential.user;
 
-                if (querySnapshot.empty) {
-                    alert('Invalid Email or Password! Please check your credentials.');
-                    btn.innerText = "Login";
-                    btn.disabled = false;
-                    return;
-                }
+                // Firestore se additional user data fetch karna agar zaroorat ho
+                const docRef = doc(db, "users", user.uid);
+                const docSnap = await getDoc(docRef);
+                
+                let userData = docSnap.exists() ? docSnap.data() : { email: user.email };
 
-                // Get User Data and save to localStorage
-                let userData = {};
-                querySnapshot.forEach((doc) => {
-                    userData = doc.data();
-                });
-
-                localStorage.setItem('genzUser', JSON.stringify(userData)); // User data save kiya
-                localStorage.removeItem('hasSeenWelcome'); // Flag hata diya taaki welcome page chale
-                window.location.href = 'welcome.html'; // Welcome page par bhej diya
+                localStorage.setItem('genzUser', JSON.stringify(userData));
+                localStorage.removeItem('hasSeenWelcome');
+                window.location.href = 'welcome.html';
             } catch(e) {
                 console.error(e);
-                alert('Login failed. Please try again.');
+                alert('Invalid Email or Password! Please check your credentials.');
                 btn.innerText = "Login";
                 btn.disabled = false;
             }
