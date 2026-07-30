@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Welcome | Gen'Z India</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #f0f4f8 0%, #d9e2ec 100%);
+            color: #102a43;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        .welcome-card {
+            background: #ffffff;
+            padding: 40px 30px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+            text-align: center;
+            max-width: 400px;
+            width: 90%;
+            animation: slideUp 0.8s ease-out forwards;
+            border: 1px solid #e2e8f0;
+        }
+
+        @keyframes slideUp {
+            0% {
+                transform: translateY(40px);
+                opacity: 0;
+            }
+            100% {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        /* Haath jod kar Namaste karne wala animated icon */
+        .namaste-icon {
+            font-size: 70px;
+            margin-bottom: 20px;
+            display: inline-block;
+            animation: bounceWave 1.5s infinite ease-in-out;
+        }
+
+        @keyframes bounceWave {
+            0%, 100% {
+                transform: translateY(0) rotate(0deg);
+            }
+            50% {
+                transform: translateY(-10px) rotate(5deg);
+            }
+        }
+
+        h1 {
+            font-size: 24px;
+            font-weight: 700;
+            color: #0284c7;
+            margin-bottom: 10px;
+        }
+
+        p {
+            font-size: 14px;
+            color: #486581;
+            margin-bottom: 25px;
+            line-height: 1.5;
+        }
+
+        /* Progress loader bar jo 5 second tak chalegi */
+        .loader-bar {
+            width: 100%;
+            height: 6px;
+            background: #e2e8f0;
+            border-radius: 3px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .loader-progress {
+            width: 0%;
+            height: 100%;
+            background: #0284c7;
+            border-radius: 3px;
+            animation: loadProgress 5s linear forwards;
+        }
+
+        @keyframes loadProgress {
+            0% { width: 0%; }
+            100% { width: 100%; }
+        }
+
+        .skip-btn {
+            margin-top: 20px;
+            background: none;
+            border: none;
+            color: #627d98;
+            font-size: 12px;
+            cursor: pointer;
+            text-decoration: underline;
+        }
+
+        .skip-btn:hover {
+            color: #0284c7;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="welcome-card">
+        <!-- Namaste Character Icon -->
+        <div class="namaste-icon">🙏</div>
+        <h1 id="welcomeHeading">Welcome to Gen'Z India</h1>
+        <p id="welcomeText">Aapka swagat hai! Hamara platform load ho raha hai, kripya thoda intezaar karein...</p>
+        
+        <div class="loader-bar">
+            <div class="loader-progress"></div>
+        </div>
+
+        <button class="skip-btn" onclick="redirectToNextPage()">Skip Intro ➔</button>
+    </div>
+
+    <script>
+        // LocalStorage se check karo ki user logged in hai ya nahi
+        const activeUser = JSON.parse(localStorage.getItem('genzUser'));
+
+        // Agar user logged in hai toh UI par uska naam show karo
+        if (activeUser && activeUser.fullName) {
+            document.getElementById('welcomeHeading').innerText = `Welcome, ${activeUser.fullName}!`;
+            document.getElementById('welcomeText').innerText = `Dobara swagat hai bhai! Aapka dashboard load ho raha hai...`;
+        }
+
+        // Awaaz (Speech Synthesis) ke zariye Namaste aur naam bolne ka function
+        function speakWelcome() {
+            if ('speechSynthesis' in window) {
+                let text = "Namaste! Gen'Z India mein aapka swagat hai.";
+                
+                // Agar user logged in hai toh naam ke sath bolega
+                if (activeUser && (activeUser.fullName || activeUser.username)) {
+                    const userName = activeUser.fullName || activeUser.username;
+                    text = `Namaste ${userName}! Gen'Z India mein aapka dubara swagat hai.`;
+                }
+
+                const utterance = new SpeechSynthesisUtterance(text);
+                utterance.lang = 'hi-IN'; // Hindi-India accent
+                utterance.rate = 0.9; // Normal aur clear speed
+                window.speechSynthesis.speak(utterance);
+            }
+        }
+
+        // Page load hote hi aawaz chalana
+        window.addEventListener('load', () => {
+            setTimeout(speakWelcome, 500);
+        });
+
+        // Smart Redirect Logic
+        function redirectToNextPage() {
+            localStorage.setItem('hasSeenWelcome', 'true');
+
+            if (activeUser) {
+                window.location.href = 'makefriend.html';
+            } else {
+                window.location.href = 'index.html';
+            }
+        }
+
+        // 5 second baad automatic redirect
+        setTimeout(redirectToNextPage, 5000);
+    </script>
+</body>
+</html>
