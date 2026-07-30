@@ -13,25 +13,34 @@
             font-family: 'Poppins', sans-serif;
         }
         body {
-            background-color: #0b0f19;
-            color: #f1f5f9;
+            background-color: #f8fafc;
+            color: #1e293b;
             min-height: 100vh;
             display: flex;
             flex-direction: column;
         }
         header {
-            background: #111827;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
             padding: 15px 30px;
             display: flex;
             align-items: center;
             justify-content: space-between;
-            border-bottom: 1px solid #1f2937;
+            border-bottom: 1px solid #e2e8f0;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.02);
         }
         .back-btn {
-            color: #38bdf8;
+            color: #0284c7;
             text-decoration: none;
-            font-size: 14px;
+            font-size: 13.5px;
             font-weight: 600;
+            transition: 0.2s;
+        }
+        .back-btn:hover {
+            color: #0369a1;
         }
         .container {
             max-width: 800px;
@@ -41,131 +50,171 @@
             flex: 1;
         }
         .feed-header {
-            background: #111827;
-            border: 1px solid #1f2937;
-            border-radius: 12px;
-            padding: 20px;
-            margin-bottom: 25px;
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
+            border-radius: 16px;
+            padding: 24px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.02);
         }
         .feed-header h2 {
             font-size: 18px;
-            color: #38bdf8;
-            margin-bottom: 5px;
+            color: #0284c7;
+            margin-bottom: 6px;
+            font-weight: 700;
         }
         .feed-header p {
             font-size: 13px;
-            color: #94a3b8;
+            color: #64748b;
         }
-        /* Post Doubt Box */
-        .post-box {
-            background: #111827;
-            border: 1px solid #1f2937;
+
+        /* Toggle Ask Doubt Button */
+        .toggle-doubt-btn {
+            background: #0284c7;
+            color: #fff;
+            border: none;
+            width: 100%;
+            padding: 14px;
             border-radius: 12px;
-            padding: 20px;
+            font-weight: 600;
+            font-size: 14px;
+            cursor: pointer;
+            margin-bottom: 25px;
+            transition: 0.3s;
+            box-shadow: 0 4px 6px -1px rgba(2, 132, 199, 0.2);
+        }
+        .toggle-doubt-btn:hover {
+            background: #0369a1;
+        }
+
+        /* Post Doubt Box (Hidden by default) */
+        .post-box {
+            display: none;
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
+            border-radius: 16px;
+            padding: 24px;
             margin-bottom: 30px;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.05);
+            animation: fadeIn 0.3s ease-in-out;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
         }
         .post-box textarea {
             width: 100%;
-            background: #0b0f19;
-            border: 1px solid #334155;
-            border-radius: 8px;
-            padding: 12px;
-            color: #fff;
-            font-size: 13px;
+            background: #f8fafc;
+            border: 1px solid #cbd5e1;
+            border-radius: 10px;
+            padding: 14px;
+            color: #1e293b;
+            font-size: 13.5px;
             resize: vertical;
-            min-height: 90px;
-            margin-bottom: 12px;
+            min-height: 100px;
+            margin-bottom: 15px;
         }
         .post-box textarea:focus {
             outline: none;
-            border-color: #38bdf8;
+            border-color: #0284c7;
+            box-shadow: 0 0 0 3px rgba(2, 132, 199, 0.1);
         }
         .post-actions {
             display: flex;
             align-items: center;
             justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 10px;
         }
         .file-upload-label {
             font-size: 13px;
-            color: #38bdf8;
+            color: #0284c7;
             cursor: pointer;
             display: flex;
             align-items: center;
-            gap: 5px;
+            gap: 6px;
+            font-weight: 500;
         }
         .post-btn {
-            background: #38bdf8;
-            color: #0f172a;
+            background: #0284c7;
+            color: #fff;
             border: none;
-            padding: 10px 22px;
+            padding: 10px 24px;
             border-radius: 8px;
             font-weight: 600;
             font-size: 13px;
             cursor: pointer;
+            transition: 0.2s;
         }
         .post-btn:hover {
-            background: #0ea5e9;
+            background: #0369a1;
         }
+
         /* Doubt Card Layout */
         .doubt-card {
-            background: #111827;
-            border: 1px solid #1f2937;
-            border-radius: 12px;
-            padding: 20px;
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
+            border-radius: 16px;
+            padding: 24px;
             margin-bottom: 20px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.02);
         }
         .user-info {
             display: flex;
             align-items: center;
             gap: 12px;
-            margin-bottom: 12px;
+            margin-bottom: 14px;
         }
         .user-avatar {
-            width: 38px;
-            height: 38px;
+            width: 40px;
+            height: 40px;
             border-radius: 50%;
-            background: #334155;
+            background: #e2e8f0;
             object-fit: cover;
             display: flex;
             align-items: center;
             justify-content: center;
             font-weight: 600;
-            color: #38bdf8;
+            color: #0284c7;
             font-size: 14px;
+            border: 2px solid #bae6fd;
         }
         .user-meta h4 {
-            font-size: 14px;
-            color: #f8fafc;
+            font-size: 14.5px;
+            color: #0f172a;
+            font-weight: 600;
         }
         .user-meta span {
             font-size: 11px;
-            color: #94a3b8;
+            color: #64748b;
         }
         .doubt-text {
             font-size: 14px;
-            color: #e2e8f0;
-            margin-bottom: 12px;
-            line-height: 1.5;
+            color: #334155;
+            margin-bottom: 15px;
+            line-height: 1.6;
             word-break: break-word;
         }
         .doubt-img {
             max-width: 100%;
-            border-radius: 8px;
+            border-radius: 10px;
             margin-bottom: 15px;
             max-height: 300px;
             object-fit: contain;
-            background: #000;
+            background: #f1f5f9;
         }
+
         /* Answers Section */
         .answers-container {
-            border-top: 1px solid #1f2937;
-            padding-top: 15px;
-            margin-top: 15px;
+            border-top: 1px solid #e2e8f0;
+            padding-top: 18px;
+            margin-top: 18px;
         }
         .answer-item {
-            background: #1e293b;
-            border-radius: 8px;
-            padding: 10px 14px;
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 10px;
+            padding: 12px 16px;
             margin-bottom: 10px;
             font-size: 13px;
         }
@@ -173,41 +222,50 @@
             display: flex;
             align-items: center;
             gap: 8px;
-            margin-bottom: 4px;
+            margin-bottom: 5px;
         }
         .answer-avatar {
-            width: 24px;
-            height: 24px;
+            width: 26px;
+            height: 26px;
             border-radius: 50%;
             object-fit: cover;
         }
+
+        /* Optimized Reply Input Box for Mobile View */
         .answer-input-box {
             display: flex;
             gap: 8px;
-            margin-top: 12px;
+            margin-top: 14px;
+            width: 100%;
         }
         .answer-input-box input {
             flex: 1;
-            background: #0b0f19;
-            border: 1px solid #334155;
-            border-radius: 6px;
-            padding: 8px 12px;
-            color: #fff;
-            font-size: 12px;
+            min-width: 0; /* Prevents input from overflowing flex container on mobile */
+            background: #f8fafc;
+            border: 1px solid #cbd5e1;
+            border-radius: 8px;
+            padding: 10px 14px;
+            color: #1e293b;
+            font-size: 12.5px;
         }
         .answer-input-box input:focus {
             outline: none;
-            border-color: #38bdf8;
+            border-color: #0284c7;
         }
         .ans-btn {
-            background: #38bdf8;
-            color: #0f172a;
+            background: #0284c7;
+            color: #fff;
             border: none;
-            padding: 0 15px;
-            border-radius: 6px;
+            padding: 0 16px;
+            border-radius: 8px;
             font-weight: 600;
-            font-size: 12px;
+            font-size: 12.5px;
             cursor: pointer;
+            flex-shrink: 0; /* Prevents button from shrinking or going out of screen */
+            transition: 0.2s;
+        }
+        .ans-btn:hover {
+            background: #0369a1;
         }
     </style>
 </head>
@@ -215,7 +273,7 @@
 
     <header>
         <a href="doubtbox.html" class="back-btn">← Back to Subjects</a>
-        <h3 style="font-size: 16px; color: #fff;">💬 DoubtFeed Hub</h3>
+        <h3 style="font-size: 16px; color: #0f172a; font-weight: 700;">💬 DoubtFeed Hub</h3>
         <div style="width: 80px;"></div>
     </header>
 
@@ -226,10 +284,13 @@
             <p>Ask your doubt or help others by answering community questions</p>
         </div>
 
-        <!-- Post Doubt Box -->
-        <div class="post-box">
+        <!-- Toggle Button to Open Doubt Box -->
+        <button class="toggle-doubt-btn" id="toggleDoubtBtn" onclick="toggleDoubtBox()">➕ Ask a Doubt</button>
+
+        <!-- Post Doubt Box (Hidden initially) -->
+        <div class="post-box" id="postDoubtBox">
             <form id="doubtForm">
-                <textarea id="doubtText" placeholder="Type your doubt or question here..." required></textarea>
+                <textarea id="doubtText" placeholder="Type your doubt or question clearly here..." required></textarea>
                 <div class="post-actions">
                     <label class="file-upload-label">
                         📷 Attach Image (Optional)
@@ -237,29 +298,29 @@
                     </label>
                     <button type="submit" class="post-btn" id="postBtn">Post Doubt</button>
                 </div>
-                <p id="imageFileName" style="font-size: 11px; color: #38bdf8; margin-top: 8px;"></p>
+                <p id="imageFileName" style="font-size: 11.5px; color: #0284c7; margin-top: 8px;"></p>
             </form>
         </div>
 
         <!-- Doubts Live Feed Container -->
         <div id="doubtsFeedContainer">
-            <p style="color: #64748b; text-align: center; font-size: 13px;">Loading doubts...</p>
+            <p style="color: #64748b; text-align: center; font-size: 13.5px;">Loading doubts...</p>
         </div>
     </div>
 
     <!-- Firebase & Doubt Feed Logic -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-app.js";
-        import { getFirestore, collection, addDoc, updateDoc, doc, arrayUnion, onSnapshot, query, where, orderBy } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-firestore.js";
+        import { getFirestore, collection, addDoc, updateDoc, doc, arrayUnion, onSnapshot, query, orderBy } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-firestore.js";
 
         const firebaseConfig = {
-            apiKey: "AIzaSyCNLwSjHq6LlX9uUovTRHrz9ZfUwEIUWQM",
+            apiKey: "AIzaSyCNLwSjHq6LlX9uUovTRHrz9ZfUWeIUWQM",
             authDomain: "genz-india.firebaseapp.com",
             projectId: "genz-india",
             storageBucket: "genz-india.firebasestorage.app",
             messagingSenderId: "149959470783",
             appId: "1:149959470783:web:71b7969ee2c8fc049c200a",
-            measurementId: "G-RBRSDRKSRH"
+            measurementId: "G-RBRDSRKSRH"
         };
 
         const app = initializeApp(firebaseConfig);
@@ -276,13 +337,25 @@
 
         document.getElementById('displayCourseSubject').innerText = `${course} › ${subject}`;
 
+        // Toggle Doubt Box visibility function
+        window.toggleDoubtBox = function() {
+            const box = document.getElementById('postDoubtBox');
+            const btn = document.getElementById('toggleDoubtBtn');
+            if (box.style.display === 'block') {
+                box.style.display = 'none';
+                btn.innerText = "➕ Ask a Doubt";
+            } else {
+                box.style.display = 'block';
+                btn.innerText = "✖ Close Doubt Box";
+            }
+        }
+
         // Image file name display
         document.getElementById('doubtImage').addEventListener('change', function(e) {
             const fileName = e.target.files[0] ? e.target.files[0].name : '';
             document.getElementById('imageFileName').innerText = fileName ? `Attached: ${fileName}` : '';
         });
 
-        // Helper to convert image to Base64 so it stores cleanly in Firestore without external storage setup complexity
         function convertImageToBase64(file) {
             return new Promise((resolve, reject) => {
                 const reader = new FileReader();
@@ -329,6 +402,7 @@
                 document.getElementById('doubtText').value = '';
                 document.getElementById('doubtImage').value = '';
                 document.getElementById('imageFileName').innerText = '';
+                toggleDoubtBox(); // Auto close box after posting
             } catch (err) {
                 console.error("Error posting doubt:", err);
                 alert("Failed to post doubt.");
@@ -353,7 +427,7 @@
             });
 
             if (doubtsList.length === 0) {
-                container.innerHTML = `<p style="color: #64748b; text-align: center; font-size: 13px; padding: 20px;">No doubts asked in this subject yet. Be the first one to ask! 🚀</p>`;
+                container.innerHTML = `<p style="color: #64748b; text-align: center; font-size: 13.5px; padding: 25px;">No doubts asked in this subject yet. Be the first one to ask! 🚀</p>`;
                 return;
             }
 
@@ -365,19 +439,19 @@
                 if (doubt.answers && doubt.answers.length > 0) {
                     doubt.answers.forEach((ans) => {
                         const ansInit = ans.author ? ans.author.charAt(0).toUpperCase() : 'U';
-                        const ansAvatar = ans.authorPic ? `<img src="${ans.authorPic}" class="answer-avatar">` : `<div class="answer-avatar" style="display:flex;align-items:center;justify-content:center;background:#334155;color:#38bdf8;font-size:10px;font-weight:600;">${ansInit}</div>`;
+                        const ansAvatar = ans.authorPic ? `<img src="${ans.authorPic}" class="answer-avatar">` : `<div class="answer-avatar" style="display:flex;align-items:center;justify-content:center;background:#e2e8f0;color:#0284c7;font-size:10px;font-weight:600;">${ansInit}</div>`;
                         answersHtml += `
                             <div class="answer-item">
                                 <div class="answer-header">
                                     ${ansAvatar}
-                                    <strong style="color: #38bdf8; font-size: 12px;">@${ans.author}</strong>
+                                    <strong style="color: #0284c7; font-size: 12.5px;">@${ans.author}</strong>
                                 </div>
-                                <p style="color: #cbd5e1; margin-top: 2px;">${ans.text}</p>
+                                <p style="color: #334155; margin-top: 3px;">${ans.text}</p>
                             </div>
                         `;
                     });
                 } else {
-                    answersHtml = `<p style="color: #64748b; font-size: 12px; font-style: italic;">No answers yet. Be the first to reply!</p>`;
+                    answersHtml = `<p style="color: #64748b; font-size: 12.5px; font-style: italic;">No answers yet. Be the first to reply!</p>`;
                 }
 
                 const authorAvatar = doubt.authorPic ? `<img src="${doubt.authorPic}" class="user-avatar">` : `<div class="user-avatar">${authorInitial}</div>`;
@@ -395,7 +469,7 @@
                         ${doubt.imageUrl ? `<img src="${doubt.imageUrl}" class="doubt-img">` : ``}
                         
                         <div class="answers-container">
-                            <h5 style="font-size: 13px; color: #94a3b8; margin-bottom: 10px;">Answers & Replies:</h5>
+                            <h5 style="font-size: 13px; color: #64748b; margin-bottom: 10px; font-weight: 600;">Answers & Replies:</h5>
                             <div id="answersList_${doubt.id}">
                                 ${answersHtml}
                             </div>
