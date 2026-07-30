@@ -468,6 +468,10 @@
             document.getElementById('notifList').innerHTML = `<div style="padding: 15px; text-align: center; color: #94a3b8; font-size: 12px;">No new alerts</div>`;
             document.getElementById('notifBadge').style.display = 'none';
         }
+    // Agar user ne abhi tak welcome screen nahi dekhi hai, toh use welcome.html par bhej do
+    if (!localStorage.getItem('hasSeenWelcome')) {
+        window.location.href = 'welcome.html';
+    }
     </script>
 </body>
 </html>

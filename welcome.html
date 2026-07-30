@@ -131,51 +131,44 @@
     </div>
 
     <script>
-        // LocalStorage se check karo ki user logged in hai ya nahi
-        const activeUser = JSON.parse(localStorage.getItem('genzUser'));
+    // LocalStorage se check karo ki user logged in hai ya nahi
+    const activeUser = JSON.parse(localStorage.getItem('genzUser'));
 
-        // Agar user logged in hai toh UI par uska naam show karo
-        if (activeUser && activeUser.fullName) {
-            document.getElementById('welcomeHeading').innerText = `Welcome, ${activeUser.fullName}!`;
-            document.getElementById('welcomeText').innerText = `Dobara swagat hai bhai! Aapka dashboard load ho raha hai...`;
-        }
+    // Agar user logged in hai toh UI par uska naam show karo
+    if (activeUser && activeUser.fullName) {
+        document.getElementById('welcomeHeading').innerText = `Welcome, ${activeUser.fullName}!`;
+        document.getElementById('welcomeText').innerText = `Dobara swagat hai bhai! Aapka dashboard load ho raha hai...`;
+    }
 
-        // Awaaz (Speech Synthesis) ke zariye Namaste aur naam bolne ka function
-        function speakWelcome() {
-            if ('speechSynthesis' in window) {
-                let text = "Namaste! Gen'Z India mein aapka swagat hai.";
-                
-                // Agar user logged in hai toh naam ke sath bolega
-                if (activeUser && (activeUser.fullName || activeUser.username)) {
-                    const userName = activeUser.fullName || activeUser.username;
-                    text = `Namaste ${userName}! Gen'Z India mein aapka dubara swagat hai.`;
-                }
-
-                const utterance = new SpeechSynthesisUtterance(text);
-                utterance.lang = 'hi-IN'; // Hindi-India accent
-                utterance.rate = 0.9; // Normal aur clear speed
-                window.speechSynthesis.speak(utterance);
+    // Awaaz (Speech Synthesis) ke zariye Namaste aur naam bolne ka function
+    function speakWelcome() {
+        if ('speechSynthesis' in window) {
+            let text = "Namaste! Gen'Z India mein aapka swagat hai.";
+            
+            if (activeUser && (activeUser.fullName || activeUser.username)) {
+                const userName = activeUser.fullName || activeUser.username;
+                text = `Namaste ${userName}! Gen'Z India mein aapka dubara swagat hai.`;
             }
+
+            const utterance = new SpeechSynthesisUtterance(text);
+            utterance.lang = 'hi-IN';
+            utterance.rate = 0.9;
+            window.speechSynthesis.speak(utterance);
         }
+    }
 
-        // Page load hote hi aawaz chalana
-        window.addEventListener('load', () => {
-            setTimeout(speakWelcome, 500);
-        });
+    window.addEventListener('load', () => {
+        setTimeout(speakWelcome, 500);
+    });
 
-        // Smart Redirect Logic
-        function redirectToNextPage() {
-            localStorage.setItem('hasSeenWelcome', 'true');
+    // Smart Redirect Logic (Ek hi baar function rahega)
+    function redirectToNextPage() {
+        localStorage.setItem('hasSeenWelcome', 'true'); // Mark kar diya ki dekh liya
+        window.location.href = 'index.html'; // Seedha main dashboard par bhejo
+    }
 
-            if (activeUser) {
-                window.location.href = 'makefriend.html';
-            } else {
-                window.location.href = 'index.html';
-            }
-        }
-
-        // 5 second baad automatic redirect
-        setTimeout(redirectToNextPage, 5000);
-    </script>
+    // 5 second baad automatic redirect
+    setTimeout(redirectToNextPage, 5000);
+</script>
 </body>
 </html>

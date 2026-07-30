@@ -139,10 +139,9 @@
                     userData = doc.data();
                 });
 
-                localStorage.setItem('genzUser', JSON.stringify(userData));
-                alert(`Welcome back, ${userData.name}! 🚀`);
-                window.location.href = 'index.html';
-
+                localStorage.setItem('genzUser', JSON.stringify(userData)); // User data save kiya
+                localStorage.removeItem('hasSeenWelcome'); // Flag hata diya taaki welcome page chale
+                window.location.href = 'welcome.html'; // Welcome page par bhej diya
             } catch(e) {
                 console.error(e);
                 alert('Login failed. Please try again.');
