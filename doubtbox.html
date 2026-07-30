@@ -13,25 +13,34 @@
             font-family: 'Poppins', sans-serif;
         }
         body {
-            background-color: #0b0f19;
-            color: #f1f5f9;
+            background-color: #f8fafc;
+            color: #1e293b;
             min-height: 100vh;
             display: flex;
             flex-direction: column;
         }
         header {
-            background: #111827;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
             padding: 15px 30px;
             display: flex;
             align-items: center;
             justify-content: space-between;
-            border-bottom: 1px solid #1f2937;
+            border-bottom: 1px solid #e2e8f0;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.02);
         }
         .back-btn {
-            color: #38bdf8;
+            color: #0284c7;
             text-decoration: none;
-            font-size: 14px;
+            font-size: 13.5px;
             font-weight: 600;
+            transition: 0.2s;
+        }
+        .back-btn:hover {
+            color: #0369a1;
         }
         .container {
             max-width: 1100px;
@@ -46,65 +55,75 @@
         }
         .hero-section h1 {
             font-size: 26px;
-            color: #38bdf8;
+            color: #0f172a;
             margin-bottom: 8px;
+            font-weight: 700;
         }
         .hero-section p {
-            color: #94a3b8;
-            font-size: 13px;
+            color: #64748b;
+            font-size: 13.5px;
         }
         .search-bar {
             width: 100%;
-            max-width: 500px;
-            margin: 0 auto 30px auto;
+            max-width: 550px;
+            margin: 0 auto 35px auto;
             display: block;
-            background: #111827;
-            border: 1px solid #334155;
-            border-radius: 8px;
-            padding: 12px 18px;
-            color: #fff;
+            background: #ffffff;
+            border: 1px solid #cbd5e1;
+            border-radius: 12px;
+            padding: 14px 20px;
+            color: #1e293b;
             font-size: 14px;
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.02);
+            transition: 0.3s;
         }
         .search-bar:focus {
             outline: none;
-            border-color: #38bdf8;
+            border-color: #0284c7;
+            box-shadow: 0 0 0 3px rgba(2, 132, 199, 0.1);
         }
         .category-section {
             margin-bottom: 40px;
         }
         .category-title {
-            font-size: 18px;
-            color: #f8fafc;
-            margin-bottom: 15px;
-            border-left: 4px solid #38bdf8;
-            padding-left: 10px;
+            font-size: 17px;
+            color: #0f172a;
+            margin-bottom: 18px;
+            border-left: 4px solid #0284c7;
+            padding-left: 12px;
+            font-weight: 600;
         }
         .grid-container {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
-            gap: 15px;
+            grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+            gap: 18px;
         }
         .card {
-            background: #111827;
-            border: 1px solid #1f2937;
-            border-radius: 10px;
-            padding: 18px;
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
+            border-radius: 14px;
+            padding: 20px;
             cursor: pointer;
-            transition: all 0.2s ease;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.02);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
         }
         .card:hover {
-            border-color: #38bdf8;
-            transform: translateY(-2px);
-            background: #1e293b;
+            border-color: #0284c7;
+            transform: translateY(-4px);
+            box-shadow: 0 10px 15px -3px rgba(2, 132, 199, 0.1);
         }
         .card h3 {
-            font-size: 15px;
-            color: #38bdf8;
-            margin-bottom: 5px;
+            font-size: 16px;
+            color: #0284c7;
+            margin-bottom: 6px;
+            font-weight: 600;
         }
         .card p {
-            font-size: 12px;
-            color: #94a3b8;
+            font-size: 12.5px;
+            color: #64748b;
         }
         #subjectView {
             display: none;
@@ -114,14 +133,16 @@
             align-items: center;
             justify-content: space-between;
             margin-bottom: 25px;
+            flex-wrap: wrap;
+            gap: 15px;
         }
     </style>
 </head>
 <body>
 
     <header>
-        <a href="makefriend.html" class="back-btn" id="navBackBtn">← Back to Dashboard</a>
-        <h3 style="font-size: 16px; color: #fff;">🎓 Gen'Z DoubtBox</h3>
+        <a href="index.html" class="back-btn" id="navBackBtn">← Back to Dashboard</a>
+        <h3 style="font-size: 16px; color: #0f172a; font-weight: 700;">🎓 Gen'Z DoubtBox</h3>
         <div style="width: 80px;"></div>
     </header>
 
@@ -133,7 +154,7 @@
                 <p>Choose your academic field or competitive exam stream to explore subjects & doubts</p>
             </div>
 
-            <input type="text" id="courseSearch" class="search-bar" placeholder="Search course, degree, exam (e.g., NEET, LLB, BCA, UPSC)...">
+            <input type="text" id="courseSearch" class="search-bar" placeholder="🔍 Search course, degree, exam (e.g., NEET, LLB, BCA, UPSC)...">
 
             <div class="category-section">
                 <div class="category-title">🎯 Competitive & Entrance Exams (Govt / Jobs / Entrance)</div>
@@ -175,17 +196,15 @@
         <div id="subjectView">
             <div class="subject-header">
                 <button onclick="goBackToCourses()" class="back-btn" style="background: none; border: none; cursor: pointer; font-size: 14px;">← Change Category</button>
-                <h2 id="selectedCourseTitle" style="font-size: 20px; color: #38bdf8;"></h2>
+                <h2 id="selectedCourseTitle" style="font-size: 20px; color: #0284c7; font-weight: 700;"></h2>
             </div>
-            <p style="color: #94a3b8; font-size: 13px; margin-bottom: 20px;">Select a subject or section to view doubts and discussions:</p>
+            <p style="color: #64748b; font-size: 13.5px; margin-bottom: 20px;">Select a subject or section to view doubts and discussions:</p>
             <div class="grid-container" id="subjectsGrid"></div>
         </div>
     </div>
 
     <script>
-        // Massive Database covering Indian Competitive Exams, Law, Medical, Degrees & Diplomas
         const academicData = {
-            // Competitive & Entrance Exams
             "UPSC Civil Services (IAS/IPS)": ["General Studies Paper 1 (History, Geography, Polity)", "General Studies Paper 2 (CSAT, Aptitude)", "General Studies Paper 3 (Economy, Science & Tech, Security)", "General Studies Paper 4 (Ethics, Integrity & Aptitude)", "Optional Subjects & Essay Writing"],
             "BPSC / State PSC Exams": ["General Studies (History & Geography of State)", "Indian Polity & Economy", "General Science & Mental Ability", "Current Affairs"],
             "SSC CGL / CHSL / MTS": ["Quantitative Aptitude (Maths)", "General Intelligence & Reasoning", "English Comprehension", "General Awareness & Static GK"],
@@ -194,34 +213,27 @@
             "NDA / CDS / Agniveer Defence Exams": ["Mathematics", "General Ability Test (GAT)", "English & General Knowledge", "Physics & Defence Science"],
             "Banking Exams (IBPS / SBI / RBI PO/Clerk)": ["Quantitative Aptitude", "Reasoning Ability", "English Language", "Banking Awareness & Computer Aptitude"],
 
-            // Law
             "LLB (3-Year & 5-Year Bachelor of Laws)": ["Constitutional Law", "Law of Contracts", "Criminal Law (IPC/BNS)", "Law of Torts", "Property Law", "Family Law", "Jurisprudence", "Company Law"],
             "LLM (Master of Laws)": ["Comparative Public Law", "Law and Social Transformation", "Corporate Law & Governance", "International Trade Law", "Cyber Law & Intellectual Property Rights"],
 
-            // Medical, Pharmacy & Nursing
             "MBBS / BDS (Medical & Dental Sciences)": ["Anatomy", "Physiology", "Biochemistry", "Pathology", "Pharmacology", "Microbiology", "Forensic Medicine", "Surgery & Medicine"],
             "B.Pharma & M.Pharma (Pharmacy)": ["Pharmaceutics", "Pharmaceutical Chemistry", "Pharmacology", "Pharmacognosy", "Pharmaceutical Analysis", "Regulatory Affairs"],
             "GNM & ANM Nursing": ["Anatomy & Physiology", "Nursing Foundations", "Community Health Nursing", "Midwifery & Obstetrical Nursing", "Pediatric Nursing"],
             "B.Sc / M.Sc Nursing": ["Advanced Nursing Practice", "Medical-Surgical Nursing", "Mental Health Nursing", "Nursing Research & Statistics"],
 
-            // Engineering
             "B.Tech / M.Tech (Engineering)": ["Computer Science & Engineering", "Artificial Intelligence & Data Science", "Mechanical Engineering", "Civil Engineering", "Electrical & Electronics", "Electronics & Communication"],
 
-            // Computers & Management
             "BCA & MCA (Computer Applications)": ["Programming in C/C++ & Java", "Data Structures & Algorithms", "Database Management Systems", "Web Development", "Operating Systems & Networking"],
             "BBA & MBA (Business Administration)": ["Principles of Management", "Financial Management", "Marketing Management", "HR Management", "Business Economics & Analytics"],
             "B.Com & M.Com (Commerce)": ["Financial & Corporate Accounting", "Cost & Management Accounting", "Business Law & Taxation", "Auditing & Financial Markets"],
 
-            // Science, Arts
             "B.Sc & M.Sc (Science Streams)": ["Mathematics", "Physics", "Chemistry", "Botany & Zoology", "Biotechnology & Microbiology", "Statistics"],
             "B.A & M.A (Arts & Humanities)": ["English & Regional Literature", "Political Science", "History", "Sociology", "Economics", "Geography", "Psychology"],
 
-            // Diplomas
             "Polytechnic / Diploma in Engineering": ["Applied Mathematics & Physics", "Basic Electrical & Mechanical", "Computer Programming Basics", "Civil Construction & Drafting"],
             "Paramedical & Lab Technology Diplomas": ["Medical Laboratory Technology (DMLT)", "X-Ray & Radiology Technician", "Operation Theatre Technology (OTT)", "First Aid & Emergency Care"]
         };
 
-        // UI Mapping Categories
         const categories = {
             compExams: ["UPSC Civil Services (IAS/IPS)", "BPSC / State PSC Exams", "SSC CGL / CHSL / MTS", "NEET (UG & PG Medical Entrance)", "JEE (Main & Advanced Engineering)", "NDA / CDS / Agniveer Defence Exams", "Banking Exams (IBPS / SBI / RBI PO/Clerk)"],
             lawCourses: ["LLB (3-Year & 5-Year Bachelor of Laws)", "LLM (Master of Laws)"],
@@ -276,14 +288,13 @@
             window.location.href = `doubtfeed.html?course=${encodeURIComponent(course)}&subject=${encodeURIComponent(subject)}`;
         }
 
-        // Search Filter Logic
         document.getElementById('courseSearch').addEventListener('input', function(e) {
             const query = e.target.value.toLowerCase();
             const allCards = document.querySelectorAll('.grid-container .card');
             allCards.forEach(card => {
                 const text = card.innerText.toLowerCase();
                 if (text.includes(query)) {
-                    card.style.display = "block";
+                    card.style.display = "flex";
                 } else {
                     card.style.display = "none";
                 }
