@@ -280,7 +280,7 @@
     <!-- Firebase Scripts -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-app.js";
-        import { getFirestore, collection, getDocs, addDoc, query, where, serverTimestamp, doc, updateDate } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-firestore.js";
+        import { getFirestore, collection, getDocs, addDoc, query, where, serverTimestamp } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-firestore.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyCNLwSjHq6LlX9uUovTRHrz9ZfUWeIUWQM",
@@ -301,7 +301,6 @@
 
         async function loadUserDataAndUsers() {
             try {
-                // Fetch current user latest status (friends & requests sent)
                 const userQuery = query(collection(db, 'users'), where("username", "==", currentLoggedInUser.username));
                 const userSnap = await getDocs(userQuery);
                 if (!userSnap.empty) {
@@ -323,6 +322,7 @@
                 renderUsers(allUsersList);
             } catch(e) {
                 console.error(e);
+                document.getElementById('usersListContainer').innerHTML = `<p style="color: #ef4444; font-size: 13px;">Error loading profiles.</p>`;
             }
         }
 
@@ -361,7 +361,7 @@
                         <div class="card-btn-group">
                             <button class="action-btn btn-view" onclick='openUserProfile(${JSON.stringify(u)})'>View</button>
                             ${btnHtml}
-                            <button class="action-btn btn-chat" onclick="startChat('${u.username}', ${isFriend})">Chat</button>
+                            <button class="action-btn btn-chat" onclick="startChat('${u.username}')">Chat</button>
                         </div>
                     </div>
                 `;
@@ -370,7 +370,6 @@
 
         window.sendFriendRequest = async function(targetUsername, targetName, btnElement) {
             try {
-                // 1. Add notification to target user with accept/reject payload
                 await addDoc(collection(db, 'notifications'), {
                     title: "Friend Request 🤝",
                     message: `${currentLoggedInUser.name} (@${currentLoggedInUser.username}) sent you a friend request.`,
@@ -383,7 +382,6 @@
                     broadcast: false
                 });
 
-                // Update local state and button immediately
                 myConnections.sent.push(targetUsername);
                 btnElement.innerText = "Request Sent";
                 btnElement.className = "action-btn btn-sent";
@@ -396,11 +394,10 @@
             }
         }
 
-        window.startChat = function(username, isFriend) {
+        window.startChat = function(username) {
             window.location.href = `chat.html?with=${username}`;
         }
 
-        // Search filter
         document.getElementById('friendSearchInput').addEventListener('input', function(e) {
             const searchTerm = e.target.value.trim().toLowerCase();
             if (!searchTerm) {
@@ -428,7 +425,6 @@
             `;
             modal.style.display = 'flex';
             activityContainer.innerHTML = `<p style="color: #64748b; font-size: 12px;">Fetching activities...</p>`;
-            // (Activity loader code remains intact)
         }
 
         window.closeProfileModal = function() {
