@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gen'Z | Study Room Chat</title>
+    <title>Study Room Chat | Gen'Z India ⚡</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     
     <!-- Firebase SDKs -->
@@ -18,41 +18,53 @@
             font-family: 'Poppins', sans-serif;
         }
         body {
-            background-color: #0b0f19;
-            color: #f1f5f9;
+            background-color: #f8fafc;
+            color: #1e293b;
             height: 100vh;
             display: flex;
             flex-direction: column;
             overflow: hidden;
         }
         header {
-            background: #111827;
-            padding: 12px 20px;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 12px 25px;
             display: flex;
             align-items: center;
             justify-content: space-between;
-            border-bottom: 1px solid #1f2937;
+            border-bottom: 1px solid #e2e8f0;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+            z-index: 10;
         }
         .back-btn {
-            color: #38bdf8;
+            color: #0284c7;
             text-decoration: none;
-            font-size: 13px;
+            font-size: 13.5px;
             font-weight: 600;
+            transition: 0.2s;
+        }
+        .back-btn:hover {
+            color: #0369a1;
         }
         .header-actions {
             display: flex;
-            gap: 10px;
+            gap: 12px;
             align-items: center;
         }
         .action-chip {
-            background: #1e293b;
-            color: #38bdf8;
-            border: 1px solid #334155;
-            padding: 6px 12px;
-            border-radius: 6px;
-            font-size: 12px;
+            background: rgba(2, 132, 199, 0.08);
+            color: #0284c7;
+            border: 1px solid #bae6fd;
+            padding: 6px 14px;
+            border-radius: 8px;
+            font-size: 12.5px;
             font-weight: 600;
             cursor: pointer;
+            transition: 0.2s;
+        }
+        .action-chip:hover {
+            background: #0284c7;
+            color: #fff;
         }
         .workspace {
             display: flex;
@@ -62,176 +74,216 @@
             max-width: 900px;
             width: 100%;
             margin: 0 auto;
-            padding: 15px;
+            padding: 20px;
         }
         .chat-section {
             flex: 1;
             display: flex;
             flex-direction: column;
-            background: #111827;
-            border: 1px solid #1f2937;
-            border-radius: 12px;
-            padding: 15px;
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
+            border-radius: 16px;
+            padding: 20px;
             overflow: hidden;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.02);
         }
         .chat-messages {
             flex: 1;
             overflow-y: auto;
             display: flex;
             flex-direction: column;
-            gap: 10px;
-            padding-right: 5px;
+            gap: 12px;
+            padding-right: 8px;
             margin-bottom: 15px;
         }
         .message {
-            max-width: 80%;
-            padding: 10px 14px;
-            border-radius: 10px;
-            font-size: 13px;
+            max-width: 75%;
+            padding: 12px 16px;
+            border-radius: 12px;
+            font-size: 13.5px;
             line-height: 1.5;
             word-break: break-word;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.05);
         }
         .user-msg {
-            background: #38bdf8;
-            color: #0f172a;
+            background: #0284c7;
+            color: #ffffff;
             align-self: flex-end;
-            font-weight: 500;
+            border-bottom-right-radius: 2px;
         }
         .peer-msg {
-            background: #1e293b;
-            color: #f8fafc;
+            background: #f1f5f9;
+            color: #1e293b;
             align-self: flex-start;
-            border: 1px solid #334155;
+            border: 1px solid #e2e8f0;
+            border-bottom-left-radius: 2px;
         }
         .system-msg {
-            background: rgba(245, 158, 11, 0.1);
-            border: 1px solid #f59e0b;
-            color: #f59e0b;
+            background: #fef3c7;
+            border: 1px solid #fde68a;
+            color: #d97706;
             align-self: center;
             text-align: center;
             width: 100%;
             font-size: 12px;
+            border-radius: 8px;
+            padding: 8px;
+            font-weight: 500;
         }
         .message img {
-            max-width: 220px;
+            max-width: 240px;
             border-radius: 8px;
-            margin-top: 6px;
+            margin-top: 8px;
             display: block;
+            border: 1px solid rgba(0,0,0,0.1);
         }
         .chat-input-box {
             display: flex;
             gap: 10px;
             align-items: center;
-            background: #0b0f19;
-            padding: 8px;
-            border-radius: 10px;
-            border: 1px solid #334155;
+            background: #f8fafc;
+            padding: 8px 12px;
+            border-radius: 12px;
+            border: 1px solid #cbd5e1;
         }
         .chat-input-box input[type="text"] {
             flex: 1;
             background: transparent;
             border: none;
             outline: none;
-            color: #fff;
-            font-size: 13px;
+            color: #1e293b;
+            font-size: 13.5px;
             padding: 5px;
         }
+        .chat-input-box input[type="text"]::placeholder {
+            color: #94a3b8;
+        }
         .file-upload-label {
-            background: #1e293b;
-            color: #38bdf8;
+            background: #ffffff;
+            color: #0284c7;
             padding: 8px 12px;
             border-radius: 8px;
             cursor: pointer;
             font-size: 13px;
             font-weight: 600;
-            border: 1px solid #334155;
+            border: 1px solid #bae6fd;
+            transition: 0.2s;
+        }
+        .file-upload-label:hover {
+            background: #0284c7;
+            color: #fff;
         }
         .send-btn {
-            background: #f59e0b;
-            color: #0f172a;
+            background: #0284c7;
+            color: #fff;
             border: none;
-            padding: 9px 18px;
+            padding: 9px 20px;
             border-radius: 8px;
             font-weight: 600;
             font-size: 13px;
             cursor: pointer;
+            transition: 0.2s;
         }
+        .send-btn:hover {
+            background: #0369a1;
+        }
+
+        /* Modal Styles */
         .modal {
             display: none;
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.7);
+            background: rgba(15, 23, 42, 0.6);
+            backdrop-filter: blur(5px);
             justify-content: center;
             align-items: center;
             z-index: 2000;
+            padding: 15px;
         }
         .modal-content {
-            background: #111827;
-            padding: 20px;
-            border-radius: 12px;
+            background: #ffffff;
+            padding: 25px;
+            border-radius: 16px;
             width: 90%;
-            max-width: 380px;
-            border: 1px solid #1f2937;
+            max-width: 400px;
+            border: 1px solid #e2e8f0;
+            box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1);
         }
         .modal-content h3 {
-            color: #f59e0b;
-            margin-bottom: 12px;
-            font-size: 16px;
+            color: #0f172a;
+            margin-bottom: 14px;
+            font-size: 17px;
+            font-weight: 700;
         }
         .modal-content input {
             width: 100%;
-            background: #0b0f19;
-            border: 1px solid #334155;
-            border-radius: 8px;
-            padding: 10px;
-            color: #fff;
-            margin-bottom: 10px;
-            font-size: 13px;
+            background: #f8fafc;
+            border: 1px solid #cbd5e1;
+            border-radius: 10px;
+            padding: 12px 14px;
+            color: #1e293b;
+            margin-bottom: 12px;
+            font-size: 13.5px;
+        }
+        .modal-content input:focus {
+            outline: none;
+            border-color: #0284c7;
+            box-shadow: 0 0 0 3px rgba(2, 132, 199, 0.1);
         }
         .search-results {
-            max-height: 140px;
+            max-height: 160px;
             overflow-y: auto;
-            margin-bottom: 12px;
+            margin-bottom: 15px;
             display: flex;
             flex-direction: column;
-            gap: 6px;
+            gap: 8px;
         }
         .user-result-item {
-            background: #1e293b;
-            padding: 8px 12px;
-            border-radius: 6px;
+            background: #f8fafc;
+            padding: 10px 14px;
+            border-radius: 8px;
+            border: 1px solid #e2e8f0;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            font-size: 12px;
+            font-size: 12.5px;
         }
         .invite-action-btn {
-            background: #38bdf8;
-            color: #0f172a;
+            background: #0284c7;
+            color: #fff;
             border: none;
-            padding: 4px 10px;
-            border-radius: 4px;
+            padding: 5px 12px;
+            border-radius: 6px;
             font-weight: 600;
             cursor: pointer;
-            font-size: 11px;
+            font-size: 11.5px;
+            transition: 0.2s;
+        }
+        .invite-action-btn:hover {
+            background: #0369a1;
         }
         .joined-tag {
-            background: #10b981;
-            color: #fff;
-            padding: 4px 8px;
-            border-radius: 4px;
+            background: #d1fae5;
+            color: #065f46;
+            padding: 4px 10px;
+            border-radius: 6px;
             font-weight: 600;
-            font-size: 10px;
+            font-size: 11px;
         }
         .btn-cancel {
-            background: #334155;
-            color: #fff;
+            background: #e2e8f0;
+            color: #334155;
             border: none;
-            padding: 8px;
-            border-radius: 6px;
+            padding: 10px;
+            border-radius: 8px;
             cursor: pointer;
-            font-size: 12px;
+            font-size: 13px;
+            font-weight: 600;
             width: 100%;
+            transition: 0.2s;
+        }
+        .btn-cancel:hover {
+            background: #cbd5e1;
         }
     </style>
 </head>
@@ -239,10 +291,10 @@
 
     <header>
         <a href="study_rooms.html" class="back-btn">← Leave Room</a>
-        <h3 id="roomTitleHeader" style="font-size: 15px; color: #f59e0b;">Study Room</h3>
+        <h3 id="roomTitleHeader" style="font-size: 16px; color: #0f172a; font-weight: 700;">Study Room</h3>
         <div class="header-actions">
             <button class="action-chip" onclick="openInviteModal()">+ Add Member</button>
-            <span id="roleIndicator" style="font-size: 12px; color: #38bdf8;">● Member</span>
+            <span id="roleIndicator" style="font-size: 12.5px; font-weight: 600; color: #0284c7;">● Member</span>
         </div>
     </header>
 
@@ -268,7 +320,7 @@
             <h3>Search & Invite Members</h3>
             <input type="text" id="searchUserInput" placeholder="Search by name..." oninput="searchUsers(this.value)">
             <div class="search-results" id="searchResults">
-                <p style="font-size: 11px; color: #94a3b8; text-align: center;">Type to search registered peers...</p>
+                <p style="font-size: 12px; color: #64748b; text-align: center;">Type to search registered peers...</p>
             </div>
             <button class="btn-cancel" onclick="closeInviteModal()">Close</button>
         </div>
@@ -308,10 +360,10 @@
         const roleIndicator = document.getElementById('roleIndicator');
         if (isAdmin) {
             roleIndicator.innerText = "● Admin";
-            roleIndicator.style.color = "#f59e0b";
+            roleIndicator.style.color = "#d97706";
         } else {
             roleIndicator.innerText = "● Member";
-            roleIndicator.style.color = "#38bdf8";
+            roleIndicator.style.color = "#0284c7";
         }
 
         const chatMessages = document.getElementById('chatMessages');
@@ -361,7 +413,7 @@
         function appendMessage(text, imgSrc, className, sender) {
             const div = document.createElement('div');
             div.className = `message ${className}`;
-            let content = `<b>${sender}:</b> ${text}`;
+            let content = `<b style="font-size:11px; opacity:0.8; display:block; margin-bottom:2px;">${sender}</b> ${text}`;
             if (imgSrc) {
                 content += `<img src="${imgSrc}" alt="Shared Note">`;
             }
@@ -380,7 +432,7 @@
         function searchUsers(query) {
             const resultsDiv = document.getElementById('searchResults');
             if (!query.trim()) {
-                resultsDiv.innerHTML = `<p style="font-size: 11px; color: #94a3b8; text-align: center;">Type to search registered peers...</p>`;
+                resultsDiv.innerHTML = `<p style="font-size: 12px; color: #64748b; text-align: center;">Type to search registered peers...</p>`;
                 return;
             }
 
@@ -396,7 +448,7 @@
                 );
 
                 if (filtered.length === 0) {
-                    resultsDiv.innerHTML = `<p style="font-size: 11px; color: #ef4444; text-align: center;">No registered user found.</p>`;
+                    resultsDiv.innerHTML = `<p style="font-size: 12px; color: #ef4444; text-align: center;">No registered user found.</p>`;
                     return;
                 }
 
@@ -407,7 +459,7 @@
                     resultsDiv.innerHTML += `
                         <div class="user-result-item">
                             <span><b>${u.name}</b> (@${u.username || 'user'})</span>
-                            ${isSelfOrAdmin ? '<span class="joined-tag" style="background:#334155;">Admin</span>' : `<button class="invite-action-btn" id="btn_${u.name.replace(/\s+/g,'')}" onclick="sendInvite('${u.name}')">Send Invite 🚀</button>`}
+                            ${isSelfOrAdmin ? '<span class="joined-tag" style="background:#e2e8f0; color:#334155;">Admin</span>' : `<button class="invite-action-btn" id="btn_${u.name.replace(/\s+/g,'')}" onclick="sendInvite('${u.name}')">Send Invite 🚀</button>`}
                         </div>
                     `;
                 });
