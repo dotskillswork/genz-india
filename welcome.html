@@ -46,7 +46,7 @@
             }
         }
 
-        /* Haath jod kar Namaste karne wala animated icon */
+        /* Animated Namaste Icon */
         .namaste-icon {
             font-size: 70px;
             margin-bottom: 20px;
@@ -77,7 +77,7 @@
             line-height: 1.5;
         }
 
-        /* Progress loader bar jo 5 second tak chalegi */
+        /* Progress loader bar */
         .loader-bar {
             width: 100%;
             height: 6px;
@@ -118,10 +118,9 @@
 <body>
 
     <div class="welcome-card">
-        <!-- Namaste Character Icon -->
         <div class="namaste-icon">🙏</div>
         <h1 id="welcomeHeading">Welcome to Gen'Z India</h1>
-        <p id="welcomeText">Aapka swagat hai! Hamara platform load ho raha hai, kripya thoda intezaar karein...</p>
+        <p id="welcomeText">Welcome! Our platform is loading, please wait a moment...</p>
         
         <div class="loader-bar">
             <div class="loader-progress"></div>
@@ -131,44 +130,44 @@
     </div>
 
     <script>
-    // LocalStorage se check karo ki user logged in hai ya nahi
-    const activeUser = JSON.parse(localStorage.getItem('genzUser'));
+        // LocalStorage se check karo ki user logged in hai ya nahi (Name ya Username uthane ke liye)
+        const activeUser = JSON.parse(localStorage.getItem('genzUser'));
+        const userName = activeUser ? (activeUser.name || activeUser.fullName || activeUser.username || "User") : "";
 
-    // Agar user logged in hai toh UI par uska naam show karo
-    if (activeUser && activeUser.fullName) {
-        document.getElementById('welcomeHeading').innerText = `Welcome, ${activeUser.fullName}!`;
-        document.getElementById('welcomeText').innerText = `Dobara swagat hai bhai! Aapka dashboard load ho raha hai...`;
-    }
-
-    // Awaaz (Speech Synthesis) ke zariye Namaste aur naam bolne ka function
-    function speakWelcome() {
-        if ('speechSynthesis' in window) {
-            let text = "Namaste! Gen'Z India mein aapka swagat hai.";
-            
-            if (activeUser && (activeUser.fullName || activeUser.username)) {
-                const userName = activeUser.fullName || activeUser.username;
-                text = `Namaste ${userName}! Gen'Z India mein aapka dubara swagat hai.`;
-            }
-
-            const utterance = new SpeechSynthesisUtterance(text);
-            utterance.lang = 'hi-IN';
-            utterance.rate = 0.9;
-            window.speechSynthesis.speak(utterance);
+        // Agar user logged in hai toh UI par uska naam show karo
+        if (activeUser && userName) {
+            document.getElementById('welcomeHeading').innerText = `Welcome, ${userName}!`;
+            document.getElementById('welcomeText').innerText = `Welcome back! Your dashboard is loading...`;
         }
-    }
 
-    window.addEventListener('load', () => {
-        setTimeout(speakWelcome, 500);
-    });
+        // Speech Synthesis ke zariye sirf naam ya welcome bolne ka function
+        function speakWelcome() {
+            if ('speechSynthesis' in window) {
+                let text = "Welcome to Gen'Z India.";
+                
+                if (userName) {
+                    text = `Welcome, ${userName}`;
+                }
 
-    // Smart Redirect Logic (Ek hi baar function rahega)
-    function redirectToNextPage() {
-        localStorage.setItem('hasSeenWelcome', 'true'); // Mark kar diya ki dekh liya
-        window.location.href = 'index.html'; // Seedha main dashboard par bhejo
-    }
+                const utterance = new SpeechSynthesisUtterance(text);
+                utterance.lang = 'en-US';
+                utterance.rate = 0.9;
+                window.speechSynthesis.speak(utterance);
+            }
+        }
 
-    // 5 second baad automatic redirect
-    setTimeout(redirectToNextPage, 5000);
-</script>
+        window.addEventListener('load', () => {
+            setTimeout(speakWelcome, 500);
+        });
+
+        // Smart Redirect Logic
+        function redirectToNextPage() {
+            localStorage.setItem('hasSeenWelcome', 'true'); 
+            window.location.href = 'index.html'; 
+        }
+
+        // 5 second baad automatic redirect
+        setTimeout(redirectToNextPage, 5000);
+    </script>
 </body>
 </html>
