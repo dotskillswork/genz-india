@@ -13,25 +13,34 @@
             font-family: 'Poppins', sans-serif;
         }
         body {
-            background-color: #0b0f19;
-            color: #f1f5f9;
+            background-color: #f8fafc;
+            color: #1e293b;
             min-height: 100vh;
             display: flex;
             flex-direction: column;
         }
         header {
-            background: #111827;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
             padding: 15px 30px;
             display: flex;
             align-items: center;
             justify-content: space-between;
-            border-bottom: 1px solid #1f2937;
+            border-bottom: 1px solid #e2e8f0;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.02);
         }
         .back-btn {
-            color: #38bdf8;
+            color: #0284c7;
             text-decoration: none;
-            font-size: 14px;
+            font-size: 13.5px;
             font-weight: 600;
+            transition: 0.2s;
+        }
+        .back-btn:hover {
+            color: #0369a1;
         }
         .container {
             max-width: 900px;
@@ -41,10 +50,10 @@
             flex: 1;
         }
         .hero-banner {
-            background: #111827;
-            border: 1px solid #1f2937;
-            border-radius: 12px;
-            padding: 20px;
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
+            border-radius: 16px;
+            padding: 24px;
             margin-bottom: 20px;
             text-align: center;
             display: flex;
@@ -52,29 +61,33 @@
             justify-content: space-between;
             flex-wrap: wrap;
             gap: 15px;
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.02);
         }
         .hero-banner-text {
             text-align: left;
         }
         .hero-banner h1 {
             font-size: 20px;
-            color: #f59e0b;
+            color: #d97706;
             margin-bottom: 4px;
+            font-weight: 700;
         }
         .hero-banner p {
-            font-size: 12px;
-            color: #94a3b8;
+            font-size: 13px;
+            color: #64748b;
         }
         .add-product-toggle-btn {
             background: #f59e0b;
-            color: #0f172a;
+            color: #fff;
             border: none;
             padding: 10px 20px;
-            border-radius: 8px;
+            border-radius: 10px;
             font-weight: 600;
-            font-size: 13px;
+            font-size: 13.5px;
             cursor: pointer;
             white-space: nowrap;
+            transition: 0.2s;
+            box-shadow: 0 4px 6px -1px rgba(245, 158, 11, 0.2);
         }
         .add-product-toggle-btn:hover {
             background: #d97706;
@@ -87,28 +100,29 @@
             margin-bottom: 20px;
         }
         .filter-tab {
-            background: #111827;
-            border: 1px solid #334155;
-            color: #94a3b8;
-            padding: 6px 14px;
+            background: #ffffff;
+            border: 1px solid #cbd5e1;
+            color: #64748b;
+            padding: 7px 16px;
             border-radius: 20px;
-            font-size: 12px;
+            font-size: 12.5px;
             font-weight: 500;
             cursor: pointer;
             white-space: nowrap;
             transition: all 0.2s;
         }
         .filter-tab.active, .filter-tab:hover {
-            background: #38bdf8;
-            color: #0f172a;
-            border-color: #38bdf8;
+            background: #0284c7;
+            color: #fff;
+            border-color: #0284c7;
             font-weight: 600;
         }
         .form-modal {
             display: none;
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.85);
+            background: rgba(0,0,0,0.6);
+            backdrop-filter: blur(5px);
             align-items: center;
             justify-content: center;
             z-index: 9999;
@@ -116,15 +130,16 @@
             overflow-y: auto;
         }
         .store-form-box {
-            background: #111827;
-            border: 1px solid #334155;
-            border-radius: 12px;
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
+            border-radius: 16px;
             padding: 25px;
             width: 100%;
             max-width: 550px;
             position: relative;
             max-height: 90vh;
             overflow-y: auto;
+            box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1);
         }
         .close-form-btn {
             position: absolute;
@@ -132,21 +147,21 @@
             right: 20px;
             background: none;
             border: none;
-            color: #94a3b8;
+            color: #64748b;
             font-size: 22px;
             cursor: pointer;
         }
         .close-form-btn:hover {
-            color: #fff;
+            color: #0f172a;
         }
         .store-form-box input, .store-form-box textarea, .store-form-box select {
             width: 100%;
-            background: #0b0f19;
-            border: 1px solid #334155;
-            border-radius: 8px;
+            background: #f8fafc;
+            border: 1px solid #cbd5e1;
+            border-radius: 10px;
             padding: 12px;
-            color: #fff;
-            font-size: 13px;
+            color: #1e293b;
+            font-size: 13.5px;
             margin-bottom: 12px;
         }
         .store-form-box input:focus, .store-form-box textarea:focus, .store-form-box select:focus {
@@ -163,109 +178,121 @@
             min-width: 150px;
         }
         .file-upload-box {
-            background: #0b0f19;
-            border: 1px dashed #334155;
-            padding: 12px;
-            border-radius: 8px;
+            background: #f8fafc;
+            border: 1px dashed #cbd5e1;
+            padding: 14px;
+            border-radius: 10px;
             margin-bottom: 12px;
         }
         .file-upload-box label {
-            font-size: 12px;
-            color: #38bdf8;
+            font-size: 12.5px;
+            color: #0284c7;
             display: block;
             margin-bottom: 6px;
             font-weight: 500;
         }
         .publish-btn {
             background: #f59e0b;
-            color: #0f172a;
+            color: #fff;
             border: none;
-            padding: 10px 24px;
-            border-radius: 8px;
+            padding: 12px 24px;
+            border-radius: 10px;
             font-weight: 600;
-            font-size: 13px;
+            font-size: 13.5px;
             cursor: pointer;
             width: 100%;
+            transition: 0.2s;
         }
         .publish-btn:hover {
             background: #d97706;
         }
         .store-card {
-            background: #111827;
-            border: 1px solid #1f2937;
-            border-radius: 12px;
-            padding: 20px;
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
+            border-radius: 16px;
+            padding: 24px;
             margin-bottom: 20px;
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.02);
+            transition: 0.3s;
+        }
+        .store-card:hover {
+            border-color: #f59e0b;
+            box-shadow: 0 10px 15px -3px rgba(245, 158, 11, 0.08);
         }
         .store-header {
             display: flex;
             align-items: center;
             justify-content: space-between;
-            margin-bottom: 10px;
+            margin-bottom: 12px;
+            flex-wrap: wrap;
+            gap: 10px;
         }
         .uploader-info {
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 12px;
         }
         .uploader-avatar {
-            width: 36px;
-            height: 36px;
+            width: 40px;
+            height: 40px;
             border-radius: 50%;
-            background: #334155;
+            background: #e2e8f0;
             object-fit: cover;
             display: flex;
             align-items: center;
             justify-content: center;
             color: #f59e0b;
             font-weight: 600;
-            font-size: 13px;
+            font-size: 14px;
+            border: 2px solid #fde68a;
         }
         .price-badge {
-            background: #78350f;
-            color: #fde68a;
-            padding: 4px 10px;
+            background: #fef3c7;
+            color: #d97706;
+            padding: 5px 12px;
             border-radius: 20px;
-            font-size: 12px;
+            font-size: 12.5px;
             font-weight: 600;
         }
         .free-badge {
-            background: #065f46;
-            color: #34d399;
-            padding: 4px 10px;
+            background: #d1fae5;
+            color: #065f46;
+            padding: 5px 12px;
             border-radius: 20px;
-            font-size: 12px;
+            font-size: 12.5px;
             font-weight: 600;
         }
         .item-title {
-            font-size: 16px;
-            color: #f8fafc;
-            margin-bottom: 6px;
+            font-size: 17px;
+            color: #0f172a;
+            margin-bottom: 8px;
             font-weight: 600;
         }
         .tags-row {
             display: flex;
             gap: 8px;
             flex-wrap: wrap;
-            margin-bottom: 10px;
+            margin-bottom: 12px;
         }
         .tag {
-            font-size: 11px;
-            color: #38bdf8;
-            background: #1e293b;
-            padding: 3px 8px;
-            border-radius: 4px;
+            font-size: 11.5px;
+            color: #0284c7;
+            background: rgba(2, 132, 199, 0.08);
+            border: 1px solid #bae6fd;
+            padding: 3px 10px;
+            border-radius: 6px;
+            font-weight: 500;
         }
         .item-desc {
-            font-size: 13px;
-            color: #cbd5e1;
+            font-size: 13.5px;
+            color: #334155;
             margin-bottom: 15px;
-            line-height: 1.5;
+            line-height: 1.6;
             word-break: break-word;
         }
         .store-footer {
-            border-top: 1px solid #1f2937;
-            padding-top: 12px;
+            border-top: 1px solid #e2e8f0;
+            padding-top: 14px;
             display: flex;
             align-items: center;
             justify-content: space-between;
@@ -275,86 +302,92 @@
         .action-btns {
             display: flex;
             gap: 8px;
+            align-items: center;
         }
         .btn-access {
-            background: #38bdf8;
-            color: #0f172a;
+            background: #10b981;
+            color: #fff;
             border: none;
-            padding: 6px 14px;
-            border-radius: 6px;
-            font-size: 12px;
+            padding: 7px 16px;
+            border-radius: 8px;
+            font-size: 12.5px;
             font-weight: 600;
             cursor: pointer;
             text-decoration: none;
+            transition: 0.2s;
         }
         .btn-access:hover {
-            background: #0ea5e9;
+            background: #059669;
         }
         .btn-buy {
             background: #f59e0b;
-            color: #0f172a;
+            color: #fff;
             border: none;
-            padding: 6px 14px;
-            border-radius: 6px;
-            font-size: 12px;
+            padding: 7px 16px;
+            border-radius: 8px;
+            font-size: 12.5px;
             font-weight: 600;
             cursor: pointer;
+            transition: 0.2s;
         }
         .btn-buy:hover {
             background: #d97706;
         }
         .seller-orders-box {
-            background: #0b0f19;
-            border: 1px solid #334155;
-            padding: 12px;
-            border-radius: 8px;
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            padding: 14px;
+            border-radius: 10px;
             margin-top: 15px;
         }
         .order-row {
             display: flex;
             align-items: center;
             justify-content: space-between;
-            font-size: 12px;
-            padding: 6px 0;
-            border-bottom: 1px solid #1f2937;
+            font-size: 12.5px;
+            padding: 8px 0;
+            border-bottom: 1px solid #e2e8f0;
         }
         .modal {
             display: none;
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.75);
+            background: rgba(0,0,0,0.6);
+            backdrop-filter: blur(5px);
             align-items: center;
             justify-content: center;
             z-index: 1000;
             padding: 15px;
         }
         .modal-content {
-            background: #111827;
-            border: 1px solid #334155;
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
             padding: 25px;
-            border-radius: 12px;
+            border-radius: 16px;
             width: 100%;
             max-width: 420px;
             text-align: center;
+            box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1);
         }
         .modal-content h3 {
-            color: #f59e0b;
+            color: #0f172a;
             font-size: 18px;
-            margin-bottom: 10px;
+            margin-bottom: 8px;
+            font-weight: 700;
         }
         .modal-content p {
             font-size: 13px;
-            color: #94a3b8;
+            color: #64748b;
             margin-bottom: 15px;
         }
         .upi-box {
-            background: #0b0f19;
-            border: 1px dashed #334155;
+            background: #f8fafc;
+            border: 1px dashed #cbd5e1;
             padding: 12px;
-            border-radius: 8px;
+            border-radius: 10px;
             margin-bottom: 15px;
             font-size: 14px;
-            color: #38bdf8;
+            color: #0284c7;
             font-weight: 600;
         }
         .modal-btns {
@@ -364,21 +397,37 @@
             flex-wrap: wrap;
         }
         .modal-btns button, .modal-btns a {
-            padding: 8px 16px;
-            border-radius: 6px;
-            font-size: 12px;
+            padding: 9px 18px;
+            border-radius: 8px;
+            font-size: 12.5px;
             font-weight: 600;
             cursor: pointer;
             border: none;
             text-decoration: none;
+            transition: 0.2s;
+        }
+        /* Star Rating CSS */
+        .rating-stars {
+            color: #f59e0b;
+            font-size: 13px;
+            font-weight: 600;
+        }
+        .star-select {
+            font-size: 24px;
+            cursor: pointer;
+            color: #cbd5e1;
+            transition: 0.2s;
+        }
+        .star-select.active, .star-select:hover {
+            color: #f59e0b;
         }
     </style>
 </head>
 <body>
 
     <header>
-        <a href="makefriend.html" class="back-btn">← Back to Dashboard</a>
-        <h3 style="font-size: 16px; color: #fff;">📚 Gen'Z Store Hub</h3>
+        <a href="index.html" class="back-btn">← Back to Dashboard</a>
+        <h3 style="font-size: 16px; color: #0f172a; font-weight: 700;">📚 Gen'Z Store Hub</h3>
         <div style="width: 80px;"></div>
     </header>
 
@@ -402,7 +451,7 @@
         <div class="form-modal" id="uploadFormModal">
             <div class="store-form-box">
                 <button class="close-form-btn" id="closeModalBtn">&times;</button>
-                <h3 style="font-size: 16px; color: #f59e0b; margin-bottom: 15px;">Upload Study Material / PDF Notes</h3>
+                <h3 style="font-size: 17px; color: #0284c7; margin-bottom: 15px; font-weight: 700;">Upload Study Material / PDF Notes</h3>
                 <form id="storeForm">
                     <input type="text" id="itemTitle" placeholder="Title (e.g., Data Structures Notes)" required>
                     
@@ -440,16 +489,16 @@
                     </div>
 
                     <div class="file-upload-box">
-                        <label>📎 Select PDF Document File from Device (Any Size)</label>
-                        <input type="file" id="itemPdfFile" accept=".pdf,image/*" required style="border:none; padding:4px 0; background:transparent; font-size:12px; color:#94a3b8;">
-                        <p id="fileNameDisplay" style="font-size: 11px; color: #38bdf8; margin-top: 4px;"></p>
+                        <label>📎 Select PDF Document File from Device</label>
+                        <input type="file" id="itemPdfFile" accept=".pdf,image/*" required style="border:none; padding:4px 0; background:transparent; font-size:12px; color:#64748b;">
+                        <p id="fileNameDisplay" style="font-size: 11.5px; color: #0284c7; margin-top: 6px; font-weight: 500;"></p>
                     </div>
                     
                     <div id="upiSection" style="display: none;">
                         <input type="text" id="uploaderUpi" placeholder="Enter your UPI ID for payments (e.g., yourname@paytm)">
                     </div>
 
-                    <textarea id="itemDesc" placeholder="Describe what's included in these notes or papers..." required style="min-height: 80px;"></textarea>
+                    <textarea id="itemDesc" placeholder="Describe what's included in these notes or papers..." required style="min-height: 90px;"></textarea>
                     
                     <button type="submit" class="publish-btn" id="publishBtn">Publish to Store 🚀</button>
                 </form>
@@ -457,7 +506,7 @@
         </div>
 
         <div id="storeFeedContainer">
-            <p style="color: #64748b; text-align: center; font-size: 13px;">Loading store materials...</p>
+            <p style="color: #64748b; text-align: center; font-size: 13.5px;">Loading store materials...</p>
         </div>
     </div>
 
@@ -469,11 +518,31 @@
             <div class="upi-box" id="modalUpiDisplay">UPI ID: loading...</div>
             
             <div id="paymentActionArea">
-                <p style="font-size: 11px; color: #f87171; margin-bottom: 15px;">After paying via UPI, click below to notify seller and send screenshot in chat for verification.</p>
+                <p style="font-size: 11.5px; color: #ef4444; margin-bottom: 15px; font-weight: 500;">After paying via UPI, click below to notify seller and send screenshot in chat for verification.</p>
                 <div class="modal-btns">
-                    <button type="button" style="background: #334155; color: #fff;" onclick="closeModal()">Cancel</button>
-                    <button type="button" style="background: #38bdf8; color: #0f172a;" id="notifySellerBtn">I Have Paid - Notify Seller 💳</button>
+                    <button type="button" style="background: #e2e8f0; color: #334155;" onclick="closeModal()">Cancel</button>
+                    <button type="button" style="background: #0284c7; color: #fff;" id="notifySellerBtn">I Have Paid - Notify Seller 💳</button>
                 </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Rating & Review Pop-up Modal -->
+    <div class="modal" id="ratingModal">
+        <div class="modal-content">
+            <h3>Rate this Study Material ⭐</h3>
+            <p>Help your peers by rating the accuracy and quality of these notes.</p>
+            <div style="display: flex; justify-content: center; gap: 8px; margin-bottom: 15px;" id="starContainer">
+                <span class="star-select" data-value="1">★</span>
+                <span class="star-select" data-value="2">★</span>
+                <span class="star-select" data-value="3">★</span>
+                <span class="star-select" data-value="4">★</span>
+                <span class="star-select" data-value="5">★</span>
+            </div>
+            <textarea id="reviewText" placeholder="Write a short review (optional)..." style="width:100%; background:#f8fafc; border:1px solid #cbd5e1; border-radius:8px; padding:10px; font-size:13px; margin-bottom:15px; resize:vertical; min-height:80px; color:#1e293b;"></textarea>
+            <div class="modal-btns">
+                <button type="button" style="background:#e2e8f0; color:#334155;" onclick="closeRatingModal()">Cancel</button>
+                <button type="button" style="background:#f59e0b; color:#fff;" id="submitRatingBtn">Submit Rating 🌟</button>
             </div>
         </div>
     </div>
@@ -583,7 +652,8 @@
                         description: desc,
                         author: activeUser.username,
                         authorPic: activeUser.profilePic || "",
-                        createdAt: Date.now()
+                        createdAt: Date.now(),
+                        ratings: [] // Array of {user, stars, review}
                     };
 
                     await addDoc(collection(db, 'store_items'), newItem);
@@ -633,7 +703,7 @@
             }
 
             if (filteredList.length === 0) {
-                container.innerHTML = `<p style="color: #64748b; text-align: center; font-size: 13px; padding: 20px;">No study materials found in this category.</p>`;
+                container.innerHTML = `<p style="color: #64748b; text-align: center; font-size: 13.5px; padding: 25px;">No study materials found in this category.</p>`;
                 return;
             }
 
@@ -648,13 +718,24 @@
                 const userOrder = cachedOrdersList.find(o => o.itemId === item.id && o.buyer === activeUser.username);
                 const isAccepted = userOrder && userOrder.status === 'accepted';
 
+                // Calculate average rating
+                let avgRating = 0;
+                const ratingsArr = item.ratings || [];
+                if (ratingsArr.length > 0) {
+                    const sum = ratingsArr.reduce((acc, r) => acc + r.stars, 0);
+                    avgRating = (sum / ratingsArr.length).toFixed(1);
+                }
+
                 let actionButtonHtml = "";
+                let rateButtonHtml = "";
                 if (isFree && item.fileUrl) {
                     actionButtonHtml = `<a href="${item.fileUrl}" target="_blank" download="${item.fileName || 'notes.pdf'}" class="btn-access">Download PDF 📥</a>`;
+                    rateButtonHtml = `<button class="btn-buy" style="background:#0284c7;" onclick="openRatingModal('${item.id}')">Rate ⭐</button>`;
                 } else if (isAccepted && item.fileUrl) {
                     actionButtonHtml = `<a href="${item.fileUrl}" target="_blank" download="${item.fileName || 'notes.pdf'}" class="btn-access">Download PDF Now 📥</a>`;
+                    rateButtonHtml = `<button class="btn-buy" style="background:#0284c7;" onclick="openRatingModal('${item.id}')">Rate ⭐</button>`;
                 } else if (userOrder && userOrder.status === 'pending') {
-                    actionButtonHtml = `<button class="btn-buy" style="background:#334155; color:#94a3b8; cursor:default;">Payment Pending Verification ⏳</button>`;
+                    actionButtonHtml = `<button class="btn-buy" style="background:#e2e8f0; color:#64748b; cursor:default;">Payment Pending ⏳</button>`;
                 } else {
                     actionButtonHtml = `<button class="btn-buy" onclick="openPaymentModal('${item.id}', '${item.author}', '${item.upi}', '${item.title}')">Buy / Pay 💳</button>`;
                 }
@@ -663,17 +744,17 @@
                 if (isOwner && !isFree) {
                     const itemOrders = cachedOrdersList.filter(o => o.itemId === item.id);
                     if (itemOrders.length > 0) {
-                        sellerPanelHtml += `<div class="seller-orders-box"><h4 style="font-size:12px; color:#f59e0b; margin-bottom:6px;">Incoming Buyer Payments:</h4>`;
+                        sellerPanelHtml += `<div class="seller-orders-box"><h4 style="font-size:12.5px; color:#d97706; margin-bottom:8px; font-weight:600;">Incoming Buyer Payments:</h4>`;
                         itemOrders.forEach(ord => {
-                            const statusColor = ord.status === 'accepted' ? '#34d399' : '#f87171';
+                            const statusColor = ord.status === 'accepted' ? '#059669' : '#dc2626';
                             const actionControl = ord.status === 'pending' 
-                                ? `<button onclick="acceptPayment('${ord.id}')" style="background:#10b981; color:#0f172a; border:none; padding:3px 8px; border-radius:4px; font-weight:600; cursor:pointer; font-size:11px;">Accept & Unlock ✅</button>`
-                                : `<span style="color:#34d399; font-weight:600;">Accepted ✔️</span>`;
+                                ? `<button onclick="acceptPayment('${ord.id}')" style="background:#10b981; color:#fff; border:none; padding:4px 10px; border-radius:6px; font-weight:600; cursor:pointer; font-size:11.5px;">Accept & Unlock ✅</button>`
+                                : `<span style="color:#059669; font-weight:600;">Accepted ✔️</span>`;
 
                             sellerPanelHtml += `
                                 <div class="order-row">
                                     <span>@${ord.buyer}</span>
-                                    <span style="color:${statusColor}">${ord.status.toUpperCase()}</span>
+                                    <span style="color:${statusColor}; font-weight:600;">${ord.status.toUpperCase()}</span>
                                     ${actionControl}
                                 </div>
                             `;
@@ -688,8 +769,8 @@
                             <div class="uploader-info">
                                 ${authorAvatar}
                                 <div>
-                                    <h4 style="font-size: 13px; color: #f8fafc;">@${item.author}</h4>
-                                    <span style="font-size: 11px; color: #94a3b8;">${timeString}</span>
+                                    <h4 style="font-size: 13.5px; color: #0f172a; font-weight:600;">@${item.author} <span class="rating-stars">⭐ ${ratingsArr.length > 0 ? avgRating : 'New'} (${ratingsArr.length})</span></h4>
+                                    <span style="font-size: 11px; color: #64748b;">${timeString}</span>
                                 </div>
                             </div>
                             <span class="${isFree ? 'free-badge' : 'price-badge'}">${isFree ? '🆓 Free' : '🏷️ ' + item.price}</span>
@@ -705,8 +786,9 @@
                         ${sellerPanelHtml}
 
                         <div class="store-footer">
-                            <a href="chat.html?with=${item.author}" style="font-size: 12px; color: #38bdf8; text-decoration: none;">Chat with @${item.author} 💬</a>
+                            <a href="chat.html?with=${item.author}" style="font-size: 12.5px; color: #0284c7; text-decoration: none; font-weight:500;">Chat with @${item.author} 💬</a>
                             <div class="action-btns">
+                                ${rateButtonHtml}
                                 ${actionButtonHtml}
                             </div>
                         </div>
@@ -760,6 +842,74 @@
         window.closeModal = function() {
             document.getElementById('paymentModal').style.display = 'none';
         };
+
+        // Rating Pop-up Logic
+        let selectedStarVal = 5;
+        let ratingItemId = null;
+
+        window.openRatingModal = function(itemId) {
+            ratingItemId = itemId;
+            selectedStarVal = 5;
+            document.getElementById('reviewText').value = '';
+            highlightStars(5);
+            document.getElementById('ratingModal').style.display = 'flex';
+        }
+
+        window.closeRatingModal = function() {
+            document.getElementById('ratingModal').style.display = 'none';
+            ratingItemId = null;
+        }
+
+        const stars = document.querySelectorAll('.star-select');
+        stars.forEach(star => {
+            star.addEventListener('click', function() {
+                selectedStarVal = parseInt(this.getAttribute('data-value'));
+                highlightStars(selectedStarVal);
+            });
+        });
+
+        function highlightStars(val) {
+            stars.forEach(s => {
+                const sVal = parseInt(s.getAttribute('data-value'));
+                if (sVal <= val) {
+                    s.classList.add('active');
+                } else {
+                    s.classList.remove('active');
+                }
+            });
+        }
+
+        document.getElementById('submitRatingBtn').addEventListener('click', async function() {
+            if (!ratingItemId) return;
+            const review = document.getElementById('reviewText').value.trim();
+
+            const newRating = {
+                user: activeUser.username,
+                stars: selectedStarVal,
+                review: review,
+                createdAt: Date.now()
+            };
+
+            try {
+                const itemRef = doc(db, 'store_items', ratingItemId);
+                const targetItem = cachedStoreList.find(i => i.id === ratingItemId);
+                let currentRatings = targetItem.ratings || [];
+                
+                // Replace if already rated by same user, else add
+                currentRatings = currentRatings.filter(r => r.user !== activeUser.username);
+                currentRatings.push(newRating);
+
+                await updateDoc(itemRef, {
+                    ratings: currentRatings
+                });
+
+                alert("Thank you for your rating! ⭐");
+                closeRatingModal();
+            } catch(err) {
+                console.error("Rating error:", err);
+                alert("Failed to submit rating.");
+            }
+        });
     </script>
 </body>
 </html>
