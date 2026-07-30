@@ -318,7 +318,12 @@
         const activeUser = JSON.parse(localStorage.getItem('genzUser'));
         if (!activeUser) window.location.href = 'login.html';
 
-        // Request Notification Permission and Save FCM Token
+        // Request Browser Notification Permission
+        if ("Notification" in window && Notification.permission !== "granted") {
+            Notification.requestPermission();
+        }
+
+        // Request FCM Token and Save
         async function requestNotificationPermission() {
             try {
                 const permission = await Notification.requestPermission();
@@ -433,10 +438,33 @@
 
         const q = query(collection(db, 'chats'), orderBy('createdAt', 'asc'));
         
+        let isFirstLoad = true;
         onSnapshot(q, (snapshot) => {
             const box = document.getElementById('messagesBox');
             box.innerHTML = "";
             const currentTime = Date.now();
+
+            snapshot.docChanges().forEach((change) => {
+                if (change.type === "added" && !isFirstLoad) {
+                    const msg = change.doc.data();
+                    // Agar message mujhe mila hai aur sender ye current chat wala user nahi hai ya tab bhi jab background/foreground me notification chahiye
+                    if (msg.receiver === activeUser.username && msg.sender !== chatWith) {
+                        if (Notification.permission === "granted") {
+                            const notification = new Notification(`New message from @${msg.sender}`, {
+                                body: msg.text || "Sent an attachment",
+                                icon: "https://cdn.jsdelivr.net/gh/twitter/twemoji@14.0.2/assets/72x72/26a1.png"
+                            });
+
+                            notification.onclick = function() {
+                                window.focus();
+                                window.location.href = `chat.html?with=${msg.sender}`;
+                            };
+                        }
+                    }
+                }
+            });
+
+            isFirstLoad = false;
 
             snapshot.forEach((docSnap) => {
                 const msg = docSnap.data();
