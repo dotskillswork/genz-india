@@ -13,25 +13,35 @@
             font-family: 'Poppins', sans-serif;
         }
         body {
-            background-color: #0b0f19;
-            color: #f1f5f9;
+            background-color: #f8fafc; /* Premium Light Background */
+            color: #1e293b;
             min-height: 100vh;
             display: flex;
             flex-direction: column;
+            overflow-x: hidden;
         }
         header {
-            background: #111827;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
             padding: 15px 30px;
             display: flex;
             align-items: center;
             justify-content: space-between;
-            border-bottom: 1px solid #1f2937;
+            border-bottom: 1px solid #e2e8f0;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.02);
         }
         .back-btn {
-            color: #38bdf8;
+            color: #4f46e5;
             text-decoration: none;
-            font-size: 14px;
+            font-size: 13.5px;
             font-weight: 600;
+            transition: 0.2s;
+        }
+        .back-btn:hover {
+            color: #3730a3;
         }
         .container {
             max-width: 900px;
@@ -40,51 +50,61 @@
             padding: 0 20px;
             flex: 1;
         }
+        
+        /* Stunning Gradient Hero Banner */
         .hero-banner {
-            background: #111827;
-            border: 1px solid #1f2937;
-            border-radius: 12px;
-            padding: 25px;
-            margin-bottom: 25px;
-            text-align: center;
+            background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
+            border-radius: 20px;
+            padding: 30px;
+            margin-bottom: 35px;
             display: flex;
             align-items: center;
             justify-content: space-between;
             flex-wrap: wrap;
-            gap: 15px;
+            gap: 20px;
+            box-shadow: 0 10px 25px -5px rgba(99, 102, 241, 0.3);
+            color: #ffffff;
         }
         .hero-banner-text {
-            text-align: left;
+            flex: 1;
+            min-width: 250px;
         }
         .hero-banner h1 {
-            font-size: 20px;
-            color: #f59e0b;
-            margin-bottom: 4px;
+            font-size: 24px;
+            margin-bottom: 8px;
+            font-weight: 700;
+            letter-spacing: -0.5px;
         }
         .hero-banner p {
-            font-size: 12px;
-            color: #94a3b8;
+            font-size: 13.5px;
+            color: #e0e7ff;
+            line-height: 1.5;
         }
         .add-talent-btn {
-            background: #f59e0b;
-            color: #0f172a;
+            background: #ffffff;
+            color: #4f46e5;
             border: none;
-            padding: 10px 20px;
-            border-radius: 8px;
-            font-weight: 600;
-            font-size: 13px;
+            padding: 12px 24px;
+            border-radius: 12px;
+            font-weight: 700;
+            font-size: 14px;
             cursor: pointer;
             white-space: nowrap;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
         }
         .add-talent-btn:hover {
-            background: #d97706;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(0,0,0,0.15);
         }
-        /* Modal Form */
+
+        /* Modal Form (Premium Clean Look) */
         .form-modal {
             display: none;
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.85);
+            background: rgba(15, 23, 42, 0.7);
+            backdrop-filter: blur(5px);
             align-items: center;
             justify-content: center;
             z-index: 9999;
@@ -92,152 +112,193 @@
             overflow-y: auto;
         }
         .talent-form-box {
-            background: #111827;
-            border: 1px solid #334155;
-            border-radius: 12px;
-            padding: 25px;
+            background: #ffffff;
+            border-radius: 20px;
+            padding: 30px;
             width: 100%;
             max-width: 550px;
             position: relative;
             max-height: 90vh;
             overflow-y: auto;
+            box-shadow: 0 25px 50px -12px rgba(0,0,0,0.25);
+            animation: modalSlideUp 0.4s ease-out;
+        }
+        @keyframes modalSlideUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
         }
         .close-form-btn {
             position: absolute;
             top: 15px;
             right: 20px;
-            background: none;
+            background: #f1f5f9;
             border: none;
-            color: #94a3b8;
-            font-size: 22px;
+            color: #64748b;
+            font-size: 20px;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
             cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: 0.2s;
         }
         .close-form-btn:hover {
-            color: #fff;
+            background: #e2e8f0;
+            color: #0f172a;
         }
         .talent-form-box input, .talent-form-box textarea, .talent-form-box select {
             width: 100%;
-            background: #0b0f19;
-            border: 1px solid #334155;
-            border-radius: 8px;
-            padding: 12px;
-            color: #fff;
-            font-size: 13px;
-            margin-bottom: 12px;
+            background: #f8fafc;
+            border: 1px solid #cbd5e1;
+            border-radius: 10px;
+            padding: 14px;
+            color: #1e293b;
+            font-size: 13.5px;
+            margin-bottom: 15px;
+            transition: 0.3s;
         }
         .talent-form-box input:focus, .talent-form-box textarea:focus, .talent-form-box select:focus {
             outline: none;
-            border-color: #f59e0b;
+            border-color: #8b5cf6;
+            box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.1);
         }
         .file-upload-box {
-            background: #0b0f19;
-            border: 1px dashed #334155;
-            padding: 12px;
-            border-radius: 8px;
-            margin-bottom: 12px;
+            background: #f8fafc;
+            border: 2px dashed #cbd5e1;
+            padding: 20px;
+            text-align: center;
+            border-radius: 12px;
+            margin-bottom: 15px;
+            transition: 0.3s;
+        }
+        .file-upload-box:hover {
+            border-color: #8b5cf6;
+            background: #f5f3ff;
         }
         .file-upload-box label {
-            font-size: 12px;
-            color: #38bdf8;
+            font-size: 13.5px;
+            color: #4f46e5;
             display: block;
-            margin-bottom: 6px;
-            font-weight: 500;
+            margin-bottom: 8px;
+            font-weight: 600;
+            cursor: pointer;
         }
         .publish-btn {
-            background: #f59e0b;
-            color: #0f172a;
+            background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
+            color: #ffffff;
             border: none;
-            padding: 10px 24px;
-            border-radius: 8px;
+            padding: 14px 24px;
+            border-radius: 10px;
             font-weight: 600;
-            font-size: 13px;
+            font-size: 14px;
             cursor: pointer;
             width: 100%;
+            transition: 0.3s;
+            box-shadow: 0 4px 6px rgba(99, 102, 241, 0.2);
         }
         .publish-btn:hover {
-            background: #d97706;
+            box-shadow: 0 6px 12px rgba(99, 102, 241, 0.3);
+            transform: translateY(-1px);
         }
+
         /* Talent Card Design */
         .talent-card {
-            background: #111827;
-            border: 1px solid #1f2937;
-            border-radius: 12px;
-            padding: 20px;
-            margin-bottom: 20px;
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
+            border-radius: 20px;
+            padding: 25px;
+            margin-bottom: 25px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.02);
+            transition: all 0.3s ease;
+        }
+        .talent-card:hover {
+            border-color: #c4b5fd;
+            transform: translateY(-4px);
+            box-shadow: 0 15px 25px -5px rgba(124, 58, 237, 0.1);
         }
         .talent-header {
             display: flex;
             align-items: center;
             justify-content: space-between;
-            margin-bottom: 12px;
+            margin-bottom: 15px;
+            flex-wrap: wrap;
+            gap: 10px;
         }
         .author-info {
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 12px;
         }
         .author-avatar {
-            width: 38px;
-            height: 38px;
+            width: 45px;
+            height: 45px;
             border-radius: 50%;
-            background: #334155;
+            background: #f1f5f9;
             object-fit: cover;
             display: flex;
             align-items: center;
             justify-content: center;
-            color: #f59e0b;
-            font-weight: 600;
-            font-size: 14px;
+            color: #4f46e5;
+            font-weight: 700;
+            font-size: 16px;
+            border: 2px solid #ddd6fe;
         }
         .category-badge {
-            background: #1e293b;
-            color: #38bdf8;
-            padding: 4px 10px;
+            background: #f5f3ff;
+            color: #6d28d9;
+            padding: 6px 12px;
             border-radius: 20px;
-            font-size: 11px;
+            font-size: 11.5px;
             font-weight: 600;
+            border: 1px solid #ede9fe;
         }
         .talent-title {
-            font-size: 17px;
-            color: #f8fafc;
-            margin-bottom: 8px;
-            font-weight: 600;
+            font-size: 19px;
+            color: #0f172a;
+            margin-bottom: 10px;
+            font-weight: 700;
+            letter-spacing: -0.3px;
         }
         .talent-desc {
-            font-size: 13px;
-            color: #cbd5e1;
-            margin-bottom: 12px;
-            line-height: 1.5;
+            font-size: 14px;
+            color: #475569;
+            margin-bottom: 18px;
+            line-height: 1.6;
             word-break: break-word;
         }
         .talent-img {
             width: 100%;
-            max-height: 350px;
+            max-height: 400px;
             object-fit: cover;
-            border-radius: 8px;
-            margin-bottom: 15px;
-            border: 1px solid #1f2937;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            border: 1px solid #f1f5f9;
         }
         .talent-footer {
-            border-top: 1px solid #1f2937;
-            padding-top: 12px;
+            border-top: 1px solid #e2e8f0;
+            padding-top: 15px;
             display: flex;
             align-items: center;
             justify-content: space-between;
             flex-wrap: wrap;
-            gap: 10px;
+            gap: 15px;
         }
         .opportunity-contact {
-            font-size: 12px;
-            color: #34d399;
-            background: #065f46;
-            padding: 4px 10px;
-            border-radius: 6px;
+            font-size: 12.5px;
+            color: #047857;
+            background: #d1fae5;
+            padding: 8px 16px;
+            border-radius: 8px;
             text-decoration: none;
-            font-weight: 500;
+            font-weight: 600;
+            transition: 0.2s;
+            border: 1px solid #a7f3d0;
         }
         .opportunity-contact:hover {
-            background: #047857;
+            background: #10b981;
+            color: #ffffff;
         }
         .card-actions {
             display: flex;
@@ -245,62 +306,65 @@
             align-items: center;
         }
         .like-btn {
-            background: #1e293b;
-            border: 1px solid #334155;
-            color: #f87171;
-            padding: 6px 12px;
-            border-radius: 6px;
-            font-size: 12px;
+            background: #fef2f2;
+            border: 1px solid #fecaca;
+            color: #ef4444;
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-size: 13px;
             font-weight: 600;
             cursor: pointer;
             display: flex;
             align-items: center;
-            gap: 5px;
+            gap: 6px;
+            transition: 0.2s;
         }
         .like-btn:hover {
-            background: #334155;
+            background: #fee2e2;
         }
         .chat-btn {
-            background: #38bdf8;
-            color: #0f172a;
+            background: #4f46e5;
+            color: #ffffff;
             border: none;
-            padding: 6px 14px;
-            border-radius: 6px;
-            font-size: 12px;
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-size: 13px;
             font-weight: 600;
             cursor: pointer;
             text-decoration: none;
+            transition: 0.2s;
+            box-shadow: 0 2px 4px rgba(79, 70, 229, 0.2);
         }
         .chat-btn:hover {
-            background: #0ea5e9;
+            background: #4338ca;
         }
     </style>
 </head>
 <body>
 
     <header>
-        <a href="makefriend.html" class="back-btn">← Back to Dashboard</a>
-        <h3 style="font-size: 16px; color: #fff;">💡 Innovation & Talent Showcase</h3>
+        <a href="index.html" class="back-btn">← Back to Dashboard</a>
+        <h3 style="font-size: 16px; color: #0f172a; font-weight: 700;">💡 Innovation & Talent Showcase</h3>
         <div style="width: 80px;"></div>
     </header>
 
     <div class="container">
-        <!-- Hero Banner -->
+        <!-- Premium Hero Banner -->
         <div class="hero-banner">
             <div class="hero-banner-text">
-                <h1>Showcase Your Innovation & Talent to the World</h1>
-                <p>Publish your projects, inventions or creative work. Attract opportunities & investors!</p>
+                <h1>Showcase Your Talent to the World</h1>
+                <p>Publish your projects, startup ideas, or creative work. Get discovered by peers & investors!</p>
             </div>
-            <button class="add-talent-btn" id="openModalBtn">+ Showcase Innovation 🚀</button>
+            <button class="add-talent-btn" id="openModalBtn">✨ Showcase Innovation</button>
         </div>
 
         <!-- Hidden Upload Modal Form -->
         <div class="form-modal" id="talentFormModal">
             <div class="talent-form-box">
                 <button class="close-form-btn" id="closeModalBtn">&times;</button>
-                <h3 style="font-size: 16px; color: #f59e0b; margin-bottom: 15px;">Publish Your Innovation / Talent</h3>
+                <h3 style="font-size: 18px; color: #4f46e5; margin-bottom: 20px; font-weight: 700;">Publish Your Innovation</h3>
                 <form id="talentForm">
-                    <input type="text" id="talentTitle" placeholder="Project / Innovation Title (e.g., Smart Solar Agriculture Bot)" required>
+                    <input type="text" id="talentTitle" placeholder="Project Title (e.g., Smart Solar Agriculture Bot)" required>
                     
                     <select id="talentCategory" required>
                         <option value="">Select Category</option>
@@ -312,24 +376,24 @@
                         <option value="Other Talent">Other Talent</option>
                     </select>
 
-                    <input type="email" id="talentEmail" placeholder="Your Contact Email (for opportunity offers e.g., you@gmail.com)" required>
+                    <input type="email" id="talentEmail" placeholder="Contact Email (e.g., founder@gmail.com)" required>
 
                     <div class="file-upload-box">
-                        <label>🖼️ Upload Project Image / Screenshot</label>
-                        <input type="file" id="talentImageFile" accept="image/*" required style="border:none; padding:4px 0; background:transparent; font-size:12px; color:#94a3b8;">
-                        <p id="fileNameDisplay" style="font-size: 11px; color: #38bdf8; margin-top: 4px;"></p>
+                        <label>🖼️ Upload Project Image / Cover</label>
+                        <input type="file" id="talentImageFile" accept="image/*" required style="border:none; padding:4px 0; background:transparent; font-size:12px; color:#64748b; width:100%;">
+                        <p id="fileNameDisplay" style="font-size: 11.5px; color: #4f46e5; margin-top: 6px; font-weight:500;"></p>
                     </div>
 
-                    <textarea id="talentDesc" placeholder="Describe your innovation, how it works, and what problem it solves..." required style="min-height: 100px;"></textarea>
+                    <textarea id="talentDesc" placeholder="Describe your innovation, how it works, and what problem it solves..." required></textarea>
                     
-                    <button type="submit" class="publish-btn" id="publishBtn">Showcase to World 🌟</button>
+                    <button type="submit" class="publish-btn" id="publishBtn">Showcase to World 🚀</button>
                 </form>
             </div>
         </div>
 
         <!-- Innovations Feed Container -->
         <div id="talentFeedContainer">
-            <p style="color: #64748b; text-align: center; font-size: 13px; padding: 20px;">Loading innovations and talents...</p>
+            <p style="color: #64748b; text-align: center; font-size: 14px; padding: 30px;">Loading spectacular innovations...</p>
         </div>
     </div>
 
@@ -372,7 +436,6 @@
             }
         });
 
-        // Fast image converter to Base64 for instant display & storage without errors
         function convertImageToBase64(file) {
             return new Promise((resolve, reject) => {
                 const reader = new FileReader();
@@ -420,7 +483,7 @@
                 console.error("Error publishing innovation:", err);
                 alert("Failed to publish. Image might be too large, try a smaller image.");
             } finally {
-                publishBtn.innerText = "Showcase to World 🌟";
+                publishBtn.innerText = "Showcase to World 🚀";
                 publishBtn.disabled = false;
             }
         });
@@ -436,7 +499,7 @@
             });
 
             if (talentList.length === 0) {
-                container.innerHTML = `<p style="color: #64748b; text-align: center; font-size: 13px; padding: 25px;">No innovations showcased yet. Be the first changemaker!</p>`;
+                container.innerHTML = `<p style="color: #64748b; text-align: center; font-size: 14px; padding: 30px;">No innovations showcased yet. Be the first changemaker!</p>`;
                 return;
             }
 
@@ -455,8 +518,8 @@
                             <div class="author-info">
                                 ${authorAvatar}
                                 <div>
-                                    <h4 style="font-size: 13px; color: #f8fafc;">@${item.author}</h4>
-                                    <span style="font-size: 11px; color: #94a3b8;">${timeString}</span>
+                                    <h4 style="font-size: 14px; color: #0f172a; font-weight: 700;">@${item.author}</h4>
+                                    <span style="font-size: 11.5px; color: #64748b;">${timeString}</span>
                                 </div>
                             </div>
                             <span class="category-badge">💡 ${item.category}</span>
@@ -468,7 +531,7 @@
                         ${item.imageUrl ? `<img src="${item.imageUrl}" class="talent-img">` : ''}
 
                         <div class="talent-footer">
-                            <a href="mailto:${item.email}?subject=Opportunity regarding your Innovation: ${encodeURIComponent(item.title)}" class="opportunity-contact">📧 Offer Opportunity (${item.email})</a>
+                            <a href="mailto:${item.email}?subject=Opportunity regarding your Innovation: ${encodeURIComponent(item.title)}" class="opportunity-contact">📧 Offer Opportunity</a>
                             
                             <div class="card-actions">
                                 <button class="like-btn" onclick="toggleLike('${item.id}')">${likeHeart} ${likesCount}</button>
