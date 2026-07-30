@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chats Hub | Gen'Z India</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+        body {
+            background-color: #f8fafc;
+            color: #1e293b;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        header {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 15px 25px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #e2e8f0;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+        }
+        .logo {
+            font-size: 20px;
+            font-weight: 700;
+            color: #0284c7;
+            text-decoration: none;
+        }
+        nav {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+        }
+        nav a {
+            color: #64748b;
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 13px;
+            transition: 0.3s;
+        }
+        nav a:hover, nav a.active {
+            color: #0284c7;
+        }
+        .container {
+            max-width: 700px;
+            width: 100%;
+            margin: 30px auto;
+            padding: 0 15px;
+            flex: 1;
+        }
+        .page-title {
+            color: #0f172a;
+            font-size: 22px;
+            margin-bottom: 20px;
+            font-weight: 700;
+        }
+        .chats-list {
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
+            border-radius: 16px;
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.02);
+            overflow: hidden;
+        }
+        .chat-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 15px 20px;
+            border-bottom: 1px solid #f1f5f9;
+            cursor: pointer;
+            transition: 0.2s;
+            text-decoration: none;
+        }
+        .chat-item:hover {
+            background: #f8fafc;
+        }
+        .chat-user-info {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+        .chat-user-info img {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid #0284c7;
+        }
+        .chat-user-info h4 {
+            font-size: 15px;
+            color: #0f172a;
+            font-weight: 600;
+        }
+        .chat-user-info p {
+            font-size: 12.5px;
+            color: #64748b;
+        }
+        .chat-arrow {
+            color: #0284c7;
+            font-weight: 600;
+            font-size: 13px;
+        }
+    </style>
+</head>
+<body>
+
+    <script>
+        const user = localStorage.getItem('genzUser');
+        if (!user) {
+            window.location.href = 'login.html';
+        }
+    </script>
+
+    <header>
+        <a href="index.html" class="logo">Gen'Z India ⚡</a>
+        <nav>
+            <a href="index.html">Dashboard</a>
+            <a href="makefriend.html">Make Friends</a>
+            <a href="chats.html" class="active">Chats 💬</a>
+            <a href="voiceup.html">Voice Up</a>
+        </nav>
+    </header>
+
+    <div class="container">
+        <h2 class="page-title">💬 Messages Hub</h2>
+        <div class="chats-list" id="chatsListContainer">
+            <p style="color: #64748b; font-size: 13.5px; text-align: center; padding: 30px;">Loading your conversations...</p>
+        </div>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-app.js";
+        import { getFirestore, collection, getDocs, query, where, or } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-firestore.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyCNLwSjHq6LlX9uUovTRHrz9ZfUWeIUWQM",
+            authDomain: "genz-india.firebaseapp.com",
+            projectId: "genz-india",
+            storageBucket: "genz-india.firebasestorage.app",
+            messagingSenderId: "149959470783",
+            appId: "1:149959470783:web:71b7969ee2c8fc049c200a",
+            measurementId: "G-RBRDSRKH"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+
+        const currentLoggedInUser = JSON.parse(localStorage.getItem('genzUser'));
+
+        async function loadConversations() {
+            const container = document.getElementById('chatsListContainer');
+            try {
+                // Get user's friends list
+                const userQuery = query(collection(db, 'users'), where("username", "==", currentLoggedInUser.username));
+                const userSnap = await getDocs(userQuery);
+                
+                let myFriends = [];
+                if (!userSnap.empty) {
+                    myFriends = userSnap.docs[0].data().friends || [];
+                }
+
+                // Also find users with whom chat messages exist
+                const messagesQuery = query(
+                    collection(db, 'chats'), 
+                    or(
+                        where("sender", "==", currentLoggedInUser.username),
+                        where("receiver", "==", currentLoggedInUser.username)
+                    )
+                );
+                const msgSnap = await getDocs(messagesQuery);
+                
+                let chattedUsernames = new Set();
+                msgSnap.forEach(doc => {
+                    const data = doc.data();
+                    if (data.sender !== currentLoggedInUser.username) chattedUsernames.add(data.sender);
+                    if (data.receiver !== currentLoggedInUser.username) chattedUsernames.add(data.receiver);
+                });
+
+                // Combine friends and chatted users unique set
+                let allContactUsernames = new Set([...myFriends, ...chattedUsernames]);
+
+                if (allContactUsernames.size === 0) {
+                    container.innerHTML = `<p style="color: #64748b; font-size: 13.5px; text-align: center; padding: 30px;">No chats yet. Add friends or start a conversation from the Make Friends page!</p>`;
+                    return;
+                }
+
+                container.innerHTML = '';
+                for (let username of allContactUsernames) {
+                    const uQuery = query(collection(db, 'users'), where("username", "==", username));
+                    const uSnap = await getDocs(uQuery);
+                    if (!uSnap.empty) {
+                        const uData = uSnap.docs[0].data();
+                        let avatar = uData.photo || uData.profilePic || 'https://cdn.jsdelivr.net/gh/twitter/twemoji@14.0.2/assets/72x72/1f464.png';
+
+                        container.innerHTML += `
+                            <a href="chat.html?with=${uData.username}" class="chat-item">
+                                <div class="chat-user-info">
+                                    <img src="${avatar}" alt="Avatar">
+                                    <div>
+                                        <h4>${uData.name}</h4>
+                                        <p>@${uData.username} • Tap to open chat</p>
+                                    </div>
+                                </div>
+                                <span class="chat-arrow">Chat &rarr;</span>
+                            </a>
+                        `;
+                    }
+                }
+            } catch(e) {
+                console.error(e);
+                container.innerHTML = `<p style="color: #ef4444; font-size: 13.5px; text-align: center; padding: 30px;">Error loading chats.</p>`;
+            }
+        }
+
+        loadConversations();
+    </script>
+</body>
+</html>
