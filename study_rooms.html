@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Study Rooms | Gen'Z India ⚡</title>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     
     <!-- Firebase SDKs -->
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
@@ -20,128 +20,220 @@
         body {
             background-color: #0b0f19;
             color: #f1f5f9;
-            padding: 20px;
-        }
-        .container {
-            max-width: 900px;
-            margin: 0 auto;
-        }
-        .header-row {
+            min-height: 100vh;
             display: flex;
-            justify-content: space-between;
+            flex-direction: column;
+        }
+        header {
+            background: rgba(17, 24, 39, 0.85);
+            backdrop-filter: blur(10px);
+            padding: 15px 30px;
+            display: flex;
             align-items: center;
-            margin-bottom: 25px;
+            justify-content: space-between;
+            border-bottom: 1px solid #1f2937;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
         }
         .back-btn {
             color: #38bdf8;
             text-decoration: none;
-            font-size: 13px;
+            font-size: 13.5px;
             font-weight: 600;
+            transition: 0.2s;
+        }
+        .back-btn:hover {
+            color: #7dd3fc;
+        }
+        .container {
+            max-width: 950px;
+            width: 100%;
+            margin: 30px auto;
+            padding: 0 20px;
+            flex: 1;
+        }
+
+        /* Vibrant Study Banner */
+        .hero-banner {
+            background: linear-gradient(135deg, #059669 0%, #0284c7 50%, #7c3aed 100%);
+            border-radius: 20px;
+            padding: 30px;
+            margin-bottom: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 20px;
+            box-shadow: 0 10px 25px -5px rgba(16, 185, 129, 0.25);
+            color: #ffffff;
+        }
+        .hero-banner-text h1 {
+            font-size: 22px;
+            font-weight: 700;
+            margin-bottom: 6px;
+            letter-spacing: -0.3px;
+        }
+        .hero-banner-text p {
+            font-size: 13px;
+            color: #e2e8f0;
         }
         .create-btn {
-            background: #10b981;
-            color: #fff;
+            background: #ffffff;
+            color: #059669;
             border: none;
-            padding: 8px 16px;
-            border-radius: 8px;
-            font-weight: 600;
+            padding: 12px 22px;
+            border-radius: 12px;
+            font-weight: 700;
             cursor: pointer;
-            font-size: 13px;
+            font-size: 13.5px;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            white-space: nowrap;
         }
+        .create-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(0,0,0,0.15);
+            background: #f8fafc;
+        }
+
+        /* Rooms Grid */
         .rooms-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-            gap: 15px;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
         }
         .room-card {
             background: #111827;
             border: 1px solid #1f2937;
-            padding: 20px;
-            border-radius: 12px;
+            padding: 24px;
+            border-radius: 16px;
             display: flex;
             flex-direction: column;
             justify-content: space-between;
-            gap: 15px;
+            gap: 20px;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);
+        }
+        .room-card:hover {
+            border-color: #38bdf8;
+            transform: translateY(-4px);
+            box-shadow: 0 12px 20px -5px rgba(56, 189, 248, 0.15);
+            background: #162032;
         }
         .room-card h3 {
             color: #f8fafc;
-            font-size: 16px;
+            font-size: 17px;
+            font-weight: 600;
+            margin-bottom: 6px;
         }
         .room-card p {
             color: #94a3b8;
-            font-size: 12px;
+            font-size: 12.5px;
         }
         .join-btn {
-            background: rgba(56, 189, 248, 0.1);
+            background: linear-gradient(135deg, rgba(56, 189, 248, 0.15) 0%, rgba(16, 185, 129, 0.15) 100%);
             color: #38bdf8;
             border: 1px solid #38bdf8;
-            padding: 8px;
-            border-radius: 6px;
+            padding: 10px;
+            border-radius: 10px;
             font-weight: 600;
             text-align: center;
             cursor: pointer;
             text-decoration: none;
-            font-size: 12px;
+            font-size: 13px;
+            transition: all 0.2s;
         }
+        .join-btn:hover {
+            background: #38bdf8;
+            color: #0f172a;
+            box-shadow: 0 4px 12px rgba(56, 189, 248, 0.3);
+        }
+
+        /* Modal Styles */
         .modal {
             display: none;
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.7);
+            background: rgba(11, 15, 25, 0.8);
+            backdrop-filter: blur(6px);
             justify-content: center;
             align-items: center;
+            z-index: 2000;
+            padding: 15px;
         }
         .modal-content {
             background: #111827;
-            padding: 25px;
-            border-radius: 12px;
+            padding: 30px;
+            border-radius: 20px;
             width: 100%;
-            max-width: 350px;
-            border: 1px solid #1f2937;
+            max-width: 400px;
+            border: 1px solid #334155;
+            box-shadow: 0 25px 50px -12px rgba(0,0,0,0.5);
+            animation: modalPop 0.3s ease-out;
+        }
+        @keyframes modalPop {
+            from { opacity: 0; transform: scale(0.95); }
+            to { opacity: 1; transform: scale(1); }
         }
         .modal-content h3 {
-            color: #10b981;
-            margin-bottom: 15px;
-            font-size: 16px;
+            color: #34d399;
+            margin-bottom: 18px;
+            font-size: 18px;
+            font-weight: 700;
         }
         .modal-content input {
             width: 100%;
             background: #0b0f19;
             border: 1px solid #334155;
-            border-radius: 8px;
-            padding: 10px;
+            border-radius: 10px;
+            padding: 12px 14px;
             color: #fff;
-            margin-bottom: 15px;
-            font-size: 13px;
+            margin-bottom: 20px;
+            font-size: 13.5px;
+        }
+        .modal-content input:focus {
+            outline: none;
+            border-color: #34d399;
+            box-shadow: 0 0 0 3px rgba(52, 211, 153, 0.1);
         }
         .btn-group {
             display: flex;
-            gap: 10px;
+            gap: 12px;
         }
     </style>
 </head>
 <body>
 
+    <header>
+        <a href="index.html" class="back-btn">← Back to Dashboard</a>
+        <h3 style="font-size: 16px; color: #fff; font-weight: 700;">👥 Gen'Z Study Hub</h3>
+        <div style="width: 80px;"></div>
+    </header>
+
     <div class="container">
-        <div class="header-row">
-            <a href="index.html" class="back-btn">← Back to Dashboard</a>
-            <h2 style="color: #f59e0b; font-size: 18px;">Active Study Rooms 👥</h2>
-            <button class="create-btn" onclick="openCreateModal()">+ Create Room</button>
+        <!-- Vibrant Banner -->
+        <div class="hero-banner">
+            <div class="hero-banner-text">
+                <h1>Active Study & Chill Rooms 🎧📚</h1>
+                <p>Join virtual study squads, discuss topics, share notes, and grind together!</p>
+            </div>
+            <button class="create-btn" onclick="openCreateModal()">+ Create Room 🚀</button>
         </div>
 
         <div class="rooms-grid" id="roomsGrid">
-            <p style="color: #94a3b8; font-size: 13px;">Loading rooms from cloud...</p>
+            <p style="color: #94a3b8; font-size: 13.5px; text-align: center; padding: 30px;">Loading rooms from cloud...</p>
         </div>
     </div>
 
     <!-- Create Room Modal -->
     <div class="modal" id="createModal">
         <div class="modal-content">
-            <h3>Create Study Room</h3>
-            <input type="text" id="roomNameInput" placeholder="Enter Room Name...">
+            <h3>🚀 Create Study Room</h3>
+            <input type="text" id="roomNameInput" placeholder="Enter Room Name (e.g., Night Owls Coding 💻)..." autocomplete="off">
             <div class="btn-group">
-                <button class="create-btn" style="flex:1;" onclick="createRoom()">Create</button>
-                <button class="create-btn" style="flex:1; background:#334155;" onclick="closeCreateModal()">Cancel</button>
+                <button class="create-btn" style="flex:1; background:#10b981; color:#fff;" onclick="createRoom()">Create Room ✨</button>
+                <button class="create-btn" style="flex:1; background:#334155; color:#cbd5e1;" onclick="closeCreateModal()">Cancel</button>
             </div>
         </div>
     </div>
@@ -171,7 +263,7 @@
         db.collection("studyRooms").orderBy("createdAt", "desc").onSnapshot((snapshot) => {
             const grid = document.getElementById('roomsGrid');
             if (snapshot.empty) {
-                grid.innerHTML = `<p style="color: #94a3b8; font-size: 13px;">No active study rooms. Create one!</p>`;
+                grid.innerHTML = `<p style="color: #94a3b8; font-size: 13.5px; text-align: center; padding: 30px; grid-column: 1/-1;">No active study rooms right now. Be the first to create one! 🌟</p>`;
                 return;
             }
 
@@ -181,10 +273,10 @@
                 grid.innerHTML += `
                     <div class="room-card">
                         <div>
-                            <h3>${room.name}</h3>
-                            <p>Admin / Creator: <b>${room.admin}</b></p>
+                            <h3>📖 ${room.name}</h3>
+                            <p style="margin-top: 6px;">Host / Creator: <b style="color: #38bdf8;">@${room.admin}</b></p>
                         </div>
-                        <button class="join-btn" onclick='joinRoom(${JSON.stringify(room)})'>Join Room 🚀</button>
+                        <button class="join-btn" onclick='joinRoom(${JSON.stringify(room)})'>Join Study Room 🚀</button>
                     </div>
                 `;
             });
@@ -209,7 +301,7 @@
             const roomData = {
                 id: roomId,
                 name: name,
-                admin: currentUser.name,
+                admin: currentUser.username || currentUser.name,
                 createdAt: firebase.firestore.FieldValue.serverTimestamp()
             };
 
