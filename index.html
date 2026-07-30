@@ -460,13 +460,13 @@
             badge.innerText = notifs.length;
 
             listContainer.innerHTML = '';
-            notifs.forEach((n, index) => {
+            notifs.forEach((n) => {
                 let actionBtns = '';
                 if (n.type === 'friend_request') {
                     actionBtns = `
                         <div style="display:flex; gap:6px; margin-top:6px;">
-                            <button onclick="acceptRequest('${n.id}', '${n.senderUsername}')" style="background:#10b981; color:#fff; border:none; padding:3px 8px; border-radius:4px; font-size:10px; cursor:pointer;">Accept</button>
-                            <button onclick="rejectRequest('${n.id}')" style="background:#ef4444; color:#fff; border:none; padding:3px 8px; border-radius:4px; font-size:10px; cursor:pointer;">Reject</button>
+                            <button onclick="acceptRequest('${n.id}', '${n.senderUsername}')" style="background:#10b981; color:#fff; border:none; padding:4px 8px; border-radius:4px; font-size:10px; cursor:pointer; font-weight:600;">Accept</button>
+                            <button onclick="rejectRequest('${n.id}')" style="background:#ef4444; color:#fff; border:none; padding:4px 8px; border-radius:4px; font-size:10px; cursor:pointer; font-weight:600;">Reject</button>
                         </div>
                     `;
                 }
@@ -485,19 +485,41 @@
             try {
                 await db.collection("notifications").doc(notifId).delete();
                 alert("Friend request accepted! 🎉");
-            } catch(e) { console.error(e); }
+                location.reload();
+            } catch(e) { 
+                console.error(e); 
+                alert("Error accepting request.");
+            }
         }
 
         window.rejectRequest = async function(notifId) {
             try {
                 await db.collection("notifications").doc(notifId).delete();
                 alert("Request rejected.");
-            } catch(e) { console.error(e); }
+            } catch(e) { 
+                console.error(e); 
+            }
         }
 
-        function clearNotifications() {
-            document.getElementById('notifList').innerHTML = `<div style="padding: 15px; text-align: center; color: #94a3b8; font-size: 12px;">No new alerts</div>`;
-            document.getElementById('notifBadge').style.display = 'none';
+        window.clearNotifications = async function() {
+            try {
+                const snapshot = await db.collection("notifications").get();
+                const batch = db.batch();
+                
+                snapshot.forEach((docSnap) => {
+                    const data = docSnap.data();
+                    if (data.targetUser && (data.targetUser.toLowerCase() === currentUser.name.toLowerCase() || data.targetUser.toLowerCase() === currentUser.username?.toLowerCase())) {
+                        batch.delete(docSnap.ref);
+                    }
+                });
+
+                await batch.commit();
+                document.getElementById('notifList').innerHTML = `<div style="padding: 15px; text-align: center; color: #94a3b8; font-size: 12px;">No new alerts</div>`;
+                document.getElementById('notifBadge').style.display = 'none';
+            } catch(err) {
+                console.error(err);
+                alert("Could not clear notifications.");
+            }
         }
     </script>
 </body>
