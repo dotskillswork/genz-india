@@ -28,43 +28,36 @@
         header {
             background: rgba(255, 255, 255, 0.95);
             backdrop-filter: blur(10px);
-            padding: 12px 25px;
+            padding: 10px 15px;
             display: flex;
             align-items: center;
             justify-content: space-between;
             border-bottom: 1px solid #e2e8f0;
             box-shadow: 0 2px 4px rgba(0,0,0,0.02);
             z-index: 10;
+            flex-wrap: wrap;
+            gap: 8px;
         }
         .back-btn {
             color: #0284c7;
             text-decoration: none;
-            font-size: 13.5px;
+            font-size: 13px;
             font-weight: 600;
-            transition: 0.2s;
-        }
-        .back-btn:hover {
-            color: #0369a1;
         }
         .header-actions {
             display: flex;
-            gap: 12px;
+            gap: 8px;
             align-items: center;
         }
         .action-chip {
             background: rgba(2, 132, 199, 0.08);
             color: #0284c7;
             border: 1px solid #bae6fd;
-            padding: 6px 14px;
-            border-radius: 8px;
-            font-size: 12.5px;
+            padding: 5px 10px;
+            border-radius: 6px;
+            font-size: 12px;
             font-weight: 600;
             cursor: pointer;
-            transition: 0.2s;
-        }
-        .action-chip:hover {
-            background: #0284c7;
-            color: #fff;
         }
         .workspace {
             display: flex;
@@ -74,7 +67,7 @@
             max-width: 900px;
             width: 100%;
             margin: 0 auto;
-            padding: 20px;
+            padding: 10px;
         }
         .chat-section {
             flex: 1;
@@ -83,7 +76,7 @@
             background: #ffffff;
             border: 1px solid #e2e8f0;
             border-radius: 16px;
-            padding: 20px;
+            padding: 15px;
             overflow: hidden;
             box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.02);
         }
@@ -92,15 +85,15 @@
             overflow-y: auto;
             display: flex;
             flex-direction: column;
-            gap: 12px;
-            padding-right: 8px;
-            margin-bottom: 15px;
+            gap: 10px;
+            padding-right: 5px;
+            margin-bottom: 12px;
         }
         .message {
-            max-width: 75%;
-            padding: 12px 16px;
+            max-width: 80%;
+            padding: 10px 14px;
             border-radius: 12px;
-            font-size: 13.5px;
+            font-size: 13px;
             line-height: 1.5;
             word-break: break-word;
             box-shadow: 0 1px 2px rgba(0,0,0,0.05);
@@ -125,64 +118,60 @@
             align-self: center;
             text-align: center;
             width: 100%;
-            font-size: 12px;
+            font-size: 11.5px;
             border-radius: 8px;
-            padding: 8px;
+            padding: 6px;
             font-weight: 500;
         }
         .message img {
-            max-width: 240px;
+            max-width: 200px;
             border-radius: 8px;
-            margin-top: 8px;
+            margin-top: 6px;
             display: block;
-            border: 1px solid rgba(0,0,0,0.1);
         }
+        
+        /* Mobile-Friendly Fixed Input Box */
         .chat-input-box {
             display: flex;
-            gap: 10px;
+            gap: 6px;
             align-items: center;
             background: #f8fafc;
-            padding: 8px 12px;
+            padding: 6px 10px;
             border-radius: 12px;
             border: 1px solid #cbd5e1;
+            width: 100%;
         }
         .chat-input-box input[type="text"] {
             flex: 1;
+            min-width: 0;
             background: transparent;
             border: none;
             outline: none;
             color: #1e293b;
-            font-size: 13.5px;
-            padding: 5px;
-        }
-        .chat-input-box input[type="text"]::placeholder {
-            color: #94a3b8;
+            font-size: 13px;
+            padding: 4px;
         }
         .file-upload-label {
             background: #ffffff;
             color: #0284c7;
-            padding: 8px 12px;
+            padding: 6px 10px;
             border-radius: 8px;
             cursor: pointer;
-            font-size: 13px;
+            font-size: 12px;
             font-weight: 600;
             border: 1px solid #bae6fd;
-            transition: 0.2s;
-        }
-        .file-upload-label:hover {
-            background: #0284c7;
-            color: #fff;
+            flex-shrink: 0;
         }
         .send-btn {
             background: #0284c7;
             color: #fff;
             border: none;
-            padding: 9px 20px;
+            padding: 8px 14px;
             border-radius: 8px;
             font-weight: 600;
-            font-size: 13px;
+            font-size: 12.5px;
             cursor: pointer;
-            transition: 0.2s;
+            flex-shrink: 0;
         }
         .send-btn:hover {
             background: #0369a1;
@@ -202,99 +191,87 @@
         }
         .modal-content {
             background: #ffffff;
-            padding: 25px;
+            padding: 20px;
             border-radius: 16px;
             width: 90%;
-            max-width: 400px;
+            max-width: 380px;
             border: 1px solid #e2e8f0;
             box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1);
         }
         .modal-content h3 {
             color: #0f172a;
-            margin-bottom: 14px;
-            font-size: 17px;
+            margin-bottom: 12px;
+            font-size: 16px;
             font-weight: 700;
         }
         .modal-content input {
             width: 100%;
             background: #f8fafc;
             border: 1px solid #cbd5e1;
-            border-radius: 10px;
-            padding: 12px 14px;
+            border-radius: 8px;
+            padding: 10px;
             color: #1e293b;
-            margin-bottom: 12px;
-            font-size: 13.5px;
-        }
-        .modal-content input:focus {
-            outline: none;
-            border-color: #0284c7;
-            box-shadow: 0 0 0 3px rgba(2, 132, 199, 0.1);
+            margin-bottom: 10px;
+            font-size: 13px;
         }
         .search-results {
-            max-height: 160px;
+            max-height: 140px;
             overflow-y: auto;
-            margin-bottom: 15px;
+            margin-bottom: 12px;
             display: flex;
             flex-direction: column;
-            gap: 8px;
+            gap: 6px;
         }
         .user-result-item {
             background: #f8fafc;
-            padding: 10px 14px;
-            border-radius: 8px;
+            padding: 8px 12px;
+            border-radius: 6px;
             border: 1px solid #e2e8f0;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            font-size: 12.5px;
+            font-size: 12px;
         }
         .invite-action-btn {
             background: #0284c7;
             color: #fff;
             border: none;
-            padding: 5px 12px;
-            border-radius: 6px;
+            padding: 4px 10px;
+            border-radius: 4px;
             font-weight: 600;
             cursor: pointer;
-            font-size: 11.5px;
-            transition: 0.2s;
-        }
-        .invite-action-btn:hover {
-            background: #0369a1;
+            font-size: 11px;
         }
         .joined-tag {
             background: #d1fae5;
             color: #065f46;
-            padding: 4px 10px;
-            border-radius: 6px;
+            padding: 3px 8px;
+            border-radius: 4px;
             font-weight: 600;
-            font-size: 11px;
+            font-size: 10.5px;
         }
         .btn-cancel {
             background: #e2e8f0;
             color: #334155;
             border: none;
-            padding: 10px;
-            border-radius: 8px;
+            padding: 8px;
+            border-radius: 6px;
             cursor: pointer;
-            font-size: 13px;
+            font-size: 12px;
             font-weight: 600;
             width: 100%;
-            transition: 0.2s;
-        }
-        .btn-cancel:hover {
-            background: #cbd5e1;
         }
     </style>
 </head>
 <body>
 
     <header>
-        <a href="study_rooms.html" class="back-btn">← Leave Room</a>
-        <h3 id="roomTitleHeader" style="font-size: 16px; color: #0f172a; font-weight: 700;">Study Room</h3>
+        <a href="study_rooms.html" class="back-btn">← Leave</a>
+        <h3 id="roomTitleHeader" style="font-size: 14.5px; color: #0f172a; font-weight: 700;">Study Room</h3>
         <div class="header-actions">
-            <button class="action-chip" onclick="openInviteModal()">+ Add Member</button>
-            <span id="roleIndicator" style="font-size: 12.5px; font-weight: 600; color: #0284c7;">● Member</span>
+            <button class="action-chip" onclick="location.reload()" title="Hard Refresh">🔄 Refresh</button>
+            <button class="action-chip" onclick="openInviteModal()">+ Add</button>
+            <span id="roleIndicator" style="font-size: 11.5px; font-weight: 600; color: #0284c7;">● Member</span>
         </div>
     </header>
 
@@ -305,10 +282,10 @@
             </div>
 
             <form class="chat-input-box" id="chatForm">
-                <label class="file-upload-label" title="Share Notes Image">
+                <label class="file-upload-label" title="Share Notes">
                     📷 <input type="file" id="imageInput" accept="image/*" style="display: none;">
                 </label>
-                <input type="text" id="messageInput" placeholder="Type a message or doubt..." autocomplete="off">
+                <input type="text" id="messageInput" placeholder="Type a message..." autocomplete="off">
                 <button type="submit" class="send-btn">Send</button>
             </form>
         </div>
@@ -320,7 +297,7 @@
             <h3>Search & Invite Members</h3>
             <input type="text" id="searchUserInput" placeholder="Search by name..." oninput="searchUsers(this.value)">
             <div class="search-results" id="searchResults">
-                <p style="font-size: 12px; color: #64748b; text-align: center;">Type to search registered peers...</p>
+                <p style="font-size: 11.5px; color: #64748b; text-align: center;">Type to search registered peers...</p>
             </div>
             <button class="btn-cancel" onclick="closeInviteModal()">Close</button>
         </div>
@@ -413,7 +390,7 @@
         function appendMessage(text, imgSrc, className, sender) {
             const div = document.createElement('div');
             div.className = `message ${className}`;
-            let content = `<b style="font-size:11px; opacity:0.8; display:block; margin-bottom:2px;">${sender}</b> ${text}`;
+            let content = `<b style="font-size:10.5px; opacity:0.8; display:block; margin-bottom:2px;">${sender}</b> ${text}`;
             if (imgSrc) {
                 content += `<img src="${imgSrc}" alt="Shared Note">`;
             }
@@ -432,7 +409,7 @@
         function searchUsers(query) {
             const resultsDiv = document.getElementById('searchResults');
             if (!query.trim()) {
-                resultsDiv.innerHTML = `<p style="font-size: 12px; color: #64748b; text-align: center;">Type to search registered peers...</p>`;
+                resultsDiv.innerHTML = `<p style="font-size: 11.5px; color: #64748b; text-align: center;">Type to search registered peers...</p>`;
                 return;
             }
 
@@ -448,7 +425,7 @@
                 );
 
                 if (filtered.length === 0) {
-                    resultsDiv.innerHTML = `<p style="font-size: 12px; color: #ef4444; text-align: center;">No registered user found.</p>`;
+                    resultsDiv.innerHTML = `<p style="font-size: 11.5px; color: #ef4444; text-align: center;">No registered user found.</p>`;
                     return;
                 }
 
