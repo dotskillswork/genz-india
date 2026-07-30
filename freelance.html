@@ -13,25 +13,34 @@
             font-family: 'Poppins', sans-serif;
         }
         body {
-            background-color: #0b0f19;
-            color: #f1f5f9;
+            background-color: #f8fafc;
+            color: #1e293b;
             min-height: 100vh;
             display: flex;
             flex-direction: column;
         }
         header {
-            background: #111827;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
             padding: 15px 30px;
             display: flex;
             align-items: center;
             justify-content: space-between;
-            border-bottom: 1px solid #1f2937;
+            border-bottom: 1px solid #e2e8f0;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.02);
         }
         .back-btn {
-            color: #38bdf8;
+            color: #0284c7;
             text-decoration: none;
-            font-size: 14px;
+            font-size: 13.5px;
             font-weight: 600;
+            transition: 0.2s;
+        }
+        .back-btn:hover {
+            color: #0369a1;
         }
         .container {
             max-width: 850px;
@@ -41,212 +50,262 @@
             flex: 1;
         }
         .hero-banner {
-            background: #111827;
-            border: 1px solid #1f2937;
-            border-radius: 12px;
-            padding: 20px;
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
+            border-radius: 16px;
+            padding: 24px;
             margin-bottom: 25px;
             text-align: center;
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.02);
         }
         .hero-banner h1 {
             font-size: 22px;
-            color: #38bdf8;
+            color: #0284c7;
             margin-bottom: 6px;
+            font-weight: 700;
         }
         .hero-banner p {
-            font-size: 13px;
-            color: #94a3b8;
+            font-size: 13.5px;
+            color: #64748b;
         }
-        /* Post Gig Form */
-        .gig-form-box {
-            background: #111827;
-            border: 1px solid #1f2937;
+
+        /* Toggle Post Gig Button */
+        .toggle-gig-btn {
+            background: #0284c7;
+            color: #fff;
+            border: none;
+            width: 100%;
+            padding: 14px;
             border-radius: 12px;
-            padding: 20px;
+            font-weight: 600;
+            font-size: 14px;
+            cursor: pointer;
+            margin-bottom: 25px;
+            transition: 0.3s;
+            box-shadow: 0 4px 6px -1px rgba(2, 132, 199, 0.2);
+        }
+        .toggle-gig-btn:hover {
+            background: #0369a1;
+        }
+
+        /* Post Gig Form (Hidden by default) */
+        .gig-form-box {
+            display: none;
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
+            border-radius: 16px;
+            padding: 24px;
             margin-bottom: 30px;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.05);
+            animation: fadeIn 0.3s ease-in-out;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
         }
         .gig-form-box input, .gig-form-box textarea, .gig-form-box select {
             width: 100%;
-            background: #0b0f19;
-            border: 1px solid #334155;
-            border-radius: 8px;
-            padding: 12px;
-            color: #fff;
-            font-size: 13px;
-            margin-bottom: 12px;
+            background: #f8fafc;
+            border: 1px solid #cbd5e1;
+            border-radius: 10px;
+            padding: 12px 14px;
+            color: #1e293b;
+            font-size: 13.5px;
+            margin-bottom: 14px;
         }
         .gig-form-box input:focus, .gig-form-box textarea:focus, .gig-form-box select:focus {
             outline: none;
-            border-color: #38bdf8;
+            border-color: #0284c7;
+            box-shadow: 0 0 0 3px rgba(2, 132, 199, 0.1);
         }
         .gig-form-box textarea {
             resize: vertical;
-            min-height: 90px;
+            min-height: 100px;
         }
         .form-row {
             display: flex;
             gap: 12px;
+            flex-wrap: wrap;
         }
         .form-row input, .form-row select {
             flex: 1;
+            min-width: 200px;
         }
         .post-gig-btn {
-            background: #38bdf8;
-            color: #0f172a;
+            background: #0284c7;
+            color: #fff;
             border: none;
-            padding: 10px 24px;
-            border-radius: 8px;
+            padding: 12px 24px;
+            border-radius: 10px;
             font-weight: 600;
-            font-size: 13px;
+            font-size: 13.5px;
             cursor: pointer;
             width: 100%;
+            transition: 0.2s;
         }
         .post-gig-btn:hover {
-            background: #0ea5e9;
+            background: #0369a1;
         }
+
         /* Gig Cards Feed */
         .gig-card {
-            background: #111827;
-            border: 1px solid #1f2937;
-            border-radius: 12px;
-            padding: 20px;
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
+            border-radius: 16px;
+            padding: 24px;
             margin-bottom: 20px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.02);
+            transition: 0.3s;
+        }
+        .gig-card:hover {
+            border-color: #0284c7;
+            box-shadow: 0 10px 15px -3px rgba(2, 132, 199, 0.08);
         }
         .gig-card.closed {
-            border-color: #7f1d1d;
-            opacity: 0.85;
+            border-color: #fecaca;
+            background: #fff5f5;
+            opacity: 0.9;
         }
         .gig-header {
             display: flex;
             align-items: center;
             justify-content: space-between;
-            margin-bottom: 10px;
+            margin-bottom: 12px;
+            flex-wrap: wrap;
+            gap: 10px;
         }
         .poster-info {
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 12px;
         }
         .poster-avatar {
-            width: 36px;
-            height: 36px;
+            width: 40px;
+            height: 40px;
             border-radius: 50%;
-            background: #334155;
+            background: #e2e8f0;
             object-fit: cover;
             display: flex;
             align-items: center;
             justify-content: center;
-            color: #38bdf8;
+            color: #0284c7;
             font-weight: 600;
-            font-size: 13px;
+            font-size: 14px;
+            border: 2px solid #bae6fd;
         }
         .budget-badge {
-            background: #065f46;
-            color: #34d399;
-            padding: 4px 10px;
+            background: #d1fae5;
+            color: #065f46;
+            padding: 5px 12px;
             border-radius: 20px;
             font-size: 12px;
             font-weight: 600;
         }
         .closed-badge {
-            background: #7f1d1d;
-            color: #fca5a5;
-            padding: 4px 10px;
+            background: #fee2e2;
+            color: #991b1b;
+            padding: 5px 12px;
             border-radius: 20px;
             font-size: 12px;
             font-weight: 600;
         }
         .gig-title {
-            font-size: 16px;
-            color: #f8fafc;
-            margin-bottom: 6px;
+            font-size: 17px;
+            color: #0f172a;
+            margin-bottom: 8px;
             font-weight: 600;
         }
         .gig-category {
-            font-size: 11px;
-            color: #38bdf8;
-            background: #1e293b;
-            padding: 3px 8px;
-            border-radius: 4px;
+            font-size: 11.5px;
+            color: #0284c7;
+            background: rgba(2, 132, 199, 0.08);
+            border: 1px solid #bae6fd;
+            padding: 3px 10px;
+            border-radius: 6px;
             display: inline-block;
-            margin-bottom: 10px;
+            margin-bottom: 12px;
+            font-weight: 500;
         }
         .gig-desc {
-            font-size: 13px;
-            color: #cbd5e1;
-            margin-bottom: 12px;
-            line-height: 1.5;
+            font-size: 13.5px;
+            color: #334155;
+            margin-bottom: 15px;
+            line-height: 1.6;
             word-break: break-word;
         }
         .stats-info {
-            font-size: 12px;
-            color: #38bdf8;
+            font-size: 12.5px;
+            color: #0284c7;
             margin-bottom: 15px;
             font-weight: 500;
         }
         .gig-footer {
-            border-top: 1px solid #1f2937;
-            padding-top: 12px;
+            border-top: 1px solid #e2e8f0;
+            padding-top: 14px;
             display: flex;
             align-items: center;
             justify-content: space-between;
             flex-wrap: wrap;
-            gap: 10px;
+            gap: 12px;
         }
         .action-group {
             display: flex;
             gap: 8px;
             align-items: center;
+            flex-wrap: wrap;
         }
         .apply-btn {
             background: #10b981;
-            color: #0f172a;
+            color: #fff;
             border: none;
-            padding: 6px 14px;
-            border-radius: 6px;
-            font-size: 12px;
+            padding: 7px 16px;
+            border-radius: 8px;
+            font-size: 12.5px;
             font-weight: 600;
             cursor: pointer;
+            transition: 0.2s;
         }
         .apply-btn:hover {
             background: #059669;
         }
         .applied-btn {
-            background: #065f46;
-            color: #34d399;
+            background: #d1fae5;
+            color: #065f46;
             border: none;
-            padding: 6px 14px;
-            border-radius: 6px;
-            font-size: 12px;
+            padding: 7px 16px;
+            border-radius: 8px;
+            font-size: 12.5px;
             font-weight: 600;
             cursor: default;
         }
         .chat-btn {
-            background: #38bdf8;
-            color: #0f172a;
+            background: #0284c7;
+            color: #fff;
             border: none;
-            padding: 6px 14px;
-            border-radius: 6px;
-            font-size: 12px;
+            padding: 7px 16px;
+            border-radius: 8px;
+            font-size: 12.5px;
             font-weight: 600;
             text-decoration: none;
             cursor: pointer;
+            transition: 0.2s;
         }
         .chat-btn:hover {
-            background: #0ea5e9;
+            background: #0369a1;
         }
         .close-deal-btn {
-            background: #7f1d1d;
-            color: #fca5a5;
-            border: 1px solid #991b1b;
-            padding: 6px 12px;
-            border-radius: 6px;
-            font-size: 11px;
+            background: #fee2e2;
+            color: #991b1b;
+            border: 1px solid #fca5a5;
+            padding: 7px 14px;
+            border-radius: 8px;
+            font-size: 12px;
             font-weight: 600;
             cursor: pointer;
+            transition: 0.2s;
         }
         .close-deal-btn:hover {
-            background: #991b1b;
+            background: #fecaca;
         }
 
         /* Modal Popup for Application */
@@ -254,41 +313,47 @@
             display: none;
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.7);
+            background: rgba(0,0,0,0.6);
+            backdrop-filter: blur(5px);
             align-items: center;
             justify-content: center;
-            z-index: 1000;
+            z-index: 2000;
             padding: 15px;
         }
         .modal-content {
-            background: #111827;
-            border: 1px solid #334155;
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
             padding: 25px;
-            border-radius: 12px;
+            border-radius: 16px;
             width: 100%;
             max-width: 450px;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
         }
         .modal-content textarea {
             width: 100%;
-            background: #0b0f19;
-            border: 1px solid #334155;
-            border-radius: 8px;
-            padding: 10px;
-            color: #fff;
-            font-size: 13px;
-            margin-bottom: 12px;
-            margin-top: 6px;
+            background: #f8fafc;
+            border: 1px solid #cbd5e1;
+            border-radius: 10px;
+            padding: 12px;
+            color: #1e293b;
+            font-size: 13.5px;
+            margin-bottom: 15px;
+            margin-top: 8px;
             min-height: 100px;
             resize: vertical;
         }
+        .modal-content textarea:focus {
+            outline: none;
+            border-color: #0284c7;
+        }
         .file-upload-box {
-            margin-bottom: 15px;
+            margin-bottom: 20px;
         }
         .file-upload-box label {
             display: block;
-            font-size: 12px;
-            color: #38bdf8;
-            margin-bottom: 5px;
+            font-size: 12.5px;
+            color: #0284c7;
+            margin-bottom: 6px;
             cursor: pointer;
             font-weight: 500;
         }
@@ -298,20 +363,21 @@
             justify-content: flex-end;
         }
         .modal-btns button {
-            padding: 8px 16px;
-            border-radius: 6px;
-            font-size: 12px;
+            padding: 9px 18px;
+            border-radius: 8px;
+            font-size: 12.5px;
             font-weight: 600;
             cursor: pointer;
             border: none;
+            transition: 0.2s;
         }
     </style>
 </head>
 <body>
 
     <header>
-        <a href="makefriend.html" class="back-btn">← Back to Dashboard</a>
-        <h3 style="font-size: 16px; color: #fff;">💼 Freelance & Gigs Hub</h3>
+        <a href="index.html" class="back-btn">← Back to Dashboard</a>
+        <h3 style="font-size: 16px; color: #0f172a; font-weight: 700;">💼 Freelance & Gigs Hub</h3>
         <div style="width: 80px;"></div>
     </header>
 
@@ -321,9 +387,12 @@
             <p>Post tasks, coding projects, or design gigs and collaborate with talented campus peers.</p>
         </div>
 
-        <!-- Post Gig Form -->
-        <div class="gig-form-box">
-            <h3 style="font-size: 15px; color: #38bdf8; margin-bottom: 15px;">Post a New Gig / Task</h3>
+        <!-- Toggle Button to Open Post Gig Form -->
+        <button class="toggle-gig-btn" id="toggleGigBtn" onclick="toggleGigForm()">➕ Post a New Gig / Task</button>
+
+        <!-- Post Gig Form (Hidden Initially) -->
+        <div class="gig-form-box" id="gigFormBox">
+            <h3 style="font-size: 16px; color: #0284c7; margin-bottom: 15px; font-weight: 700;">Create a Gig Post</h3>
             <form id="gigForm">
                 <input type="text" id="gigTitle" placeholder="Gig Title (e.g., React JS Landing Page Design)" required>
                 <div class="form-row">
@@ -345,28 +414,28 @@
 
         <!-- Live Gigs Feed -->
         <div id="gigsFeedContainer">
-            <p style="color: #64748b; text-align: center; font-size: 13px;">Loading active gigs...</p>
+            <p style="color: #64748b; text-align: center; font-size: 13.5px;">Loading active gigs...</p>
         </div>
     </div>
 
     <!-- Apply Modal -->
     <div class="modal" id="applyModal">
         <div class="modal-content">
-            <h3 style="font-size: 16px; color: #38bdf8; margin-bottom: 6px;">Apply for this Gig</h3>
-            <p style="font-size: 12px; color: #94a3b8; margin-bottom: 12px;">Type your resume/details manually OR upload your resume file (PDF/Image).</p>
+            <h3 style="font-size: 17px; color: #0284c7; margin-bottom: 6px; font-weight: 700;">Apply for this Gig</h3>
+            <p style="font-size: 12.5px; color: #64748b; margin-bottom: 15px;">Type your resume/details manually OR upload your resume file (PDF/Image).</p>
             
-            <label style="font-size: 12px; color: #cbd5e1; font-weight: 500;">Manual Resume / Cover Letter</label>
+            <label style="font-size: 12.5px; color: #334155; font-weight: 600;">Manual Resume / Cover Letter</label>
             <textarea id="manualResumeText" placeholder="Write about your skills, experience, or message for the poster..."></textarea>
             
             <div class="file-upload-box">
                 <label>📎 Or Upload Resume File (PDF / Image)</label>
-                <input type="file" id="resumeFileInput" accept=".pdf,image/*" style="font-size: 12px; color: #94a3b8;">
-                <p id="fileNameShow" style="font-size: 11px; color: #38bdf8; margin-top: 4px;"></p>
+                <input type="file" id="resumeFileInput" accept=".pdf,image/*" style="font-size: 12px; color: #64748b;">
+                <p id="fileNameShow" style="font-size: 11.5px; color: #0284c7; margin-top: 6px; font-weight: 500;"></p>
             </div>
 
             <div class="modal-btns">
-                <button type="button" style="background: #334155; color: #fff;" onclick="closeModal()">Cancel</button>
-                <button type="button" style="background: #10b981; color: #0f172a;" onclick="submitApplication()" id="submitAppBtn">Submit Application ✅</button>
+                <button type="button" style="background: #e2e8f0; color: #334155;" onclick="closeModal()">Cancel</button>
+                <button type="button" style="background: #10b981; color: #fff;" onclick="submitApplication()" id="submitAppBtn">Submit Application ✅</button>
             </div>
         </div>
     </div>
@@ -394,6 +463,19 @@
         }
 
         let selectedGigId = null;
+
+        // Toggle Gig Form visibility
+        window.toggleGigForm = function() {
+            const box = document.getElementById('gigFormBox');
+            const btn = document.getElementById('toggleGigBtn');
+            if (box.style.display === 'block') {
+                box.style.display = 'none';
+                btn.innerText = "➕ Post a New Gig / Task";
+            } else {
+                box.style.display = 'block';
+                btn.innerText = "✖ Close Form";
+            }
+        }
 
         document.getElementById('resumeFileInput').addEventListener('change', function(e) {
             const file = e.target.files[0];
@@ -429,6 +511,7 @@
             try {
                 await addDoc(collection(db, 'gigs'), newGig);
                 document.getElementById('gigForm').reset();
+                toggleGigForm(); // Close form after publishing
             } catch (err) {
                 console.error("Error posting gig:", err);
                 alert("Failed to publish gig.");
@@ -450,7 +533,7 @@
             });
 
             if (gigsList.length === 0) {
-                container.innerHTML = `<p style="color: #64748b; text-align: center; font-size: 13px; padding: 20px;">No gigs posted yet. Be the first to post a project or task!</p>`;
+                container.innerHTML = `<p style="color: #64748b; text-align: center; font-size: 13.5px; padding: 25px;">No gigs posted yet. Be the first to post a project or task!</p>`;
                 return;
             }
 
@@ -471,10 +554,10 @@
 
                 let actionHtml = "";
                 if (isClosed) {
-                    actionHtml = `<span style="font-size: 12px; color: #f87171; font-weight: 600;">🚫 Applications Closed - Deal Done</span>`;
+                    actionHtml = `<span style="font-size: 12.5px; color: #ef4444; font-weight: 600;">🚫 Applications Closed - Deal Done</span>`;
                 } else if (isOwner) {
                     actionHtml = `
-                        <span style="font-size: 11px; color: #64748b; font-style: italic;">Your Gig</span>
+                        <span style="font-size: 12px; color: #64748b; font-style: italic;">Your Gig</span>
                         <button class="close-deal-btn" onclick="closeDeal('${gig.id}')">Mark Deal Done 🔒</button>
                     `;
                 } else {
@@ -498,8 +581,8 @@
                             <div class="poster-info">
                                 ${authorAvatar}
                                 <div>
-                                    <h4 style="font-size: 13px; color: #f8fafc;">@${gig.author}</h4>
-                                    <span style="font-size: 11px; color: #94a3b8;">${timeString}</span>
+                                    <h4 style="font-size: 13.5px; color: #0f172a; font-weight: 600;">@${gig.author}</h4>
+                                    <span style="font-size: 11px; color: #64748b;">${timeString}</span>
                                 </div>
                             </div>
                             ${badgeHtml}
@@ -513,7 +596,7 @@
                         </div>
 
                         <div class="gig-footer">
-                            <span style="font-size: 11px; color: #64748b;">Apply with manual text or resume file, or chat</span>
+                            <span style="font-size: 11.5px; color: #64748b;">Apply with manual text or resume file, or chat</span>
                             ${actionHtml}
                         </div>
                     </div>
@@ -533,15 +616,6 @@
             document.getElementById('applyModal').style.display = 'none';
             selectedGigId = null;
         };
-
-        function convertFileToBase64(file) {
-            return new Promise((resolve, reject) => {
-                const reader = new FileReader();
-                reader.readAsDataURL(file);
-                reader.onload = () => resolve(reader.result);
-                reader.onerror = error => reject(error);
-            });
-        }
 
         window.submitApplication = async function() {
             const manualText = document.getElementById('manualResumeText').value.trim();
