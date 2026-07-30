@@ -6,6 +6,10 @@
     <title>Dashboard | Gen'Z India ⚡</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     
+    <!-- PWA Manifest Link -->
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#0284c7">
+
     <!-- Firebase SDKs -->
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
@@ -35,6 +39,8 @@
             top: 0;
             z-index: 1000;
             box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+            flex-wrap: wrap;
+            gap: 10px;
         }
         .logo {
             font-size: 18px;
@@ -46,6 +52,7 @@
             display: flex;
             gap: 8px;
             align-items: center;
+            flex-wrap: wrap;
         }
         .logout-btn {
             background: #ef4444;
@@ -61,6 +68,24 @@
         .logout-btn:hover {
             background: #dc2626;
         }
+        
+        /* Install App Button Styling */
+        .install-app-btn {
+            display: none;
+            background: #10b981;
+            color: #fff;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 6px;
+            font-size: 11px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: 0.2s;
+        }
+        .install-app-btn:hover {
+            background: #059669;
+        }
+
         .container {
             max-width: 1000px;
             margin: 20px auto;
@@ -288,6 +313,9 @@
     <header>
         <a href="index.html" class="logo">Gen'Z ⚡</a>
         <nav>
+            <!-- Install App Button (Only visible on index.html when supported) -->
+            <button id="installAppBtn" class="install-app-btn">📱 Install App</button>
+
             <div class="notif-container" onclick="toggleNotifDropdown(event)">
                 <div class="notif-bell">🔔 Alerts</div>
                 <span class="notif-badge" id="notifBadge" style="display: none;">0</span>
@@ -374,6 +402,28 @@
     </div>
 
     <script>
+        // PWA Install Prompt Script
+        let deferredPrompt;
+        const installBtn = document.getElementById('installAppBtn');
+
+        window.addEventListener('beforeinstallprompt', (e) => {
+            e.preventDefault();
+            deferredPrompt = e;
+            installBtn.style.display = 'inline-block';
+        });
+
+        installBtn.addEventListener('click', async () => {
+            if (deferredPrompt) {
+                deferredPrompt.prompt();
+                const { outcome } = await deferredPrompt.userChoice;
+                if (outcome === 'accepted') {
+                    console.log('User accepted the install prompt');
+                }
+                deferredPrompt = null;
+                installBtn.style.display = 'none';
+            }
+        });
+
         const firebaseConfig = {
             apiKey: "AIzaSyCNLwSjHq6LlX9uUovTRHrz9ZfUWeIUWQM",
             authDomain: "genz-india.firebaseapp.com",
@@ -483,10 +533,8 @@
 
         window.acceptRequest = async function(notifId, senderUsername) {
             try {
-                // 1. Notification delete karo
                 await db.collection("notifications").doc(notifId).delete();
 
-                // 2. Sender ka data update karo (sentRequests se hata kar friends mein daalo)
                 const senderQuery = await db.collection("users").where("username", "==", senderUsername).get();
                 if (!senderQuery.empty) {
                     const senderDoc = senderQuery.docs[0];
@@ -505,7 +553,6 @@
                     });
                 }
 
-                // 3. Current User ka data update karo (requestsReceived se hata kar friends mein daalo)
                 const meQuery = await db.collection("users").where("username", "==", currentUser.username).get();
                 if (!meQuery.empty) {
                     const meDoc = meQuery.docs[0];
@@ -536,7 +583,6 @@
             try {
                 await db.collection("notifications").doc(notifId).delete();
 
-                // Current user ke requestsReceived se sender ko hatao
                 const meQuery = await db.collection("users").where("username", "==", currentUser.username).get();
                 if (!meQuery.empty) {
                     const meData = meQuery.docs[0].data();
