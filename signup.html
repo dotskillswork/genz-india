@@ -3,6 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Google Search Console optimization: Prevent indexing auth pages -->
+    <meta name="robots" content="noindex, nofollow">
     <title>Sign Up | Gen'Z India</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="manifest" href="manifest.json">
@@ -109,12 +111,23 @@
         .auth-link a:hover {
             color: #0369a1;
         }
+        .error-msg {
+            background: #fee2e2;
+            color: #991b1b;
+            padding: 10px;
+            border-radius: 8px;
+            font-size: 12px;
+            margin-bottom: 15px;
+            display: none;
+            text-align: center;
+        }
     </style>
 </head>
 <body>
 
     <div class="auth-card">
         <h2>Join Gen'Z India ⚡</h2>
+        <div id="errorAlert" class="error-msg"></div>
         <form id="signupForm">
             <div class="form-group">
                 <label>Full Name</label>
@@ -130,7 +143,7 @@
                     <input type="email" id="sEmailReal" placeholder="name@email.com" autocomplete="email" required>
                 </div>
                 <div class="form-group">
-                    <label>Password</label>
+                    <label>Password (Min 6 chars)</label>
                     <input type="password" id="sPass" placeholder="••••••••" autocomplete="new-password" required>
                 </div>
             </div>
@@ -165,10 +178,11 @@
         </form>
     </div>
 
-    <!-- Firebase Script -->
+    <!-- Firebase Secure Script -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-app.js";
-        import { getFirestore, collection, addDoc, getDocs, query, where } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-firestore.js";
+        import { getAuth, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-auth.js";
+        import { getFirestore, doc, setDoc, getDocs, collection, query, where } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-firestore.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyCNLwSjHq6LlX9uUovTRHrz9ZfUwEIUWQM",
@@ -181,6 +195,7 @@
         };
 
         const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
         const db = getFirestore(app);
 
         function convertAndCompressImage(fileInputId) {
@@ -231,6 +246,9 @@
             event.preventDefault();
             
             const btn = document.getElementById('submitBtn');
+            const errorAlert = document.getElementById('errorAlert');
+            errorAlert.style.display = 'none';
+            
             btn.innerText = "Creating Account...";
             btn.disabled = true;
 
@@ -244,33 +262,26 @@
             let course = document.getElementById('sCourse').value.trim();
 
             try {
-                let photoBase64 = await convertAndCompressImage('sPhoto');
-
+                // Check if username is already taken in Firestore
                 const qUser = query(collection(db, "users"), where("username", "==", username));
                 const queryUserSnapshot = await getDocs(qUser);
 
                 if (!queryUserSnapshot.empty) {
-                    alert('Username already taken! Please choose another unique username.');
-                    btn.innerText = "Create Account";
-                    btn.disabled = false;
-                    return;
+                    throw new Error('Username already taken! Please choose another unique username.');
                 }
 
-                const qEmail = query(collection(db, "users"), where("email", "==", email));
-                const emailSnapshot = await getDocs(qEmail);
+                let photoBase64 = await convertAndCompressImage('sPhoto');
 
-                if (!emailSnapshot.empty) {
-                    alert('This email is already registered! Please login.');
-                    btn.innerText = "Create Account";
-                    btn.disabled = false;
-                    return;
-                }
+                // 1. Create User securely using Firebase Authentication
+                const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+                const user = userCredential.user;
 
+                // 2. Save additional profile info in Firestore using user.uid as document ID
                 let userData = {
+                    uid: user.uid,
                     name: name,
                     username: username,
                     email: email,
-                    password: password,
                     city: city,
                     state: state,
                     college: college,
@@ -280,13 +291,22 @@
                     createdAt: Date.now()
                 };
 
-                await addDoc(collection(db, "users"), userData);
+                await setDoc(doc(db, "users", user.uid), userData);
+
                 alert('Account created successfully! Please login.');
                 window.location.href = 'login.html';
 
             } catch(e) {
                 console.error("Signup Error: ", e);
-                alert('Signup Failed: ' + (e.message || 'Please try again.'));
+                let msg = e.message || 'Please try again.';
+                if (e.code === 'auth/email-already-in-use') {
+                    msg = 'This email is already registered! Please login.';
+                } else if (e.code === 'auth/weak-password') {
+                    msg = 'Password should be at least 6 characters long.';
+                }
+                
+                errorAlert.innerText = msg;
+                errorAlert.style.display = 'block';
                 btn.innerText = "Create Account";
                 btn.disabled = false;
             }
