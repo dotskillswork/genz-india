@@ -194,6 +194,7 @@
             flex-direction: column;
             justify-content: space-between;
             box-shadow: 0 4px 15px rgba(0, 0, 0, 0.03);
+            position: relative;
         }
         .hub-card:hover {
             border-color: #ea580c;
@@ -227,6 +228,21 @@
             background: #ea580c;
             color: #ffffff;
             border-color: #ea580c;
+        }
+
+        /* Card Live Notification Badge */
+        .card-badge {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: #dc2626;
+            color: #ffffff;
+            font-size: 11px;
+            font-weight: 700;
+            padding: 3px 8px;
+            border-radius: 12px;
+            box-shadow: 0 4px 10px rgba(220, 38, 38, 0.3);
+            display: none;
         }
 
         /* Footer Links inside Container */
@@ -533,6 +549,7 @@
 
         <div class="hub-grid">
             <a href="makefriend.html" class="hub-card">
+                <span class="card-badge" id="badge_friend">0</span>
                 <div>
                     <h3>🤝 Make Friends</h3>
                     <p>Discover student profiles, follow and chat with peers.</p>
@@ -541,6 +558,7 @@
             </a>
 
             <a href="doubtbox.html" class="hub-card">
+                <span class="card-badge" id="badge_doubt">0</span>
                 <div>
                     <h3>💬 DoubtBox</h3>
                     <p>Ask academic & coding doubts, get verified answers.</p>
@@ -549,6 +567,7 @@
             </a>
 
             <a href="voiceup.html" class="hub-card">
+                <span class="card-badge" id="badge_voice">0</span>
                 <div>
                     <h3>✊ Voice Up</h3>
                     <p>Share campus issues, updates, and participate.</p>
@@ -557,6 +576,7 @@
             </a>
 
             <a href="freelance.html" class="hub-card">
+                <span class="card-badge" id="badge_gig">0</span>
                 <div>
                     <h3>💼 Freelance & Gigs</h3>
                     <p>Find student projects and micro-internships.</p>
@@ -565,6 +585,7 @@
             </a>
 
             <a href="store.html" class="hub-card">
+                <span class="card-badge" id="badge_store">0</span>
                 <div>
                     <h3>📦 Gen'Z Store</h3>
                     <p>Exchange handwritten notes and study materials.</p>
@@ -573,6 +594,7 @@
             </a>
 
             <a href="innovation.html" class="hub-card">
+                <span class="card-badge" id="badge_innov">0</span>
                 <div>
                     <h3>💡 Innovations</h3>
                     <p>Showcase your tech projects and startup ideas.</p>
@@ -664,7 +686,7 @@
                 }
             }
             setupRealtimeNotifications();
-            setupRealtimeChatNotifications();
+            setupCardActivityTrackers();
         });
 
         function toggleNotifDropdown(e) {
@@ -683,7 +705,6 @@
             }
         });
 
-        let combinedAlertsList = [];
         let latestTargetUrl = "chats.html";
 
         function setupRealtimeNotifications() {
@@ -703,12 +724,11 @@
                     return false;
                 });
 
+                const friendReqsCount = userNotifs.filter(n => n.type === 'friend_request').length;
+                updateCardBadge('badge_friend', friendReqsCount);
+
                 mergeAndRenderAlerts(userNotifs, null);
             });
-        }
-
-        function setupRealtimeChatNotifications() {
-            if (!currentUser) return;
 
             db.collection('chats').onSnapshot((snapshot) => {
                 let unreadChats = [];
@@ -730,6 +750,81 @@
             });
         }
 
+        // Setup live tracking for other feature cards with local storage last-viewed count comparison
+        function setupCardActivityTrackers() {
+            if (!currentUser) return;
+
+            // 1. DoubtBox Tracker
+            db.collection("doubts").onSnapshot((snapshot) => {
+                let totalDoubts = snapshot.size;
+                let lastSeenCount = parseInt(localStorage.getItem('lastSeen_doubts') || '0');
+                let unreadCount = totalDoubts - lastSeenCount;
+                updateCardBadge('badge_doubt', unreadCount > 0 ? unreadCount : 0);
+            });
+
+            // 2. Voice Up Tracker
+            db.collection("voiceup_reports").onSnapshot((snapshot) => {
+                let totalVoice = snapshot.size;
+                let lastSeenCount = parseInt(localStorage.getItem('lastSeen_voice') || '0');
+                let unreadCount = totalVoice - lastSeenCount;
+                updateCardBadge('badge_voice', unreadCount > 0 ? unreadCount : 0);
+            });
+
+            // 3. Freelance Gigs Tracker
+            db.collection("gigs").where("isClosed", "==", false).onSnapshot((snapshot) => {
+                let totalGigs = snapshot.size;
+                let lastSeenCount = parseInt(localStorage.getItem('lastSeen_gigs') || '0');
+                let unreadCount = totalGigs - lastSeenCount;
+                updateCardBadge('badge_gig', unreadCount > 0 ? unreadCount : 0);
+            });
+
+            // 4. Store Tracker
+            db.collection("store_items").onSnapshot((snapshot) => {
+                let totalStore = snapshot.size;
+                let lastSeenCount = parseInt(localStorage.getItem('lastSeen_store') || '0');
+                let unreadCount = totalStore - lastSeenCount;
+                updateCardBadge('badge_store', unreadCount > 0 ? unreadCount : 0);
+            });
+
+            // 5. Innovations Tracker
+            db.collection("innovations").onSnapshot((snapshot) => {
+                let totalInnov = snapshot.size;
+                let lastSeenCount = parseInt(localStorage.getItem('lastSeen_innov') || '0');
+                let unreadCount = totalInnov - lastSeenCount;
+                updateCardBadge('badge_innov', unreadCount > 0 ? unreadCount : 0);
+            });
+        }
+
+        // Helper to mark a section as viewed when user clicks its card
+        document.querySelectorAll('.hub-grid .hub-card').forEach(card => {
+            card.addEventListener('click', function() {
+                const href = this.getAttribute('href');
+                if (href === 'doubtbox.html') {
+                    db.collection("doubts").get().then(snap => localStorage.setItem('lastSeen_doubts', snap.size));
+                } else if (href === 'voiceup.html') {
+                    db.collection("voiceup_reports").get().then(snap => localStorage.setItem('lastSeen_voice', snap.size));
+                } else if (href === 'freelance.html') {
+                    db.collection("gigs").where("isClosed", "==", false).get().then(snap => localStorage.setItem('lastSeen_gigs', snap.size));
+                } else if (href === 'store.html') {
+                    db.collection("store_items").get().then(snap => localStorage.setItem('lastSeen_store', snap.size));
+                } else if (href === 'innovation.html') {
+                    db.collection("innovations").get().then(snap => localStorage.setItem('lastSeen_innov', snap.size));
+                }
+            });
+        });
+
+        function updateCardBadge(badgeId, count) {
+            const badge = document.getElementById(badgeId);
+            if (badge) {
+                if (count > 0) {
+                    badge.style.display = 'block';
+                    badge.innerText = count;
+                } else {
+                    badge.style.display = 'none';
+                }
+            }
+        }
+
         let latestGeneralNotifs = [];
         let latestChatNotifs = [];
 
@@ -737,9 +832,8 @@
             if (genNotifs) latestGeneralNotifs = genNotifs;
             if (chatNotifs) latestChatNotifs = chatNotifs;
 
-            combinedAlertsList = [...latestGeneralNotifs, ...latestChatNotifs];
+            let combinedAlertsList = [...latestGeneralNotifs, ...latestChatNotifs];
             
-            // Sort by time or creation if possible, else keep combined
             const listContainer = document.getElementById('notifList');
             const badge = document.getElementById('notifBadge');
 
@@ -882,7 +976,6 @@
 
                 await batch.commit();
 
-                // Also clear unread chats view status if desired or handle via local list clear
                 latestChatNotifs = [];
                 mergeAndRenderAlerts(null, []);
 
