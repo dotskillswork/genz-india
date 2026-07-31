@@ -1,0 +1,477 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>भारतीय कृषि और फसलें (Agriculture of India) | Gen'Z India 🇮🇳</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        body {
+            background-color: #f7fee7; /* Light Agri-Green Tint */
+            color: #1e293b;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            line-height: 1.6;
+        }
+
+        /* Top Tiranga Border */
+        body::before {
+            content: "";
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 5px;
+            background: linear-gradient(to right, #FF9933, #FFFFFF, #138808);
+            z-index: 1001;
+        }
+
+        header {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 15px 30px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 1px solid #d9f99d;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .back-btn {
+            color: #16a34a;
+            text-decoration: none;
+            font-size: 13.5px;
+            font-weight: 600;
+            transition: 0.2s;
+        }
+
+        .back-btn:hover {
+            color: #15803d;
+        }
+
+        .container {
+            max-width: 1200px;
+            width: 100%;
+            margin: 30px auto;
+            padding: 0 20px;
+            flex: 1;
+        }
+
+        /* Agriculture Hero Section */
+        .agri-hero {
+            background: linear-gradient(135deg, #14532d 0%, #166534 50%, #15803d 100%);
+            color: #ffffff;
+            border-radius: 24px;
+            padding: 40px;
+            margin-bottom: 40px;
+            box-shadow: 0 15px 35px rgba(22, 101, 52, 0.25);
+            border: 1px solid #4ade80;
+        }
+
+        .agri-hero h1 {
+            font-size: 32px;
+            font-weight: 800;
+            margin-bottom: 12px;
+            color: #fef08a;
+        }
+
+        .agri-hero p {
+            font-size: 14.5px;
+            line-height: 1.8;
+            color: #f7fee7;
+            margin-bottom: 25px;
+        }
+
+        .seasons-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 15px;
+        }
+
+        .season-card {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(8px);
+            border: 1px solid rgba(254, 240, 138, 0.3);
+            padding: 18px;
+            border-radius: 14px;
+        }
+
+        .season-card h4 {
+            font-size: 14px;
+            color: #fef08a;
+            text-transform: uppercase;
+            margin-bottom: 6px;
+        }
+
+        .season-card p {
+            font-size: 13px;
+            color: #ffffff;
+            margin: 0;
+            line-height: 1.5;
+        }
+
+        /* Section Title */
+        .section-title {
+            font-size: 22px;
+            font-weight: 800;
+            color: #14532d;
+            margin: 35px 0 20px 0;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            border-bottom: 2px solid #d9f99d;
+            padding-bottom: 10px;
+        }
+
+        /* Grid */
+        .grid-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 25px;
+            margin-bottom: 40px;
+        }
+
+        .card {
+            background: #ffffff;
+            border-radius: 18px;
+            border: 1px solid #d9f99d;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(22, 101, 52, 0.04);
+            transition: all 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            padding: 25px;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(22, 101, 52, 0.12);
+            border-color: #22c55e;
+        }
+
+        .card-top {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+
+        .card-icon {
+            font-size: 32px;
+            background: #f0fdf4;
+            width: 60px;
+            height: 60px;
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid #bbf7d0;
+        }
+
+        .card-title {
+            font-size: 19px;
+            font-weight: 700;
+            color: #14532d;
+        }
+
+        .card-tag {
+            font-size: 11.5px;
+            color: #16a34a;
+            font-weight: 600;
+        }
+
+        .card-text {
+            color: #475569;
+            font-size: 13px;
+            line-height: 1.6;
+            margin-bottom: 20px;
+        }
+
+        .detail-btn {
+            background: #16a34a;
+            color: #ffffff;
+            border: none;
+            padding: 10px 16px;
+            border-radius: 10px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.2s;
+            text-align: center;
+            width: 100%;
+        }
+
+        .detail-btn:hover {
+            background: #15803d;
+        }
+
+        /* Modal Popup Styles */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(15, 23, 42, 0.75);
+            backdrop-filter: blur(5px);
+            z-index: 2000;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .modal-box {
+            background: #ffffff;
+            max-width: 650px;
+            width: 100%;
+            border-radius: 20px;
+            padding: 30px;
+            max-height: 85vh;
+            overflow-y: auto;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+            position: relative;
+        }
+
+        .close-btn {
+            position: absolute;
+            top: 20px; right: 20px;
+            background: #f1f5f9;
+            border: none;
+            width: 36px; height: 36px;
+            border-radius: 50%;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+            color: #475569;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: 0.2s;
+        }
+
+        .close-btn:hover {
+            background: #e2e8f0;
+            color: #0f172a;
+        }
+
+        .modal-title {
+            font-size: 24px;
+            font-weight: 800;
+            color: #14532d;
+            margin-bottom: 5px;
+        }
+
+        .modal-subtitle {
+            font-size: 12.5px;
+            color: #16a34a;
+            font-weight: 700;
+            margin-bottom: 15px;
+            text-transform: uppercase;
+        }
+
+        .modal-section {
+            margin-bottom: 12px;
+        }
+
+        .modal-section h4 {
+            font-size: 13.5px;
+            color: #15803d;
+            font-weight: 700;
+            margin-bottom: 3px;
+        }
+
+        .modal-section p {
+            color: #334155;
+            font-size: 13px;
+            line-height: 1.5;
+        }
+
+        footer {
+            text-align: center;
+            padding: 20px;
+            background: #ffffff;
+            border-top: 1px solid #d9f99d;
+            color: #64748b;
+            font-size: 13px;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <a href="indian.html" class="back-btn">← Back to Indian Hub</a>
+        <h3 style="font-size: 16px; color: #14532d; font-weight: 700;">🌾 भारतीय कृषि और फसल प्रणाली</h3>
+        <div style="width: 80px;"></div>
+    </header>
+
+    <!-- Detail Modal Box -->
+    <div id="agriModal" class="modal-overlay" onclick="closeModal()">
+        <div class="modal-box" onclick="event.stopPropagation()">
+            <button class="close-btn" onclick="closeModal()">×</button>
+            <div id="modalRegionTag" class="modal-subtitle">Region</div>
+            <h2 id="modalRegionName" class="modal-title">Name</h2>
+            <hr style="border: none; border-top: 1px solid #e2e8f0; margin: 15px 0;">
+            
+            <div class="modal-section">
+                <h4>🌾 मुख्य फसलें (Major Crops)</h4>
+                <p id="modalCrops"></p>
+            </div>
+            <div class="modal-section">
+                <h4>🚜 कृषि पद्धतियाँ एवं विशेषताएँ (Farming Practices)</h4>
+                <p id="modalPrac"></p>
+            </div>
+            <div class="modal-section">
+                <h4>💧 सिंचाई के प्रमुख साधन (Irrigation Sources)</h4>
+                <p id="modalIrrig"></p>
+            </div>
+            <div class="modal-section">
+                <h4>🌟 विशेष कृषि उत्पाद (Specialty / GI Tag Crops)</h4>
+                <p id="modalSpecial"></p>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <!-- Hero Section -->
+        <div class="agri-hero">
+            <h1>भारतीय कृषि: देश की रीढ़ और हरियाली की मिसाल 🌾</h1>
+            <p>भारत एक कृषि प्रधान देश है, जहाँ की लगभग आधी आबादी प्रत्यक्ष या अप्रत्यक्ष रूप से कृषि पर निर्भर है। यहाँ की जलवायु और भौगोलिक विविधता के कारण देश में विभिन्न प्रकार की फसलें उगाई जाती हैं। भारत की फसल ऋतुओं को मुख्य रूप से तीन भागों में बांटा गया है:</p>
+            
+            <div class="seasons-grid">
+                <div class="season-card">
+                    <h4>खरीफ की फसलें (मानसून फसलें)</h4>
+                    <p>जून-जुलाई में बोई जाती हैं और अक्टूबर में काटी जाती हैं। मुख्य फसलें: धान, मक्का, बाजरा, कपास और सोयाबीन।</p>
+                </div>
+                <div class="season-card">
+                    <h4>रबी की फसलें (सर्दियों की फसलें)</h4>
+                    <p>अक्टूबर-नवंबर में बोई जाती हैं और मार्च-अप्रैल में काटी जाती हैं। मुख्य फसलें: गेहूँ, चना, जौ, सरसों और मटर।</p>
+                </div>
+                <div class="season-card">
+                    <h4>जायद की फसलें (गर्मी की फसलें)</h4>
+                    <p>रबी और खरीफ के बीच मार्च से जून के दौरान उगाई जाती हैं। मुख्य फसलें: तरबूज, खरबूजा, ककड़ी और सब्जियां।</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="section-title">🗺️ सभी 28 राज्यों की कृषि विशेषताएँ</div>
+        <div class="grid-container" id="statesGrid"></div>
+
+        <div class="section-title">🏝️ सभी 8 केंद्र शासित प्रदेशों (Union Territories) की कृषि विशेषताएँ</div>
+        <div class="grid-container" id="utGrid"></div>
+    </div>
+
+    <footer>
+        <p>Proudly Created for Gen'Z India 🇮🇳 | जय जवान, जय किसान!</p>
+    </footer>
+
+    <script>
+        const statesAgri = {
+            ap: { name: "आंध्र प्रदेश", tag: "धान का कटोरा (दक्षिण)", icon: "🌾", crops: "धान, तंबाकू, मिर्च, मक्का, मूंगफली, कपास, और हल्दी।", prac: "कृष्णा और गोदावरी नदी के डेल्टाई क्षेत्रों में सघन खेती और नहर सिंचाई प्रणाली।", irrig: "नागार्जुन सागर नहरें, नलकूप, और नदियाँ।", special: "गुंटूर की लाल मिर्च और प्रकाशम तंबाकू।" },
+            arunachal: { name: "अरुणाचल प्रदेश", tag: "पर्वतीय बागवानी", icon: "🌄", crops: "चावल, मक्का, बाजरा, अदरक, सेब, संतरे, और कीवी।", prac: "झूम खेती (स्थानांतरित कृषि) और सीढ़ीनुमा (Terrace) खेती।", irrig: "वर्षा जल और पहाड़ी झरने।", special: "ऑर्गेनिक कीवी और सेब उत्पादन।" },
+            assam: { name: "असम", tag: "चाय और धान की भूमि", icon: "🍃", crops: "चाय, धान, जूट, गन्ना, और आलू।", prac: "ब्रह्मपुत्र घाटी की उपजाऊ मिट्टी में बागानी खेती (Tea Gardens) और बाढ़ आधारित धान की खेती।", irrig: "मानसून वर्षा, ब्रह्मपुत्र और बराक नदियाँ।", special: "विश्वप्रसिद्ध असम टी और मूँगा सिल्क से जुड़े कृषि उत्पाद।" },
+            bihar: { name: "बिहार", tag: "सघन मैदानी कृषि", icon: "🌾", crops: "धान, गेहूँ, मक्का, मखाना, तंबाकू, और लीची.", prac: "उत्तर और दक्षिण बिहार के मैदानी इलाकों में पारंपरिक और आधुनिक सघन कृषि।", irrig: "नहरें (सोण नहर प्रणाली), नलकूप, और नदियाँ।", special: "मुजफ्फरपुर की शाही लीची और मखाना (GI Tag)." },
+            chhattisgarh: { name: "छत्तीसगढ़", tag: "धान का कटोरा", icon: "🍚", crops: "धान (चावल), मक्का, कोदो-कुटकी (मिलेट्स), और दलहन।", prac: "महानदी बेसिन में धान की सैकड़ों पारंपरिक किस्मों की खेती।", irrig: "महानदी नहर प्रणाली (हसदेव बांगो) और तालाब।", special: "विभिन्न पारंपरिक सुगंधित चावल की किस्में।" },
+            goa: { name: "गोवा", tag: "बागवानी और तटीय फसलें", icon: "🌴", crops: "धान, नारियल, सुपारी, काजू, और अनानास।", prac: "तटीय पट्टियों और नदी घाटियों (खजान भूमि) में विशेष कृषि पद्धति।", irrig: "वर्षा आधारित और छोटे जलस्रोत।", special: "फेनी निर्माण के लिए प्रसिद्ध काजू और गोवा फेनी (GI Tag)." },
+            gujarat: { name: "गुजरात", tag: "कपास और मूंगफली का गढ़", icon: "🥜", crops: "कपास, मूंगफली, जीरा, तिल, सौंफ, और बाजरा।", prac: "ड्रिप सिंचाई (Micro-irrigation) और आधुनिक कमर्शियल फार्मिंग में अग्रणी।", irrig: "नर्मदा नहर (सरदार सरोवर प्रोजेक्ट) और नलकूप।", special: "बनासकांठा का आलू, जीरा और सौंफ उत्पादन।" },
+            haryana: { name: "हरियाणा", tag: "अन्न भंडार और डेयरी", icon: "🥛", crops: "गेहूँ, धान, सरसों, बाजरा, और कपास।", prac: "हरित क्रांति का प्रमुख केंद्र; उच्च यंत्रीकृत (Mechanized) खेती।", irrig: "भाखड़ा नहर प्रणाली और गहरे नलकूप (Tubewells)।", special: "सरसों उत्पादन और मुर्राह भैंस पालन (डेयरी कृषि)।" },
+            himachal: { name: "हिमाचल प्रदेश", tag: "फल और सेब की घाटी", icon: "🍎", crops: "सेब, नाशपाती, प्लम, आड़ू, आलू, और जौ।", prac: "पर्वतीय ढलानों पर बागवानी और सीढ़ीनुमा (Terrace Farming) खेती।", irrig: "पहाड़ी खड्डें, झरने और स्प्रिंकलर सिंचाई।", special: "किन्नौरी सेब और कुल्लवी शॉल के लिए ऊन उत्पादन।" },
+            jharkhand: { name: "झारखंड", tag: "वानिकी और पठारी खेती", icon: "🌲", crop: "धान, मक्का, मड़ुआ (रागी), तहर, और सब्जियां।", prac: "पठारी क्षेत्रों में वर्षा आधारित कृषि और वनोपज (महुआ, इमली) संग्रहण।", irrig: "वर्षा जल संचयन और कुएं-तालाब।", special: "लाक (Lac) की खेती और महुआ संग्रहण।" },
+            karnataka: { name: "कर्नाटक", tag: "कॉफ़ी और रेशम का केंद्र", icon: "☕", crops: "कॉफ़ी, रागी, तूर दाल, सूर्यमुखी, रेशम, और सुपारी।", prac: "पश्चिमी घाट की ढलानों पर बागानी खेती (Plantation) और शुष्क भूमि कृषि।", irrig: "तुंगभद्रा और कावेरी बेसिन की नहरें।", special: "कुर्ग की कॉफ़ी और मैसूर सिल्क।" },
+            kerala: { name: "केरल", tag: "मसालों का साम्राज्य", icon: "🌶️", crops: "रबर, नारियल, काली मिर्च, इलायची, और केला।", prac: "मिश्रित बागानी खेती (Mixed Plantation) और मसालों की जैविक खेती।", irrig: "मानसून वर्षा और बैकवाटर सिंचाई।", special: "इलायची, काली मिर्च और वायनाड की कॉफी (GI Tag)." },
+            madhyapradesh: { name: "मध्य प्रदेश", tag: "सोयाबीन राज्य", icon: "🌱", crops: "सोयाबीन, गेहूँ, चना, अलसी, और मक्का।", prac: "मालवा के पठार में काली मिट्टी पर आधारित तिलहन और दलहन की खेती।", irrig: "नर्मदा घाटी परियोजना, चंबल नहरें और नलकूप।", special: "मध्य प्रदेश का सोयाबीन उत्पादन में देश में पहला स्थान." },
+            maharashtra: { name: "महाराष्ट्र", tag: "गन्ना और अंगूर के बाग", icon: "🍇", crops: "गन्ना, कपास, ज्वार, बाजरा, और अंगूर-संतरे (बागवानी)।", prac: "सह्याद्री के पर्णपाती क्षेत्रों में सहकारी खेती और ड्रिप इरिगेशन।", irrig: "गोदावरी और कृष्णा बेसिन की नहरें, कुएं।", special: "नागपुरी संतरे, नासिक के अंगूर और अल्फंसो (हापुस) आम।" },
+            manipur: { name: "मणिपुर", tag: "घाटी की कृषि", icon: "💎", crops: "धान, मक्का, अदरक, अनानास, और बांस कोंपल।", prac: "इम्फाल घाटी में धान की सघन खेती और पहाड़ियों पर झूम कृषि।", irrig: "लोकटक झील और नदियाँ।", special: "काकचांग नींबू और सिरारा खायोम मिर्च (GI Tag)." },
+            meghalaya: { name: "मेघालय", tag: "जैविक और बागानी कृषि", icon: "🍍", crops: "अदरक, हल्दी, अनानास, संतरा, और आलू।", prac: "पहाड़ी ढलानों पर जैविक खेती और वर्षा आधारित बागवानी।", irrig: "प्रचुर मानसूनी वर्षा (चेरापूंजी क्षेत्र)।", special: "मेघालय की ल्यकाडोंग हल्दी (Lakadong Turmeric - विश्व प्रसिद्ध)." },
+            mizoram: { name: "मिजोरम", tag: "बांस और बागवानी", icon: "🎋", crops: "धान, मक्का, अदरक, संतरा, और एंथुरियम फूल।", prac: "झूम खेती को नियंत्रित करते हुए बागवानी और फ्लोरीकल्चर की ओर रुझान।", irrig: "पहाड़ी झरने और वर्षा संचयन।", special: "विदेशी फूलों (Anthurium) की खेती।" },
+            nagaland: { name: "नागालैंड", tag: "ऑर्गेनिक खेती", icon: "🌾", crops: "धान, मक्का, मिर्ची, सोयाबीन, और अनानास।", prac: "पारंपरिक सीढ़ीनुमा खेती और पूरी तरह से प्राकृतिक रूप से जैविक कृषि।", irrig: "पहाड़ी नदियाँ और जलधाराएं।", special: "राजा मिर्च (Bhoot Jolokia) और ट्री टमैटो।" },
+            odisha: { name: "ओडिशा", tag: "महानदी डेल्टा कृषि", icon: "🌊", crops: "धान, दालें, मूंगफली, तिल, और जूट।", prac: "तटीय मैदानी इलाकों में धान की दो-तीन फसलें और डेल्टाई सिंचाई।", irrig: "हीराकुंड बांध परियोजना और महानदी नहरें।", special: "ओडिशा का बासमती चावल (Koraput Kalajeera Rice)." },
+            punjab: { name: "पंजाब", tag: "भारत का अन्न भंडार", icon: "🌾", crops: "गेहूँ, धान, कपास, मक्का, और जौ।", prac: "अत्यधिक यंत्रीकृत, गहन कृषि प्रणाली (Intensive Farming)।", irrig: "सघन नलकूप नेटवर्क और भाखड़ा नंगल नहरें।", special: "गेहूँ और चावल के उत्पादन में देश का अग्रणी राज्य।" },
+            rajasthan: { name: "राजस्थान", tag: "शुष्क और बाजरा कृषि", icon: "🐪", crop: "बाजरा, सरसों, ग्वार, चना, जीरा, और धनिया।", prac: "शुष्क भूमि कृषि (Dryland Farming), फव्वारा सिंचाई (Sprinklers)।", irrig: "इंदिरा गांधी नहर परियोजना और नलकूप।", special: "सरसों, बाजरा और ग्वार उत्पादन में देश में प्रथम स्थान।" },
+            sikkim: { name: "सिक्किम", tag: "पूर्ण जैविक राज्य", icon: "🌿", crops: "बड़ी इलायची, अदरक, मक्का, चाय, और buckwheat।", prac: "भारत का पहला 100% जैविक (Organic) प्रमाणित राज्य। रासायनिक उर्वरकों पर पूर्ण प्रतिबंध।", irrig: "हिमनद नदियाँ और वर्षा जल।", special: "सिक्किम की बड़ी इलायची (Large Cardamom)." },
+            tamilnadu: { name: "तमिलनाडु", tag: "कावेरी डेल्टा कृषि", icon: "🌴", crops: "धान, गन्ना, केला, नारियल, कपास, और चाय।", prac: "कावेरी बेसिन में उन्नत डेल्टाई कृषि और बोरवेल सिंचाई।", irrig: "मेटूर बांध नहरें और तालाब (Eris)।", special: "तंजावुर का चावल (डेल्टा क्षेत्र) और नीलगिरी की चाय।" },
+            telangana: { name: "तेलंगाना", tag: "मिशन भागीरथ और कपास", icon: "💎", crops: "कपास, धान, मक्का, सोयाबीन, और हल्दी।", prac: "मिशन काकतीय के तहत प्राचीन टैंकों का पुनरुद्धार और आधुनिक सिंचाई।", irrig: "कालेश्वरम लिफ्ट सिंचाई परियोजना और टैंक सिंचाई।", special: "निजामाबाद की हल्दी और वारंगल की कपास।" },
+            tripura: { name: "त्रिपुरा", tag: "रबर और धान", icon: "👑", crops: "धान, रबर, चाय, जूट, और अनानास।", prac: "टीलेदार क्षेत्रों में रबर बागान और तराई में धान की खेती।", irrig: "वर्षा जल और नदियाँ।", special: "पूर्वोत्तर में रबर उत्पादन का प्रमुख केंद्र।" },
+            uttarpradesh: { name: "उत्तर प्रदेश", tag: "विशाल कृषि भूमि", icon: "🥔", crops: "गेहूँ, गन्ना, आलू, धान, दलहन, और आम।", prac: "गंगा-यमुना दोआब में वर्ष भर फसल चक्र (Multi-cropping)।", irrig: "देश का सबसे बड़ा नलकूप और नहर नेटवर्क।", special: "गन्ना और आलू उत्पादन में देश में प्रथम स्थान।" },
+            uttarakhand: { name: "उत्तराखंड", tag: "पर्वतीय जैविक कृषि", icon: "🏔️", crops: "मंडुआ (रागी), झंगोरा, धान, गेहूँ, और सेब।", prac: "पर्वतीय ढलानों पर पारंपरिक श्री अन्न (Millets) और जैविक बागवानी।", irrig: "पहाड़ी गूल (नहरें) और झरने।", special: "मंडुआ (रागी) और पारंपरिक पहाड़ी फसलें।" },
+            bengal: { name: "पश्चिम बंगाल", tag: "धान और जूट का साम्राज्य", icon: "🎭", crops: "धान, जूट, चाय, आलू, और आम।", prac: "डेल्टाई बाढ़ के मैदानों में धान की तीन फसलें (अमन, आउस, बोरो) और जूट की खेती।", irrig: "दामोदर घाटी निगम (DVC) नहरें और मानसूनी वर्षा।", special: "भारत में जूट और चावल का सर्वाधिक प्रति हेक्टेयर उत्पादन।" }
+        };
+
+        const utAgri = {
+            andaman: { name: "अंडमान और निकोबार द्वीप समूह", tag: "उष्णकटिबंधीय बागवानी", icon: "🏝️", crops: "नारियल, सुपारी, मसाले (लौंग, दालचीनी), और केला।", prac: "द्वीपीय जलवायु में उष्णकटिबंधीय बागवानी और मसाला उत्पादन।", irrig: "वर्षा जल संचयन।", special: "नारियल और मसालों की जैविक खेती।" },
+            chandigarh: { name: "चंडीगढ़", tag: "शहरी बागवानी", icon: "🏛️", spots: "बागवानी फसलें, मौसमी सब्जियां और शहरी हरियाली.", crops: "गेहूँ, धान, और मौसमी सब्जियां (सीमित कृषि).", prac: "शहरी कृषि (Urban Agriculture) और पार्क/गार्डन रखरखाव।", irrig: "नगर निगम जलापूर्ति और नलकूप।", special: "उत्कृष्ट शहर उद्यान प्रबंधन।" },
+            dadra: { name: "दादरा और नगर हवेली एवं दमन और दीव", tag: "तटीय और वनीय कृषि", icon: "🌴", crops: "धान, रागी, तुअर, और नारियल।", prac: "वनीय क्षेत्रों और नदियों के किनारे पारंपरिक कृषि।", irrig: "दमनगंगा नदी और तालाब।", special: "स्थानीय बागवानी उत्पाद।" },
+            jammukashmir: { name: "जम्मू और कश्मीर", tag: "केसर और सेब की घाटी", icon: "❄️", crops: "सेब, केसर, अखरोट, बादाम, नाशपाती, और धान।", prac: "कश्मीर घाटी में करेवा (Karewa) मिट्टी पर केसर की विशिष्ट खेती और बागवानी।", irrig: "झेलम नदी, हिम पिघलने का पानी और नहरें।", special: "कश्मीरी केसर (GI Tag) और प्रीमियम सेब।" },
+            ladakh: { name: "लद्दाख", tag: "शीत मरुस्थल कृषि", icon: "🏔️", crops: "जौ (Barley), मटर, सीबकथर्न (Seabuckthorn), और सेब।", prac: "ग्रीष्मकाल में ग्लेशियर के पानी (Ice Stupa तकनीक) से की जाने वाली अल्पाइन कृषि।", irrig: "ग्लेशियर पिघलने से मिलने वाला जल और आइस स्तूप।", special: "सीबकथर्न (विटामिन सी से भरपूर बेरी)." },
+            lakshadweep: { name: "लक्षद्वीप", tag: "नारियल आधारित कृषि", icon: "🐚", crops: "नारियल (मुख्य फसल) और पपीता।", prac: "प्रवाल द्वीपों पर केवल नारियल के वृक्षों की बहुलता।", irrig: "भूपर्पटीय जल और वर्षा संचयन।", special: "उत्कृष्ट गुणवत्ता का नारियल और कोपरा उत्पादन।" },
+            delhi: { name: "दिल्ली", tag: "शहरी एवं पुष्प कृषि", icon: "🏛️", crops: "गेहूँ, बाजरा, सब्जियां, और पुष्प (Floriculture).", prac: "शहरी बाजारों के लिए पुष्प उत्पादन और संरक्षित खेती (Polyhouse).", irrig: "यमुना नदी का जल और शोधित अपशिष्ट जल।", special: "कमर्शियल फ्लोरीकल्चर और सब्जी आपूर्ति।" },
+            puducherry: { name: "पुदुचेरी", tag: "तटीय कृषि", icon: "🌊", crops: "धान, नारियल, गन्ना, और मूंगफली।", prac: "तटीय मैदानी इलाकों में पारंपरिक चावल और गन्ने की खेती।", irrig: "नलकूप और तालाब (Eris).", special: "तटीय क्षेत्र की उपजाऊ कृषि।" }
+        };
+
+        // Render States Agri
+        const statesGrid = document.getElementById('statesGrid');
+        for (let key in statesAgri) {
+            let item = statesAgri[key];
+            statesGrid.innerHTML += `
+                <div class="card">
+                    <div>
+                        <div class="card-top">
+                            <div class="card-icon">${item.icon}</div>
+                            <div>
+                                <h3 class="card-title">${item.name}</h3>
+                                <span class="card-tag">${item.tag}</span>
+                            </div>
+                        </div>
+                        <p class="card-text"><b>प्रमुख फसलें:</b> ${item.crops.substring(0, 50)}...</p>
+                    </div>
+                    <button class="detail-btn" onclick="showAgri('${key}', 'state')">कृषि विवरण देखें →</button>
+                </div>
+            `;
+        }
+
+        // Render UTs Agri
+        const utGrid = document.getElementById('utGrid');
+        for (let key in utAgri) {
+            let item = utAgri[key];
+            utGrid.innerHTML += `
+                <div class="card">
+                    <div>
+                        <div class="card-top">
+                            <div class="card-icon">${item.icon}</div>
+                            <div>
+                                <h3 class="card-title">${item.name}</h3>
+                                <span class="card-tag">${item.tag}</span>
+                            </div>
+                        </div>
+                        <p class="card-text"><b>प्रमुख फसलें:</b> ${item.crops.substring(0, 50)}...</p>
+                    </div>
+                    <button class="detail-btn" onclick="showAgri('${key}', 'ut')">कृषि विवरण देखें →</button>
+                </div>
+            `;
+        }
+
+        function showAgri(key, type) {
+            const data = (type === 'state') ? statesAgri[key] : utAgri[key];
+            if(data) {
+                document.getElementById('modalRegionName').innerText = data.name;
+                document.getElementById('modalRegionTag').innerText = data.tag;
+                document.getElementById('modalCrops').innerText = data.crops;
+                document.getElementById('modalPrac').innerText = data.prac;
+                document.getElementById('modalIrrig').innerText = data.irrig;
+                document.getElementById('modalSpecial').innerText = data.special;
+                document.getElementById('agriModal').style.display = 'flex';
+            }
+        }
+
+        function closeModal() {
+            document.getElementById('agriModal').style.display = 'none';
+        }
+    </script>
+
+</body>
+</html>
