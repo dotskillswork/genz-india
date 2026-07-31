@@ -18,11 +18,11 @@
             font-family: 'Poppins', sans-serif;
         }
 
-        body {
+        html, body {
             background-color: #fdfbf7; /* Warm Indian Paper Tint */
             color: #1e293b;
-            height: 100vh;
-            height: 100dvh;
+            height: 100%;
+            margin: 0;
             display: flex;
             flex-direction: column;
             overflow: hidden;
@@ -50,8 +50,8 @@
             border-left: 1px solid #e7e5e4;
             border-right: 1px solid #e7e5e4;
             height: 100%;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.02);
             position: relative;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.02);
         }
 
         header {
@@ -193,6 +193,7 @@
             color: rgba(255,255,255,0.7);
         }
 
+        /* Fixed Input Box at Bottom inside flex layout */
         .chat-input-box {
             background: #ffffff;
             padding: 12px 15px;
@@ -201,6 +202,7 @@
             align-items: center;
             border-top: 1px solid #e7e5e4;
             flex-shrink: 0;
+            z-index: 100;
             box-shadow: 0 -4px 10px rgba(0,0,0,0.03);
         }
 
