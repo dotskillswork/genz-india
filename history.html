@@ -1,0 +1,481 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>भारत का गौरवशाली इतिहास (History of India) | Gen'Z India 🇮🇳</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        body {
+            background-color: #fcfaf6; /* Vintage Warm Paper Tint */
+            color: #292524;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            line-height: 1.6;
+        }
+
+        /* Top Tiranga Border */
+        body::before {
+            content: "";
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 5px;
+            background: linear-gradient(to right, #FF9933, #FFFFFF, #138808);
+            z-index: 1001;
+        }
+
+        header {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 15px 30px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 1px solid #e7e5e4;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .back-btn {
+            color: #b45309;
+            text-decoration: none;
+            font-size: 13.5px;
+            font-weight: 600;
+            transition: 0.2s;
+        }
+
+        .back-btn:hover {
+            color: #92400e;
+        }
+
+        .container {
+            max-width: 1200px;
+            width: 100%;
+            margin: 30px auto;
+            padding: 0 20px;
+            flex: 1;
+        }
+
+        /* History Hero / National History Overview Section */
+        .history-hero {
+            background: linear-gradient(135deg, #78350f 0%, #92400e 50%, #b45309 100%);
+            color: #ffffff;
+            border-radius: 24px;
+            padding: 40px;
+            margin-bottom: 40px;
+            box-shadow: 0 15px 35px rgba(120, 53, 15, 0.2);
+            position: relative;
+            overflow: hidden;
+            border: 1px solid #d97706;
+        }
+
+        .history-hero h1 {
+            font-size: 30px;
+            font-weight: 800;
+            margin-bottom: 15px;
+            color: #fde68a;
+        }
+
+        .history-hero p {
+            font-size: 14.5px;
+            line-height: 1.8;
+            color: #fef3c7;
+            margin-bottom: 25px;
+        }
+
+        .timeline-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 15px;
+        }
+
+        .timeline-card {
+            background: rgba(0, 0, 0, 0.2);
+            backdrop-filter: blur(8px);
+            border: 1px solid rgba(253, 230, 138, 0.3);
+            padding: 15px 20px;
+            border-radius: 14px;
+        }
+
+        .timeline-card h4 {
+            font-size: 13px;
+            color: #fde68a;
+            text-transform: uppercase;
+            margin-bottom: 5px;
+        }
+
+        .timeline-card p {
+            font-size: 13px;
+            color: #ffffff;
+            margin: 0;
+            line-height: 1.5;
+        }
+
+        /* Section Heading */
+        .section-title {
+            font-size: 22px;
+            font-weight: 800;
+            color: #78350f;
+            margin: 35px 0 20px 0;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        /* States & UTs Grid */
+        .grid-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 25px;
+            margin-bottom: 40px;
+        }
+
+        .card {
+            background: #ffffff;
+            border-radius: 18px;
+            border: 1px solid #e7e5e4;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(120, 53, 15, 0.04);
+            transition: all 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            padding: 25px;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(120, 53, 15, 0.1);
+            border-color: #d97706;
+        }
+
+        .card-top {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+
+        .state-icon {
+            font-size: 32px;
+            background: #fffbeb;
+            width: 60px;
+            height: 60px;
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid #fde68a;
+        }
+
+        .card-title {
+            font-size: 19px;
+            font-weight: 700;
+            color: #78350f;
+        }
+
+        .card-tag {
+            font-size: 11.5px;
+            color: #b45309;
+            font-weight: 600;
+        }
+
+        .card-text {
+            color: #57534e;
+            font-size: 13px;
+            line-height: 1.6;
+            margin-bottom: 20px;
+        }
+
+        .detail-btn {
+            background: #b45309;
+            color: #ffffff;
+            border: none;
+            padding: 10px 16px;
+            border-radius: 10px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.2s;
+            text-align: center;
+            width: 100%;
+        }
+
+        .detail-btn:hover {
+            background: #92400e;
+        }
+
+        /* Modal Popup Styles */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(41, 37, 36, 0.8);
+            backdrop-filter: blur(5px);
+            z-index: 2000;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .modal-box {
+            background: #ffffff;
+            max-width: 650px;
+            width: 100%;
+            border-radius: 20px;
+            padding: 30px;
+            max-height: 85vh;
+            overflow-y: auto;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+            position: relative;
+        }
+
+        .close-btn {
+            position: absolute;
+            top: 20px; right: 20px;
+            background: #f5f5f4;
+            border: none;
+            width: 36px; height: 36px;
+            border-radius: 50%;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+            color: #57534e;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: 0.2s;
+        }
+
+        .close-box:hover {
+            background: #e7e5e4;
+            color: #292524;
+        }
+
+        .modal-title {
+            font-size: 24px;
+            font-weight: 800;
+            color: #78350f;
+            margin-bottom: 5px;
+        }
+
+        .modal-subtitle {
+            font-size: 12.5px;
+            color: #b45309;
+            font-weight: 700;
+            margin-bottom: 15px;
+            text-transform: uppercase;
+        }
+
+        .modal-section {
+            margin-bottom: 12px;
+        }
+
+        .modal-section h4 {
+            font-size: 13.5px;
+            color: #92400e;
+            font-weight: 700;
+            margin-bottom: 3px;
+        }
+
+        .modal-section p {
+            color: #44403c;
+            font-size: 13px;
+            line-height: 1.6;
+        }
+
+        footer {
+            text-align: center;
+            padding: 20px;
+            background: #ffffff;
+            border-top: 1px solid #e7e5e4;
+            color: #78716c;
+            font-size: 13px;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <a href="indian.html" class="back-btn">← Back to Indian Hub</a>
+        <h3 style="font-size: 16px; color: #78350f; font-weight: 700;">📜 भारत का गौरवशाली इतिहास (History)</h3>
+        <div style="width: 80px;"></div>
+    </header>
+
+    <!-- Detail Modal Box -->
+    <div id="historyModal" class="modal-overlay" onclick="closeModal()">
+        <div class="modal-box" onclick="event.stopPropagation()">
+            <button class="close-btn" onclick="closeModal()">×</button>
+            <div id="modalRegionTag" class="modal-subtitle">Region</div>
+            <h2 id="modalRegionName" class="modal-title">Name</h2>
+            <hr style="border: none; border-top: 1px solid #e7e5e4; margin: 15px 0;">
+            
+            <div class="modal-section">
+                <h4>🏛️ प्राचीन इतिहास एवं राजवंश (Ancient Era)</h4>
+                <p id="modalAncient"></p>
+            </div>
+            <div class="modal-section">
+                <h4>⚔️ मध्यकालीन इतिहास एवं संघर्ष (Medieval Era)</h4>
+                <p id="modalMedieval"></p>
+            </div>
+            <div class="modal-section">
+                <h4>📜 औपनिवेशिक काल एवं स्वतंत्रता संग्राम (Freedom Struggle)</h4>
+                <p id="modalModern"></p>
+            </div>
+            <div class="modal-section">
+                <h4>🌟 प्रमुख ऐतिहासिक घटनाएं व विरासत (Key Heritage)</h4>
+                <p id="modalEvents"></p>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <!-- National History Overview Hero Section -->
+        <div class="history-hero">
+            <h1>भारत का ऐतिहासिक कालचक्र (National History Timeline) 🏛️</h1>
+            <p>सिंधु घाटी सभ्यता से शुरू होकर मौर्य, गुप्त, मुगल साम्राज्य और ब्रिटिश शासन के खिलाफ चले महान स्वतंत्रता संग्राम से होते हुए आधुनिक गणराज्य बनने तक का भारत का सफर अद्वितीय और गौरवशाली रहा है।</p>
+            
+            <div class="timeline-grid">
+                <div class="timeline-card">
+                    <h4>सिंधु घाटी सभ्यता (c. 2500 BCE)</h4>
+                    <p>विश्व की सबसे प्राचीन और उन्नत शहरी सभ्यताओं में से एक, जो व्यापार और टाउन प्लानिंग के लिए प्रसिद्ध थी।</p>
+                </div>
+                <div class="timeline-card">
+                    <h4>मौर्य एवं गुप्त साम्राज्य</h4>
+                    <p>सम्राट अशोक का शांति सन्देश और गुप्त काल को भारतीय इतिहास का 'स्वर्ण युग' कहा जाता है।</p>
+                </div>
+                <div class="timeline-card">
+                    <h4>1857 की प्रथम क्रांति</h4>
+                    <p>मंगल पांडे, रानी लक्ष्मीबाई और तात्या टोपे के नेतृत्व में ब्रिटिश हुकूमत के खिलाफ उठी स्वतंत्रता की पहली चिंगारी।</p>
+                </div>
+                <div class="timeline-card">
+                    <h4>15 अगस्त 1947 (स्वतंत्रता)</h4>
+                    <p>महात्मा गांधी, भगत सिंह, नेताजी बोस और लाखों सेनानियों के बलिदान के बाद देश को मिली ऐतिहासिक आजादी।</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="section-title">🗺️ सभी 28 राज्यों का प्रादेशिक इतिहास</div>
+        <div class="grid-container" id="statesGrid"></div>
+
+        <div class="section-title">🏝️ सभी 8 केंद्र शासित प्रदेशों (Union Territories) का इतिहास</div>
+        <div class="grid-container" id="utGrid"></div>
+    </div>
+
+    <footer>
+        <p>Proudly Created for Gen'Z India 🇮🇳 | इतिहास हमें हमारे पूर्वजों के संघर्ष और प्रेरणा की याद दिलाता है!</p>
+    </footer>
+
+    <script>
+        const statesHistory = {
+            ap: { name: "आंध्र प्रदेश", tag: "सातवाहन और विजयनगर", icon: "🏛️", ancient: "सातवाहन वंश, इक्ष्वाकू और चालुक्य राजवंशों का प्रमुख केंद्र रहा। अमरावती बौद्ध कला का महान केंद्र बना.", medieval: "कन्नड और तेलुगु संस्कृति का विकास; शक्तिशाली विजयनगर साम्राज्य का प्रभाव (श्रीकृष्णदेवराय के अधीन).", modern: "ब्रिटिश ईस्ट इंडिया कंपनी के मद्रास प्रेसीडेंसी का हिस्सा; भाषा के आधार पर बनने वाला पहला राज्य (1953).", events: "तिरुपति मंदिर का निर्माण, कुचिपुड़ी नृत्य की उत्पत्ति, और स्वतंत्रता आंदोलन में चेलूर विद्रोह." },
+            arunachal: { name: "अरुणाचल प्रदेश", tag: "प्राचीन जनजातीय रियासतें", icon: "🌄", ancient: "ऐतिहासिक रूप से तिब्बत और असम के अहोम राजाओं के साथ सांस्कृतिक और व्यापारिक संबंध रहे.", medieval: "तवांग मठ का निर्माण (17वीं शताब्दी) जो तिब्बती बौद्ध धर्म का एक बड़ा केंद्र बना.", modern: "ब्रिटिश काल में 'नॉर्थ-ईस्ट फ्रंटियर एजेंसी' (NEFA) के रूप में प्रशासित; 1987 में पूर्ण राज्य का दर्जा मिला.", events: "तवांग मठ की स्थापना, 1962 का भारत-चीन संघर्ष, और समृद्ध आदिवासी स्वशासन परंपरा." },
+            assam: { name: "असम", tag: "अहोम राजवंश का पराक्रम", icon: "🍃", ancient: "प्रागैज्योतिषपुर और कामरूप के नाम से प्राचीन महाकाव्यों (महाभारत) में उल्लेख.", medieval: "अहोम वंश (चूकाफा द्वारा स्थापित) ने 600 वर्षों तक शासन किया और मुगलों को कई बार हराया (सराईघाट का युद्ध).", modern: "ब्रिटिश शासन के दौरान चाय के बागानों की शुरुआत; 1947 में भारत का हिस्सा बना.", events: "अहोम राजाओं द्वारा सराईघाट की ऐतिहासिक विजय (1671), और असम आंदोलन." },
+            bihar: { name: "बिहार", tag: "मगध साम्राज्य और बौद्ध भूमि", icon: "🌾", ancient: "महाजनपद काल में 'मगध' की राजधानी पाटलिपुत्र; मौर्य साम्राज्य (चंद्रगुप्त मौर्य, अशोक) और गुप्त वंश का केंद्र.", medieval: "बख्तियार खिलजी द्वारा नालंदा विश्वविद्यालय का विध्वंस; शेरशाह सूरी का शासन.", modern: "चंपारण सत्याग्रह (1917) जहाँ से महात्मा गांधी ने राष्ट्रीय आंदोलन की शुरुआत की.", events: "बुद्ध को ज्ञान प्राप्ति (बोधगया), नालंदा और विक्रमशिला विश्वविद्यालय की स्थापना, और चंपारण आंदोलन." },
+            chhattisgarh: { name: "छत्तीसगढ़", tag: "दक्षिण कौशल और राजवंश", icon: "⛏️", ancient: "रामायण और महाभारत काल में इसे 'दक्षिण कौशल' कहा गया; मौर्य और गुप्त साम्राज्य का हिस्सा.", medieval: "कलचुरी वंश (रतनपुर के राजाओं) और सोमवंशी राजाओं का लंबा शासन.", modern: "मराठा साम्राज्य (भोंसले) के अधीन रहा; 1854 में अंग्रेजों के नियंत्रण में आया; 2000 में अलग राज्य बना.", events: "शहीद वीर नारायण सिंह का 1857 की क्रांति में बलिदान, और बस्तर का आदिवासी विद्रोह." },
+            goa: { name: "गोवा", tag: "कदंब राजवंश और पुर्तगाली काल", icon: "🏖️", ancient: "मौर्य, सातवाहन और बाद में शिलाहार राजवंशों के अधीन प्राचीन समुद्री व्यापार केंद्र.", medieval: "बीजापुर के सुल्तान आदिल शाह का शासन; 1510 में पुर्तगालियों द्वारा कब्जा.", modern: "450 वर्षों तक पुर्तगाली औपनिवेशिक शासन; 1961 में 'ऑपरेशन विजय' के तहत भारतीय सेना द्वारा मुक्त कराया गया.", events: "1961 का गोवा मुक्ति संग्राम, और यूनेस्को द्वारा पुर्तगाली चर्चों को संरक्षण." },
+            gujarat: { name: "गुजरात", tag: "हड़प्पा सभ्यता और सोलंकी काल", icon: "⚓", ancient: "सिंधु घाटी सभ्यता के प्रमुख नगर- लोथल और धौलावीरा यहीं स्थित थे.", medieval: "सोलंकी (चालुक्य) वंश के दौरान सोमनाथ मंदिर का निर्माण और भव्य व्यापार; बाद में सल्तनत और मुगल काल.", modern: "महात्मा गांधी का कर्मक्षेत्र; दांडी मार्च (1930) और बारडोली सत्याग्रह (सरदार पटेल).", events: "सोमनाथ मंदिर पर आक्रमण और पुनर्निर्माण, दांडी यात्रा, और आधुनिक औद्योगिक विकास." },
+            haryana: { name: "हरियाणा", tag: "महाभारत की भूमि", icon: "🚜", ancient: "कुरुक्षेत्र की पवित्र भूमि जहाँ महाभारत का ऐतिहासिक युद्ध लड़ा गया; वैदिक सभ्यता का केंद्र.", medieval: "तराइन के ऐतिहासिक युद्ध (पृथ्वीराज चौहान और मोहम्मद गोरी के बीच) यहीं लड़े गए.", modern: "1857 की क्रांति में अंबाला से बगावत की शुरुआत; 1966 में पंजाब से अलग होकर नया राज्य बना.", events: "महाभारत युद्ध (कुरुक्षेत्र), तराइन के युद्ध (1191, 1192), और पानीपत की तीन ऐतिहासिक लड़ाइयाँ." },
+            himachal: { name: "हिमाचल प्रदेश", tag: "रियासतों की घाटी", icon: "🏔️", ancient: "प्राचीन काल में औदुंबर, त्रिगर्त और कुलिंद जैसे छोटे गणराज्य और जनपद.", medieval: "विभिन्न राजपूत राजाओं द्वारा कांगड़ा, चंबा और मंडी जैसी रियासतों की स्थापना.", modern: "ब्रिटिश काल में ग्रीष्मकालीन पहाड़ी छावनियां बनीं; 1971 में पूर्ण राज्य का दर्जा मिला.", events: "कांगड़ा का ऐतिहासिक किला और 1905 का विनाशकारी भूकंप, दलाई लामा का धर्मशाला में आगमन." },
+            jharkhand: { name: "झारखंड", tag: "झारखंड और आदिवासी विद्रोह", icon: "🌲", ancient: "गुप्त और मौर्य साम्राज्य के प्रभाव वाला घना वनाच्छादित क्षेत्र (झारखंड यानी झाड़ियों का प्रदेश).", medieval: "नागवंशी और चेरो राजाओं का शासन; मुंडा और नागवंशी राजाओं की रियासतें.", modern: "ब्रिटिश राज के खिलाफ महान आदिवासी विद्रोह जैसे चuar विद्रोह, संथाल हूल (1855) और बिरसा मुंडा आंदोलन.", events: "बिरसा मुंडा का उलगुलान (आदिवासी स्वतंत्रता संग्राम), और 2000 में अलग राज्य का गठन." },
+            karnataka: { name: "कर्नाटक", tag: "विजयनगर और मैसूर साम्राज्य", icon: "☕", ancient: "मौर्य, सातवाहन, कदंब, चालुक्य और राष्ट्रकूट राजवंशों का गौरवशाली शासन.", medieval: "विजयनगर साम्राज्य (हंपि) और मैसूर साम्राज्य (हैदर अली और टीपू सुल्तान) का उदय.", modern: "ब्रिटिश शासन के खिलाफ कित्तूर की रानी चेन्नम्मा का विद्रोह; मैसूर का स्वतंत्र भारत में विलय.", events: "हंपि के साम्राज्य का उत्थान और पतन, टीपू सुल्तान के युद्ध, और केसीआर/कन्नड साहित्य." },
+            kerala: { name: "केरल", tag: "मसालों का प्राचीन व्यापार", icon: "🌴", ancient: "चेर राजवंश का शासन; रोम, अरब और चीन के साथ मसालों का प्राचीन समुद्री व्यापार.", medieval: "कोचीन और कालीकट (कालिकट) बंदरगाहों पर पुर्तगाली नाविक वास्को डी गामा का आगमन (1498).", modern: "त्रावणकोर और कोचीन रियासतें; कम्युनिस्ट आंदोलन और सामाजिक सुधार (श्री नारायण गुरु).", events: "वास्को डी गामा का आगमन, वैकोम सत्याग्रह, और त्रावणकोर का आधुनिकीकरण." },
+            madhyapradesh: { name: "मध्य प्रदेश", tag: "गुप्त, चंदेल और परमार राजवंश", icon: "🐅", ancient: "उज्जैन (अवंती) महाजनपद; मौर्य सम्राट अशोक और गुप्त काल का सांस्कृतिक केंद्र.", medieval: "चंदेल राजाओं द्वारा खजुराहो के मंदिरों का निर्माण; परमार वंश (राजा भोज) और मालवा सल्तनत.", modern: "1857 की क्रांति में रानी लक्ष्मीबाई और तात्या टोपे का शौर्य; 1956 में पुनर्गठन.", events: "खजुराहो के मंदिरों का निर्माण (950-1050 ई.), सांची स्तूप का इतिहास, और 1857 का संग्राम." },
+            maharashtra: { name: "महाराष्ट्र", tag: "मराठा साम्राज्य का स्वर्णकाल", icon: "⭐", ancient: "सातवाहन, वाकाटक और राष्ट्रकूट वंश; एलोरा और अजंता की गुफाओं का निर्माण.", medieval: "छत्रपति शिवाजी महाराज द्वारा 'हिन्दवी स्वराज्य' की स्थापना और मराठा साम्राज्य का विस्तार.", modern: "समाज सुधारक ज्योतिराव फुले, सावित्रीबाई फुले और डॉ. बी.आर. आंबेडकर का कर्मक्षेत्र; संयुक्त महाराष्ट्र आंदोलन.", events: "शिवाजी महाराज का राज्याभिषेक (1674), पेशवा काल, और स्वतंत्रता आंदोलन में लोकमान्य तिलक का योगदान." },
+            manipur: { name: "मणिपुर", tag: "मणिपुरी रियासत और एंग्लो-मणिपुर युद्ध", icon: "💎", ancient: "पौराणिक कथाओं में गंधर्व कन्या चित्रांगदा का विवाह अर्जुन से जुड़ा क्षेत्र; मैतेइ राजाओं का शासन.", medieval: "18वीं शताब्दी में वैष्णव धर्म का प्रसार; म्यांमार (बर्मा) के साथ ऐतिहासिक संघर्ष.", modern: "1891 का एंग्लो-मणिपुर युद्ध जिसमें ब्रिटिश साम्राज्य के खिलाफ मणिपुर ने कड़ा मुकाबला किया.", events: "1891 का मणिपुर युद्ध और वीर टिकेंद्रजित का बलिदान, खोंगजोम का युद्ध." },
+            meghalaya: { name: "मेघालय", tag: "खासी और गारो रियासतें", icon: "🌧️", ancient: "खासी, जैंतिया और गारो जनजातियों के पारंपरिक स्वशासी राज्य और कबीले.", medieval: "मुगल और अहोम आक्रमणों से सुरक्षित स्वतंत्र पहाड़ी रियासतें.", modern: "ब्रिटिश शासन के अधीन स्वायत्त क्षेत्र; असम से अलग होकर 1972 में पूर्ण राज्य बना.", events: "ब्रिटिश साम्राज्य के खिलाफ तीत सिंह (U Tirot Sing) का खासी विद्रोह." },
+            mizoram: { name: "मिजोरम", tag: "मिजो इतिहास और शांति समझौता", icon: "⛰️", ancient: "चिन-कुकी-मिजो जनजातियों का म्यांमार से आकर इस पहाड़ी क्षेत्र में बसना.", medieval: "कबीलाई सरदारों (Lals) द्वारा स्वतंत्र रूप से शासन और आपसी लड़ाइयाँ.", modern: "ब्रिटिश औपनिवेशिक शासन; 1986 का ऐतिहासिक 'मिजो शांति समझौता' जिसके बाद पूर्ण राज्य बना.", events: "1986 का मिजो अकाल और शांति समझौता, जो पूर्वोत्तर इतिहास में मील का पत्थर है." },
+            nagaland: { name: "नागालैंड", tag: "नागा जनजातीय इतिहास", icon: "🏹", ancient: "विभिन्न नागा जातियों (आओ, कोन्याक, अंगामी आदि) का पारंपरिक ग्राम-गणराज्य तंत्र.", medieval: "पहाड़ी इलाकों में अपनी अनूठी संस्कृति और युद्ध कला के साथ अलगाववादी व स्वायत्त जीवन.", modern: "द्वितीय विश्व युद्ध के दौरान 'कोहिमा की लड़ाई' (Battle of Kohima) जो जापान और ब्रिटिश सेना के बीच लड़ी गई.", events: "कोहिमा का ऐतिहासिक युद्ध (1944), और 1963 में नागालैंड राज्य का गठन." },
+            odisha: { name: "ओडिशा", tag: "कलिंग युद्ध और गजपति वंश", icon: "🛕", ancient: "कलिंग साम्राज्य; 261 ईसा पूर्व का 'कलिंग युद्ध' जिसके बाद सम्राट अशोक ने बौद्ध धर्म अपनाया.", medieval: "गंगा वंश और गजपति वंश का शासन; पुरी के जगन्नाथ मंदिर और कोणार्क सूर्य मंदिर का निर्माण.", modern: "ब्रिटिश ईस्ट इंडिया कंपनी का कब्जा; उत्कल दिवस (1936) के रूप में अलग प्रांत का गठन.", events: "कलिंग युद्ध (261 BCE), जगन्नाथ रथयात्रा की प्राचीन परंपरा, और पाइका विद्रोह (1817)." },
+            punjab: { name: "पंजाब", tag: "सिख साम्राज्य और महाराजा रणजीत सिंह", icon: "🌾", ancient: "सिंधु घाटी सभ्यता के प्राचीन स्थल (हड़प्पा); सिकंदर महान का आक्रमण (तक्षशिला के रास्ते).", medieval: "सिख गुरुओं (गुरु नानक देव से गुरु गोबिंद सिंह तक) का आध्यात्मिक और सामाजिक आंदोलन.", modern: "महाराजा रणजीत सिंह का शक्तिशाली सिख साम्राज्य (19th Century); जलियांवाला बाग हत्याकांड (1919).", events: "खालसा पंथ की स्थापना (1699), महाराजा रणजीत सिंह का शासन, और जलियांवाला बाग नरसंहार." },
+            rajasthan: { name: "राजस्थान", tag: "राजपूतों का शौर्य और बलिदान", icon: "🏰", ancient: "मत्स्य जनपद, बैराठ सभ्यता, और गुप्त काल का प्रभाव.", medieval: "मेवाड़ (महाराणा प्रताप, राणा सांगा), मारवाड़ और आमेर के राजपूत राजाओं का मुगलों के खिलाफ संघर्ष.", modern: "ब्रिटिश रियासतों के साथ संधियाँ; 1949 में राजस्थान संघ का निर्माण.", events: "चित्तौड़गढ़ के ऐतिहासिक जौहर, हल्दीघाटी का युद्ध (1576), और विजय स्तंभ की स्थापना." },
+            sikkim: { name: "सिक्किम", tag: "नामग्याल राजवंश", icon: "🏔️", ancient: "लेप्चा जनजाति का मूल निवास; तिब्बत से आए भूटिया लोगों का प्रभाव.", medieval: "1642 में नामग्याल वंश के पहले चोग्याल (राजा) द्वारा सिक्किम साम्राज्य की स्थापना.", modern: "ब्रिटिश संरक्षण और बाद में भारत का संरक्षित राज्य; 1975 में जनमत संग्रह के बाद भारत का 22वां राज्य बना.", events: "1975 में जनमत संग्रह और भारतीय गणराज्य में पूर्ण विलय." },
+            tamilnadu: { name: "तमिलनाडु", tag: "चोल, चेर और पल्लव साम्राज्य", icon: "🛕", ancient: "संगम काल; चोल, पांड्य और पल्लव राजवंशों का स्वर्णकाल (समुद्री व्यापार और नौसेना).", medieval: "राजराजा चोल और राजेंद्र चोल के अधीन दक्षिण पूर्व एशिया तक चोल साम्राज्य का विस्तार.", modern: "ब्रिटिश काल में मद्रास प्रेसीडेंसी; द्रविड़ आंदोलन और सामाजिक न्याय की राजनीति.", events: "बृहदेश्वर मंदिर का निर्माण, चोल नौसेना की विजय, और स्वतंत्रता संग्राम में सुब्रह्मण्य भारती का योगदान." },
+            telangana: { name: "तेलंगाना", tag: "काकतीय और निजामशाही इतिहास", icon: "💎", ancient: "सातवाहन और इक्ष्वाकू वंश; बौद्ध धर्म का प्रमुख केंद्र (नागार्जुनकोंडा).", medieval: "काकतीय राजवंश (प्रताप रुद्र और रानी रुद्रमादेवी) और गोलकोंडा के कुतुबशाही सुल्तान.", modern: "हैदराबाद रियासत; 1948 में 'ऑपरेशन पोलो' के जरिए भारत में विलय; 2014 में नया राज्य बना.", events: "काकतीय राजवंश का शासन और कोहिनूर हीरे की प्राप्ति, तेलंगाना सशस्त्र संघर्ष (1946-51)." },
+            tripura: { name: "त्रिपुरा", tag: "माणिक्य राजवंश", icon: "👑", ancient: "त्रिपुरा के प्राचीन राजाओं का इतिहास 'राजमाला' ग्रंथ में वर्णित; किरात और दैत्य राजाओं की कथाएं.", medieval: "माणिक्य राजवंश का शासन जिन्होंने सदियों तक अपनी स्वायत्तता बनाए रखी.", modern: "ब्रिटिश प्रभाव; 1949 में भारतीय संघ में विलय; 1972 में पूर्ण राज्य का दर्जा.", events: "माणिक्य राजाओं का लंबा इतिहास, और उज्जयंत पैलेस का निर्माण." },
+            uttarpradesh: { name: "उत्तर प्रदेश", tag: "वैदिक काल और मौर्य-गुप्त साम्राज्य", icon: "🛕", ancient: "वैदिक सभ्यता का केंद्र, अयोध्या और हस्तिनापुर (महाभारत), गौतम बुद्ध द्वारा सारनाथ में पहला उपदेश.", medieval: "दिल्ली सल्तनत और मुगल साम्राज्य का मुख्य केंद्र (आगरा और फतेहपुर सीकरी राजधानी).", modern: "1857 की क्रांति (मेरठ से शुरुआत); कांग्रेस की स्थापना और स्वतंत्रता आंदोलन का केंद्र.", events: "बुद्ध का सारनाथ उपदेश, 1857 की क्रांति की शुरुआत (मेरठ), और स्वतंत्रता आंदोलन के प्रमुख नेता." },
+            uttarakhand: { name: "उत्तराखंड", tag: "कुमाऊं और गढ़वाल रियासतें", icon: "🏔️", ancient: "पौराणिक काल में केदारखंड और मानसखंड; पांडवों का स्वर्गारोहण मार्ग.", medieval: "कत्युरी राजवंश और पंवार (परमार) राजवंश द्वारा गढ़वाल और कुमाऊं पर शासन.", modern: "गोरखा आक्रमण और अंग्रेजों का अधिकार; चिपको आंदोलन (1970) और पृथक राज्य आंदोलन (2000).", events: "गढ़वाल और कुमाऊं रियासतों का इतिहास, चिपको पर्यावरण आंदोलन, और चारधाम यात्रा की परंपरा." },
+            bengal: { name: "पश्चिम बंगाल", tag: "पाल वंश और बंगाल का विभाजन", icon: "🎭", ancient: "मौर्य और गुप्त साम्राज्य के अधीन प्राचीन गौड़ और पुण्ड्रवर्धन क्षेत्र.", medieval: "पाल वंश (बौद्ध धर्म के संरक्षक) और सेन वंश का शासन; बंगाल सल्तनत और मुगल सूबेदारी.", modern: "ब्रिटिश ईस्ट इंडिया कंपनी की स्थापना (प्लासी का युद्ध 1757); 1905 का बंगाल विभाजन और स्वदेशी आंदोलन.", events: "प्लासी का युद्ध (1757), 1905 का बंगाल विभाजन, और महान स्वतंत्रता सेनानी (नेताजी, रबींद्रनाथ टैगोर)." }
+        };
+
+        const utHistory = {
+            andaman: { name: "अंडमान और निकोबार द्वीप समूह", tag: "काला पानी की सजा", icon: "🏝️", ancient: "स्थानीय जनजातियां (ओंगे, जारवा, सेंटिनालीज) जो हजारों वर्षों से यहां निवास कर रही हैं.", medieval: "चोल राजाओं द्वारा नौसेना के पड़ाव के रूप में उपयोग; मारको पोलो और इब्न बतूता के यात्रा वृत्तांतों में उल्लेख.", modern: "ब्रिटिश काल में 'सेलुलर जेल' (काला पानी) का निर्माण जहाँ स्वतंत्रता सेनानियों को अमानवीय यातनाएं दी गईं.", events: "नेताजी सुभाष चंद्र बोस द्वारा 1943 में पोर्ट ब्लेयर में पहली बार तिरंगा फहराना, और सेलुलर जेल का इतिहास." },
+            chandigarh: { name: "चंडीगढ़", tag: "आधुनिक वास्तुकला का इतिहास", icon: "🏛️", ancient: "प्राचीन काल में सिंधु घाटी सभ्यता के अवशेष और हरियाणवी संस्कृति का ग्रामीण अंचल.", medieval: "विभिन्न छोटे राजपूत गांवों और सिख मिसलों का प्रभाव.", modern: "आजादी के बाद देश का पहला नियोजित आधुनिक शहर; फ्रांसीसी वास्तुकार ली कार्बुजियर द्वारा डिजाइन.", events: "1947 के विभाजन के बाद पंजाब की नई राजधानी के रूप में निर्माण (1950 के दशक में)." },
+            dadra: { name: "दादरा और नगर हवेली एवं दमन और दीव", tag: "पुर्तगाली और मराठा इतिहास", icon: "🌴", ancient: "मौर्य और मराठा साम्राज्य के अधीन तटीय और वन क्षेत्र.", medieval: "16वीं शताब्दी से पुर्तगालियों का दमन और दीव पर कब्जा; दादरा और नगर हवेली मराठों के अधीन रहे.", modern: "1954 में स्थानीय स्वतंत्रता सेनानियों द्वारा दादरा और नगर हवेली को पुर्तगालियों से मुक्त कराना; 1961 में दमन-दीव की मुक्ति.", events: "1954 और 1961 के मुक्ति संग्राम." },
+            jammukashmir: { name: "जम्मू और कश्मीर", tag: "प्राचीन रेशम मार्ग और डोगरा वंश", icon: "❄️", ancient: "कन्य और कुषाण काल में बौद्ध धर्म का प्रमुख केंद्र (कनिष्क की चौथी बौद्ध संगीति); कल्हण की 'राजतरंगिणी'.", medieval: "कश्मीर के महान सुल्तान जैन-उल-आबदीन (बुडशाह) का शासन; बाद में मुगल और अफगान शासन.", modern: "डोगरा वंश (महाराजा गुलाब सिंह) का शासन; 1947 का ऐतिहासिक विलय पत्र (Instrument of Accession).", events: "राजतरंगिणी की रचना, कश्मीर में बौद्ध धर्म का प्रसार, और 1947 का विलय." },
+            ladakh: { name: "लद्दाख", tag: "तिब्बती बौद्ध संस्कृति और व्यापार", icon: "🏔️", ancient: "प्राचीन रेशम मार्ग (Silk Road) का मुख्य जंक्शन जहाँ से भारत, चीन और मध्य एशिया का व्यापार होता था.", medieval: "नामग्याल राजवंश द्वारा लद्दाख साम्राज्य की स्थापना; तिब्बती संस्कृति और बौद्ध मठों का स्वर्णकाल.", modern: "19th सदी में डोगरा साम्राज्य (जोरवार सिंह) का विस्तार; 2019 में केंद्र शासित प्रदेश बना.", events: "प्राचीन सिल्क रूट का व्यापार, लेह पैलेस का निर्माण, और 1999 का कारगिल युद्ध." },
+            lakshadweep: { name: "लक्षद्वीप", tag: "समुद्री व्यापार और इस्लाम का आगमन", icon: "🐚", ancient: "चेर राजवंश और बाद में चोल साम्राज्य के समुद्री मार्ग का हिस्सा.", medieval: "12वीं शताब्दी में संत उबैदुल्लाह के प्रयासों से यहाँ इस्लाम का आगमन; कन्नूर के राजाओं का आधिपत्य.", modern: "पुर्तगालियों का अल्पकालिक नियंत्रण; बाद में टीपू सुल्तान और ब्रिटिश शासन के अधीन आया.", events: "संत उबैदुल्लाह द्वारा इस्लाम का प्रचार, और 1956 में केंद्र शासित प्रदेश बनना." },
+            delhi: { name: "दिल्ली (राजधानी का इतिहास)", tag: "सात राजधानियों का शहर", icon: "🏛️", ancient: "महाभारत काल की 'इन्द्रप्रस्थ' नगरी; मौर्य, गुप्त और तोमर राजपूतों ('ढिल्लिका') का गढ़.", medieval: "दिल्ली सल्तनत (खिलजी, तुगलक, लोदी) और मुगल साम्राज्य की भव्य राजधानी (शाहजहानाबाद).", modern: "1911 में ब्रिटिश भारत की राजधानी कलकत्ता से दिल्ली स्थानांतरित; 1947 में स्वतंत्र भारत की राजधानी.", events: "इन्द्रप्रस्थ की स्थापना, कुतुब मीनार और लाल किले का निर्माण, और 1911 का दिल्ली दरबार." },
+            puducherry: { name: "पुदुचेरी", tag: "फ्रांसीसी औपनिवेशिक इतिहास", icon: "🌊", ancient: "रोमन साम्राज्य के साथ व्यापारिक बंदरगाह 'पोडुके' (अरीकमेडु के रूप में अवशेष).", medieval: "विजयनगर साम्राज्य और तंजावुर के नायकों का शासन.", modern: "1674 में फ्रांसीसी ईस्ट इंडिया कंपनी की स्थापना; लंबे संघर्ष के बाद 1954 में भारत में विलय.", events: "अरीकमेडु की प्राचीन रोमन व्यापारिक कोठी, और 1954 का फ्रांसीसी आधिपत्य मुक्ति।" }
+        };
+
+        // Render States History
+        const statesGrid = document.getElementById('statesGrid');
+        for (let key in statesHistory) {
+            let item = statesHistory[key];
+            statesGrid.innerHTML += `
+                <div class="card">
+                    <div>
+                        <div class="card-top">
+                            <div class="state-icon">${item.icon}</div>
+                            <div>
+                                <h3 class="card-title">${item.name}</h3>
+                                <span class="card-tag">${item.tag}</span>
+                            </div>
+                        </div>
+                        <p class="card-text"><b>प्राचीन काल:</b> ${item.ancient.substring(0, 45)}...</p>
+                    </div>
+                    <button class="detail-btn" onclick="showHistory('${key}', 'state')">ऐतिहासिक विवरण देखें →</button>
+                </div>
+            `;
+        }
+
+        // Render UTs History
+        const utGrid = document.getElementById('utGrid');
+        for (let key in utHistory) {
+            let item = utHistory[key];
+            utGrid.innerHTML += `
+                <div class="card">
+                    <div>
+                        <div class="card-top">
+                            <div class="state-icon">${item.icon}</div>
+                            <div>
+                                <h3 class="card-title">${item.name}</h3>
+                                <span class="card-tag">${item.tag}</span>
+                            </div>
+                        </div>
+                        <p class="card-text"><b>प्राचीन काल:</b> ${item.ancient.substring(0, 45)}...</p>
+                    </div>
+                    <button class="detail-btn" onclick="showHistory('${key}', 'ut')">ऐतिहासिक विवरण देखें →</button>
+                </div>
+            `;
+        }
+
+        function showHistory(key, type) {
+            const data = (type === 'state') ? statesHistory[key] : utHistory[key];
+            if(data) {
+                document.getElementById('modalRegionName').innerText = data.name;
+                document.getElementById('modalRegionTag').innerText = data.tag;
+                document.getElementById('modalAncient').innerText = data.ancient;
+                document.getElementById('modalMedieval').innerText = data.medieval;
+                document.getElementById('modalModern').innerText = data.modern;
+                document.getElementById('modalEvents').innerText = data.events;
+                document.getElementById('historyModal').style.display = 'flex';
+            }
+        }
+
+        function closeModal() {
+            document.getElementById('historyModal').style.display = 'none';
+        }
+    </script>
+
+</body>
+</html>
