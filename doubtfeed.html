@@ -6,7 +6,7 @@
     <title>DoubtFeed | Gen'Z India 🇮🇳</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     
-    <!-- Firebase SDKs -->
+    <!-- Firebase Compat SDKs -->
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
 
@@ -492,11 +492,8 @@
         <img id="modalFullImg" src="" alt="Zoomed Doubt Image">
     </div>
 
-    <!-- Firebase & Doubt Feed Logic -->
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-app.js";
-        import { getFirestore, collection, addDoc, updateDoc, doc, arrayUnion, onSnapshot, query, orderBy } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-firestore.js";
-
+    <!-- Firebase Compat Logic -->
+    <script>
         const firebaseConfig = {
             apiKey: "AIzaSyCNLwSjHq6LlX9uUovTRHrz9ZfUWeIUWQM",
             authDomain: "genz-india.firebaseapp.com",
@@ -507,8 +504,10 @@
             measurementId: "G-RBRDSRKSRH"
         };
 
-        const app = initializeApp(firebaseConfig);
-        const db = getFirestore(app);
+        if (!firebase.apps.length) {
+            firebase.initializeApp(firebaseConfig);
+        }
+        const db = firebase.firestore();
 
         const activeUser = JSON.parse(localStorage.getItem('genzUser'));
         if (!activeUser) {
@@ -590,7 +589,7 @@
             };
 
             try {
-                await addDoc(collection(db, 'doubts'), newDoubt);
+                await db.collection('doubts').add(newDoubt);
                 document.getElementById('doubtText').value = '';
                 document.getElementById('doubtImage').value = '';
                 document.getElementById('imageFileName').innerText = '';
@@ -604,7 +603,7 @@
             }
         });
 
-        // Global Alerts & Floating Toast Listener
+        // Global Alerts & Floating Toast Listener for Chats
         let latestTargetUrl = "chats.html";
         window.toggleNotifDropdown = function(e) {
             e.stopPropagation();
@@ -676,8 +675,7 @@
         }
 
         // Real-time Doubt Feed Listener
-        const q = query(collection(db, 'doubts'), orderBy('createdAt', 'desc'));
-        onSnapshot(q, (snapshot) => {
+        db.collection('doubts').orderBy('createdAt', 'desc').onSnapshot((snapshot) => {
             const container = document.getElementById('doubtsFeedContainer');
             container.innerHTML = "";
 
@@ -759,9 +757,9 @@
             };
 
             try {
-                const doubtRef = doc(db, 'doubts', doubtId);
-                await updateDoc(doubtRef, {
-                    answers: arrayUnion(newAnswer)
+                const doubtRef = db.collection('doubts').doc(doubtId);
+                await doubtRef.update({
+                    answers: firebase.firestore.FieldValue.arrayUnion(newAnswer)
                 });
                 inputField.value = '';
             } catch (err) {
