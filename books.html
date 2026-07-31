@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>भारत की प्रमुख ऐतिहासिक एवं दार्शनिक पुस्तकें (Books of India) | Gen'Z India 🇮🇳</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        body {
+            background-color: #fdfbf7; /* Classic Library Parchment Tint */
+            color: #292524;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            line-height: 1.6;
+        }
+
+        /* Top Tiranga Border */
+        body::before {
+            content: "";
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 5px;
+            background: linear-gradient(to right, #FF9933, #FFFFFF, #138808);
+            z-index: 1001;
+        }
+
+        header {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 15px 30px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 1px solid #e7e5e4;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .back-btn {
+            color: #78350f;
+            text-decoration: none;
+            font-size: 13.5px;
+            font-weight: 600;
+            transition: 0.2s;
+        }
+
+        .back-btn:hover {
+            color: #451a03;
+        }
+
+        .container {
+            max-width: 1200px;
+            width: 100%;
+            margin: 30px auto;
+            padding: 0 20px;
+            flex: 1;
+        }
+
+        /* Library Hero Section */
+        .books-hero {
+            background: linear-gradient(135deg, #451a03 0%, #78350f 50%, #92400e 100%);
+            color: #ffffff;
+            border-radius: 24px;
+            padding: 40px;
+            margin-bottom: 40px;
+            box-shadow: 0 15px 35px rgba(69, 26, 3, 0.25);
+            border: 1px solid #d97706;
+            text-align: center;
+        }
+
+        .books-hero h1 {
+            font-size: 32px;
+            font-weight: 800;
+            margin-bottom: 12px;
+            color: #fde68a;
+        }
+
+        .books-hero p {
+            font-size: 14.5px;
+            line-height: 1.8;
+            color: #fef3c7;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        /* Section Title */
+        .section-title {
+            font-size: 22px;
+            font-weight: 800;
+            color: #451a03;
+            margin: 35px 0 20px 0;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            border-bottom: 2px solid #fde68a;
+            padding-bottom: 10px;
+        }
+
+        /* Grid */
+        .grid-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 25px;
+            margin-bottom: 40px;
+        }
+
+        .card {
+            background: #ffffff;
+            border-radius: 18px;
+            border: 1px solid #e7e5e4;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(120, 53, 15, 0.04);
+            transition: all 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            padding: 25px;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(120, 53, 15, 0.12);
+            border-color: #d97706;
+        }
+
+        .card-top {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+
+        .card-icon {
+            font-size: 32px;
+            background: #fffbeb;
+            width: 60px;
+            height: 60px;
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid #fde68a;
+        }
+
+        .card-title {
+            font-size: 19px;
+            font-weight: 700;
+            color: #451a03;
+        }
+
+        .card-author {
+            font-size: 12px;
+            color: #b45309;
+            font-weight: 700;
+        }
+
+        .card-era {
+            display: inline-block;
+            background: #fef3c7;
+            color: #92400e;
+            font-size: 11.5px;
+            font-weight: 700;
+            padding: 3px 10px;
+            border-radius: 8px;
+            margin-bottom: 12px;
+            border: 1px solid #fde68a;
+        }
+
+        .card-text {
+            color: #57534e;
+            font-size: 13px;
+            line-height: 1.6;
+            margin-bottom: 20px;
+        }
+
+        .detail-btn {
+            background: #78350f;
+            color: #ffffff;
+            border: none;
+            padding: 10px 16px;
+            border-radius: 10px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.2s;
+            text-align: center;
+            width: 100%;
+        }
+
+        .detail-btn:hover {
+            background: #451a03;
+        }
+
+        /* Modal Popup Styles */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(41, 37, 36, 0.8);
+            backdrop-filter: blur(5px);
+            z-index: 2000;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .modal-box {
+            background: #ffffff;
+            max-width: 650px;
+            width: 100%;
+            border-radius: 20px;
+            padding: 30px;
+            max-height: 85vh;
+            overflow-y: auto;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+            position: relative;
+        }
+
+        .close-btn {
+            position: absolute;
+            top: 20px; right: 20px;
+            background: #f5f5f4;
+            border: none;
+            width: 36px; height: 36px;
+            border-radius: 50%;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+            color: #57534e;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: 0.2s;
+        }
+
+        .close-btn:hover {
+            background: #e7e5e4;
+            color: #292524;
+        }
+
+        .modal-title {
+            font-size: 24px;
+            font-weight: 800;
+            color: #451a03;
+            margin-bottom: 5px;
+        }
+
+        .modal-subtitle {
+            font-size: 12.5px;
+            color: #b45309;
+            font-weight: 700;
+            margin-bottom: 15px;
+            text-transform: uppercase;
+        }
+
+        .modal-section {
+            margin-bottom: 12px;
+        }
+
+        .modal-section h4 {
+            font-size: 13.5px;
+            color: #92400e;
+            font-weight: 700;
+            margin-bottom: 3px;
+        }
+
+        .modal-section p {
+            color: #44403c;
+            font-size: 13px;
+            line-height: 1.5;
+        }
+
+        footer {
+            text-align: center;
+            padding: 20px;
+            background: #ffffff;
+            border-top: 1px solid #e7e5e4;
+            color: #78716c;
+            font-size: 13px;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <a href="indian.html" class="back-btn">← Back to Indian Hub</a>
+        <h3 style="font-size: 16px; color: #451a03; font-weight: 700;">📚 भारत की प्रमुख ऐतिहासिक एवं दार्शनिक पुस्तकें</h3>
+        <div style="width: 80px;"></div>
+    </header>
+
+    <!-- Detail Modal Box -->
+    <div id="bookModal" class="modal-overlay" onclick="closeModal()">
+        <div class="modal-box" onclick="event.stopPropagation()">
+            <button class="close-btn" onclick="closeModal()">×</button>
+            <div id="modalBookAuthor" class="modal-subtitle">Author</div>
+            <h2 id="modalBookName" class="modal-title">Name</h2>
+            <hr style="border: none; border-top: 1px solid #e7e5e4; margin: 15px 0;">
+            
+            <div class="modal-section">
+                <h4>📅 रचना काल / समय (Time Period)</h4>
+                <p id="modalBookEra"></p>
+            </div>
+            <div class="modal-section">
+                <h4>🎯 मुख्य विषय एवं उद्देश्य (Subject & Theme)</h4>
+                <p id="modalBookSub"></p>
+            </div>
+            <div class="modal-section">
+                <h4>📖 पुस्तक का विस्तृत विवरण (Detailed Overview)</h4>
+                <p id="modalBookDesc"></p>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <!-- Hero Section -->
+        <div class="books-hero">
+            <h1>भारतीय साहित्य और दर्शन का स्वर्ण कोष 📖</h1>
+            <p>वेद, पुराणों से लेकर आधुनिक स्वतंत्रता संग्राम और संविधान निर्माण तक—भारत का साहित्यिक इतिहास ज्ञान, विज्ञान, अध्यात्म और नीतिशास्त्र से परिपूर्ण है। यहाँ उन महान पुस्तकों का संकलन है जिन्होंने भारतीय समाज और विश्व को दिशा दिखाई।</p>
+        </div>
+
+        <div class="section-title">📜 प्राचीन और वैदिक साहित्य (Ancient & Vedic Literature)</div>
+        <div class="grid-container" id="ancientGrid"></div>
+
+        <div class="section-title">🏛️ महाकाव्य, दर्शन और शास्त्रीय ग्रंथ (Epics & Classical Texts)</div>
+        <div class="grid-container" id="classicalGrid"></div>
+
+        <div class="section-title">👑 मध्यकालीन ऐतिहासिक ग्रंथ (Medieval Historical Texts)</div>
+        <div class="grid-container" id="medievalGrid"></div>
+
+        <div class="section-title">⚡ आधुनिक भारत, स्वतंत्रता और राजनीतिक पुस्तकें (Modern & Freedom Era)</div>
+        <div class="grid-container" id="modernGrid"></div>
+    </div>
+
+    <footer>
+        <p>Proudly Created for Gen'Z India 🇮🇳 | "पुस्तकें हमारी सबसे अच्छी मित्र होती हैं।"</p>
+    </footer>
+
+    <script>
+        // 1. Ancient & Vedic Books
+        const ancientBooks = {
+            rigveda: { name: "ऋग्वेद (Rigveda)", author: "विभिन्न वैदिक ऋषि", era: "लगभग 1500–1000 ईसा पूर्व (प्राचीन वैदिक काल)", subject: "वैदिक देवता, स्तुतियां, ब्रह्मांड की उत्पत्ति और दार्शनिक विचार।", desc: "यह दुनिया के सबसे पुराने धार्मिक ग्रंथों में से एक है। इसमें 10,28 सूक्त (Hymns) हैं जो अग्नि, इंद्र, वरुण जैसे देवताओं को समर्पित हैं।" },
+            upanishad: { name: "उपनिषद (Upanishads)", author: "विभिन्न ऋषि (व्यास, याज्ञवल्क्य आदि)", era: "लगभग 800–500 ईसा पूर्व", subject: "ब्रह्म, आत्मा, मोक्ष, और आध्यात्मिक ज्ञान (वेदांत)।", desc: "उपनिषदों को 'वेदांत' भी कहा जाता है। इनमें आत्मा (Atman) और परमात्मा (Brahman) के गहरे दार्शनिक संबंधों की व्याख्या की गई है।" },
+            arthashastra: { name: "अर्थशास्त्र (Arthashastra)", author: "आचार्य चाणक्य (कौटिल्य)", era: "लगभग चौथी शताब्दी ईसा पूर्व (मौर्य काल)", subject: "राजनीति शास्त्र, अर्थशास्त्र, राज्य संचालन, कूटनीति और युद्ध नीति।", desc: "यह मौर्य साम्राज्य के दौरान रचित कूटनीति और शासन कला का दुनिया का सबसे महान ग्रंथ है।" },
+            ashtadhyayi: { name: "अष्टाध्यायी (Ashtadhyayi)", author: "महर्षि पाणिनि", era: "लगभग 5वीं शताब्दी ईसा पूर्व", subject: "संस्कृत व्याकरण, भाषा विज्ञान और स्वर विज्ञान।", desc: "यह संस्कृत व्याकरण का सबसे पहला और वैज्ञानिक ग्रंथ है, जिसमें 4000 सूत्र हैं जिन्होंने आधुनिक भाषा विज्ञान को भी प्रभावित किया।" }
+        };
+
+        // 2. Epics & Classical Texts
+        const classicalBooks = {
+            ramayana: { name: "रामायण (Ramayana)", author: "महर्षि वाल्मीकि", era: "लगभग 5वीं से 4ठी शताब्दी ईसा पूर्व", subject: "आदर्श जीवन, धर्म, कर्तव्य, और रामराज्य की संकल्पना।", desc: "यह आदि काव्य है जिसमें भगवान राम के जीवन चरित्र, आदर्शों, और धर्म की विजय की गाथा 24,000 श्लोकों में वर्णित है।" },
+            mahabharata: { name: "महाभारत (Mahabharata)", author: "महर्षि वेद व्यास", era: "लगभग चौथी शताब्दी ईसा पूर्व से चौथी शताब्दी ईस्वी", subject: "धर्म, युद्ध नीति, नैतिकता, और मानव स्वभाव के आयाम.", desc: "दुनिया का सबसे लंबा महाकाव्य जिसमें कौरव-पांडव युद्ध के साथ-साथ जीवन के हर पहलू का दर्शन छिपा है। इसी का एक भाग 'श्रीमद्भगवद्गीता' है।" },
+            geeta: { name: "श्रीमद्भगवद्गीता (Bhagavad Gita)", author: "महर्षि वेद व्यास (भगवान कृष्ण के उपदेश)", era: "महाभारत काल (लगभग 500 ईसा पूर्व)", subject: "कर्म योग, ज्ञान योग, भक्ति योग, और आत्मबोध.", desc: "कुरुक्षेत्र के मैदान में अर्जुन को दिए गए भगवान श्रीकृष्ण के उपदेश, जो आज भी प्रबंधन और जीवन दर्शन के लिए मार्गदर्शक हैं।" },
+            meghaduta: { name: "मेघदूत (Meghaduta)", author: "महाकवि कालिदास", era: "लगभग चौथी-पाँचवी शताब्दी (गुप्त काल)", subject: "संस्कृत काव्य, प्रेम, और प्रकृति चित्रण.", desc: "कालिदास द्वारा रचित एक महान दूत-काव्य (Lyric Poem), जिसमें एक यक्ष अपने विरह के दौरान मेघ (बादल) को अपना दूत बनाकर अपनी पत्नी के पास भेजता है।" }
+        };
+
+        // 3. Medieval Historical Texts
+        const medievalBooks = {
+            rajatarangini: { name: "राजतरंगिणी (Rajatarangini)", author: "कल्हण", era: "12वीं शताब्दी (लगभग 1148–1150 ईस्वी)", subject: "कश्मीर का प्रामाणिक इतिहास और राजवंशों की गाथा।", desc: "यह भारत का पहला ऐतिहासिक रूप से व्यवस्थित ग्रंथ माना जाता है, जिसमें प्राचीन काल से लेकर 12वीं शताब्दी तक के कश्मीर के राजाओं का इतिहास है।" },
+            ain_i_akbari: { name: "ऐन-ए-अकबरी (Ain-i-Akbari)", author: "अुल-फजल", era: "16वीं शताब्दी (लगभग 1595 ईस्वी - मुगल काल)", subject: "सम्राट अकबर का प्रशासन, कानून, सांख्यिकी और संस्कृति।", desc: "यह अकबरनामा का तीसरा भाग है, जिसमें मुगल साम्राज्य की प्रशासनिक व्यवस्था, भू-राजस्व, और समाज का विस्तृत विवरण है।" },
+            padmavat: { name: "पद्मावत (Padmavat)", author: "मलिक मुहम्मद जायसी", era: "1540 ईस्वी (मध्यकाल)", subject: "सूफी प्रेमाख्यान, चित्तौड़ का इतिहास और प्रेम-बलिदान.", desc: "अवधी भाषा में लिखा गया एक महान महाकाव्य जो रानी पद्मिनी और राजा रत्नसेन के प्रेम और चित्तौड़ की रक्षा के संघर्ष पर आधारित है।" }
+        };
+
+        // 4. Modern & Freedom Era Books
+        const modernBooks = {
+            discoveryofindia: { name: "द डिस्कवरी ऑफ इंडिया (Discovery of India)", author: "पंडित जवाहरलाल नेहरू", era: "1944 (अहमदनगर जेल में रचित)", subject: "भारतीय इतिहास, संस्कृति, दर्शन और राष्ट्रीय एकता।", desc: "नेहरू जी द्वारा अहमदनगर किले की जेल में अपने कारावास के दौरान लिखी गई पुस्तक, जो सिंधु घाटी से लेकर आधुनिक भारत तक की यात्रा का वर्णन करती है।" },
+            gitanjali: { name: "गीतांजलि (Gitanjali)", author: "रबींद्रनाथ टैगोर", era: "1910 (प्रकाशित)", subject: "अध्यात्म, भक्ति, प्रकृति और मानवतावादी कविताएं।", desc: "रबींद्रनाथ टैगोर की कविताओं का यह संग्रह जिसके लिए उन्हें 1913 में साहित्य का नोबेल पुरस्कार मिला (नोबेल पाने वाले पहले एशियाई)।" },
+            anandamath: { name: "आनंदमठ (Anandamath)", author: "बंकिम चंद्र चट्टोपाध्याय", era: "1882 ईस्वी", subject: "सन्यासी विद्रोह, देशभक्ति और राष्ट्रभक्ति।", desc: "बंगाल के संन्यासी विद्रोह पर आधारित यह उपन्यास, जिससे हमारा राष्ट्रीय गीत 'वंदे मातरम्' लिया गया है।" },
+            myexperiments: { name: "द स्टोरी ऑफ़ माय एक्सपेरिमेंट विद ट्रुथ (सत्य के प्रयोग)", author: "महात्मा गांधी", era: "1925–1929 (आत्मकथा)", subject: "महात्मा गांधी के जीवन के सत्य, अहिंसा और प्रयोग।", desc: "महात्मा गांधी की आत्मकथा जिसमें उनके बचपन से लेकर राजनीतिक सफर तक के नैतिक और आत्मिक प्रयोगों का वर्णन है।" }
+        };
+
+        // Helper to render books
+        function renderBooks(data, containerId) {
+            const grid = document.getElementById(containerId);
+            for (let key in data) {
+                let item = data[key];
+                grid.innerHTML += `
+                    <div class="card">
+                        <div>
+                            <div class="card-top">
+                                <div class="card-icon">📚</div>
+                                <div>
+                                    <h3 class="card-title">${item.name}</h3>
+                                    <span class="card-author">लेखक: ${item.author}</span>
+                                </div>
+                            </div>
+                            <span class="card-era">📅 ${item.era}</span>
+                            <p class="card-text"><b>विषय:</b> ${item.subject}</p>
+                        </div>
+                        <button class="detail-btn" onclick="showBook('${containerId}', '${key}')">पुस्तक विवरण देखें →</button>
+                    </div>
+                `;
+            }
+        }
+
+        // Render all sections
+        renderBooks(ancientBooks, 'ancientGrid');
+        renderBooks(classicalBooks, 'classicalGrid');
+        renderBooks(medievalBooks, 'medievalGrid');
+        renderBooks(modernBooks, 'modernGrid');
+
+        // Combined data lookup
+        const allBooks = { ...ancientBooks, ...classicalBooks, ...medievalBooks, ...modernBooks };
+
+        function showBook(containerId, key) {
+            const data = allBooks[key];
+            if(data) {
+                document.getElementById('modalBookName').innerText = data.name;
+                document.getElementById('modalBookAuthor').innerText = "लेखक: " + data.author;
+                document.getElementById('modalBookEra').innerText = data.era;
+                document.getElementById('modalBookSub').innerText = data.subject;
+                document.getElementById('modalBookDesc').innerText = data.desc;
+                document.getElementById('bookModal').style.display = 'flex';
+            }
+        }
+
+        function closeModal() {
+            document.getElementById('bookModal').style.display = 'none';
+        }
+    </script>
+
+</body>
+</html>
