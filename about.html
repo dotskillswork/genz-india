@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About Us | Gen'Z India</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+        body {
+            background-color: #f8fafc;
+            color: #1e293b;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        header {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 15px 30px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 1px solid #e2e8f0;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+        .back-btn {
+            color: #0284c7;
+            text-decoration: none;
+            font-size: 13.5px;
+            font-weight: 600;
+            transition: 0.2s;
+        }
+        .back-btn:hover {
+            color: #0369a1;
+        }
+        .container {
+            max-width: 800px;
+            width: 100%;
+            margin: 40px auto;
+            padding: 0 20px;
+            flex: 1;
+        }
+        .about-card {
+            background: #ffffff;
+            padding: 40px;
+            border-radius: 20px;
+            border: 1px solid #e2e8f0;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05);
+        }
+        .about-card h1 {
+            color: #0284c7;
+            font-size: 26px;
+            font-weight: 700;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+        .about-card p {
+            color: #475569;
+            font-size: 14px;
+            line-height: 1.8;
+            margin-bottom: 20px;
+        }
+        .features-list {
+            margin-top: 20px;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 15px;
+        }
+        .feature-item {
+            background: #f0f9ff;
+            border: 1px solid #bae6fd;
+            padding: 15px;
+            border-radius: 12px;
+            font-size: 13px;
+            color: #0369a1;
+            font-weight: 500;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <a href="index.html" class="back-btn">← Back to Dashboard</a>
+        <h3 style="font-size: 16px; color: #0f172a; font-weight: 700;">ℹ️ About Gen'Z India</h3>
+        <div style="width: 80px;"></div>
+    </header>
+
+    <div class="container">
+        <div class="about-card">
+            <h1>Empowering Students Across India 🚀</h1>
+            <p><strong>Gen'Z India</strong> ek aisi dynamic student-centric website hai jise students ne students ke liye banaya hai. Hamara maksad ek aisa unified platform dena hai jahan college aur university ke students aapas mein jud sakein, apne academic notes share karke ya projects banakar earn kar sakein, aur ek dusre ke doubts ko asani se solve kar sakein.</p>
+            
+            <p>Chahe aapko coding doubts puchhne hon, study rooms mein group study karni ho, campus voice raise karni ho ya apne innovations ko duniya ke samne showcase karna ho—Gen'Z India aapka ultimate campus companion hai.</p>
+
+            <h3 style="font-size: 16px; color: #0f172a; margin-top: 25px; margin-bottom: 12px;">What We Offer:</h3>
+            <div class="features-list">
+                <div class="feature-item">🤝 Make Friends & Peer Chat</div>
+                <div class="feature-item">💬 DoubtBox for Q&A</div>
+                <div class="feature-item">📦 Gen'Z Store for Notes</div>
+                <div class="feature-item">💡 Innovations & Talent Showcase</div>
+                <div class="feature-item">💼 Freelance & Student Gigs</div>
+                <div class="feature-item">🎧 Voice Up Campus Platform</div>
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>
