@@ -3,8 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DoubtBox Hub | Gen'Z India</title>
+    <title>DoubtBox Hub | Gen'Z India 🇮🇳</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Firebase SDKs -->
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+
     <style>
         * {
             margin: 0;
@@ -13,12 +18,22 @@
             font-family: 'Poppins', sans-serif;
         }
         body {
-            background-color: #f8fafc;
+            background-color: #fdfbf7; /* Warm Indian Paper Tint */
             color: #1e293b;
             min-height: 100vh;
             display: flex;
             flex-direction: column;
         }
+
+        /* Top Tiranga Border */
+        body::before {
+            content: "";
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 5px;
+            background: linear-gradient(to right, #FF9933, #FFFFFF, #138808);
+            z-index: 1001;
+        }
+
         header {
             background: rgba(255, 255, 255, 0.95);
             backdrop-filter: blur(10px);
@@ -26,22 +41,88 @@
             display: flex;
             align-items: center;
             justify-content: space-between;
-            border-bottom: 1px solid #e2e8f0;
+            border-bottom: 1px solid #e7e5e4;
             position: sticky;
             top: 0;
             z-index: 1000;
             box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+            flex-wrap: wrap;
+            gap: 10px;
         }
         .back-btn {
-            color: #0284c7;
+            color: #ea580c;
             text-decoration: none;
             font-size: 13.5px;
             font-weight: 600;
             transition: 0.2s;
         }
         .back-btn:hover {
-            color: #0369a1;
+            color: #c2410c;
         }
+
+        /* Notification Bell & Dropdown */
+        .notif-container {
+            position: relative;
+            cursor: pointer;
+        }
+        .notif-bell {
+            background: #fff7ed;
+            border: 1px solid #fed7aa;
+            color: #ea580c;
+            padding: 6px 12px;
+            border-radius: 8px;
+            font-size: 11.5px;
+            font-weight: 600;
+        }
+        .notif-badge {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            background: #dc2626;
+            color: #fff;
+            font-size: 9px;
+            padding: 2px 5px;
+            border-radius: 50%;
+            font-weight: 700;
+        }
+        .notif-dropdown {
+            display: none;
+            position: absolute;
+            right: 0;
+            top: 45px;
+            width: 280px;
+            background: #ffffff;
+            border: 1px solid #cbd5e1;
+            border-radius: 12px;
+            box-shadow: 0 15px 30px rgba(0,0,0,0.15);
+            z-index: 2000;
+            overflow: hidden;
+        }
+        .notif-header {
+            padding: 10px 14px;
+            background: #f8fafc;
+            font-size: 12px;
+            font-weight: 600;
+            color: #d97706;
+            border-bottom: 1px solid #e2e8f0;
+            display: flex;
+            justify-content: space-between;
+        }
+        .notif-list {
+            max-height: 180px;
+            overflow-y: auto;
+        }
+        .notif-item {
+            padding: 10px 14px;
+            border-bottom: 1px solid #f1f5f9;
+            font-size: 11.5px;
+            color: #334155;
+            cursor: pointer;
+        }
+        .notif-item:hover {
+            background: #fffbeb;
+        }
+
         .container {
             max-width: 1100px;
             width: 100%;
@@ -69,18 +150,18 @@
             margin: 0 auto 35px auto;
             display: block;
             background: #ffffff;
-            border: 1px solid #cbd5e1;
+            border: 1px solid #fed7aa;
             border-radius: 12px;
             padding: 14px 20px;
             color: #1e293b;
             font-size: 14px;
-            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.02);
+            box-shadow: 0 4px 6px -1px rgba(234, 88, 12, 0.03);
             transition: 0.3s;
         }
         .search-bar:focus {
             outline: none;
-            border-color: #0284c7;
-            box-shadow: 0 0 0 3px rgba(2, 132, 199, 0.1);
+            border-color: #ea580c;
+            box-shadow: 0 0 0 3px rgba(234, 88, 12, 0.1);
         }
         .category-section {
             margin-bottom: 40px;
@@ -89,7 +170,7 @@
             font-size: 17px;
             color: #0f172a;
             margin-bottom: 18px;
-            border-left: 4px solid #0284c7;
+            border-left: 4px solid #ea580c;
             padding-left: 12px;
             font-weight: 600;
         }
@@ -100,24 +181,24 @@
         }
         .card {
             background: #ffffff;
-            border: 1px solid #e2e8f0;
+            border: 1px solid #fed7aa;
             border-radius: 14px;
             padding: 20px;
             cursor: pointer;
             transition: all 0.3s ease;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.02);
+            box-shadow: 0 4px 15px rgba(234, 88, 12, 0.03);
             display: flex;
             flex-direction: column;
             justify-content: space-between;
         }
         .card:hover {
-            border-color: #0284c7;
+            border-color: #ea580c;
             transform: translateY(-4px);
-            box-shadow: 0 10px 15px -3px rgba(2, 132, 199, 0.1);
+            box-shadow: 0 10px 20px -3px rgba(234, 88, 12, 0.1);
         }
         .card h3 {
             font-size: 16px;
-            color: #0284c7;
+            color: #ea580c;
             margin-bottom: 6px;
             font-weight: 600;
         }
@@ -136,14 +217,80 @@
             flex-wrap: wrap;
             gap: 15px;
         }
+
+        /* Floating Popup Toast Notification Banner */
+        #floatingToast {
+            display: none;
+            position: fixed;
+            bottom: 25px;
+            right: 25px;
+            background: #ffffff;
+            border: 2px solid #ea580c;
+            border-radius: 14px;
+            padding: 15px 20px;
+            box-shadow: 0 15px 35px rgba(234, 88, 12, 0.2);
+            z-index: 9999;
+            max-width: 340px;
+            animation: slideUpToast 0.3s ease-in-out;
+            cursor: pointer;
+        }
+        @keyframes slideUpToast {
+            from { transform: translateY(50px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+        .toast-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 5px;
+        }
+        .toast-title {
+            font-size: 13px;
+            font-weight: 700;
+            color: #ea580c;
+        }
+        .toast-close {
+            background: transparent;
+            border: none;
+            font-size: 16px;
+            color: #64748b;
+            cursor: pointer;
+        }
+        .toast-body {
+            font-size: 12px;
+            color: #334155;
+        }
     </style>
 </head>
 <body>
 
+    <!-- Floating Popup Toast Container -->
+    <div id="floatingToast" onclick="openChatFromToast()">
+        <div class="toast-header">
+            <span class="toast-title" id="toastTitle">💬 New Notification</span>
+            <button class="toast-close" onclick="closeToast(event)">&times;</button>
+        </div>
+        <div class="toast-body" id="toastBody">You have a new update.</div>
+    </div>
+
     <header>
         <a href="index.html" class="back-btn" id="navBackBtn">← Back to Dashboard</a>
-        <h3 style="font-size: 16px; color: #0f172a; font-weight: 700;">🎓 Gen'Z DoubtBox</h3>
-        <div style="width: 80px;"></div>
+        <h3 style="font-size: 16px; color: #0f172a; font-weight: 700;">🎓 Gen'Z DoubtBox 🇮🇳</h3>
+        
+        <!-- Alerts Dropdown -->
+        <div class="notif-container" onclick="toggleNotifDropdown(event)">
+            <div class="notif-bell">🔔 Alerts</div>
+            <span class="notif-badge" id="chatNotifBadge" style="display: none;">0</span>
+            <div class="notif-dropdown" id="notifDropdown" onclick="event.stopPropagation()">
+                <div class="notif-header">
+                    <span>Notifications</span>
+                    <span style="cursor: pointer; color: #ea580c;" onclick="clearAlerts()">Clear</span>
+                </div>
+                <div class="notif-list" id="notifList">
+                    <div style="padding: 12px; text-align: center; color: #94a3b8; font-size: 11.5px;">No new alerts</div>
+                </div>
+            </div>
+        </div>
     </header>
 
     <div class="container">
@@ -196,7 +343,7 @@
         <div id="subjectView">
             <div class="subject-header">
                 <button onclick="goBackToCourses()" class="back-btn" style="background: none; border: none; cursor: pointer; font-size: 14px;">← Change Category</button>
-                <h2 id="selectedCourseTitle" style="font-size: 20px; color: #0284c7; font-weight: 700;"></h2>
+                <h2 id="selectedCourseTitle" style="font-size: 20px; color: #ea580c; font-weight: 700;"></h2>
             </div>
             <p style="color: #64748b; font-size: 13.5px; margin-bottom: 20px;">Select a subject or section to view doubts and discussions:</p>
             <div class="grid-container" id="subjectsGrid"></div>
@@ -204,6 +351,96 @@
     </div>
 
     <script>
+        const firebaseConfig = {
+            apiKey: "AIzaSyCNLwSjHq6LlX9uUovTRHrz9ZfUWeIUWQM",
+            authDomain: "genz-india.firebaseapp.com",
+            projectId: "genz-india",
+            storageBucket: "genz-india.firebasestorage.app",
+            messagingSenderId: "149959470783",
+            appId: "1:149959470783:web:71b7969ee2c8fc049c200a",
+            measurementId: "G-RBRDSRKH"
+        };
+
+        if (!firebase.apps.length) {
+            firebase.initializeApp(firebaseConfig);
+        }
+        const db = firebase.firestore();
+        const currentUser = JSON.parse(localStorage.getItem('genzUser'));
+        if (!currentUser) {
+            window.location.href = 'login.html';
+        }
+
+        // Global Alerts & Floating Toast Listener
+        let latestTargetUrl = "chats.html";
+        window.toggleNotifDropdown = function(e) {
+            e.stopPropagation();
+            const dropdown = document.getElementById('notifDropdown');
+            dropdown.style.display = dropdown.style.display === 'block' ? 'none' : 'block';
+        };
+
+        window.addEventListener('click', function() {
+            const dropdown = document.getElementById('notifDropdown');
+            if(dropdown) dropdown.style.display = 'none';
+        });
+
+        window.clearAlerts = function() {
+            document.getElementById('notifList').innerHTML = `<div style="padding: 12px; text-align: center; color: #94a3b8; font-size: 11.5px;">No new alerts</div>`;
+            document.getElementById('chatNotifBadge').style.display = 'none';
+        };
+
+        db.collection('chats').onSnapshot((snapshot) => {
+            let unreadList = [];
+            snapshot.forEach(docSnap => {
+                const m = docSnap.data();
+                if (m.receiver === currentUser.username && m.read === false) {
+                    unreadList.push({
+                        sender: m.sender,
+                        text: m.text || "Sent an attachment"
+                    });
+                }
+            });
+
+            const badge = document.getElementById('chatNotifBadge');
+            const list = document.getElementById('notifList');
+
+            if (unreadList.length === 0) {
+                if (badge) badge.style.display = 'none';
+                if (list) list.innerHTML = `<div style="padding: 12px; text-align: center; color: #94a3b8; font-size: 11.5px;">No new alerts</div>`;
+            } else {
+                if (badge) {
+                    badge.style.display = 'inline-block';
+                    badge.innerText = unreadList.length;
+                }
+                if (list) {
+                    list.innerHTML = '';
+                    unreadList.forEach(item => {
+                        list.innerHTML += `
+                            <div class="notif-item" onclick="window.location.href='chat.html?with=${item.sender}'">
+                                <b>@${item.sender}</b>: ${item.text}
+                            </div>
+                        `;
+                    });
+                }
+
+                const latest = unreadList[unreadList.length - 1];
+                latestTargetUrl = `chat.html?with=${latest.sender}`;
+                document.getElementById('toastTitle').innerText = `💬 New Message from @${latest.sender}`;
+                document.getElementById('toastBody').innerText = latest.text;
+                document.getElementById('floatingToast').style.display = 'block';
+            }
+        });
+
+        window.openChatFromToast = function() {
+            if (latestTargetUrl) {
+                window.location.href = latestTargetUrl;
+            }
+        };
+
+        window.closeToast = function(e) {
+            e.stopPropagation();
+            document.getElementById('floatingToast').style.display = 'none';
+        };
+
         const academicData = {
             "UPSC Civil Services (IAS/IPS)": ["General Studies Paper 1 (History, Geography, Polity)", "General Studies Paper 2 (CSAT, Aptitude)", "General Studies Paper 3 (Economy, Science & Tech, Security)", "General Studies Paper 4 (Ethics, Integrity & Aptitude)", "Optional Subjects & Essay Writing"],
             "BPSC / State PSC Exams": ["General Studies (History & Geography of State)", "Indian Polity & Economy", "General Science & Mental Ability", "Current Affairs"],

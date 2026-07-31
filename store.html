@@ -3,8 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gen'Z Store | Notes & Study Hub</title>
+    <title>Gen'Z Store | Notes & Study Hub 🇮🇳</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Firebase SDKs -->
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+
     <style>
         * {
             margin: 0;
@@ -13,12 +18,22 @@
             font-family: 'Poppins', sans-serif;
         }
         body {
-            background-color: #f8fafc;
+            background-color: #fdfbf7; /* Warm Indian Paper Tint */
             color: #1e293b;
             min-height: 100vh;
             display: flex;
             flex-direction: column;
         }
+
+        /* Top Tiranga Border */
+        body::before {
+            content: "";
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 5px;
+            background: linear-gradient(to right, #FF9933, #FFFFFF, #138808);
+            z-index: 1001;
+        }
+
         header {
             background: rgba(255, 255, 255, 0.95);
             backdrop-filter: blur(10px);
@@ -26,22 +41,88 @@
             display: flex;
             align-items: center;
             justify-content: space-between;
-            border-bottom: 1px solid #e2e8f0;
+            border-bottom: 1px solid #e7e5e4;
             position: sticky;
             top: 0;
             z-index: 1000;
             box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+            flex-wrap: wrap;
+            gap: 10px;
         }
         .back-btn {
-            color: #0284c7;
+            color: #ea580c;
             text-decoration: none;
             font-size: 13.5px;
             font-weight: 600;
             transition: 0.2s;
         }
         .back-btn:hover {
-            color: #0369a1;
+            color: #c2410c;
         }
+
+        /* Notification Bell & Dropdown */
+        .notif-container {
+            position: relative;
+            cursor: pointer;
+        }
+        .notif-bell {
+            background: #fff7ed;
+            border: 1px solid #fed7aa;
+            color: #ea580c;
+            padding: 6px 12px;
+            border-radius: 8px;
+            font-size: 11.5px;
+            font-weight: 600;
+        }
+        .notif-badge {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            background: #dc2626;
+            color: #fff;
+            font-size: 9px;
+            padding: 2px 5px;
+            border-radius: 50%;
+            font-weight: 700;
+        }
+        .notif-dropdown {
+            display: none;
+            position: absolute;
+            right: 0;
+            top: 45px;
+            width: 280px;
+            background: #ffffff;
+            border: 1px solid #cbd5e1;
+            border-radius: 12px;
+            box-shadow: 0 15px 30px rgba(0,0,0,0.15);
+            z-index: 2000;
+            overflow: hidden;
+        }
+        .notif-header {
+            padding: 10px 14px;
+            background: #f8fafc;
+            font-size: 12px;
+            font-weight: 600;
+            color: #d97706;
+            border-bottom: 1px solid #e2e8f0;
+            display: flex;
+            justify-content: space-between;
+        }
+        .notif-list {
+            max-height: 180px;
+            overflow-y: auto;
+        }
+        .notif-item {
+            padding: 10px 14px;
+            border-bottom: 1px solid #f1f5f9;
+            font-size: 11.5px;
+            color: #334155;
+            cursor: pointer;
+        }
+        .notif-item:hover {
+            background: #fffbeb;
+        }
+
         .container {
             max-width: 900px;
             width: 100%;
@@ -51,7 +132,7 @@
         }
         .hero-banner {
             background: #ffffff;
-            border: 1px solid #e2e8f0;
+            border: 1px solid #fed7aa;
             border-radius: 16px;
             padding: 24px;
             margin-bottom: 20px;
@@ -61,14 +142,14 @@
             justify-content: space-between;
             flex-wrap: wrap;
             gap: 15px;
-            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.02);
+            box-shadow: 0 4px 15px rgba(234, 88, 12, 0.03);
         }
         .hero-banner-text {
             text-align: left;
         }
         .hero-banner h1 {
             font-size: 20px;
-            color: #d97706;
+            color: #ea580c;
             margin-bottom: 4px;
             font-weight: 700;
         }
@@ -77,7 +158,7 @@
             color: #64748b;
         }
         .add-product-toggle-btn {
-            background: #f59e0b;
+            background: #ea580c;
             color: #fff;
             border: none;
             padding: 10px 20px;
@@ -87,10 +168,10 @@
             cursor: pointer;
             white-space: nowrap;
             transition: 0.2s;
-            box-shadow: 0 4px 6px -1px rgba(245, 158, 11, 0.2);
+            box-shadow: 0 4px 10px rgba(234, 88, 12, 0.2);
         }
         .add-product-toggle-btn:hover {
-            background: #d97706;
+            background: #c2410c;
         }
         .filter-tabs-bar {
             display: flex;
@@ -101,7 +182,7 @@
         }
         .filter-tab {
             background: #ffffff;
-            border: 1px solid #cbd5e1;
+            border: 1px solid #fed7aa;
             color: #64748b;
             padding: 7px 16px;
             border-radius: 20px;
@@ -112,16 +193,16 @@
             transition: all 0.2s;
         }
         .filter-tab.active, .filter-tab:hover {
-            background: #0284c7;
+            background: #ea580c;
             color: #fff;
-            border-color: #0284c7;
+            border-color: #ea580c;
             font-weight: 600;
         }
         .form-modal {
             display: none;
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.6);
+            background: rgba(15, 23, 42, 0.6);
             backdrop-filter: blur(5px);
             align-items: center;
             justify-content: center;
@@ -131,7 +212,7 @@
         }
         .store-form-box {
             background: #ffffff;
-            border: 1px solid #e2e8f0;
+            border: 1px solid #fed7aa;
             border-radius: 16px;
             padding: 25px;
             width: 100%;
@@ -166,7 +247,7 @@
         }
         .store-form-box input:focus, .store-form-box textarea:focus, .store-form-box select:focus {
             outline: none;
-            border-color: #f59e0b;
+            border-color: #ea580c;
         }
         .form-row {
             display: flex;
@@ -186,13 +267,13 @@
         }
         .file-upload-box label {
             font-size: 12.5px;
-            color: #0284c7;
+            color: #ea580c;
             display: block;
             margin-bottom: 6px;
             font-weight: 500;
         }
         .publish-btn {
-            background: #f59e0b;
+            background: #ea580c;
             color: #fff;
             border: none;
             padding: 12px 24px;
@@ -204,20 +285,20 @@
             transition: 0.2s;
         }
         .publish-btn:hover {
-            background: #d97706;
+            background: #c2410c;
         }
         .store-card {
             background: #ffffff;
-            border: 1px solid #e2e8f0;
+            border: 1px solid #fed7aa;
             border-radius: 16px;
             padding: 24px;
             margin-bottom: 20px;
-            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.02);
+            box-shadow: 0 4px 15px rgba(234, 88, 12, 0.03);
             transition: 0.3s;
         }
         .store-card:hover {
-            border-color: #f59e0b;
-            box-shadow: 0 10px 15px -3px rgba(245, 158, 11, 0.08);
+            border-color: #ea580c;
+            box-shadow: 0 10px 15px -3px rgba(234, 88, 12, 0.08);
         }
         .store-header {
             display: flex;
@@ -236,15 +317,15 @@
             width: 40px;
             height: 40px;
             border-radius: 50%;
-            background: #e2e8f0;
+            background: #ffedd5;
             object-fit: cover;
             display: flex;
             align-items: center;
             justify-content: center;
-            color: #f59e0b;
+            color: #ea580c;
             font-weight: 600;
             font-size: 14px;
-            border: 2px solid #fde68a;
+            border: 2px solid #fed7aa;
         }
         .price-badge {
             background: #fef3c7;
@@ -276,9 +357,9 @@
         }
         .tag {
             font-size: 11.5px;
-            color: #0284c7;
-            background: rgba(2, 132, 199, 0.08);
-            border: 1px solid #bae6fd;
+            color: #ea580c;
+            background: #fff7ed;
+            border: 1px solid #fed7aa;
             padding: 3px 10px;
             border-radius: 6px;
             font-weight: 500;
@@ -291,7 +372,7 @@
             word-break: break-word;
         }
         .store-footer {
-            border-top: 1px solid #e2e8f0;
+            border-top: 1px solid #fef3c7;
             padding-top: 14px;
             display: flex;
             align-items: center;
@@ -320,7 +401,7 @@
             background: #059669;
         }
         .btn-buy {
-            background: #f59e0b;
+            background: #ea580c;
             color: #fff;
             border: none;
             padding: 7px 16px;
@@ -331,7 +412,7 @@
             transition: 0.2s;
         }
         .btn-buy:hover {
-            background: #d97706;
+            background: #c2410c;
         }
         .seller-orders-box {
             background: #f8fafc;
@@ -352,7 +433,7 @@
             display: none;
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.6);
+            background: rgba(15, 23, 42, 0.6);
             backdrop-filter: blur(5px);
             align-items: center;
             justify-content: center;
@@ -361,7 +442,7 @@
         }
         .modal-content {
             background: #ffffff;
-            border: 1px solid #e2e8f0;
+            border: 1px solid #fed7aa;
             padding: 25px;
             border-radius: 16px;
             width: 100%;
@@ -387,7 +468,7 @@
             border-radius: 10px;
             margin-bottom: 15px;
             font-size: 14px;
-            color: #0284c7;
+            color: #ea580c;
             font-weight: 600;
         }
         .modal-btns {
@@ -406,7 +487,6 @@
             text-decoration: none;
             transition: 0.2s;
         }
-        /* Star Rating CSS */
         .rating-stars {
             color: #f59e0b;
             font-size: 13px;
@@ -421,14 +501,80 @@
         .star-select.active, .star-select:hover {
             color: #f59e0b;
         }
+
+        /* Floating Popup Toast Notification Banner */
+        #floatingToast {
+            display: none;
+            position: fixed;
+            bottom: 25px;
+            right: 25px;
+            background: #ffffff;
+            border: 2px solid #ea580c;
+            border-radius: 14px;
+            padding: 15px 20px;
+            box-shadow: 0 15px 35px rgba(234, 88, 12, 0.2);
+            z-index: 9999;
+            max-width: 340px;
+            animation: slideUpToast 0.3s ease-in-out;
+            cursor: pointer;
+        }
+        @keyframes slideUpToast {
+            from { transform: translateY(50px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+        .toast-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 5px;
+        }
+        .toast-title {
+            font-size: 13px;
+            font-weight: 700;
+            color: #ea580c;
+        }
+        .toast-close {
+            background: transparent;
+            border: none;
+            font-size: 16px;
+            color: #64748b;
+            cursor: pointer;
+        }
+        .toast-body {
+            font-size: 12px;
+            color: #334155;
+        }
     </style>
 </head>
 <body>
 
+    <!-- Floating Popup Toast Container -->
+    <div id="floatingToast" onclick="openChatFromToast()">
+        <div class="toast-header">
+            <span class="toast-title" id="toastTitle">💬 New Notification</span>
+            <button class="toast-close" onclick="closeToast(event)">&times;</button>
+        </div>
+        <div class="toast-body" id="toastBody">You have a new update.</div>
+    </div>
+
     <header>
         <a href="index.html" class="back-btn">← Back to Dashboard</a>
-        <h3 style="font-size: 16px; color: #0f172a; font-weight: 700;">📚 Gen'Z Store Hub</h3>
-        <div style="width: 80px;"></div>
+        <h3 style="font-size: 16px; color: #0f172a; font-weight: 700;">📚 Gen'Z Store Hub 🇮🇳</h3>
+        
+        <!-- Alerts Dropdown -->
+        <div class="notif-container" onclick="toggleNotifDropdown(event)">
+            <div class="notif-bell">🔔 Alerts</div>
+            <span class="notif-badge" id="chatNotifBadge" style="display: none;">0</span>
+            <div class="notif-dropdown" id="notifDropdown" onclick="event.stopPropagation()">
+                <div class="notif-header">
+                    <span>Notifications</span>
+                    <span style="cursor: pointer; color: #ea580c;" onclick="clearAlerts()">Clear</span>
+                </div>
+                <div class="notif-list" id="notifList">
+                    <div style="padding: 10px; text-align: center; color: #94a3b8; font-size: 11px;">No new alerts</div>
+                </div>
+            </div>
+        </div>
     </header>
 
     <div class="container">
@@ -451,7 +597,7 @@
         <div class="form-modal" id="uploadFormModal">
             <div class="store-form-box">
                 <button class="close-form-btn" id="closeModalBtn">&times;</button>
-                <h3 style="font-size: 17px; color: #0284c7; margin-bottom: 15px; font-weight: 700;">Upload Study Material / PDF Notes</h3>
+                <h3 style="font-size: 17px; color: #ea580c; margin-bottom: 15px; font-weight: 700;">Upload Study Material / PDF Notes</h3>
                 <form id="storeForm">
                     <input type="text" id="itemTitle" placeholder="Title (e.g., Data Structures Notes)" required>
                     
@@ -491,7 +637,7 @@
                     <div class="file-upload-box">
                         <label>📎 Select PDF Document File from Device</label>
                         <input type="file" id="itemPdfFile" accept=".pdf,image/*" required style="border:none; padding:4px 0; background:transparent; font-size:12px; color:#64748b;">
-                        <p id="fileNameDisplay" style="font-size: 11.5px; color: #0284c7; margin-top: 6px; font-weight: 500;"></p>
+                        <p id="fileNameDisplay" style="font-size: 11.5px; color: #ea580c; margin-top: 6px; font-weight: 500;"></p>
                     </div>
                     
                     <div id="upiSection" style="display: none;">
@@ -521,7 +667,7 @@
                 <p style="font-size: 11.5px; color: #ef4444; margin-bottom: 15px; font-weight: 500;">After paying via UPI, click below to notify seller and send screenshot in chat for verification.</p>
                 <div class="modal-btns">
                     <button type="button" style="background: #e2e8f0; color: #334155;" onclick="closeModal()">Cancel</button>
-                    <button type="button" style="background: #0284c7; color: #fff;" id="notifySellerBtn">I Have Paid - Notify Seller 💳</button>
+                    <button type="button" style="background: #ea580c; color: #fff;" id="notifySellerBtn">I Have Paid - Notify Seller 💳</button>
                 </div>
             </div>
         </div>
@@ -542,7 +688,7 @@
             <textarea id="reviewText" placeholder="Write a short review (optional)..." style="width:100%; background:#f8fafc; border:1px solid #cbd5e1; border-radius:8px; padding:10px; font-size:13px; margin-bottom:15px; resize:vertical; min-height:80px; color:#1e293b;"></textarea>
             <div class="modal-btns">
                 <button type="button" style="background:#e2e8f0; color:#334155;" onclick="closeRatingModal()">Cancel</button>
-                <button type="button" style="background:#f59e0b; color:#fff;" id="submitRatingBtn">Submit Rating 🌟</button>
+                <button type="button" style="background:#ea580c; color:#fff;" id="submitRatingBtn">Submit Rating 🌟</button>
             </div>
         </div>
     </div>
@@ -568,6 +714,77 @@
         if (!activeUser) {
             window.location.href = 'login.html';
         }
+
+        // Global Alerts & Floating Toast Listener
+        let latestTargetUrl = "chats.html";
+        window.toggleNotifDropdown = function(e) {
+            e.stopPropagation();
+            const dropdown = document.getElementById('notifDropdown');
+            dropdown.style.display = dropdown.style.display === 'block' ? 'none' : 'block';
+        };
+
+        window.addEventListener('click', function() {
+            const dropdown = document.getElementById('notifDropdown');
+            if(dropdown) dropdown.style.display = 'none';
+        });
+
+        window.clearAlerts = function() {
+            document.getElementById('notifList').innerHTML = `<div style="padding: 10px; text-align: center; color: #94a3b8; font-size: 11px;">No new alerts</div>`;
+            document.getElementById('chatNotifBadge').style.display = 'none';
+        };
+
+        db.collection('chats').onSnapshot((snapshot) => {
+            let unreadList = [];
+            snapshot.forEach(docSnap => {
+                const m = docSnap.data();
+                if (m.receiver === activeUser.username && m.read === false) {
+                    unreadList.push({
+                        sender: m.sender,
+                        text: m.text || "Sent an attachment"
+                    });
+                }
+            });
+
+            const badge = document.getElementById('chatNotifBadge');
+            const list = document.getElementById('notifList');
+
+            if (unreadList.length === 0) {
+                if (badge) badge.style.display = 'none';
+                if (list) list.innerHTML = `<div style="padding: 10px; text-align: center; color: #94a3b8; font-size: 11px;">No new alerts</div>`;
+            } else {
+                if (badge) {
+                    badge.style.display = 'inline-block';
+                    badge.innerText = unreadList.length;
+                }
+                if (list) {
+                    list.innerHTML = '';
+                    unreadList.forEach(item => {
+                        list.innerHTML += `
+                            <div class="notif-item" onclick="window.location.href='chat.html?with=${item.sender}'">
+                                <b>@${item.sender}</b>: ${item.text}
+                            </div>
+                        `;
+                    });
+                }
+
+                const latest = unreadList[unreadList.length - 1];
+                latestTargetUrl = `chat.html?with=${latest.sender}`;
+                document.getElementById('toastTitle').innerText = `💬 New Message from @${latest.sender}`;
+                document.getElementById('toastBody').innerText = latest.text;
+                document.getElementById('floatingToast').style.display = 'block';
+            }
+        });
+
+        window.openChatFromToast = function() {
+            if (latestTargetUrl) {
+                window.location.href = latestTargetUrl;
+            }
+        };
+
+        window.closeToast = function(e) {
+            e.stopPropagation();
+            document.getElementById('floatingToast').style.display = 'none';
+        };
 
         const modalBox = document.getElementById('uploadFormModal');
         document.getElementById('openModalBtn').addEventListener('click', () => {
@@ -653,7 +870,7 @@
                         author: activeUser.username,
                         authorPic: activeUser.profilePic || "",
                         createdAt: Date.now(),
-                        ratings: [] // Array of {user, stars, review}
+                        ratings: []
                     };
 
                     await addDoc(collection(db, 'store_items'), newItem);
@@ -718,7 +935,6 @@
                 const userOrder = cachedOrdersList.find(o => o.itemId === item.id && o.buyer === activeUser.username);
                 const isAccepted = userOrder && userOrder.status === 'accepted';
 
-                // Calculate average rating
                 let avgRating = 0;
                 const ratingsArr = item.ratings || [];
                 if (ratingsArr.length > 0) {
@@ -730,10 +946,10 @@
                 let rateButtonHtml = "";
                 if (isFree && item.fileUrl) {
                     actionButtonHtml = `<a href="${item.fileUrl}" target="_blank" download="${item.fileName || 'notes.pdf'}" class="btn-access">Download PDF 📥</a>`;
-                    rateButtonHtml = `<button class="btn-buy" style="background:#0284c7;" onclick="openRatingModal('${item.id}')">Rate ⭐</button>`;
+                    rateButtonHtml = `<button class="btn-buy" style="background:#ea580c;" onclick="openRatingModal('${item.id}')">Rate ⭐</button>`;
                 } else if (isAccepted && item.fileUrl) {
                     actionButtonHtml = `<a href="${item.fileUrl}" target="_blank" download="${item.fileName || 'notes.pdf'}" class="btn-access">Download PDF Now 📥</a>`;
-                    rateButtonHtml = `<button class="btn-buy" style="background:#0284c7;" onclick="openRatingModal('${item.id}')">Rate ⭐</button>`;
+                    rateButtonHtml = `<button class="btn-buy" style="background:#ea580c;" onclick="openRatingModal('${item.id}')">Rate ⭐</button>`;
                 } else if (userOrder && userOrder.status === 'pending') {
                     actionButtonHtml = `<button class="btn-buy" style="background:#e2e8f0; color:#64748b; cursor:default;">Payment Pending ⏳</button>`;
                 } else {
@@ -786,7 +1002,7 @@
                         ${sellerPanelHtml}
 
                         <div class="store-footer">
-                            <a href="chat.html?with=${item.author}" style="font-size: 12.5px; color: #0284c7; text-decoration: none; font-weight:500;">Chat with @${item.author} 💬</a>
+                            <a href="chat.html?with=${item.author}" style="font-size: 12.5px; color: #ea580c; text-decoration: none; font-weight:500;">Chat with @${item.author} 💬</a>
                             <div class="action-btns">
                                 ${rateButtonHtml}
                                 ${actionButtonHtml}
@@ -843,7 +1059,6 @@
             document.getElementById('paymentModal').style.display = 'none';
         };
 
-        // Rating Pop-up Logic
         let selectedStarVal = 5;
         let ratingItemId = null;
 
@@ -853,12 +1068,12 @@
             document.getElementById('reviewText').value = '';
             highlightStars(5);
             document.getElementById('ratingModal').style.display = 'flex';
-        }
+        };
 
         window.closeRatingModal = function() {
             document.getElementById('ratingModal').style.display = 'none';
             ratingItemId = null;
-        }
+        };
 
         const stars = document.querySelectorAll('.star-select');
         stars.forEach(star => {
@@ -895,7 +1110,6 @@
                 const targetItem = cachedStoreList.find(i => i.id === ratingItemId);
                 let currentRatings = targetItem.ratings || [];
                 
-                // Replace if already rated by same user, else add
                 currentRatings = currentRatings.filter(r => r.user !== activeUser.username);
                 currentRatings.push(newRating);
 

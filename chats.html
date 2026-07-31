@@ -132,6 +132,10 @@
             border-bottom: 1px solid #f1f5f9;
             font-size: 11.5px;
             color: #334155;
+            cursor: pointer;
+        }
+        .notif-item:hover {
+            background: #fffbeb;
         }
 
         .container {
@@ -198,7 +202,6 @@
             font-weight: 600;
             font-size: 13px;
         }
-        /* Instagram Style Unread Badge */
         .unread-badge {
             background: #dc2626;
             color: #fff;
@@ -208,9 +211,61 @@
             border-radius: 10px;
             display: none;
         }
+
+        /* Floating Popup Toast Notification Banner */
+        #floatingToast {
+            display: none;
+            position: fixed;
+            bottom: 25px;
+            right: 25px;
+            background: #ffffff;
+            border: 2px solid #ea580c;
+            border-radius: 14px;
+            padding: 15px 20px;
+            box-shadow: 0 15px 35px rgba(234, 88, 12, 0.2);
+            z-index: 9999;
+            max-width: 340px;
+            animation: slideUpToast 0.3s ease-in-out;
+            cursor: pointer;
+        }
+        @keyframes slideUpToast {
+            from { transform: translateY(50px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+        .toast-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 5px;
+        }
+        .toast-title {
+            font-size: 13px;
+            font-weight: 700;
+            color: #ea580c;
+        }
+        .toast-close {
+            background: transparent;
+            border: none;
+            font-size: 16px;
+            color: #64748b;
+            cursor: pointer;
+        }
+        .toast-body {
+            font-size: 12px;
+            color: #334155;
+        }
     </style>
 </head>
 <body>
+
+    <!-- Floating Popup Toast Container -->
+    <div id="floatingToast" onclick="openChatFromToast()">
+        <div class="toast-header">
+            <span class="toast-title" id="toastTitle">💬 New Notification</span>
+            <button class="toast-close" onclick="closeToast(event)">&times;</button>
+        </div>
+        <div class="toast-body" id="toastBody">You have a new update.</div>
+    </div>
 
     <script>
         const user = localStorage.getItem('genzUser');
@@ -269,11 +324,13 @@
 
         const currentLoggedInUser = JSON.parse(localStorage.getItem('genzUser'));
 
+        let latestTargetUrl = "chats.html";
+
         window.toggleNotifDropdown = function(e) {
             e.stopPropagation();
             const dropdown = document.getElementById('notifDropdown');
             dropdown.style.display = dropdown.style.display === 'block' ? 'none' : 'block';
-        }
+        };
 
         window.addEventListener('click', function() {
             const dropdown = document.getElementById('notifDropdown');
@@ -283,7 +340,18 @@
         window.clearAlerts = function() {
             document.getElementById('chatNotifList').innerHTML = `<div style="padding: 10px; text-align: center; color: #94a3b8; font-size: 11px;">No unread messages</div>`;
             document.getElementById('chatNotifBadge').style.display = 'none';
-        }
+        };
+
+        window.openChatFromToast = function() {
+            if (latestTargetUrl) {
+                window.location.href = latestTargetUrl;
+            }
+        };
+
+        window.closeToast = function(e) {
+            e.stopPropagation();
+            document.getElementById('floatingToast').style.display = 'none';
+        };
 
         async function initChatsRealtime() {
             const container = document.getElementById('chatsListContainer');
@@ -299,6 +367,7 @@
                 db.collection('chats').onSnapshot(async (snapshot) => {
                     let chattedUsernames = new Set();
                     let lastMessageMap = {}; // stores last message info per chat room
+                    let unreadAlertsList = [];
 
                     snapshot.forEach(docSnap => {
                         const data = docSnap.data();
@@ -312,7 +381,8 @@
                                     lastMessageMap[friendUser] = {
                                         text: data.text || "Sent an attachment",
                                         sender: data.sender,
-                                        createdAt: data.createdAt
+                                        createdAt: data.createdAt,
+                                        read: data.read
                                     };
                                 }
                             }
@@ -327,7 +397,6 @@
                     }
 
                     container.innerHTML = '';
-                    let unreadAlertsList = [];
 
                     for (let username of allContactUsernames) {
                         const uQuery = await db.collection('users').where("username", "==", username).get();
@@ -338,8 +407,8 @@
                             let lastInfo = lastMessageMap[username];
                             let lastMsgText = lastInfo ? lastInfo.text : "Tap to open chat";
                             
-                            // Unread check: If the last message in the chat was sent BY the friend (not by me)
-                            let isUnread = lastInfo && lastInfo.sender === username;
+                            // Unread check: If the last message in the chat was sent BY the friend (not by me) and read is false
+                            let isUnread = lastInfo && lastInfo.sender === username && lastInfo.read === false;
 
                             let badgeStyle = isUnread ? 'display: inline-block;' : 'display: none;';
 
@@ -383,23 +452,33 @@
             const list = document.getElementById('chatNotifList');
 
             if (unreadList.length === 0) {
-                badge.style.display = 'none';
-                list.innerHTML = `<div style="padding: 10px; text-align: center; color: #94a3b8; font-size: 11px;">No unread messages</div>`;
+                if (badge) badge.style.display = 'none';
+                if (list) list.innerHTML = `<div style="padding: 10px; text-align: center; color: #94a3b8; font-size: 11px;">No unread messages</div>`;
                 return;
             }
 
-            badge.style.display = 'inline-block';
-            badge.innerText = unreadList.length;
+            if (badge) {
+                badge.style.display = 'inline-block';
+                badge.innerText = unreadList.length;
+            }
 
-            list.innerHTML = '';
-            unreadList.forEach(item => {
-                list.innerHTML += `
-                    <div class="notif-item">
-                        <b>${item.senderName}</b> sent a message:<br>
-                        <span style="color: #64748b;">"${item.text}"</span>
-                    </div>
-                `;
-            });
+            if (list) {
+                list.innerHTML = '';
+                unreadList.forEach(item => {
+                    list.innerHTML += `
+                        <div class="notif-item" onclick="window.location.href='chat.html?with=${item.username}'">
+                            <b>${item.senderName}</b> sent a message:<br>
+                            <span style="color: #64748b;">"${item.text}"</span>
+                        </div>
+                    `;
+                });
+            }
+
+            const latest = unreadList[unreadList.length - 1];
+            latestTargetUrl = `chat.html?with=${latest.username}`;
+            document.getElementById('toastTitle').innerText = `💬 New Message from ${latest.senderName}`;
+            document.getElementById('toastBody').innerText = latest.text;
+            document.getElementById('floatingToast').style.display = 'block';
         }
 
         initChatsRealtime();

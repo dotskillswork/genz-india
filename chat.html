@@ -276,14 +276,66 @@
             cursor: pointer;
             border: none;
         }
+
+        /* Floating Popup Toast Notification Banner */
+        #floatingToast {
+            display: none;
+            position: fixed;
+            bottom: 25px;
+            right: 25px;
+            background: #ffffff;
+            border: 2px solid #ea580c;
+            border-radius: 14px;
+            padding: 15px 20px;
+            box-shadow: 0 15px 35px rgba(234, 88, 12, 0.2);
+            z-index: 9999;
+            max-width: 340px;
+            animation: slideUpToast 0.3s ease-in-out;
+            cursor: pointer;
+        }
+        @keyframes slideUpToast {
+            from { transform: translateY(50px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+        .toast-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 5px;
+        }
+        .toast-title {
+            font-size: 13px;
+            font-weight: 700;
+            color: #ea580c;
+        }
+        .toast-close {
+            background: transparent;
+            border: none;
+            font-size: 16px;
+            color: #64748b;
+            cursor: pointer;
+        }
+        .toast-body {
+            font-size: 12px;
+            color: #334155;
+        }
     </style>
 </head>
 <body>
 
+    <!-- Floating Popup Toast Container -->
+    <div id="floatingToast" onclick="openChatFromToast()">
+        <div class="toast-header">
+            <span class="toast-title" id="toastTitle">💬 New Notification</span>
+            <button class="toast-close" onclick="closeToast(event)">&times;</button>
+        </div>
+        <div class="toast-body" id="toastBody">You have a new update.</div>
+    </div>
+
     <div class="chat-container">
         <header>
             <a href="chats.html" class="back-btn">← Back to Chats</a>
-            <h3 style="font-size: 14px; color: #0f172a; font-weight: 700;">💬 Gen'Z Direct Chat</h3>
+            <h3 style="font-size: 14px; color: #0f172a; font-weight: 700;">💬 Gen'Z Direct Chat 🇮🇳</h3>
             <div style="width: 50px;"></div>
         </header>
 
@@ -339,6 +391,40 @@
         const urlParams = new URLSearchParams(window.location.search);
         const chatWith = urlParams.get('with');
         if (!chatWith) window.location.href = 'chats.html';
+
+        // Global Alerts & Floating Toast Listener for other messages
+        let latestTargetUrl = "chats.html";
+        window.openChatFromToast = function() {
+            if (latestTargetUrl) {
+                window.location.href = latestTargetUrl;
+            }
+        };
+
+        window.closeToast = function(e) {
+            e.stopPropagation();
+            document.getElementById('floatingToast').style.display = 'none';
+        };
+
+        db.collection('chats').onSnapshot((snapshot) => {
+            let unreadList = [];
+            snapshot.forEach(docSnap => {
+                const m = docSnap.data();
+                if (m.receiver === activeUser.username && m.read === false && m.sender !== chatWith) {
+                    unreadList.push({
+                        sender: m.sender,
+                        text: m.text || "Sent an attachment"
+                    });
+                }
+            });
+
+            if (unreadList.length > 0) {
+                const latest = unreadList[unreadList.length - 1];
+                latestTargetUrl = `chat.html?with=${latest.sender}`;
+                document.getElementById('toastTitle').innerText = `💬 New Message from @${latest.sender}`;
+                document.getElementById('toastBody').innerText = latest.text;
+                document.getElementById('floatingToast').style.display = 'block';
+            }
+        });
 
         async function updateMyPresence() {
             try {

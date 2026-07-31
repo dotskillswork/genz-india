@@ -5,6 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Proud to be Indian | Gen'Z India 🇮🇳</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Firebase SDKs -->
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+
     <style>
         * {
             margin: 0;
@@ -55,6 +60,69 @@
         }
         .back-btn:hover {
             color: #7dd3fc;
+        }
+
+        /* Notification Bell & Dropdown */
+        .notif-container {
+            position: relative;
+            cursor: pointer;
+        }
+        .notif-bell {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 153, 51, 0.4);
+            color: #FF9933;
+            padding: 6px 12px;
+            border-radius: 8px;
+            font-size: 11.5px;
+            font-weight: 600;
+        }
+        .notif-badge {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            background: #dc2626;
+            color: #fff;
+            font-size: 9px;
+            padding: 2px 5px;
+            border-radius: 50%;
+            font-weight: 700;
+        }
+        .notif-dropdown {
+            display: none;
+            position: absolute;
+            right: 0;
+            top: 45px;
+            width: 280px;
+            background: #0f172a;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: 12px;
+            box-shadow: 0 15px 30px rgba(0,0,0,0.4);
+            z-index: 2000;
+            overflow: hidden;
+        }
+        .notif-header {
+            padding: 10px 14px;
+            background: #1e293b;
+            font-size: 12px;
+            font-weight: 600;
+            color: #FF9933;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+            display: flex;
+            justify-content: space-between;
+        }
+        .notif-list {
+            max-height: 180px;
+            overflow-y: auto;
+        }
+        .notif-item {
+            padding: 10px 14px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            font-size: 11.5px;
+            color: #cbd5e1;
+            cursor: pointer;
+        }
+        .notif-item:hover {
+            background: rgba(255, 255, 255, 0.05);
         }
 
         .container {
@@ -191,14 +259,80 @@
             font-size: 12.5px;
             background: rgba(15, 23, 42, 0.6);
         }
+
+        /* Floating Popup Toast Notification Banner */
+        #floatingToast {
+            display: none;
+            position: fixed;
+            bottom: 25px;
+            right: 25px;
+            background: #0f172a;
+            border: 2px solid #FF9933;
+            border-radius: 14px;
+            padding: 15px 20px;
+            box-shadow: 0 15px 35px rgba(255, 153, 51, 0.2);
+            z-index: 9999;
+            max-width: 340px;
+            animation: slideUpToast 0.3s ease-in-out;
+            cursor: pointer;
+        }
+        @keyframes slideUpToast {
+            from { transform: translateY(50px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+        .toast-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 5px;
+        }
+        .toast-title {
+            font-size: 13px;
+            font-weight: 700;
+            color: #FF9933;
+        }
+        .toast-close {
+            background: transparent;
+            border: none;
+            font-size: 16px;
+            color: #94a3b8;
+            cursor: pointer;
+        }
+        .toast-body {
+            font-size: 12px;
+            color: #cbd5e1;
+        }
     </style>
 </head>
 <body>
 
+    <!-- Floating Popup Toast Container -->
+    <div id="floatingToast" onclick="openChatFromToast()">
+        <div class="toast-header">
+            <span class="toast-title" id="toastTitle">💬 New Notification</span>
+            <button class="toast-close" onclick="closeToast(event)">&times;</button>
+        </div>
+        <div class="toast-body" id="toastBody">You have a new update.</div>
+    </div>
+
     <header>
         <a href="index.html" class="back-btn">← Back to Dashboard</a>
         <h3 style="font-size: 16px; color: #f8fafc; font-weight: 700;">🇮🇳 Proud to be Indian Hub</h3>
-        <div style="width: 100px;"></div>
+        
+        <!-- Alerts Dropdown -->
+        <div class="notif-container" onclick="toggleNotifDropdown(event)">
+            <div class="notif-bell">🔔 Alerts</div>
+            <span class="notif-badge" id="chatNotifBadge" style="display: none;">0</span>
+            <div class="notif-dropdown" id="notifDropdown" onclick="event.stopPropagation()">
+                <div class="notif-header">
+                    <span>Notifications</span>
+                    <span style="cursor: pointer; color: #FF9933;" onclick="clearAlerts()">Clear</span>
+                </div>
+                <div class="notif-list" id="notifList">
+                    <div style="padding: 12px; text-align: center; color: #94a3b8; font-size: 11.5px;">No new alerts</div>
+                </div>
+            </div>
+        </div>
     </header>
 
     <div class="container">
@@ -318,5 +452,103 @@
         <p>Proudly Built in India 🇮🇳 | Gen'Z India Student Hub © 2026</p>
     </footer>
 
+    <script>
+        const activeUser = JSON.parse(localStorage.getItem('genzUser'));
+        if (!activeUser) {
+            window.location.href = 'login.html';
+        }
+    </script>
+
+    <!-- Firebase SDKs -->
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+
+    <script>
+        const firebaseConfig = {
+            apiKey: "AIzaSyCNLwSjHq6LlX9uUovTRHrz9ZfUWeIUWQM",
+            authDomain: "genz-india.firebaseapp.com",
+            projectId: "genz-india",
+            storageBucket: "genz-india.firebasestorage.app",
+            messagingSenderId: "149959470783",
+            appId: "1:149959470783:web:71b7969ee2c8fc049c200a",
+            measurementId: "G-RBRDSRKH"
+        };
+
+        if (!firebase.apps.length) {
+            firebase.initializeApp(firebaseConfig);
+        }
+        const db = firebase.firestore();
+
+        let latestTargetUrl = "chats.html";
+
+        window.toggleNotifDropdown = function(e) {
+            e.stopPropagation();
+            const dropdown = document.getElementById('notifDropdown');
+            dropdown.style.display = dropdown.style.display === 'block' ? 'none' : 'block';
+        };
+
+        window.addEventListener('click', function() {
+            const dropdown = document.getElementById('notifDropdown');
+            if(dropdown) dropdown.style.display = 'none';
+        });
+
+        window.clearAlerts = function() {
+            document.getElementById('notifList').innerHTML = `<div style="padding: 12px; text-align: center; color: #94a3b8; font-size: 11.5px;">No new alerts</div>`;
+            document.getElementById('chatNotifBadge').style.display = 'none';
+        };
+
+        db.collection('chats').onSnapshot((snapshot) => {
+            let unreadList = [];
+            snapshot.forEach(docSnap => {
+                const m = docSnap.data();
+                if (m.receiver === activeUser.username && m.read === false) {
+                    unreadList.push({
+                        sender: m.sender,
+                        text: m.text || "Sent an attachment"
+                    });
+                }
+            });
+
+            const badge = document.getElementById('chatNotifBadge');
+            const list = document.getElementById('notifList');
+
+            if (unreadList.length === 0) {
+                if (badge) badge.style.display = 'none';
+                if (list) list.innerHTML = `<div style="padding: 12px; text-align: center; color: #94a3b8; font-size: 11.5px;">No new alerts</div>`;
+            } else {
+                if (badge) {
+                    badge.style.display = 'inline-block';
+                    badge.innerText = unreadList.length;
+                }
+                if (list) {
+                    list.innerHTML = '';
+                    unreadList.forEach(item => {
+                        list.innerHTML += `
+                            <div class="notif-item" onclick="window.location.href='chat.html?with=${item.sender}'">
+                                <b>@${item.sender}</b>: ${item.text}
+                            </div>
+                        `;
+                    });
+                }
+
+                const latest = unreadList[unreadList.length - 1];
+                latestTargetUrl = `chat.html?with=${latest.sender}`;
+                document.getElementById('toastTitle').innerText = `💬 New Message from @${latest.sender}`;
+                document.getElementById('toastBody').innerText = latest.text;
+                document.getElementById('floatingToast').style.display = 'block';
+            }
+        });
+
+        window.openChatFromToast = function() {
+            if (latestTargetUrl) {
+                window.location.href = latestTargetUrl;
+            }
+        };
+
+        window.closeToast = function(e) {
+            e.stopPropagation();
+            document.getElementById('floatingToast').style.display = 'none';
+        };
+    </script>
 </body>
 </html>

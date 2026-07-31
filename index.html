@@ -326,10 +326,57 @@
             display: flex;
             flex-direction: column;
             gap: 2px;
+            cursor: pointer;
+        }
+        .notif-item:hover {
+            background: #fffbeb;
         }
         .notif-time {
             font-size: 9.5px;
             color: #94a3b8;
+        }
+
+        /* Floating Popup Toast Notification Banner */
+        #floatingToast {
+            display: none;
+            position: fixed;
+            bottom: 25px;
+            right: 25px;
+            background: #ffffff;
+            border: 2px solid #ea580c;
+            border-radius: 14px;
+            padding: 15px 20px;
+            box-shadow: 0 15px 35px rgba(234, 88, 12, 0.2);
+            z-index: 9999;
+            max-width: 340px;
+            animation: slideUpToast 0.3s ease-in-out;
+            cursor: pointer;
+        }
+        @keyframes slideUpToast {
+            from { transform: translateY(50px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+        .toast-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 5px;
+        }
+        .toast-title {
+            font-size: 13px;
+            font-weight: 700;
+            color: #ea580c;
+        }
+        .toast-close {
+            background: transparent;
+            border: none;
+            font-size: 16px;
+            color: #64748b;
+            cursor: pointer;
+        }
+        .toast-body {
+            font-size: 12px;
+            color: #334155;
         }
 
         /* 3-Dot More Menu Styles */
@@ -413,6 +460,15 @@
     </style>
 </head>
 <body>
+
+    <!-- Floating Popup Toast Container -->
+    <div id="floatingToast" onclick="openChatFromToast()">
+        <div class="toast-header">
+            <span class="toast-title" id="toastTitle">💬 New Notification</span>
+            <button class="toast-close" onclick="closeToast(event)">&times;</button>
+        </div>
+        <div class="toast-body" id="toastBody">You have a new update.</div>
+    </div>
 
     <script>
         if (!localStorage.getItem('hasSeenWelcome')) {
@@ -608,6 +664,7 @@
                 }
             }
             setupRealtimeNotifications();
+            setupRealtimeChatNotifications();
         });
 
         function toggleNotifDropdown(e) {
@@ -626,13 +683,16 @@
             }
         });
 
+        let combinedAlertsList = [];
+        let latestTargetUrl = "chats.html";
+
         function setupRealtimeNotifications() {
             if (!currentUser) return;
 
             db.collection("notifications").orderBy("createdAt", "desc").onSnapshot((snapshot) => {
                 let allNotifs = [];
                 snapshot.forEach((doc) => {
-                    allNotifs.push({ id: doc.id, ...doc.data() });
+                    allNotifs.push({ id: doc.id, type: 'general', ...doc.data() });
                 });
 
                 let userNotifs = allNotifs.filter(n => {
@@ -643,26 +703,61 @@
                     return false;
                 });
 
-                updateNotificationUI(userNotifs);
+                mergeAndRenderAlerts(userNotifs, null);
             });
         }
 
-        function updateNotificationUI(notifs) {
+        function setupRealtimeChatNotifications() {
+            if (!currentUser) return;
+
+            db.collection('chats').onSnapshot((snapshot) => {
+                let unreadChats = [];
+                snapshot.forEach(docSnap => {
+                    const m = docSnap.data();
+                    if (m.receiver === currentUser.username && m.read === false) {
+                        unreadChats.push({
+                            id: docSnap.id,
+                            type: 'chat',
+                            title: `New Message from @${m.sender}`,
+                            message: m.text || "Sent an attachment",
+                            time: new Date(m.createdAt || Date.now()).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+                            sender: m.sender
+                        });
+                    }
+                });
+
+                mergeAndRenderAlerts(null, unreadChats);
+            });
+        }
+
+        let latestGeneralNotifs = [];
+        let latestChatNotifs = [];
+
+        function mergeAndRenderAlerts(genNotifs, chatNotifs) {
+            if (genNotifs) latestGeneralNotifs = genNotifs;
+            if (chatNotifs) latestChatNotifs = chatNotifs;
+
+            combinedAlertsList = [...latestGeneralNotifs, ...latestChatNotifs];
+            
+            // Sort by time or creation if possible, else keep combined
             const listContainer = document.getElementById('notifList');
             const badge = document.getElementById('notifBadge');
 
-            if (notifs.length === 0) {
+            if (combinedAlertsList.length === 0) {
                 listContainer.innerHTML = `<div style="padding: 15px; text-align: center; color: #94a3b8; font-size: 12px;">No new alerts</div>`;
                 badge.style.display = 'none';
+                document.getElementById('floatingToast').style.display = 'none';
                 return;
             }
 
             badge.style.display = 'inline-block';
-            badge.innerText = notifs.length;
+            badge.innerText = combinedAlertsList.length;
 
             listContainer.innerHTML = '';
-            notifs.forEach((n) => {
+            combinedAlertsList.forEach((n) => {
                 let actionBtns = '';
+                let itemClickAction = '';
+
                 if (n.type === 'friend_request') {
                     actionBtns = `
                         <div style="display:flex; gap:6px; margin-top:6px;">
@@ -670,17 +765,41 @@
                             <button onclick="rejectRequest('${n.id}', '${n.senderUsername}')" style="background:#dc2626; color:#fff; border:none; padding:4px 8px; border-radius:4px; font-size:10px; cursor:pointer; font-weight:600;">Reject</button>
                         </div>
                     `;
+                } else if (n.type === 'chat') {
+                    itemClickAction = `onclick="window.location.href='chat.html?with=${n.sender}'"`;
                 }
 
                 listContainer.innerHTML += `
-                    <div class="notif-item">
+                    <div class="notif-item" ${itemClickAction}>
                         <span><b>${n.title}</b>: ${n.message}</span>
                         ${actionBtns}
-                        <span class="notif-time">${n.time}</span>
+                        <span class="notif-time">${n.time || ''}</span>
                     </div>
                 `;
             });
+
+            // Handle Floating Toast Popup for the latest chat notification
+            if (latestChatNotifs.length > 0) {
+                const latest = latestChatNotifs[latestChatNotifs.length - 1];
+                latestTargetUrl = `chat.html?with=${latest.sender}`;
+                document.getElementById('toastTitle').innerText = `💬 New Message from @${latest.sender}`;
+                document.getElementById('toastBody').innerText = latest.message;
+                document.getElementById('floatingToast').style.display = 'block';
+            } else {
+                document.getElementById('floatingToast').style.display = 'none';
+            }
         }
+
+        window.openChatFromToast = function() {
+            if (latestTargetUrl) {
+                window.location.href = latestTargetUrl;
+            }
+        };
+
+        window.closeToast = function(e) {
+            e.stopPropagation();
+            document.getElementById('floatingToast').style.display = 'none';
+        };
 
         window.acceptRequest = async function(notifId, senderUsername) {
             try {
@@ -762,8 +881,14 @@
                 });
 
                 await batch.commit();
+
+                // Also clear unread chats view status if desired or handle via local list clear
+                latestChatNotifs = [];
+                mergeAndRenderAlerts(null, []);
+
                 document.getElementById('notifList').innerHTML = `<div style="padding: 15px; text-align: center; color: #94a3b8; font-size: 12px;">No new alerts</div>`;
                 document.getElementById('notifBadge').style.display = 'none';
+                document.getElementById('floatingToast').style.display = 'none';
             } catch(err) {
                 console.error(err);
                 alert("Could not clear notifications.");
