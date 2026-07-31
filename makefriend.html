@@ -602,7 +602,7 @@
             storageBucket: "genz-india.firebasestorage.app",
             messagingSenderId: "149959470783",
             appId: "1:149959470783:web:71b7969ee2c8fc049c200a",
-            measurementId: "G-RBRDSRKH"
+            measurementId: "G-RBRDSRKSRH"
         };
 
         const app = initializeApp(firebaseConfig);
@@ -687,7 +687,14 @@
 
         async function initPage() {
             try {
-                // Load My Profile Details
+                // Instant Fallback Render from LocalStorage
+                document.getElementById('myName').innerText = currentLoggedInUser.name || 'User';
+                document.getElementById('myUsername').innerText = `@${currentLoggedInUser.username || currentLoggedInUser.name}`;
+                if (currentLoggedInUser.photo || currentLoggedInUser.profilePic) {
+                    document.getElementById('myAvatar').src = currentLoggedInUser.photo || currentLoggedInUser.profilePic;
+                }
+
+                // Load My Profile Details from Firestore
                 const userQuery = query(collection(db, 'users'), where("username", "==", currentLoggedInUser.username));
                 const userSnap = await getDocs(userQuery);
                 if (!userSnap.empty) {
@@ -699,7 +706,6 @@
                     myConnections.friends = currentUserData.friends || [];
                     myConnections.received = currentUserData.requestsReceived || [];
 
-                    // Render My Profile Info
                     document.getElementById('myName').innerText = currentUserData.name || currentLoggedInUser.name;
                     document.getElementById('myUsername').innerText = `@${currentUserData.username || currentLoggedInUser.username}`;
                     document.getElementById('myCollegeInfo').innerText = `${currentUserData.college || 'College not specified'} | ${currentUserData.course || ''}`;
@@ -728,7 +734,7 @@
         window.toggleSuggestions = function() {
             const box = document.getElementById('suggestionsBox');
             box.style.display = box.style.display === 'block' ? 'none' : 'block';
-        }
+        };
 
         // Edit Profile Modal Logic
         window.openEditProfileModal = function() {
@@ -738,11 +744,11 @@
             document.getElementById('editCity').value = currentUserData.city || '';
             document.getElementById('editPhoto').value = currentUserData.photo || currentUserData.profilePic || '';
             document.getElementById('editProfileModal').style.display = 'flex';
-        }
+        };
 
         window.closeEditProfileModal = function() {
             document.getElementById('editProfileModal').style.display = 'none';
-        }
+        };
 
         window.saveProfileChanges = async function(e) {
             e.preventDefault();
@@ -777,7 +783,7 @@
                 console.error(err);
                 alert("Failed to update profile.");
             }
-        }
+        };
 
         window.renderUsers = function(users) {
             const container = document.getElementById('usersListContainer');
@@ -822,7 +828,7 @@
                     </div>
                 `;
             });
-        }
+        };
 
         window.filterUsers = function(queryText) {
             const q = queryText.trim().toLowerCase();
@@ -832,7 +838,7 @@
             }
             const filtered = allUsersList.filter(u => u.username.toLowerCase().includes(q) || u.name.toLowerCase().includes(q));
             renderUsers(filtered);
-        }
+        };
 
         window.sendFriendRequest = async function(targetUsername, targetName, btnElement) {
             try {
@@ -876,7 +882,7 @@
                 console.error(err);
                 alert("Failed to send request.");
             }
-        }
+        };
 
         window.acceptDirectRequest = async function(senderUsername) {
             try {
@@ -913,7 +919,7 @@
             } catch(e) {
                 console.error(e);
             }
-        }
+        };
 
         window.rejectDirectRequest = async function(senderUsername) {
             try {
@@ -925,7 +931,7 @@
             } catch(e) {
                 console.error(e);
             }
-        }
+        };
 
         window.openFriendsModal = async function() {
             const modal = document.getElementById('friendsModal');
@@ -960,15 +966,15 @@
                     `;
                 }
             }
-        }
+        };
 
         window.closeFriendsModal = function() {
             document.getElementById('friendsModal').style.display = 'none';
-        }
+        };
 
         window.startChat = function(username) {
             window.location.href = `chat.html?with=${username}`;
-        }
+        };
 
         initPage();
     </script>
