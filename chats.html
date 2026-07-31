@@ -5,6 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Chats Hub | Gen'Z India 🇮🇳</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Firebase SDKs -->
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+
     <style>
         * {
             margin: 0;
@@ -246,10 +251,7 @@
         </div>
     </div>
 
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-app.js";
-        import { getFirestore, collection, getDocs, query, where, updateDoc, doc } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-firestore.js";
-
+    <script>
         const firebaseConfig = {
             apiKey: "AIzaSyCNLwSjHq6LlX9uUovTRHrz9ZfUWeIUWQM",
             authDomain: "genz-india.firebaseapp.com",
@@ -260,8 +262,10 @@
             measurementId: "G-RBRDSRKH"
         };
 
-        const app = initializeApp(firebaseConfig);
-        const db = getFirestore(app);
+        if (!firebase.apps.length) {
+            firebase.initializeApp(firebaseConfig);
+        }
+        const db = firebase.firestore();
 
         const currentLoggedInUser = JSON.parse(localStorage.getItem('genzUser'));
 
@@ -281,105 +285,96 @@
             document.getElementById('chatNotifBadge').style.display = 'none';
         }
 
-        async function loadConversations() {
+        async function initChatsRealtime() {
             const container = document.getElementById('chatsListContainer');
             try {
-                // Get user's friends list
-                const userQuery = query(collection(db, 'users'), where("username", "==", currentLoggedInUser.username));
-                const userSnap = await getDocs(userQuery);
-                
+                // Fetch user's friends list
+                const userQuery = await db.collection('users').where("username", "==", currentLoggedInUser.username).get();
                 let myFriends = [];
-                if (!userSnap.empty) {
-                    myFriends = userSnap.docs[0].data().friends || [];
+                if (!userQuery.empty) {
+                    myFriends = userQuery.docs[0].data().friends || [];
                 }
 
-                // Find users with whom chat messages exist
-                const msgSnap = await getDocs(collection(db, 'chats'));
-                let chattedUsernames = new Set();
-                msgSnap.forEach(docSnap => {
-                    const data = docSnap.data();
-                    if (data.sender === currentLoggedInUser.username || data.receiver === currentLoggedInUser.username) {
-                        if (data.sender !== currentLoggedInUser.username) chattedUsernames.add(data.sender);
-                        if (data.receiver !== currentLoggedInUser.username) chattedUsernames.add(data.receiver);
-                    }
-                });
+                // Realtime listener for chats collection
+                db.collection('chats').onSnapshot(async (snapshot) => {
+                    let chattedUsernames = new Set();
+                    let lastMessageMap = {}; // stores last message info per chat room
 
-                let allContactUsernames = new Set([...myFriends, ...chattedUsernames]);
-
-                if (allContactUsernames.size === 0) {
-                    container.innerHTML = `<p style="color: #64748b; font-size: 13.5px; text-align: center; padding: 30px;">No chats yet. Add friends or start a conversation from the Make Friends page!</p>`;
-                    return;
-                }
-
-                container.innerHTML = '';
-                let unreadAlertsList = [];
-
-                for (let username of allContactUsernames) {
-                    const uQuery = query(collection(db, 'users'), where("username", "==", username));
-                    const uSnap = await getDocs(uQuery);
-                    if (!uSnap.empty) {
-                        const uData = uSnap.docs[0].data();
-                        let avatar = uData.photo || uData.profilePic || 'https://cdn.jsdelivr.net/gh/twitter/twemoji@14.0.2/assets/72x72/1f464.png';
-
-                        // Check unread status for this chat room
-                        const chatId = [currentLoggedInUser.username, username].sort().join('_');
-                        let hasUnread = false;
-                        let lastMsgText = "Tap to open chat";
-
-                        msgSnap.forEach(docSnap => {
-                            const m = docSnap.data();
-                            if (m.chatId === chatId) {
-                                lastMsgText = m.text || "Sent an attachment";
-                                if (m.receiver === currentLoggedInUser.username && m.read === false) {
-                                    hasUnread = true;
-                                    unreadAlertsList.push({
-                                        senderName: uData.name,
-                                        text: m.text || "Sent an attachment",
-                                        username: username
-                                    });
+                    snapshot.forEach(docSnap => {
+                        const data = docSnap.data();
+                        if (data.sender === currentLoggedInUser.username || data.receiver === currentLoggedInUser.username) {
+                            let friendUser = (data.sender === currentLoggedInUser.username) ? data.receiver : data.sender;
+                            if (friendUser) {
+                                chattedUsernames.add(friendUser);
+                                
+                                // Track latest message for this friend
+                                if (!lastMessageMap[friendUser] || data.createdAt > lastMessageMap[friendUser].createdAt) {
+                                    lastMessageMap[friendUser] = {
+                                        text: data.text || "Sent an attachment",
+                                        sender: data.sender,
+                                        createdAt: data.createdAt
+                                    };
                                 }
                             }
-                        });
+                        }
+                    });
 
-                        let badgeStyle = hasUnread ? 'display: inline-block;' : 'display: none;';
+                    let allContactUsernames = new Set([...myFriends, ...chattedUsernames]);
 
-                        container.innerHTML += `
-                            <a href="chat.html?with=${username}" class="chat-item" onclick="markAsRead('${chatId}')">
-                                <div class="chat-user-info">
-                                    <img src="${avatar}" alt="Avatar">
-                                    <div>
-                                        <h4>${uData.name}</h4>
-                                        <p>@${uData.username} • ${lastMsgText}</p>
-                                    </div>
-                                </div>
-                                <div class="chat-right-side">
-                                    <span class="unread-badge" id="badge_${username}" style="${badgeStyle}">New</span>
-                                    <span class="chat-arrow">&rarr;</span>
-                                </div>
-                            </a>
-                        `;
+                    if (allContactUsernames.size === 0) {
+                        container.innerHTML = `<p style="color: #64748b; font-size: 13.5px; text-align: center; padding: 30px;">No chats yet. Add friends or start a conversation from the Make Friends page!</p>`;
+                        return;
                     }
-                }
 
-                updateAlertsUI(unreadAlertsList);
+                    container.innerHTML = '';
+                    let unreadAlertsList = [];
+
+                    for (let username of allContactUsernames) {
+                        const uQuery = await db.collection('users').where("username", "==", username).get();
+                        if (!uQuery.empty) {
+                            const uData = uQuery.docs[0].data();
+                            let avatar = uData.photo || uData.profilePic || 'https://cdn.jsdelivr.net/gh/twitter/twemoji@14.0.2/assets/72x72/1f464.png';
+
+                            let lastInfo = lastMessageMap[username];
+                            let lastMsgText = lastInfo ? lastInfo.text : "Tap to open chat";
+                            
+                            // Unread check: If the last message in the chat was sent BY the friend (not by me)
+                            let isUnread = lastInfo && lastInfo.sender === username;
+
+                            let badgeStyle = isUnread ? 'display: inline-block;' : 'display: none;';
+
+                            if (isUnread) {
+                                unreadAlertsList.push({
+                                    senderName: uData.name,
+                                    text: lastMsgText,
+                                    username: username
+                                });
+                            }
+
+                            container.innerHTML += `
+                                <a href="chat.html?with=${username}" class="chat-item">
+                                    <div class="chat-user-info">
+                                        <img src="${avatar}" alt="Avatar">
+                                        <div>
+                                            <h4>${uData.name}</h4>
+                                            <p>@${uData.username} • ${lastMsgText}</p>
+                                        </div>
+                                    </div>
+                                    <div class="chat-right-side">
+                                        <span class="unread-badge" id="badge_${username}" style="${badgeStyle}">New</span>
+                                        <span class="chat-arrow">&rarr;</span>
+                                    </div>
+                                </a>
+                            `;
+                        }
+                    }
+
+                    updateAlertsUI(unreadAlertsList);
+                });
 
             } catch(e) {
                 console.error(e);
                 container.innerHTML = `<p style="color: #ef4444; font-size: 13.5px; text-align: center; padding: 30px;">Error loading chats.</p>`;
-            }
-        }
-
-        window.markAsRead = async function(chatId) {
-            try {
-                const msgSnap = await getDocs(collection(db, 'chats'));
-                msgSnap.forEach(async (docSnap) => {
-                    const m = docSnap.data();
-                    if (m.chatId === chatId && m.receiver === currentLoggedInUser.username && m.read === false) {
-                        await updateDoc(doc(db, 'chats', docSnap.id), { read: true });
-                    }
-                });
-            } catch (err) {
-                console.error(err);
             }
         }
 
@@ -400,14 +395,14 @@
             unreadList.forEach(item => {
                 list.innerHTML += `
                     <div class="notif-item">
-                        <b>${item.senderName}</b> sent you a message:<br>
+                        <b>${item.senderName}</b> sent a message:<br>
                         <span style="color: #64748b;">"${item.text}"</span>
                     </div>
                 `;
             });
         }
 
-        loadConversations();
+        initChatsRealtime();
     </script>
 </body>
 </html>
