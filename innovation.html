@@ -13,7 +13,7 @@
             font-family: 'Poppins', sans-serif;
         }
         body {
-            background-color: #f8fafc; /* Premium Light Background */
+            background-color: #f8fafc;
             color: #1e293b;
             min-height: 100vh;
             display: flex;
@@ -98,7 +98,7 @@
             box-shadow: 0 6px 12px rgba(0,0,0,0.15);
         }
 
-        /* Modal Form (Premium Clean Look) */
+        /* Modal Form */
         .form-modal {
             display: none;
             position: fixed;
@@ -121,11 +121,6 @@
             max-height: 90vh;
             overflow-y: auto;
             box-shadow: 0 25px 50px -12px rgba(0,0,0,0.25);
-            animation: modalSlideUp 0.4s ease-out;
-        }
-        @keyframes modalSlideUp {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
         }
         .close-form-btn {
             position: absolute;
@@ -215,7 +210,6 @@
         }
         .talent-card:hover {
             border-color: #c4b5fd;
-            transform: translateY(-4px);
             box-shadow: 0 15px 25px -5px rgba(124, 58, 237, 0.1);
         }
         .talent-header {
@@ -268,14 +262,108 @@
             line-height: 1.6;
             word-break: break-word;
         }
-        .talent-img {
+
+        /* Instagram Style Multiple Image Slider / Grid Container */
+        .talent-media-container {
+            position: relative;
             width: 100%;
-            max-height: 400px;
-            object-fit: cover;
+            background: #0f172a;
             border-radius: 12px;
             margin-bottom: 20px;
-            border: 1px solid #f1f5f9;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            max-height: 450px;
+            border: 1px solid #e2e8f0;
         }
+        .talent-img {
+            width: 100%;
+            max-height: 450px;
+            object-fit: contain; /* Prevents zooming/cropping issues */
+            display: block;
+            cursor: pointer;
+            background: #000000;
+        }
+        .slider-arrow {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(15, 23, 42, 0.7);
+            color: white;
+            border: none;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: 0.2s;
+            z-index: 10;
+        }
+        .slider-arrow:hover {
+            background: rgba(15, 23, 42, 0.9);
+        }
+        .prev-arrow { left: 12px; }
+        .next-arrow { right: 12px; }
+        .slider-dots {
+            position: absolute;
+            bottom: 12px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 6px;
+            z-index: 10;
+        }
+        .dot {
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.4);
+            transition: 0.2s;
+        }
+        .dot.active {
+            background: #ffffff;
+            width: 18px;
+            border-radius: 4px;
+        }
+
+        /* Full Screen Lightbox Modal */
+        .lightbox-modal {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            z-index: 10000;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        .lightbox-content {
+            max-width: 95%;
+            max-height: 90vh;
+            object-fit: contain;
+            border-radius: 8px;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.5);
+        }
+        .close-lightbox {
+            position: absolute;
+            top: 20px;
+            right: 30px;
+            color: #ffffff;
+            font-size: 35px;
+            font-weight: 300;
+            cursor: pointer;
+            background: transparent;
+            border: none;
+            transition: 0.2s;
+        }
+        .close-lightbox:hover {
+            color: #cbd5e1;
+        }
+
         .talent-footer {
             border-top: 1px solid #e2e8f0;
             padding-top: 15px;
@@ -379,8 +467,8 @@
                     <input type="email" id="talentEmail" placeholder="Contact Email (e.g., founder@gmail.com)" required>
 
                     <div class="file-upload-box">
-                        <label>🖼️ Upload Project Image / Cover</label>
-                        <input type="file" id="talentImageFile" accept="image/*" required style="border:none; padding:4px 0; background:transparent; font-size:12px; color:#64748b; width:100%;">
+                        <label>🖼️ Upload Project Images (Multiple Allowed)</label>
+                        <input type="file" id="talentImageFiles" accept="image/*" multiple required style="border:none; padding:4px 0; background:transparent; font-size:12px; color:#64748b; width:100%;">
                         <p id="fileNameDisplay" style="font-size: 11.5px; color: #4f46e5; margin-top: 6px; font-weight:500;"></p>
                     </div>
 
@@ -395,6 +483,12 @@
         <div id="talentFeedContainer">
             <p style="color: #64748b; text-align: center; font-size: 14px; padding: 30px;">Loading spectacular innovations...</p>
         </div>
+    </div>
+
+    <!-- Full Screen Lightbox Modal -->
+    <div class="lightbox-modal" id="lightboxModal">
+        <button class="close-lightbox" id="closeLightbox">&times;</button>
+        <img class="lightbox-content" id="lightboxImg">
     </div>
 
     <script type="module">
@@ -427,10 +521,27 @@
             modalBox.style.display = 'none';
         });
 
-        document.getElementById('talentImageFile').addEventListener('change', function(e) {
-            const file = e.target.files[0];
-            if (file) {
-                document.getElementById('fileNameDisplay').innerText = `Selected: ${file.name} (${(file.size/1024/1024).toFixed(2)} MB)`;
+        // Lightbox functionality
+        const lightboxModal = document.getElementById('lightboxModal');
+        const lightboxImg = document.getElementById('lightboxImg');
+        document.getElementById('closeLightbox').addEventListener('click', () => {
+            lightboxModal.style.display = 'none';
+        });
+        lightboxModal.addEventListener('click', (e) => {
+            if (e.target === lightboxModal) {
+                lightboxModal.style.display = 'none';
+            }
+        });
+
+        window.openLightbox = function(imgSrc) {
+            lightboxImg.src = imgSrc;
+            lightboxModal.style.display = 'flex';
+        }
+
+        document.getElementById('talentImageFiles').addEventListener('change', function(e) {
+            const files = e.target.files;
+            if (files && files.length > 0) {
+                document.getElementById('fileNameDisplay').innerText = `Selected: ${files.length} image(s)`;
             } else {
                 document.getElementById('fileNameDisplay').innerText = '';
             }
@@ -450,23 +561,27 @@
             const title = document.getElementById('talentTitle').value.trim();
             const category = document.getElementById('talentCategory').value;
             const email = document.getElementById('talentEmail').value.trim();
-            const imageInput = document.getElementById('talentImageFile').files[0];
+            const imageFiles = document.getElementById('talentImageFiles').files;
             const desc = document.getElementById('talentDesc').value.trim();
             const publishBtn = document.getElementById('publishBtn');
 
-            if (!title || !category || !email || !imageInput || !desc) return;
+            if (!title || !category || !email || imageFiles.length === 0 || !desc) return;
 
             publishBtn.innerText = "Publishing Innovation... ⏳";
             publishBtn.disabled = true;
 
             try {
-                const imageUrl = await convertImageToBase64(imageInput);
+                let imageUrls = [];
+                for (let i = 0; i < imageFiles.length; i++) {
+                    const base64 = await convertImageToBase64(imageFiles[i]);
+                    imageUrls.push(base64);
+                }
 
                 const newTalent = {
                     title: title,
                     category: category,
                     email: email,
-                    imageUrl: imageUrl,
+                    imageUrls: imageUrls,
                     description: desc,
                     author: activeUser.username,
                     authorPic: activeUser.profilePic || "",
@@ -481,12 +596,44 @@
                 alert("Your innovation has been showcased to the world successfully! 🎉");
             } catch (err) {
                 console.error("Error publishing innovation:", err);
-                alert("Failed to publish. Image might be too large, try a smaller image.");
+                alert("Failed to publish. Images might be too large, try smaller images.");
             } finally {
                 publishBtn.innerText = "Showcase to World 🚀";
                 publishBtn.disabled = false;
             }
         });
+
+        // Store current image indices for sliders
+        window.sliderStates = {};
+
+        window.changeSlide = function(itemId, direction, totalImages) {
+            if (!window.sliderStates[itemId]) {
+                window.sliderStates[itemId] = 0;
+            }
+            window.sliderStates[itemId] += direction;
+            if (window.sliderStates[itemId] >= totalImages) {
+                window.sliderStates[itemId] = 0;
+            } else if (window.sliderStates[itemId] < 0) {
+                window.sliderStates[itemId] = totalImages - 1;
+            }
+            updateSliderView(itemId);
+        }
+
+        window.updateSliderView = function(itemId) {
+            const currentIndex = window.sliderStates[itemId] || 0;
+            const imgElement = document.getElementById(`slide-img-${itemId}`);
+            const urls = JSON.parse(imgElement.getAttribute('data-urls'));
+            imgElement.src = urls[currentIndex];
+
+            // Update dots
+            const dotsContainer = document.getElementById(`dots-${itemId}`);
+            if (dotsContainer) {
+                const dots = dotsContainer.getElementsByClassName('dot');
+                for (let i = 0; i < dots.length; i++) {
+                    dots[i].className = i === currentIndex ? 'dot active' : 'dot';
+                }
+            }
+        }
 
         // Real-time Feed Listener
         onSnapshot(query(collection(db, 'innovations'), orderBy('createdAt', 'desc')), (snapshot) => {
@@ -512,6 +659,41 @@
                 const hasLiked = item.likes && item.likes.includes(activeUser.username);
                 const likeHeart = hasLiked ? '❤️' : '🤍';
 
+                // Handle both old single 'imageUrl' and new 'imageUrls' array format smoothly
+                let images = item.imageUrls || (item.imageUrl ? [item.imageUrl] : []);
+                let mediaHtml = '';
+
+                if (images.length > 0) {
+                    if (!window.sliderStates[item.id]) {
+                        window.sliderStates[item.id] = 0;
+                    }
+                    const currentIdx = window.sliderStates[item.id];
+                    const urlsJson = JSON.stringify(images).replace(/"/g, '&quot;');
+
+                    let arrowsHtml = '';
+                    let dotsHtml = '';
+
+                    if (images.length > 1) {
+                        arrowsHtml = `
+                            <button class="slider-arrow prev-arrow" onclick="changeSlide('${item.id}', -1, ${images.length})">&#10094;</button>
+                            <button class="slider-arrow next-arrow" onclick="changeSlide('${item.id}', 1, ${images.length})">&#10095;</button>
+                        `;
+                        let dotsList = '';
+                        for (let d = 0; d < images.length; d++) {
+                            dotsList += `<div class="dot ${d === currentIdx ? 'active' : ''}"></div>`;
+                        }
+                        dotsHtml = `<div class="slider-dots" id="dots-${item.id}">${dotsList}</div>`;
+                    }
+
+                    mediaHtml = `
+                        <div class="talent-media-container">
+                            <img src="${images[currentIdx]}" class="talent-img" id="slide-img-${item.id}" data-urls="${urlsJson}" onclick="openLightbox(this.src)">
+                            ${arrowsHtml}
+                            ${dotsHtml}
+                        </div>
+                    `;
+                }
+
                 container.innerHTML += `
                     <div class="talent-card">
                         <div class="talent-header">
@@ -528,7 +710,7 @@
                         <div class="talent-title">${item.title}</div>
                         <div class="talent-desc">${item.description}</div>
                         
-                        ${item.imageUrl ? `<img src="${item.imageUrl}" class="talent-img">` : ''}
+                        ${mediaHtml}
 
                         <div class="talent-footer">
                             <a href="mailto:${item.email}?subject=Opportunity regarding your Innovation: ${encodeURIComponent(item.title)}" class="opportunity-contact">📧 Offer Opportunity</a>
