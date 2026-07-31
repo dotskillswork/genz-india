@@ -163,14 +163,31 @@
             text-decoration: underline;
         }
 
+        .msg-footer {
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            gap: 5px;
+            margin-top: 2px;
+        }
+
         .msg-time {
             font-size: 9.5px;
             color: rgba(255,255,255,0.85);
-            margin-top: 2px;
-            text-align: right;
         }
         .message.received .msg-time {
             color: #94a3b8;
+        }
+
+        .read-receipt {
+            font-size: 11px;
+            font-weight: 700;
+        }
+        .read-receipt.read {
+            color: #6ee7b7; /* Light green double tick for seen */
+        }
+        .read-receipt.unread {
+            color: rgba(255,255,255,0.7); /* Single/Double grey tick for unread */
         }
 
         .chat-input-box {
@@ -276,49 +293,6 @@
             cursor: pointer;
             border: none;
         }
-
-        /* Floating Popup Toast Notification Banner */
-        #floatingToast {
-            display: none;
-            position: fixed;
-            bottom: 25px;
-            right: 25px;
-            background: #ffffff;
-            border: 2px solid #ea580c;
-            border-radius: 14px;
-            padding: 15px 20px;
-            box-shadow: 0 15px 35px rgba(234, 88, 12, 0.2);
-            z-index: 9999;
-            max-width: 340px;
-            animation: slideUpToast 0.3s ease-in-out;
-            cursor: pointer;
-        }
-        @keyframes slideUpToast {
-            from { transform: translateY(50px); opacity: 0; }
-            to { transform: translateY(0); opacity: 1; }
-        }
-        .toast-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 5px;
-        }
-        .toast-title {
-            font-size: 13px;
-            font-weight: 700;
-            color: #ea580c;
-        }
-        .toast-close {
-            background: transparent;
-            border: none;
-            font-size: 16px;
-            color: #64748b;
-            cursor: pointer;
-        }
-        .toast-body {
-            font-size: 12px;
-            color: #334155;
-        }
     </style>
 </head>
 <body>
@@ -371,7 +345,7 @@
 
     <script>
         const firebaseConfig = {
-            apiKey: "AIzaSyCNLwSjHq6LlX9uUovTRHrz9ZfUwEIUWQM",
+            apiKey: "AIzaSyCNLwSjHq6LlX9uUovTRHrz9ZfUWeIUWQM",
             authDomain: "genz-india.firebaseapp.com",
             projectId: "genz-india",
             storageBucket: "genz-india.firebasestorage.app",
@@ -391,6 +365,9 @@
         const urlParams = new URLSearchParams(window.location.search);
         const chatWith = urlParams.get('with');
         if (!chatWith) window.location.href = 'chats.html';
+
+        const chatId = [activeUser.username, chatWith].sort().join('_');
+        let selectedImageBase64 = "";
 
         // Global Alerts & Floating Toast Listener for other messages
         let latestTargetUrl = "chats.html";
@@ -439,6 +416,7 @@
         updateMyPresence();
         setInterval(updateMyPresence, 30000);
 
+        // Load Header User Info & Typing Status
         function loadChatUserInfo() {
             db.collection('users').onSnapshot((snapshot) => {
                 snapshot.forEach((docSnap) => {
@@ -450,16 +428,42 @@
                         } else {
                             document.getElementById('headerAvatar').innerText = uData.username.charAt(0).toUpperCase();
                         }
-                        const diffSec = (Date.now() - (uData.lastSeen || 0)) / 1000;
-                        document.getElementById('headerStatus').innerHTML = diffSec < 60 ? `<span style="color: #16a34a;">● Active</span>` : `<span style="color: #94a3b8;">Offline</span>`;
+
+                        // Check Typing Status or Online/Offline
+                        if (uData.typingTo === activeUser.username) {
+                            document.getElementById('headerStatus').innerHTML = `<span style="color: #ea580c; font-weight:600;">typing... ✍️</span>`;
+                        } else {
+                            const diffSec = (Date.now() - (uData.lastSeen || 0)) / 1000;
+                            document.getElementById('headerStatus').innerHTML = diffSec < 60 ? `<span style="color: #16a34a;">● Active</span>` : `<span style="color: #94a3b8;">Offline</span>`;
+                        }
                     }
                 });
             });
         }
         loadChatUserInfo();
 
-        const chatId = [activeUser.username, chatWith].sort().join('_');
-        let selectedImageBase64 = "";
+        // Typing Indicator Trigger
+        const messageInput = document.getElementById('messageInput');
+        let typingTimeout = null;
+
+        messageInput.addEventListener('input', async () => {
+            try {
+                const myQuery = await db.collection('users').where("username", "==", activeUser.username).get();
+                if (!myQuery.empty) {
+                    await myQuery.docs[0].ref.update({ typingTo: chatWith });
+                }
+            } catch(e) {}
+
+            clearTimeout(typingTimeout);
+            typingTimeout = setTimeout(async () => {
+                try {
+                    const myQuery = await db.collection('users').where("username", "==", activeUser.username).get();
+                    if (!myQuery.empty) {
+                        await myQuery.docs[0].ref.update({ typingTo: "" });
+                    }
+                } catch(e) {}
+            }, 2000);
+        });
 
         document.getElementById('imageInput').addEventListener('change', function(e) {
             const file = e.target.files[0];
@@ -474,8 +478,16 @@
         });
 
         async function sendMessage() {
-            const text = document.getElementById('messageInput').value.trim();
+            const text = messageInput.value.trim();
             if (!text && !selectedImageBase64) return;
+
+            // Clear typing state immediately on send
+            try {
+                const myQuery = await db.collection('users').where("username", "==", activeUser.username).get();
+                if (!myQuery.empty) {
+                    await myQuery.docs[0].ref.update({ typingTo: "" });
+                }
+            } catch(e) {}
 
             const messageData = {
                 chatId: chatId,
@@ -483,14 +495,14 @@
                 receiver: chatWith,
                 text: text,
                 image: selectedImageBase64 || "",
-                read: false, // Important for unread badge logic
+                read: false,
                 createdAt: Date.now()
             };
 
             try {
                 await db.collection('chats').add(messageData);
-                document.getElementById('messageInput').value = "";
-                document.getElementById('messageInput').placeholder = "Type a message...";
+                messageInput.value = "";
+                messageInput.placeholder = "Type a message...";
                 selectedImageBase64 = "";
                 document.getElementById('imageInput').value = "";
             } catch (err) {
@@ -499,7 +511,7 @@
         }
 
         document.getElementById('sendBtn').addEventListener('click', sendMessage);
-        document.getElementById('messageInput').addEventListener('keypress', function(e) {
+        messageInput.addEventListener('keypress', function(e) {
             if (e.key === 'Enter') sendMessage();
         });
 
@@ -507,7 +519,7 @@
             document.getElementById('imageModal').style.display = 'none';
         });
 
-        // Mark incoming messages as read when opening this chat
+        // Mark incoming messages as read instantly when opening this chat
         async function markMessagesAsRead() {
             try {
                 const msgSnap = await db.collection('chats').get();
@@ -527,7 +539,7 @@
 
         const TWENTY_FOUR_HOURS_MS = 24 * 60 * 60 * 1000;
 
-        // Realtime Messages Listener
+        // Realtime Messages Listener with Read Receipts (Double Ticks ✔️✔️)
         db.collection('chats').orderBy('createdAt', 'asc').onSnapshot((snapshot) => {
             const box = document.getElementById('messagesBox');
             box.innerHTML = "";
@@ -538,7 +550,6 @@
                 const docId = docSnap.id;
 
                 if (msg.chatId === chatId) {
-                    // Mark as read instantly if currently viewing
                     if (msg.receiver === activeUser.username && msg.read === false) {
                         db.collection('chats').doc(docId).update({ read: true }).catch(()=>{});
                     }
@@ -578,7 +589,7 @@
                         unsendHint.innerText = 'Tap to unsend 🗑️';
                         unsendHint.onclick = async (e) => {
                             e.stopPropagation();
-                            if (confirm("Kya aap is message को unsend karna chahte hain?")) {
+                            if (confirm("Kya aap is message ko unsend karna chahte hain?")) {
                                 try {
                                     await db.collection('chats').doc(docId).delete();
                                 } catch (err) {
@@ -589,11 +600,24 @@
                         msgDiv.appendChild(unsendHint);
                     }
 
-                    const timeDiv = document.createElement('div');
+                    const footerDiv = document.createElement('div');
+                    footerDiv.className = 'msg-footer';
+
+                    const timeDiv = document.createElement('span');
                     timeDiv.className = 'msg-time';
                     timeDiv.innerText = timeString;
-                    msgDiv.appendChild(timeDiv);
+                    footerDiv.appendChild(timeDiv);
 
+                    // Read Receipt Indicator for Sent Messages (Double Tick)
+                    if (isSent) {
+                        const readSpan = document.createElement('span');
+                        readSpan.className = `read-receipt ${msg.read ? 'read' : 'unread'}`;
+                        readSpan.innerText = msg.read ? '✓✓' : '✓';
+                        readSpan.title = msg.read ? 'Seen' : 'Sent';
+                        footerDiv.appendChild(readSpan);
+                    }
+
+                    msgDiv.appendChild(footerDiv);
                     box.appendChild(msgDiv);
                 }
             });
