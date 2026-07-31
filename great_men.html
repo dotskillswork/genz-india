@@ -117,13 +117,25 @@
             border-color: #cbd5e1;
         }
 
+        .card-img-container {
+            width: 100%;
+            height: 230px;
+            background: #0f172a;
+            overflow: hidden;
+            position: relative;
+            border-bottom: 3px solid #FF9933;
+        }
+
         .card-img {
             width: 100%;
-            height: 220px;
+            height: 100%;
             object-fit: cover;
-            object-position: top;
-            background: #f1f5f9;
-            border-bottom: 1px solid #f1f5f9;
+            object-position: top center;
+            transition: transform 0.3s ease;
+        }
+
+        .card:hover .card-img {
+            transform: scale(1.05);
         }
 
         .card-body {
@@ -285,7 +297,9 @@
 
             <!-- 1. Mahatma Gandhi -->
             <div class="card">
-                <img src="https://upload.wikimedia.org/wikipedia/commons/7/7a/Mahatma-Gandhi,_studio,_1931.jpg" alt="Mahatma Gandhi" class="card-img">
+                <div class="card-img-container">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/7/7a/Mahatma-Gandhi%2C_studio%2C_1931.jpg/800px-Mahatma-Gandhi%2C_studio%2C_1931.jpg" alt="Mahatma Gandhi" class="card-img">
+                </div>
                 <div class="card-body">
                     <div>
                         <span class="card-tag">राष्ट्रपिता</span>
@@ -298,7 +312,9 @@
 
             <!-- 2. Subhash Chandra Bose -->
             <div class="card">
-                <img src="https://upload.wikimedia.org/wikipedia/commons/3/3f/Netaji_Subhash_Chandra_Bose_portrait_%28cropped%29.jpg" alt="Netaji" class="card-img">
+                <div class="card-img-container">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/3/3f/Netaji_Subhash_Chandra_Bose_portrait_%28cropped%29.jpg/800px-Netaji_Subhash_Chandra_Bose_portrait_%28cropped%29.jpg" alt="Netaji" class="card-img">
+                </div>
                 <div class="card-body">
                     <div>
                         <span class="card-tag">आजाद हिन्द फौज</span>
@@ -311,7 +327,9 @@
 
             <!-- 3. Dr. B.R. Ambedkar -->
             <div class="card">
-                <img src="https://upload.wikimedia.org/wikipedia/commons/c/c3/Dr._B._R._Ambedkar.jpg" alt="Ambedkar" class="card-img">
+                <div class="card-img-container">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/c/c3/Dr._B._R._Ambedkar.jpg/800px-Dr._B._R._Ambedkar.jpg" alt="Ambedkar" class="card-img">
+                </div>
                 <div class="card-body">
                     <div>
                         <span class="card-tag">संविधान निर्माता</span>
@@ -324,7 +342,9 @@
 
             <!-- 4. Sardar Patel -->
             <div class="card">
-                <img src="https://upload.wikimedia.org/wikipedia/commons/c/c6/Sardar_Vallabhbhai_Patel.jpg" alt="Patel" class="card-img">
+                <div class="card-img-container">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/c/c6/Sardar_Vallabhbhai_Patel.jpg/800px-Sardar_Vallabhbhai_Patel.jpg" alt="Patel" class="card-img">
+                </div>
                 <div class="card-body">
                     <div>
                         <span class="card-tag">लोह पुरुष</span>
@@ -337,7 +357,9 @@
 
             <!-- 5. Dr. A.P.J. Abdul Kalam -->
             <div class="card">
-                <img src="https://upload.wikimedia.org/wikipedia/commons/6/67/A._P._J._Abdul_Kalam.jpg" alt="Kalam" class="card-img">
+                <div class="card-img-container">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/6/67/A._P._J._Abdul_Kalam.jpg/800px-A._P._J._Abdul_Kalam.jpg" alt="Kalam" class="card-img">
+                </div>
                 <div class="card-body">
                     <div>
                         <span class="card-tag">मिसाइल मैन</span>
@@ -350,7 +372,9 @@
 
             <!-- 6. Bhagat Singh -->
             <div class="card">
-                <img src="https://upload.wikimedia.org/wikipedia/commons/b/b8/Shaheed_Bhagat_Singh_1929.jpg" alt="Bhagat Singh" class="card-img">
+                <div class="card-img-container">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/b/b8/Shaheed_Bhagat_Singh_1929.jpg/800px-Shaheed_Bhagat_Singh_1929.jpg" alt="Bhagat Singh" class="card-img">
+                </div>
                 <div class="card-body">
                     <div>
                         <span class="card-tag">अमर शहीद</span>
@@ -363,7 +387,9 @@
 
             <!-- 7. Swami Vivekananda -->
             <div class="card">
-                <img src="https://upload.wikimedia.org/wikipedia/commons/9/97/Swami_Vivekananda-1893-rail_ticket-restored.jpg" alt="Swami Vivekananda" class="card-img">
+                <div class="card-img-container">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/9/97/Swami_Vivekananda-1893-rail_ticket-restored.jpg/800px-Swami_Vivekananda-1893-rail_ticket-restored.jpg" alt="Swami Vivekananda" class="card-img">
+                </div>
                 <div class="card-body">
                     <div>
                         <span class="card-tag">आध्यात्मिक गुरु</span>
@@ -376,7 +402,9 @@
 
             <!-- 8. Lokmanya Tilak -->
             <div class="card">
-                <img src="https://upload.wikimedia.org/wikipedia/commons/1/18/Bal_Gangadhar_Tilak.jpg" alt="Tilak" class="card-img">
+                <div class="card-img-container">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/1/18/Bal_Gangadhar_Tilak.jpg/800px-Bal_Gangadhar_Tilak.jpg" alt="Tilak" class="card-img">
+                </div>
                 <div class="card-body">
                     <div>
                         <span class="card-tag">लोकमान्य</span>
@@ -389,7 +417,9 @@
 
             <!-- 9. Chandrashekhar Azad -->
             <div class="card">
-                <img src="https://upload.wikimedia.org/wikipedia/commons/1/14/Chandrashekhar_Azad_portrait.jpg" alt="Azad" class="card-img">
+                <div class="card-img-container">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/1/14/Chandrashekhar_Azad_portrait.jpg/800px-Chandrashekhar_Azad_portrait.jpg" alt="Azad" class="card-img">
+                </div>
                 <div class="card-body">
                     <div>
                         <span class="card-tag">अमर क्रांतिकारी</span>
@@ -402,7 +432,9 @@
 
             <!-- 10. Rani Lakshmibai -->
             <div class="card">
-                <img src="https://upload.wikimedia.org/wikipedia/commons/6/63/Rani_Lakshmibai_of_Jhansi.jpg" alt="Lakshmibai" class="card-img">
+                <div class="card-img-container">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/6/63/Rani_Lakshmibai_of_Jhansi.jpg/800px-Rani_Lakshmibai_of_Jhansi.jpg" alt="Lakshmibai" class="card-img">
+                </div>
                 <div class="card-body">
                     <div>
                         <span class="card-tag">वीरांगना</span>
@@ -415,7 +447,9 @@
 
             <!-- 11. Lala Lajpat Rai -->
             <div class="card">
-                <img src="https://upload.wikimedia.org/wikipedia/commons/2/29/Lala_Lajpat_Rai.jpg" alt="Lala Lajpat Rai" class="card-img">
+                <div class="card-img-container">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/29/Lala_Lajpat_Rai.jpg/800px-Lala_Lajpat_Rai.jpg" alt="Lala Lajpat Rai" class="card-img">
+                </div>
                 <div class="card-body">
                     <div>
                         <span class="card-tag">पंजाब केसरी</span>
@@ -428,7 +462,9 @@
 
             <!-- 12. Mangal Pandey -->
             <div class="card">
-                <img src="https://upload.wikimedia.org/wikipedia/commons/1/1b/Mangal_pandey.jpg" alt="Mangal Pandey" class="card-img">
+                <div class="card-img-container">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/1/1b/Mangal_pandey.jpg/800px-Mangal_pandey.jpg" alt="Mangal Pandey" class="card-img">
+                </div>
                 <div class="card-body">
                     <div>
                         <span class="card-tag">प्रथम सेनानी</span>
