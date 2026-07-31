@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>भारत के महान महापुरुष | Proud to be Indian 🇮🇳</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        body {
+            background-color: #f8fafc;
+            color: #1e293b;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            line-height: 1.6;
+        }
+
+        /* Top Tiranga Border */
+        body::before {
+            content: "";
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 5px;
+            background: linear-gradient(to right, #FF9933, #FFFFFF, #138808);
+            z-index: 1001;
+        }
+
+        header {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 15px 30px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 1px solid #e2e8f0;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .back-btn {
+            color: #0284c7;
+            text-decoration: none;
+            font-size: 13.5px;
+            font-weight: 600;
+            transition: 0.2s;
+        }
+
+        .back-btn:hover {
+            color: #0369a1;
+        }
+
+        .container {
+            max-width: 1100px;
+            width: 100%;
+            margin: 30px auto;
+            padding: 0 20px;
+            flex: 1;
+        }
+
+        /* Hero Section */
+        .hero-section {
+            background: linear-gradient(135deg, #fff7ed 0%, #f0fdf4 100%);
+            border: 1px solid #fed7aa;
+            border-radius: 20px;
+            padding: 35px 25px;
+            text-align: center;
+            margin-bottom: 35px;
+            box-shadow: 0 10px 25px -5px rgba(255, 153, 51, 0.1);
+        }
+
+        .hero-section h1 {
+            font-size: 28px;
+            font-weight: 800;
+            margin-bottom: 10px;
+            background: linear-gradient(to right, #ea580c, #16a34a);
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .hero-section p {
+            color: #475569;
+            font-size: 14.5px;
+            max-width: 750px;
+            margin: 0 auto;
+        }
+
+        /* Grid */
+        .grid-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 25px;
+            margin-bottom: 40px;
+        }
+
+        .card {
+            background: #ffffff;
+            border-radius: 18px;
+            border: 1px solid #e2e8f0;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.03);
+            transition: all 0.3s ease;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(0,0,0,0.08);
+            border-color: #cbd5e1;
+        }
+
+        .card-img {
+            width: 100%;
+            height: 220px;
+            object-fit: cover;
+            border-bottom: 1px solid #f1f5f9;
+        }
+
+        .card-body {
+            padding: 20px;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .card-tag {
+            display: inline-block;
+            background: #fff7ed;
+            color: #ea580c;
+            font-size: 11.5px;
+            font-weight: 700;
+            padding: 4px 10px;
+            border-radius: 12px;
+            width: fit-content;
+            margin-bottom: 10px;
+            border: 1px solid #ffedd5;
+        }
+
+        .card-title {
+            font-size: 18px;
+            font-weight: 700;
+            color: #0f172a;
+            margin-bottom: 8px;
+        }
+
+        .card-text {
+            color: #64748b;
+            font-size: 13.5px;
+            line-height: 1.6;
+            margin-bottom: 20px;
+        }
+
+        .detail-btn {
+            background: #0284c7;
+            color: #ffffff;
+            border: none;
+            padding: 10px 16px;
+            border-radius: 10px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.2s;
+            text-align: center;
+        }
+
+        .detail-btn:hover {
+            background: #0369a1;
+        }
+
+        /* Modal Popup Styles */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(15, 23, 42, 0.75);
+            backdrop-filter: blur(5px);
+            z-index: 2000;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .modal-box {
+            background: #ffffff;
+            max-width: 650px;
+            width: 100%;
+            border-radius: 20px;
+            padding: 30px;
+            max-height: 85vh;
+            overflow-y: auto;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+            position: relative;
+        }
+
+        .close-btn {
+            position: absolute;
+            top: 20px; right: 20px;
+            background: #f1f5f9;
+            border: none;
+            width: 36px; height: 36px;
+            border-radius: 50%;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+            color: #475569;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: 0.2s;
+        }
+
+        .close-btn:hover {
+            background: #e2e8f0;
+            color: #0f172a;
+        }
+
+        .modal-title {
+            font-size: 22px;
+            font-weight: 800;
+            color: #0f172a;
+            margin-bottom: 5px;
+        }
+
+        .modal-subtitle {
+            font-size: 12.5px;
+            color: #ea580c;
+            font-weight: 700;
+            margin-bottom: 15px;
+            text-transform: uppercase;
+        }
+
+        .modal-body-text {
+            color: #334155;
+            font-size: 14px;
+            line-height: 1.8;
+        }
+
+        footer {
+            text-align: center;
+            padding: 20px;
+            background: #ffffff;
+            border-top: 1px solid #e2e8f0;
+            color: #64748b;
+            font-size: 13px;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <a href="indian.html" class="back-btn">← Back to Indian Hub</a>
+        <h3 style="font-size: 16px; color: #0f172a; font-weight: 700;">🇮🇳 भारत के महान महापुरुष</h3>
+        <div style="width: 80px;"></div>
+    </header>
+
+    <!-- Detail Modal Box -->
+    <div id="bioModal" class="modal-overlay" onclick="closeModal()">
+        <div class="modal-box" onclick="event.stopPropagation()">
+            <button class="close-btn" onclick="closeModal()">×</button>
+            <div id="modalCategory" class="modal-subtitle">Category</div>
+            <h2 id="modalName" class="modal-title">Name</h2>
+            <hr style="border: none; border-top: 1px solid #e2e8f0; margin: 15px 0;">
+            <div id="modalDesc" class="modal-body-text">Detailed info...</div>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="hero-section">
+            <h1>राष्ट्र निर्माण के अमर शिल्पी 🇮🇳</h1>
+            <p>इन महान विभूतियों ने अपने त्याग, तपस्या, ज्ञान और अदम्य साहस से भारत के इतिहास और भविष्य को गढ़ा है।</p>
+        </div>
+
+        <div class="grid-container">
+
+            <!-- 1. Mahatma Gandhi -->
+            <div class="card">
+                <img src="https://images.unsplash.com/photo-1590073844006-33379778ae09?auto=format&fit=crop&w=600&q=80" alt="Mahatma Gandhi" class="card-img">
+                <div class="card-body">
+                    <div>
+                        <span class="card-tag">राष्ट्रपिता</span>
+                        <h3 class="card-title">महात्मा गांधी</h3>
+                        <p class="card-text">सत्य और अहिंसा के मार्ग पर चलकर भारत को अंग्रेजों की गुलामी से आजाद कराने वाले राष्ट्रपिता।</p>
+                    </div>
+                    <button class="detail-btn" onclick="showBio('gandhi')">Read Full Biography →</button>
+                </div>
+            </div>
+
+            <!-- 2. Subhash Chandra Bose -->
+            <div class="card">
+                <img src="https://images.unsplash.com/photo-1569074187119-c87815b476da?auto=format&fit=crop&w=600&q=80" alt="Netaji" class="card-img">
+                <div class="card-body">
+                    <div>
+                        <span class="card-tag">आजाद हिन्द फौज</span>
+                        <h3 class="card-title">नेताजी सुभाष चंद्र बोस</h3>
+                        <p class="card-text">"तुम मुझे खून दो, मैं तुम्हें आजादी दूंगा" का नारा देकर अंग्रेजों के छक्के छुड़ाने वाले महान क्रांतिकारी।</p>
+                    </div>
+                    <button class="detail-btn" onclick="showBio('bose')">Read Full Biography →</button>
+                </div>
+            </div>
+
+            <!-- 3. Dr. B.R. Ambedkar -->
+            <div class="card">
+                <img src="https://images.unsplash.com/photo-1532375810709-75b1da00537c?auto=format&fit=crop&w=600&q=80" alt="Ambedkar" class="card-img">
+                <div class="card-body">
+                    <div>
+                        <span class="card-tag">संविधान निर्माता</span>
+                        <h3 class="card-title">डॉ. भीमराव आंबेडकर</h3>
+                        <p class="card-text">भारतीय संविधान के मुख्य निर्माता, न्यायविद् और समाज सुधारक जिन्होंने शोषितों को अधिकार दिलाए।</p>
+                    </div>
+                    <button class="detail-btn" onclick="showBio('ambedkar')">Read Full Biography →</button>
+                </div>
+            </div>
+
+            <!-- 4. Sardar Patel -->
+            <div class="card">
+                <img src="https://images.unsplash.com/photo-1557804506-669a67965ba0?auto=format&fit=crop&w=600&q=80" alt="Patel" class="card-img">
+                <div class="card-body">
+                    <div>
+                        <span class="card-tag">लोह पुरुष</span>
+                        <h3 class="card-title">सरदार वल्लभभाई पटेल</h3>
+                        <p class="card-text">500 से अधिक रियासतें मिलाकर अखंड भारत का निर्माण करने वाले देश के पहले गृह मंत्री।</p>
+                    </div>
+                    <button class="detail-btn" onclick="showBio('patel')">Read Full Biography →</button>
+                </div>
+            </div>
+
+            <!-- 5. Dr. A.P.J. Abdul Kalam -->
+            <div class="card">
+                <img src="https://images.unsplash.com/photo-1507679799987-c73779587ccf?auto=format&fit=crop&w=600&q=80" alt="Kalam" class="card-img">
+                <div class="card-body">
+                    <div>
+                        <span class="card-tag">मिसाइल मैन</span>
+                        <h3 class="card-title">डॉ. ए.पी.जे. अब्दुल कलाम</h3>
+                        <p class="card-text">भारत के 'मिसाइल मैन', महान वैज्ञानिक और जनता के राष्ट्रपति जिन्होंने युवाओं को प्रेरित किया।</p>
+                    </div>
+                    <button class="detail-btn" onclick="showBio('kalam')">Read Full Biography →</button>
+                </div>
+            </div>
+
+            <!-- 6. Bhagat Singh -->
+            <div class="card">
+                <img src="https://images.unsplash.com/photo-1473448912268-2022ce9509d8?auto=format&fit=crop&w=600&q=80" alt="Bhagat Singh" class="card-img">
+                <div class="card-body">
+                    <div>
+                        <span class="card-tag">अमर शहीद</span>
+                        <h3 class="card-title">शहीद भगत सिंह</h3>
+                        <p class="card-text">हँसते-हँसते देश के लिए फाँसी के फंदे को चूमने वाले भारतीय स्वतंत्रता संग्राम के प्रखर क्रांतिकारी।</p>
+                    </div>
+                    <button class="detail-btn" onclick="showBio('bhagat')">Read Full Biography →</button>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <footer>
+        <p>Proudly Created for Gen'Z India 🇮🇳 | जय हिंद, जय भारत!</p>
+    </footer>
+
+    <script>
+        const bios = {
+            gandhi: {
+                name: "महात्मा गांधी",
+                category: "राष्ट्रपिता एवं स्वतंत्रता सेनानी",
+                desc: "महात्मा गांधी (मोहनदास करमचंद गांधी) का जन्म 2 अक्टूबर 1869 को गुजरात के पोरबंदर में हुआ था। उन्होंने भारत के स्वतंत्रता संग्राम में 'अहिंसा' और 'सत्याग्रह' को अपना सबसे बड़ा हथियार बनाया। उन्होंने असहयोग आंदोलन, दांडी मार्च और भारत छोड़ो आंदोलन का नेतृत्व किया। 30 जनवरी 1948 को उनकी हत्या कर दी गई, लेकिन उनके विचार आज भी पूरी दुनिया में शांति का प्रतीक हैं।"
+            },
+            bose: {
+                name: "नेताजी सुभाष चंद्र बोस",
+                category: "महान क्रांतिकारी एवं सेनानायक",
+                desc: "नेताजी सुभाष चंद्र बोस का जन्म 23 जनवरी 1897 को कटक (ओडिशा) में हुआ था। उन्होंने 'आजाद हिन्द फौज' का पुनर्गठन किया और देशवासियों को 'तुम मुझे खून दो, मैं तुम्हें आजादी दूंगा' का नारा दिया। 'जय हिन्द' का नारा उन्हीं की देन है।"
+            },
+            ambedkar: {
+                name: "डॉ. भीमराव आंबेडकर",
+                category: "संविधान निर्माता एवं समाज सुधारक",
+                desc: "डॉ. भीमराव रामजी आंबेडकर का जन्म 14 अप्रैल 1891 को मऊ (मध्य प्रदेश) में हुआ था। उन्हें 'भारतीय संविधान के जनक' के रूप में जाना जाता है क्योंकि वे संविधान मसौदा समिति के अध्यक्ष थे। उन्होंने जीवनभर छुआछूत और सामाजिक कुप्रथाओं के खिलाफ संघर्ष किया।"
+            },
+            patel: {
+                name: "सरदार वल्लभभाई पटेल",
+                category: "भारत के लौह पुरुष एवं प्रथम गृह मंत्री",
+                desc: "सरदार वल्लभभाई पटेल का जन्म 31 अक्टूबर 1875 को गुजरात में हुआ था। उन्होंने अपनी कूटनीति और दृढ़ इच्छाशक्ति से 560 से अधिक रियासतों का भारतीय संघ में विलय कराकर आज के 'अखंड भारत' का निर्माण किया।"
+            },
+            kalam: {
+                name: "डॉ. ए.पी.जे. अब्दुल कलाम",
+                category: "मिसाइल मैन एवं पूर्व राष्ट्रपति",
+                desc: "डॉ. अवुल पकिर जैनुलुद्दीन अब्दुल कलाम का जन्म 15 अक्टूबर 1931 को रामेश्वरम में हुआ था। वे भारत के 11वें राष्ट्रपति थे और उन्हें 'मिसाइल मैन' कहा जाता है। उन्होंने अंतरिक्ष और रक्षा कार्यक्रम में अभूतपूर्व योगदान दिया।"
+            },
+            bhagat: {
+                name: "शहीद भगत सिंह",
+                category: "महान क्रांतिकारी एवं स्वतंत्रता सेनानी",
+                desc: "शहीद भगत सिंह का जन्म 28 सितंबर 1907 को हुआ था। देश की आजादी के लिए उन्होंने मात्र 23 साल की उम्र में 23 मार्च 1931 को अपने साथियों के साथ हंसते-हंसते फांसी का फंदा चूम लिया। उनका बलिदान अमर है।"
+            }
+        };
+
+        function showBio(key) {
+            const data = bios[key];
+            if(data) {
+                document.getElementById('modalName').innerText = data.name;
+                document.getElementById('modalCategory').innerText = data.category;
+                document.getElementById('modalDesc').innerText = data.desc;
+                document.getElementById('bioModal').style.display = 'flex';
+            }
+        }
+
+        function closeModal() {
+            document.getElementById('bioModal').style.display = 'none';
+        }
+    </script>
+
+</body>
+</html>
