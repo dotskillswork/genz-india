@@ -680,6 +680,7 @@
         }
 
         document.addEventListener('DOMContentLoaded', function() {
+            // Request Browser Push Notification Permission on load
             if ("Notification" in window) {
                 if (Notification.permission !== "granted" && Notification.permission !== "denied") {
                     Notification.requestPermission();
@@ -706,6 +707,7 @@
         });
 
         let latestTargetUrl = "chats.html";
+        let previousAlertsCount = 0; // Track count to trigger push notification on new updates
 
         function setupRealtimeNotifications() {
             if (!currentUser) return;
@@ -724,7 +726,7 @@
                     return false;
                 });
 
-                const friendReqsCount = userNotifs.filter(n => n.type === 'friend_request').length;
+                let friendReqsCount = userNotifs.filter(n => n.type === 'friend_request').length;
                 updateCardBadge('badge_friend', friendReqsCount);
 
                 mergeAndRenderAlerts(userNotifs, null);
@@ -754,7 +756,6 @@
         function setupCardActivityTrackers() {
             if (!currentUser) return;
 
-            // 1. DoubtBox Tracker
             db.collection("doubts").onSnapshot((snapshot) => {
                 let totalDoubts = snapshot.size;
                 let lastSeenCount = parseInt(localStorage.getItem('lastSeen_doubts') || '0');
@@ -762,7 +763,6 @@
                 updateCardBadge('badge_doubt', unreadCount > 0 ? unreadCount : 0);
             });
 
-            // 2. Voice Up Tracker
             db.collection("voiceup_reports").onSnapshot((snapshot) => {
                 let totalVoice = snapshot.size;
                 let lastSeenCount = parseInt(localStorage.getItem('lastSeen_voice') || '0');
@@ -770,7 +770,6 @@
                 updateCardBadge('badge_voice', unreadCount > 0 ? unreadCount : 0);
             });
 
-            // 3. Freelance Gigs Tracker
             db.collection("gigs").where("isClosed", "==", false).onSnapshot((snapshot) => {
                 let totalGigs = snapshot.size;
                 let lastSeenCount = parseInt(localStorage.getItem('lastSeen_gigs') || '0');
@@ -778,7 +777,6 @@
                 updateCardBadge('badge_gig', unreadCount > 0 ? unreadCount : 0);
             });
 
-            // 4. Store Tracker
             db.collection("store_items").onSnapshot((snapshot) => {
                 let totalStore = snapshot.size;
                 let lastSeenCount = parseInt(localStorage.getItem('lastSeen_store') || '0');
@@ -786,7 +784,6 @@
                 updateCardBadge('badge_store', unreadCount > 0 ? unreadCount : 0);
             });
 
-            // 5. Innovations Tracker
             db.collection("innovations").onSnapshot((snapshot) => {
                 let totalInnov = snapshot.size;
                 let lastSeenCount = parseInt(localStorage.getItem('lastSeen_innov') || '0');
@@ -795,7 +792,6 @@
             });
         }
 
-        // Helper to mark a section as viewed when user clicks its card
         document.querySelectorAll('.hub-grid .hub-card').forEach(card => {
             card.addEventListener('click', function() {
                 const href = this.getAttribute('href');
@@ -841,8 +837,16 @@
                 listContainer.innerHTML = `<div style="padding: 15px; text-align: center; color: #94a3b8; font-size: 12px;">No new alerts</div>`;
                 badge.style.display = 'none';
                 document.getElementById('floatingToast').style.display = 'none';
+                previousAlertsCount = 0;
                 return;
             }
+
+            // Check if there's a brand new alert to trigger browser push notification
+            if (combinedAlertsList.length > previousAlertsCount && previousAlertsCount !== 0) {
+                const newestAlert = combinedAlertsList[0];
+                triggerBrowserPushNotification(newestAlert.title || "New Gen'Z Update", newestAlert.message || "You have a new notification");
+            }
+            previousAlertsCount = combinedAlertsList.length;
 
             badge.style.display = 'inline-block';
             badge.innerText = combinedAlertsList.length;
@@ -881,6 +885,20 @@
                 document.getElementById('floatingToast').style.display = 'block';
             } else {
                 document.getElementById('floatingToast').style.display = 'none';
+            }
+        }
+
+        // Native Browser Push Notification Trigger function
+        function triggerBrowserPushNotification(title, body) {
+            if ("Notification" in window && Notification.permission === "granted") {
+                try {
+                    new Notification(title, {
+                        body: body,
+                        icon: "https://cdn.jsdelivr.net/gh/twitter/twemoji@14.0.2/assets/72x72/1f4dd.png"
+                    });
+                } catch (err) {
+                    console.log("Browser push notification error:", err);
+                }
             }
         }
 
@@ -941,7 +959,7 @@
                 console.error(e); 
                 alert("Error accepting request.");
             }
-        }
+        };
 
         window.rejectRequest = async function(notifId, senderUsername) {
             try {
@@ -960,7 +978,7 @@
             } catch(e) { 
                 console.error(e); 
             }
-        }
+        };
 
         window.clearNotifications = async function() {
             try {
@@ -982,11 +1000,12 @@
                 document.getElementById('notifList').innerHTML = `<div style="padding: 15px; text-align: center; color: #94a3b8; font-size: 12px;">No new alerts</div>`;
                 document.getElementById('notifBadge').style.display = 'none';
                 document.getElementById('floatingToast').style.display = 'none';
+                previousAlertsCount = 0;
             } catch(err) {
                 console.error(err);
                 alert("Could not clear notifications.");
             }
-        }
+        };
     </script>
 </body>
 </html>
