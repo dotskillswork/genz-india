@@ -263,7 +263,7 @@
             word-break: break-word;
         }
 
-        /* Instagram Style Multiple Image Slider / Grid Container */
+        /* Multiple Image Slider Container */
         .talent-media-container {
             position: relative;
             width: 100%;
@@ -280,7 +280,7 @@
         .talent-img {
             width: 100%;
             max-height: 450px;
-            object-fit: contain; /* Prevents zooming/cropping issues */
+            object-fit: contain;
             display: block;
             cursor: pointer;
             background: #000000;
@@ -362,6 +362,105 @@
         }
         .close-lightbox:hover {
             color: #cbd5e1;
+        }
+
+        /* Dhaansu Grand Success Popup with Confetti Animation */
+        .success-overlay {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(15, 23, 42, 0.75);
+            backdrop-filter: blur(8px);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 20000;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.4s ease;
+        }
+        .success-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+        .success-box {
+            background: #ffffff;
+            padding: 40px 30px;
+            border-radius: 28px;
+            width: 90%;
+            max-width: 420px;
+            text-align: center;
+            box-shadow: 0 25px 60px rgba(79, 70, 229, 0.3);
+            transform: scale(0.7) translateY(30px);
+            transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+            position: relative;
+            overflow: hidden;
+        }
+        .success-overlay.active .success-box {
+            transform: scale(1) translateY(0);
+        }
+        .success-trophy {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, #4f46e5, #7c3aed);
+            color: #ffffff;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 36px;
+            margin: 0 auto 20px auto;
+            box-shadow: 0 10px 20px rgba(79, 70, 229, 0.4);
+            animation: bounceIcon 1s infinite alternate;
+        }
+        @keyframes bounceIcon {
+            from { transform: translateY(0); }
+            to { transform: translateY(-8px); }
+        }
+        .success-box h3 {
+            color: #0f172a;
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 10px;
+            letter-spacing: -0.5px;
+        }
+        .success-box p {
+            color: #64748b;
+            font-size: 14px;
+            line-height: 1.5;
+            margin-bottom: 25px;
+        }
+        .success-action-btn {
+            background: linear-gradient(135deg, #4f46e5, #7c3aed);
+            color: #ffffff;
+            border: none;
+            padding: 14px;
+            border-radius: 14px;
+            font-weight: 700;
+            width: 100%;
+            cursor: pointer;
+            font-size: 14.5px;
+            box-shadow: 0 4px 15px rgba(79, 70, 229, 0.4);
+            transition: 0.2s;
+        }
+        .success-action-btn:hover {
+            opacity: 0.95;
+            transform: translateY(-1px);
+        }
+
+        /* Fireworks / Confetti Particle Elements */
+        .confetti-piece {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            background: #4f46e5;
+            top: 0;
+            opacity: 0;
+            animation: confettiFall 1.5s ease-in-out forwards;
+            z-index: 20001;
+        }
+        @keyframes confettiFall {
+            0% { transform: translateY(0) rotate(0deg); opacity: 1; }
+            100% { transform: translateY(400px) rotate(720deg); opacity: 0; }
         }
 
         .talent-footer {
@@ -491,6 +590,16 @@
         <img class="lightbox-content" id="lightboxImg">
     </div>
 
+    <!-- Dhaansu Grand Success Popup with Confetti Container -->
+    <div class="success-overlay" id="successOverlay">
+        <div class="success-box" id="successBox">
+            <div class="success-trophy">🎉</div>
+            <h3>Brilliant Innovation!</h3>
+            <p>Your talent has been successfully showcased to the entire Gen'Z India community. Feel proud of your creation! 🚀</p>
+            <button class="success-action-btn" onclick="closeSuccessModal()">Awesome, Let's View Feed!</button>
+        </div>
+    </div>
+
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-app.js";
         import { getFirestore, collection, addDoc, updateDoc, doc, getDoc, onSnapshot, query, orderBy } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-firestore.js";
@@ -536,6 +645,38 @@
         window.openLightbox = function(imgSrc) {
             lightboxImg.src = imgSrc;
             lightboxModal.style.display = 'flex';
+        }
+
+        // Grand Success Modal & Confetti Blast Trigger
+        window.triggerSuccessCelebration = function() {
+            const overlay = document.getElementById('successOverlay');
+            overlay.classList.add('active');
+
+            // Generate Confetti / Fireworks particles
+            const successBox = document.getElementById('successBox');
+            const colors = ['#4f46e5', '#7c3aed', '#ec4899', '#f59e0b', '#10b981', '#3b82f6'];
+            
+            for (let i = 0; i < 40; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'confetti-piece';
+                particle.style.left = Math.random() * 100 + '%';
+                particle.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+                particle.style.borderRadius = Math.random() > 0.5 ? '50%' : '2px';
+                particle.style.width = (Math.random() * 8 + 6) + 'px';
+                particle.style.height = (Math.random() * 8 + 6) + 'px';
+                particle.style.animationDuration = (Math.random() * 1 + 1) + 's';
+                particle.style.animationDelay = (Math.random() * 0.3) + 's';
+                successBox.appendChild(particle);
+
+                // Remove particle after animation
+                setTimeout(() => {
+                    particle.remove();
+                }, 2000);
+            }
+        }
+
+        window.closeSuccessModal = function() {
+            document.getElementById('successOverlay').classList.remove('active');
         }
 
         document.getElementById('talentImageFiles').addEventListener('change', function(e) {
@@ -593,7 +734,10 @@
                 document.getElementById('talentForm').reset();
                 document.getElementById('fileNameDisplay').innerText = '';
                 modalBox.style.display = 'none';
-                alert("Your innovation has been showcased to the world successfully! 🎉");
+
+                // Trigger Dhaansu Confetti Popup
+                triggerSuccessCelebration();
+
             } catch (err) {
                 console.error("Error publishing innovation:", err);
                 alert("Failed to publish. Images might be too large, try smaller images.");
@@ -659,7 +803,6 @@
                 const hasLiked = item.likes && item.likes.includes(activeUser.username);
                 const likeHeart = hasLiked ? '❤️' : '🤍';
 
-                // Handle both old single 'imageUrl' and new 'imageUrls' array format smoothly
                 let images = item.imageUrls || (item.imageUrl ? [item.imageUrl] : []);
                 let mediaHtml = '';
 
