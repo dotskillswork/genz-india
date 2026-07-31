@@ -243,8 +243,13 @@
         .user-info {
             display: flex;
             align-items: center;
-            gap: 12px;
+            justify-content: space-between;
             margin-bottom: 14px;
+        }
+        .user-info-left {
+            display: flex;
+            align-items: center;
+            gap: 12px;
         }
         .user-avatar {
             width: 40px;
@@ -287,6 +292,31 @@
             margin: 15px auto;
             background: #f8fafc;
             border: 1px solid #e2e8f0;
+            cursor: pointer;
+        }
+
+        .owner-actions {
+            display: flex;
+            gap: 8px;
+        }
+        .edit-btn {
+            background: #fef3c7;
+            color: #d97706;
+            border: 1px solid #fde68a;
+            padding: 5px 10px;
+            border-radius: 6px;
+            font-size: 11.5px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+        .delete-btn {
+            background: #fee2e2;
+            color: #dc2626;
+            border: 1px solid #fca5a5;
+            padding: 5px 10px;
+            border-radius: 6px;
+            font-size: 11.5px;
+            font-weight: 600;
             cursor: pointer;
         }
 
@@ -467,7 +497,9 @@
 
         <!-- Post Doubt Box (Hidden initially) -->
         <div class="post-box" id="postDoubtBox">
+            <h3 id="formBoxTitle" style="font-size: 16px; color: #ea580c; margin-bottom: 12px; font-weight: 700;">Ask a Doubt</h3>
             <form id="doubtForm">
+                <input type="hidden" id="editingDoubtId" value="">
                 <textarea id="doubtText" placeholder="Type your doubt or question clearly here..." required></textarea>
                 <div class="post-actions">
                     <label class="file-upload-label">
@@ -526,6 +558,11 @@
             if (box.style.display === 'block') {
                 box.style.display = 'none';
                 btn.innerText = "➕ Ask a Doubt";
+                document.getElementById('doubtForm').reset();
+                document.getElementById('editingDoubtId').value = "";
+                document.getElementById('formBoxTitle').innerText = "Ask a Doubt";
+                document.getElementById('postBtn').innerText = "Post Doubt";
+                document.getElementById('imageFileName').innerText = "";
             } else {
                 box.style.display = 'block';
                 btn.innerText = "✖ Close Doubt Box";
@@ -559,13 +596,14 @@
 
         document.getElementById('doubtForm').addEventListener('submit', async function(e) {
             e.preventDefault();
+            const editId = document.getElementById('editingDoubtId').value;
             const text = document.getElementById('doubtText').value.trim();
             const imageFile = document.getElementById('doubtImage').files[0];
             const postBtn = document.getElementById('postBtn');
 
             if (!text) return;
 
-            postBtn.innerText = "Posting...";
+            postBtn.innerText = editId ? "Updating..." : "Posting...";
             postBtn.disabled = true;
 
             let imageUrl = "";
@@ -577,31 +615,65 @@
                 }
             }
 
-            const newDoubt = {
-                course: course,
-                subject: subject,
-                author: activeUser.username,
-                authorPic: activeUser.profilePic || "",
-                text: text,
-                imageUrl: imageUrl,
-                createdAt: Date.now(),
-                answers: []
-            };
-
             try {
-                await db.collection('doubts').add(newDoubt);
-                document.getElementById('doubtText').value = '';
-                document.getElementById('doubtImage').value = '';
+                if (editId) {
+                    let updateData = { text: text };
+                    if (imageUrl) {
+                        updateData.imageUrl = imageUrl;
+                    }
+                    await db.collection('doubts').doc(editId).update(updateData);
+                    alert("Doubt updated successfully! ✏️");
+                } else {
+                    const newDoubt = {
+                        course: course,
+                        subject: subject,
+                        author: activeUser.username,
+                        authorPic: activeUser.profilePic || "",
+                        text: text,
+                        imageUrl: imageUrl,
+                        createdAt: Date.now(),
+                        answers: []
+                    };
+                    await db.collection('doubts').add(newDoubt);
+                }
+
+                document.getElementById('doubtForm').reset();
+                document.getElementById('editingDoubtId').value = "";
                 document.getElementById('imageFileName').innerText = '';
                 toggleDoubtBox();
             } catch (err) {
-                console.error("Error posting doubt:", err);
-                alert("Failed to post doubt.");
+                console.error("Error saving doubt:", err);
+                alert("Failed to save doubt.");
             } finally {
                 postBtn.innerText = "Post Doubt";
                 postBtn.disabled = false;
             }
         });
+
+        window.editDoubt = function(id, textContent) {
+            document.getElementById('editingDoubtId').value = id;
+            document.getElementById('doubtText').value = decodeURIComponent(textContent);
+            document.getElementById('formBoxTitle').innerText = "Edit Your Doubt";
+            document.getElementById('postBtn').innerText = "Update Doubt ✏️";
+
+            const box = document.getElementById('postDoubtBox');
+            const btn = document.getElementById('toggleDoubtBtn');
+            box.style.display = 'block';
+            btn.innerText = "✖ Close Doubt Box";
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        window.deleteDoubt = async function(id) {
+            if (confirm("Do you want to delete this post?")) {
+                try {
+                    await db.collection('doubts').doc(id).delete();
+                    alert("Doubt deleted successfully!");
+                } catch (err) {
+                    console.error("Error deleting doubt:", err);
+                    alert("Failed to delete doubt.");
+                }
+            }
+        }
 
         // Global Alerts & Floating Toast Listener for Chats
         let latestTargetUrl = "chats.html";
@@ -675,7 +747,7 @@
         }
 
         // Real-time Doubt Feed Listener
-        db.collection('doubts').orderBy('createdAt', 'desc').onSnapshot((snapshot) => {
+        db.collection('doubts').onSnapshot((snapshot) => {
             const container = document.getElementById('doubtsFeedContainer');
             container.innerHTML = "";
 
@@ -687,13 +759,16 @@
                 }
             });
 
+            // Sort manually descending by createdAt
+            doubtsList.sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
+
             if (doubtsList.length === 0) {
                 container.innerHTML = `<p style="color: #64748b; text-align: center; font-size: 13.5px; padding: 25px;">No doubts asked in this subject yet. Be the first one to ask! 🚀</p>`;
                 return;
             }
 
             doubtsList.forEach((doubt) => {
-                const timeString = new Date(doubt.createdAt).toLocaleString([], { dateStyle: 'short', timeStyle: 'short' });
+                const timeString = doubt.createdAt ? new Date(doubt.createdAt).toLocaleString([], { dateStyle: 'short', timeStyle: 'short' }) : 'Recently';
                 const authorInitial = doubt.author ? doubt.author.charAt(0).toUpperCase() : 'U';
                 
                 let answersHtml = '';
@@ -717,14 +792,27 @@
 
                 const authorAvatar = doubt.authorPic ? `<img src="${doubt.authorPic}" class="user-avatar">` : `<div class="user-avatar">${authorInitial}</div>`;
 
+                let ownerActionsHtml = "";
+                if (doubt.author === activeUser.username) {
+                    ownerActionsHtml = `
+                        <div class="owner-actions">
+                            <button class="edit-btn" onclick="editDoubt('${doubt.id}', '${encodeURIComponent(doubt.text)}')">✏️ Edit</button>
+                            <button class="delete-btn" onclick="deleteDoubt('${doubt.id}')">🗑️ Delete</button>
+                        </div>
+                    `;
+                }
+
                 container.innerHTML += `
                     <div class="doubt-card">
                         <div class="user-info">
-                            ${authorAvatar}
-                            <div class="user-meta">
-                                <h4>@${doubt.author}</h4>
-                                <span>${timeString}</span>
+                            <div class="user-info-left">
+                                ${authorAvatar}
+                                <div class="user-meta">
+                                    <h4>@${doubt.author}</h4>
+                                    <span>${timeString}</span>
+                                </div>
                             </div>
+                            ${ownerActionsHtml}
                         </div>
                         <div class="doubt-text">${doubt.text}</div>
                         ${doubt.imageUrl ? `<img src="${doubt.imageUrl}" class="doubt-img" onclick="openImageModal('${doubt.imageUrl}')" title="Click to view full screen">` : ``}
