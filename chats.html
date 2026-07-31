@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Chats Hub | Gen'Z India</title>
+    <title>Chats Hub | Gen'Z India 🇮🇳</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
         * {
@@ -13,12 +13,22 @@
             font-family: 'Poppins', sans-serif;
         }
         body {
-            background-color: #f8fafc;
+            background-color: #fdfbf7; /* Warm Indian Paper Tint */
             color: #1e293b;
             min-height: 100vh;
             display: flex;
             flex-direction: column;
         }
+
+        /* Top Tiranga Border */
+        body::before {
+            content: "";
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 5px;
+            background: linear-gradient(to right, #FF9933, #FFFFFF, #138808);
+            z-index: 1001;
+        }
+
         header {
             background: rgba(255, 255, 255, 0.95);
             backdrop-filter: blur(10px);
@@ -26,22 +36,28 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            border-bottom: 1px solid #e2e8f0;
+            border-bottom: 1px solid #e7e5e4;
             position: sticky;
             top: 0;
             z-index: 1000;
             box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+            flex-wrap: wrap;
+            gap: 10px;
         }
         .logo {
             font-size: 20px;
             font-weight: 700;
-            color: #0284c7;
+            background: linear-gradient(to right, #ea580c, #16a34a);
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
             text-decoration: none;
         }
         nav {
             display: flex;
             gap: 15px;
             align-items: center;
+            flex-wrap: wrap;
         }
         nav a {
             color: #64748b;
@@ -51,8 +67,68 @@
             transition: 0.3s;
         }
         nav a:hover, nav a.active {
-            color: #0284c7;
+            color: #ea580c;
         }
+
+        /* Notification Bell in Header */
+        .notif-container {
+            position: relative;
+            cursor: pointer;
+        }
+        .notif-bell {
+            background: #fff7ed;
+            border: 1px solid #fed7aa;
+            color: #ea580c;
+            padding: 5px 10px;
+            border-radius: 8px;
+            font-size: 11.5px;
+            font-weight: 600;
+        }
+        .notif-badge {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            background: #dc2626;
+            color: #fff;
+            font-size: 9px;
+            padding: 2px 5px;
+            border-radius: 50%;
+            font-weight: 700;
+        }
+        .notif-dropdown {
+            display: none;
+            position: absolute;
+            right: 0;
+            top: 40px;
+            width: 280px;
+            background: #ffffff;
+            border: 1px solid #cbd5e1;
+            border-radius: 12px;
+            box-shadow: 0 15px 30px rgba(0,0,0,0.15);
+            z-index: 2000;
+            overflow: hidden;
+        }
+        .notif-header {
+            padding: 10px 14px;
+            background: #f8fafc;
+            font-size: 12px;
+            font-weight: 600;
+            color: #d97706;
+            border-bottom: 1px solid #e2e8f0;
+            display: flex;
+            justify-content: space-between;
+        }
+        .notif-list {
+            max-height: 180px;
+            overflow-y: auto;
+        }
+        .notif-item {
+            padding: 10px 14px;
+            border-bottom: 1px solid #f1f5f9;
+            font-size: 11.5px;
+            color: #334155;
+        }
+
         .container {
             max-width: 700px;
             width: 100%;
@@ -68,9 +144,9 @@
         }
         .chats-list {
             background: #ffffff;
-            border: 1px solid #e2e8f0;
+            border: 1px solid #fed7aa;
             border-radius: 16px;
-            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.02);
+            box-shadow: 0 4px 15px rgba(234, 88, 12, 0.03);
             overflow: hidden;
         }
         .chat-item {
@@ -78,13 +154,13 @@
             align-items: center;
             justify-content: space-between;
             padding: 15px 20px;
-            border-bottom: 1px solid #f1f5f9;
+            border-bottom: 1px solid #fef3c7;
             cursor: pointer;
             transition: 0.2s;
             text-decoration: none;
         }
         .chat-item:hover {
-            background: #f8fafc;
+            background: #fffbeb;
         }
         .chat-user-info {
             display: flex;
@@ -96,7 +172,7 @@
             height: 50px;
             border-radius: 50%;
             object-fit: cover;
-            border: 2px solid #0284c7;
+            border: 2px solid #ea580c;
         }
         .chat-user-info h4 {
             font-size: 15px;
@@ -107,10 +183,25 @@
             font-size: 12.5px;
             color: #64748b;
         }
+        .chat-right-side {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
         .chat-arrow {
-            color: #0284c7;
+            color: #ea580c;
             font-weight: 600;
             font-size: 13px;
+        }
+        /* Instagram Style Unread Badge */
+        .unread-badge {
+            background: #dc2626;
+            color: #fff;
+            font-size: 10px;
+            font-weight: 700;
+            padding: 2px 7px;
+            border-radius: 10px;
+            display: none;
         }
     </style>
 </head>
@@ -124,12 +215,27 @@
     </script>
 
     <header>
-        <a href="index.html" class="logo">Gen'Z India ⚡</a>
+        <a href="index.html" class="logo">Gen'Z India 🇮🇳</a>
         <nav>
             <a href="index.html">Dashboard</a>
             <a href="makefriend.html">Make Friends</a>
             <a href="chats.html" class="active">Chats 💬</a>
             <a href="voiceup.html">Voice Up</a>
+
+            <!-- Unread Alerts Dropdown -->
+            <div class="notif-container" onclick="toggleNotifDropdown(event)">
+                <div class="notif-bell">🔔 Alerts</div>
+                <span class="notif-badge" id="chatNotifBadge" style="display: none;">0</span>
+                <div class="notif-dropdown" id="notifDropdown" onclick="event.stopPropagation()">
+                    <div class="notif-header">
+                        <span>Message Alerts</span>
+                        <span style="cursor: pointer; color: #ea580c;" onclick="clearAlerts()">Clear</span>
+                    </div>
+                    <div class="notif-list" id="chatNotifList">
+                        <div style="padding: 10px; text-align: center; color: #94a3b8; font-size: 11px;">No unread messages</div>
+                    </div>
+                </div>
+            </div>
         </nav>
     </header>
 
@@ -142,7 +248,7 @@
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-app.js";
-        import { getFirestore, collection, getDocs, query, where, or } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-firestore.js";
+        import { getFirestore, collection, getDocs, query, where, updateDoc, doc } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-firestore.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyCNLwSjHq6LlX9uUovTRHrz9ZfUWeIUWQM",
@@ -159,6 +265,22 @@
 
         const currentLoggedInUser = JSON.parse(localStorage.getItem('genzUser'));
 
+        window.toggleNotifDropdown = function(e) {
+            e.stopPropagation();
+            const dropdown = document.getElementById('notifDropdown');
+            dropdown.style.display = dropdown.style.display === 'block' ? 'none' : 'block';
+        }
+
+        window.addEventListener('click', function() {
+            const dropdown = document.getElementById('notifDropdown');
+            if(dropdown) dropdown.style.display = 'none';
+        });
+
+        window.clearAlerts = function() {
+            document.getElementById('chatNotifList').innerHTML = `<div style="padding: 10px; text-align: center; color: #94a3b8; font-size: 11px;">No unread messages</div>`;
+            document.getElementById('chatNotifBadge').style.display = 'none';
+        }
+
         async function loadConversations() {
             const container = document.getElementById('chatsListContainer');
             try {
@@ -171,24 +293,17 @@
                     myFriends = userSnap.docs[0].data().friends || [];
                 }
 
-                // Also find users with whom chat messages exist
-                const messagesQuery = query(
-                    collection(db, 'chats'), 
-                    or(
-                        where("sender", "==", currentLoggedInUser.username),
-                        where("receiver", "==", currentLoggedInUser.username)
-                    )
-                );
-                const msgSnap = await getDocs(messagesQuery);
-                
+                // Find users with whom chat messages exist
+                const msgSnap = await getDocs(collection(db, 'chats'));
                 let chattedUsernames = new Set();
-                msgSnap.forEach(doc => {
-                    const data = doc.data();
-                    if (data.sender !== currentLoggedInUser.username) chattedUsernames.add(data.sender);
-                    if (data.receiver !== currentLoggedInUser.username) chattedUsernames.add(data.receiver);
+                msgSnap.forEach(docSnap => {
+                    const data = docSnap.data();
+                    if (data.sender === currentLoggedInUser.username || data.receiver === currentLoggedInUser.username) {
+                        if (data.sender !== currentLoggedInUser.username) chattedUsernames.add(data.sender);
+                        if (data.receiver !== currentLoggedInUser.username) chattedUsernames.add(data.receiver);
+                    }
                 });
 
-                // Combine friends and chatted users unique set
                 let allContactUsernames = new Set([...myFriends, ...chattedUsernames]);
 
                 if (allContactUsernames.size === 0) {
@@ -197,6 +312,8 @@
                 }
 
                 container.innerHTML = '';
+                let unreadAlertsList = [];
+
                 for (let username of allContactUsernames) {
                     const uQuery = query(collection(db, 'users'), where("username", "==", username));
                     const uSnap = await getDocs(uQuery);
@@ -204,24 +321,90 @@
                         const uData = uSnap.docs[0].data();
                         let avatar = uData.photo || uData.profilePic || 'https://cdn.jsdelivr.net/gh/twitter/twemoji@14.0.2/assets/72x72/1f464.png';
 
+                        // Check unread status for this chat room
+                        const chatId = [currentLoggedInUser.username, username].sort().join('_');
+                        let hasUnread = false;
+                        let lastMsgText = "Tap to open chat";
+
+                        msgSnap.forEach(docSnap => {
+                            const m = docSnap.data();
+                            if (m.chatId === chatId) {
+                                lastMsgText = m.text || "Sent an attachment";
+                                if (m.receiver === currentLoggedInUser.username && m.read === false) {
+                                    hasUnread = true;
+                                    unreadAlertsList.push({
+                                        senderName: uData.name,
+                                        text: m.text || "Sent an attachment",
+                                        username: username
+                                    });
+                                }
+                            }
+                        });
+
+                        let badgeStyle = hasUnread ? 'display: inline-block;' : 'display: none;';
+
                         container.innerHTML += `
-                            <a href="chat.html?with=${uData.username}" class="chat-item">
+                            <a href="chat.html?with=${username}" class="chat-item" onclick="markAsRead('${chatId}')">
                                 <div class="chat-user-info">
                                     <img src="${avatar}" alt="Avatar">
                                     <div>
                                         <h4>${uData.name}</h4>
-                                        <p>@${uData.username} • Tap to open chat</p>
+                                        <p>@${uData.username} • ${lastMsgText}</p>
                                     </div>
                                 </div>
-                                <span class="chat-arrow">Chat &rarr;</span>
+                                <div class="chat-right-side">
+                                    <span class="unread-badge" id="badge_${username}" style="${badgeStyle}">New</span>
+                                    <span class="chat-arrow">&rarr;</span>
+                                </div>
                             </a>
                         `;
                     }
                 }
+
+                updateAlertsUI(unreadAlertsList);
+
             } catch(e) {
                 console.error(e);
                 container.innerHTML = `<p style="color: #ef4444; font-size: 13.5px; text-align: center; padding: 30px;">Error loading chats.</p>`;
             }
+        }
+
+        window.markAsRead = async function(chatId) {
+            try {
+                const msgSnap = await getDocs(collection(db, 'chats'));
+                msgSnap.forEach(async (docSnap) => {
+                    const m = docSnap.data();
+                    if (m.chatId === chatId && m.receiver === currentLoggedInUser.username && m.read === false) {
+                        await updateDoc(doc(db, 'chats', docSnap.id), { read: true });
+                    }
+                });
+            } catch (err) {
+                console.error(err);
+            }
+        }
+
+        function updateAlertsUI(unreadList) {
+            const badge = document.getElementById('chatNotifBadge');
+            const list = document.getElementById('chatNotifList');
+
+            if (unreadList.length === 0) {
+                badge.style.display = 'none';
+                list.innerHTML = `<div style="padding: 10px; text-align: center; color: #94a3b8; font-size: 11px;">No unread messages</div>`;
+                return;
+            }
+
+            badge.style.display = 'inline-block';
+            badge.innerText = unreadList.length;
+
+            list.innerHTML = '';
+            unreadList.forEach(item => {
+                list.innerHTML += `
+                    <div class="notif-item">
+                        <b>${item.senderName}</b> sent you a message:<br>
+                        <span style="color: #64748b;">"${item.text}"</span>
+                    </div>
+                `;
+            });
         }
 
         loadConversations();
