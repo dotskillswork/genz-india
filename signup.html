@@ -76,6 +76,29 @@
             flex: 1;
             min-width: 180px;
         }
+        .terms-group {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            margin: 15px 0;
+            font-size: 12px;
+            color: #475569;
+        }
+        .terms-group input {
+            margin-top: 2px;
+            accent-color: #0284c7;
+            width: 16px;
+            height: 16px;
+            cursor: pointer;
+        }
+        .terms-group a {
+            color: #0284c7;
+            text-decoration: none;
+            font-weight: 600;
+        }
+        .terms-group a:hover {
+            text-decoration: underline;
+        }
         .submit-btn {
             background: #0284c7;
             color: #ffffff;
@@ -86,7 +109,7 @@
             font-size: 14px;
             width: 100%;
             cursor: pointer;
-            margin-top: 10px;
+            margin-top: 5px;
             transition: 0.2s;
             box-shadow: 0 4px 6px -1px rgba(2, 132, 199, 0.2);
         }
@@ -285,6 +308,15 @@
                 <label>Profile Photo (Optional)</label>
                 <input type="file" id="sPhoto" accept="image/*" style="font-size: 12px; color: #64748b; background: transparent; border: none; padding: 4px 0;">
             </div>
+
+            <!-- Terms & Conditions Checkbox Added -->
+            <div class="terms-group">
+                <input type="checkbox" id="termsCheck" required>
+                <label for="termsCheck" style="display:inline; font-size:12px; color:#475569; font-weight:normal;">
+                    I agree to the <a href="terms.html" target="_blank">Terms & Conditions</a> and <a href="privacy.html" target="_blank">Privacy Policy</a>
+                </label>
+            </div>
+
             <button type="submit" class="submit-btn" id="submitBtn">Create Account</button>
         </form>
 
@@ -391,6 +423,14 @@
             const btn = document.getElementById('submitBtn');
             const errorAlert = document.getElementById('errorAlert');
             errorAlert.style.display = 'none';
+
+            // Check if terms are accepted
+            const termsChecked = document.getElementById('termsCheck').checked;
+            if (!termsChecked) {
+                errorAlert.innerText = 'Please accept the Terms & Conditions and Privacy Policy.';
+                errorAlert.style.display = 'block';
+                return;
+            }
             
             btn.innerText = "Creating Account...";
             btn.disabled = true;
@@ -456,9 +496,18 @@
         });
 
         window.handleGoogleSignup = async function() {
-            const provider = new GoogleAuthProvider();
             const errorAlert = document.getElementById('errorAlert');
             errorAlert.style.display = 'none';
+
+            // Check if terms are accepted for Google signup
+            const termsChecked = document.getElementById('termsCheck').checked;
+            if (!termsChecked) {
+                errorAlert.innerText = 'Please accept the Terms & Conditions and Privacy Policy to continue.';
+                errorAlert.style.display = 'block';
+                return;
+            }
+
+            const provider = new GoogleAuthProvider();
 
             try {
                 const result = await signInWithPopup(auth, provider);
