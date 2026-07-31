@@ -208,8 +208,8 @@
             color: #64748b;
         }
 
-        /* Subject Unread Badge */
-        .subject-badge {
+        /* Course & Subject Unread Badge */
+        .course-badge, .subject-badge {
             position: absolute;
             top: 12px;
             right: 12px;
@@ -217,8 +217,9 @@
             color: #fff;
             font-size: 10px;
             font-weight: 700;
-            padding: 2px 7px;
+            padding: 2px 8px;
             border-radius: 10px;
+            box-shadow: 0 2px 5px rgba(220, 38, 38, 0.3);
             display: none;
         }
 
@@ -457,22 +458,6 @@
             document.getElementById('floatingToast').style.display = 'none';
         };
 
-        // Realtime Tracker for Subject Doubt Counts
-        let doubtsCountMap = {};
-        db.collection('doubts').onSnapshot((snapshot) => {
-            doubtsCountMap = {};
-            snapshot.forEach((docSnap) => {
-                const d = docSnap.data();
-                if (d.subject) {
-                    doubtsCountMap[d.subject] = (doubtsCountMap[d.subject] || 0) + 1;
-                }
-            });
-            // Re-render subjects if a course is currently open
-            if (currentOpenedCourse) {
-                openCourse(currentOpenedCourse);
-            }
-        });
-
         const academicData = {
             "UPSC Civil Services (IAS/IPS)": ["General Studies Paper 1 (History, Geography, Polity)", "General Studies Paper 2 (CSAT, Aptitude)", "General Studies Paper 3 (Economy, Science & Tech, Security)", "General Studies Paper 4 (Ethics, Integrity & Aptitude)", "Optional Subjects & Essay Writing"],
             "BPSC / State PSC Exams": ["General Studies (History & Geography of State)", "Indian Polity & Economy", "General Science & Mental Ability", "Current Affairs"],
@@ -513,14 +498,44 @@
             diplomaCourses: ["Polytechnic / Diploma in Engineering", "Paramedical & Lab Technology Diplomas"]
         };
 
+        // Realtime Tracker for Course & Subject Doubt Counts
+        let courseDoubtCounts = {};
+        let subjectDoubtCounts = {};
+        let currentOpenedCourse = null;
+
+        db.collection('doubts').onSnapshot((snapshot) => {
+            subjectDoubtCounts = {};
+            courseDoubtCounts = {};
+
+            snapshot.forEach((docSnap) => {
+                const d = docSnap.data();
+                if (d.subject) {
+                    subjectDoubtCounts[d.subject] = (subjectDoubtCounts[d.subject] || 0) + 1;
+                }
+                if (d.course) {
+                    courseDoubtCounts[d.course] = (courseDoubtCounts[d.course] || 0) + 1;
+                }
+            });
+
+            renderCourses();
+            if (currentOpenedCourse) {
+                openCourse(currentOpenedCourse);
+            }
+        });
+
         function renderCourses() {
             for (let catKey in categories) {
                 const container = document.getElementById(catKey);
+                if(!container) continue;
                 container.innerHTML = "";
                 categories[catKey].forEach(courseName => {
                     const subjectsCount = academicData[courseName] ? academicData[courseName].length : 0;
+                    const doubtCount = courseDoubtCounts[courseName] || 0;
+                    let badgeHtml = doubtCount > 0 ? `<span class="course-badge">${doubtCount}</span>` : '';
+
                     container.innerHTML += `
                         <div class="card" onclick="openCourse('${courseName}')">
+                            ${badgeHtml}
                             <h3>${courseName}</h3>
                             <p>${subjectsCount} Sections / Subjects</p>
                         </div>
@@ -528,8 +543,6 @@
                 });
             }
         }
-
-        let currentOpenedCourse = null;
 
         function openCourse(courseName) {
             currentOpenedCourse = courseName;
@@ -542,7 +555,7 @@
 
             const subjects = academicData[courseName] || [];
             subjects.forEach(subject => {
-                let count = doubtsCountMap[subject] || 0;
+                let count = subjectDoubtCounts[subject] || 0;
                 let badgeHtml = count > 0 ? `<span class="subject-badge">${count}</span>` : '';
 
                 subjectsGrid.innerHTML += `
@@ -566,11 +579,11 @@
         }
 
         document.getElementById('courseSearch').addEventListener('input', function(e) {
-            const query = e.target.value.toLowerCase();
+            const queryText = e.target.value.toLowerCase();
             const allCards = document.querySelectorAll('.grid-container .card');
             allCards.forEach(card => {
                 const text = card.innerText.toLowerCase();
-                if (text.includes(query)) {
+                if (text.includes(queryText)) {
                     card.style.display = "flex";
                 } else {
                     card.style.display = "none";
