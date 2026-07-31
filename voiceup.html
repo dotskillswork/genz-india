@@ -348,6 +348,31 @@
             color: #fff;
         }
 
+        .owner-actions {
+            display: flex;
+            gap: 8px;
+        }
+        .edit-btn {
+            background: #fef3c7;
+            color: #d97706;
+            border: 1px solid #fde68a;
+            padding: 5px 10px;
+            border-radius: 6px;
+            font-size: 11.5px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+        .delete-btn {
+            background: #fee2e2;
+            color: #dc2626;
+            border: 1px solid #fca5a5;
+            padding: 5px 10px;
+            border-radius: 6px;
+            font-size: 11.5px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
         /* Floating Popup Toast Notification Banner */
         #floatingToast {
             display: none;
@@ -434,8 +459,9 @@
 
         <!-- Report Form (Hidden Initially) -->
         <div class="report-box" id="reportFormBox">
-            <h3 style="font-size: 16px; color: #ea580c; margin-bottom: 15px; font-weight: 700;">Whistleblower Report Form</h3>
+            <h3 id="formHeading" style="font-size: 16px; color: #ea580c; margin-bottom: 15px; font-weight: 700;">Whistleblower Report Form</h3>
             <form id="reportForm">
+                <input type="hidden" id="editReportId" value="">
                 <input type="text" id="collegeName" placeholder="College / Institution / Organization Name" required>
                 <input type="text" id="reportTitle" placeholder="Issue Title (e.g., Unfair Exam Fee Hike, Ragging Incident)" required>
                 <textarea id="reportDesc" placeholder="Describe the issue in detail with facts and proof..." required></textarea>
@@ -445,7 +471,7 @@
                         📷 Attach Proof Image
                         <input type="file" id="reportImage" accept="image/*" style="display: none;">
                     </label>
-                    <label class="checkbox-label">
+                    <label class="checkbox-label" id="anonymousLabelContainer">
                         <input type="checkbox" id="anonymousCheck"> Post Anonymously (Hide Name)
                     </label>
                     <button type="submit" class="report-btn" id="submitBtn">Raise Voice 🚨</button>
@@ -460,22 +486,21 @@
         </div>
     </div>
 
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-app.js";
-        import { getFirestore, collection, addDoc, updateDoc, doc, arrayUnion, onSnapshot, query, orderBy, getDoc } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-firestore.js";
-
+    <script>
         const firebaseConfig = {
-            apiKey: "AIzaSyCNLwSjHq6LlX9uUovTRHrz9ZfUwEIUWQM",
+            apiKey: "AIzaSyCNLwSjHq6LlX9uUovTRHrz9ZfUWeIUWQM",
             authDomain: "genz-india.firebaseapp.com",
             projectId: "genz-india",
             storageBucket: "genz-india.firebasestorage.app",
             messagingSenderId: "149959470783",
             appId: "1:149959470783:web:71b7969ee2c8fc049c200a",
-            measurementId: "G-RBRSDRKSRH"
+            measurementId: "G-RBRDSRKSRH"
         };
 
-        const app = initializeApp(firebaseConfig);
-        const db = getFirestore(app);
+        if (!firebase.apps.length) {
+            firebase.initializeApp(firebaseConfig);
+        }
+        const db = firebase.firestore();
 
         const activeUser = JSON.parse(localStorage.getItem('genzUser'));
         if (!activeUser) {
@@ -560,6 +585,10 @@
             if (box.style.display === 'block') {
                 box.style.display = 'none';
                 btn.innerText = "🚨 Raise Your Voice / Report Issue";
+                document.getElementById('reportForm').reset();
+                document.getElementById('editReportId').value = '';
+                document.getElementById('formHeading').innerText = "Whistleblower Report Form";
+                document.getElementById('submitBtn').innerText = "Raise Voice 🚨";
             } else {
                 box.style.display = 'block';
                 btn.innerText = "✖ Close Form";
@@ -580,9 +609,10 @@
             });
         }
 
-        // Submit Report
+        // Submit or Update Report
         document.getElementById('reportForm').addEventListener('submit', async function(e) {
             e.preventDefault();
+            const editId = document.getElementById('editReportId').value;
             const college = document.getElementById('collegeName').value.trim();
             const title = document.getElementById('reportTitle').value.trim();
             const desc = document.getElementById('reportDesc').value.trim();
@@ -592,7 +622,7 @@
 
             if (!college || !title || !desc) return;
 
-            submitBtn.innerText = "Submitting...";
+            submitBtn.innerText = editId ? "Updating..." : "Submitting...";
             submitBtn.disabled = true;
 
             let imageUrl = "";
@@ -604,26 +634,45 @@
                 }
             }
 
-            const newReport = {
-                college: college,
-                title: title,
-                description: desc,
-                imageUrl: imageUrl,
-                author: isAnonymous ? "Anonymous Whistleblower" : activeUser.username,
-                authorPic: isAnonymous ? "" : (activeUser.profilePic || ""),
-                isAnonymous: isAnonymous,
-                createdAt: Date.now(),
-                supporters: []
-            };
-
             try {
-                await addDoc(collection(db, 'voiceup_reports'), newReport);
+                if (editId) {
+                    // Update existing report
+                    let updateData = {
+                        college: college,
+                        title: title,
+                        description: desc,
+                        isAnonymous: isAnonymous,
+                        author: isAnonymous ? "Anonymous Whistleblower" : activeUser.username,
+                        authorPic: isAnonymous ? "" : (activeUser.profilePic || "")
+                    };
+                    if (imageUrl) {
+                        updateData.imageUrl = imageUrl;
+                    }
+                    await db.collection('voiceup_reports').doc(editId).update(updateData);
+                    alert("Report updated successfully! ✏️");
+                } else {
+                    // Create new report
+                    const newReport = {
+                        college: college,
+                        title: title,
+                        description: desc,
+                        imageUrl: imageUrl,
+                        author: isAnonymous ? "Anonymous Whistleblower" : activeUser.username,
+                        authorPic: isAnonymous ? "" : (activeUser.profilePic || ""),
+                        isAnonymous: isAnonymous,
+                        createdAt: Date.now(),
+                        supporters: []
+                    };
+                    await db.collection('voiceup_reports').add(newReport);
+                }
+
                 document.getElementById('reportForm').reset();
+                document.getElementById('editReportId').value = '';
                 document.getElementById('fileNameDisplay').innerText = '';
                 toggleReportForm();
             } catch (err) {
-                console.error("Error posting report:", err);
-                alert("Failed to submit report.");
+                console.error("Error saving report:", err);
+                alert("Failed to save report.");
             } finally {
                 submitBtn.innerText = "Raise Voice 🚨";
                 submitBtn.disabled = false;
@@ -631,8 +680,7 @@
         });
 
         // Real-time Reports Feed
-        const q = query(collection(db, 'voiceup_reports'), orderBy('createdAt', 'desc'));
-        onSnapshot(q, (snapshot) => {
+        db.collection('voiceup_reports').onSnapshot((snapshot) => {
             const container = document.getElementById('reportsFeedContainer');
             container.innerHTML = "";
 
@@ -641,13 +689,16 @@
                 reports.push({ id: docSnap.id, ...docSnap.data() });
             });
 
+            // Sort manually by createdAt descending
+            reports.sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
+
             if (reports.length === 0) {
                 container.innerHTML = `<p style="color: #64748b; text-align: center; font-size: 13.5px; padding: 25px;">No reports raised yet. Be the fearless voice to expose wrongdoing!</p>`;
                 return;
             }
 
             reports.forEach((rep) => {
-                const timeStr = new Date(rep.createdAt).toLocaleString([], { dateStyle: 'short', timeStyle: 'short' });
+                const timeStr = rep.createdAt ? new Date(rep.createdAt).toLocaleString([], { dateStyle: 'short', timeStyle: 'short' }) : 'Recently';
                 const authorInit = rep.author ? rep.author.charAt(0).toUpperCase() : 'A';
                 const avatarHtml = rep.authorPic 
                     ? `<img src="${rep.authorPic}" class="reporter-avatar">` 
@@ -655,6 +706,18 @@
 
                 const supportersCount = rep.supporters ? rep.supporters.length : 0;
                 const hasSupported = rep.supporters && rep.supporters.includes(activeUser.username);
+
+                // Check if current user is owner of the report
+                let isOwner = (!rep.isAnonymous && rep.author === activeUser.username);
+                let ownerActionsHtml = '';
+                if (isOwner) {
+                    ownerActionsHtml = `
+                        <div class="owner-actions">
+                            <button class="edit-btn" onclick="editReport('${rep.id}', '${encodeURIComponent(rep.college)}', '${encodeURIComponent(rep.title)}', '${encodeURIComponent(rep.description)}')">✏️ Edit</button>
+                            <button class="delete-btn" onclick="deleteReport('${rep.id}')">🗑️ Delete</button>
+                        </div>
+                    `;
+                }
 
                 container.innerHTML += `
                     <div class="report-card">
@@ -666,7 +729,10 @@
                                     <span style="font-size: 11px; color: #64748b;">${timeStr}</span>
                                 </div>
                             </div>
-                            <span class="badge">Whistleblower Report</span>
+                            <div style="display:flex; align-items:center; gap:10px;">
+                                <span class="badge">Whistleblower Report</span>
+                                ${ownerActionsHtml}
+                            </div>
                         </div>
                         <div class="report-meta">📍 ${rep.college}</div>
                         <div class="report-title">${rep.title}</div>
@@ -684,19 +750,46 @@
             });
         });
 
+        window.editReport = function(id, college, title, desc) {
+            document.getElementById('editReportId').value = id;
+            document.getElementById('collegeName').value = decodeURIComponent(college);
+            document.getElementById('reportTitle').value = decodeURIComponent(title);
+            document.getElementById('reportDesc').value = decodeURIComponent(desc);
+            document.getElementById('formHeading').innerText = "Edit Whistleblower Report";
+            document.getElementById('submitBtn').innerText = "Update Report ✏️";
+
+            const box = document.getElementById('reportFormBox');
+            const btn = document.getElementById('toggleReportBtn');
+            box.style.display = 'block';
+            btn.innerText = "✖ Close Form";
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        window.deleteReport = async function(id) {
+            if (confirm("Kya aap sach mein is report ko delete karna chahte hain?")) {
+                try {
+                    await db.collection('voiceup_reports').doc(id).delete();
+                    alert("Report deleted successfully!");
+                } catch (err) {
+                    console.error("Error deleting report:", err);
+                    alert("Failed to delete report.");
+                }
+            }
+        };
+
         window.toggleSupport = async function(reportId, alreadySupported) {
             try {
-                const reportRef = doc(db, 'voiceup_reports', reportId);
+                const reportRef = db.collection('voiceup_reports').doc(reportId);
                 if (alreadySupported) {
-                    const snap = await getDoc(reportRef);
-                    if(snap.exists()) {
+                    const snap = await reportRef.get();
+                    if(snap.exists) {
                         const currentSupporters = snap.data().supporters || [];
                         const updatedSupporters = currentSupporters.filter(u => u !== activeUser.username);
-                        await updateDoc(reportRef, { supporters: updatedSupporters });
+                        await reportRef.update({ supporters: updatedSupporters });
                     }
                 } else {
-                    await updateDoc(reportRef, {
-                        supporters: arrayUnion(activeUser.username)
+                    await reportRef.update({
+                        supporters: firebase.firestore.FieldValue.arrayUnion(activeUser.username)
                     });
                 }
             } catch (err) {
