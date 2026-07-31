@@ -1,0 +1,575 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>भारतीय संस्कृति और विविधता | Gen'Z India 🇮🇳</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        body {
+            background-color: #fcfbf9;
+            color: #1e293b;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            line-height: 1.6;
+        }
+
+        /* Top Tiranga Cultural Border */
+        body::before {
+            content: "";
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 5px;
+            background: linear-gradient(to right, #FF9933, #FFFFFF, #138808);
+            z-index: 1001;
+        }
+
+        header {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 15px 30px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 1px solid #e2e8f0;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .back-btn {
+            color: #0284c7;
+            text-decoration: none;
+            font-size: 13.5px;
+            font-weight: 600;
+            transition: 0.2s;
+        }
+
+        .back-btn:hover {
+            color: #0369a1;
+        }
+
+        .container {
+            max-width: 1100px;
+            width: 100%;
+            margin: 30px auto;
+            padding: 0 20px;
+            flex: 1;
+        }
+
+        /* Cultural Hero Section */
+        .cultural-hero {
+            background: linear-gradient(135deg, #fff7ed 0%, #fef3c7 50%, #f0fdf4 100%);
+            border: 1px solid #fde68a;
+            border-radius: 20px;
+            padding: 40px 25px;
+            text-align: center;
+            margin-bottom: 35px;
+            box-shadow: 0 10px 25px -5px rgba(217, 119, 6, 0.1);
+        }
+
+        .cultural-hero h1 {
+            font-size: 30px;
+            font-weight: 800;
+            margin-bottom: 10px;
+            background: linear-gradient(to right, #c2410c, #b45309, #15803d);
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .cultural-hero p {
+            color: #475569;
+            font-size: 14.5px;
+            max-width: 750px;
+            margin: 0 auto;
+        }
+
+        /* Grid */
+        .grid-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 25px;
+            margin-bottom: 40px;
+        }
+
+        .card {
+            background: #ffffff;
+            border-radius: 18px;
+            border: 1px solid #e2e8f0;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.03);
+            transition: all 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            padding: 25px;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(0,0,0,0.08);
+            border-color: #cbd5e1;
+        }
+
+        .card-top {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+
+        .state-icon {
+            font-size: 40px;
+            background: #fff7ed;
+            width: 70px;
+            height: 70px;
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid #fed7aa;
+        }
+
+        .card-title {
+            font-size: 20px;
+            font-weight: 700;
+            color: #0f172a;
+        }
+
+        .card-tag {
+            font-size: 12px;
+            color: #d97706;
+            font-weight: 600;
+        }
+
+        .card-text {
+            color: #64748b;
+            font-size: 13.5px;
+            line-height: 1.6;
+            margin-bottom: 20px;
+        }
+
+        .detail-btn {
+            background: #d97706;
+            color: #ffffff;
+            border: none;
+            padding: 10px 16px;
+            border-radius: 10px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.2s;
+            text-align: center;
+            width: 100%;
+        }
+
+        .detail-btn:hover {
+            background: #b45309;
+        }
+
+        /* Modal Popup Styles */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(15, 23, 42, 0.75);
+            backdrop-filter: blur(5px);
+            z-index: 2000;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .modal-box {
+            background: #ffffff;
+            max-width: 650px;
+            width: 100%;
+            border-radius: 20px;
+            padding: 30px;
+            max-height: 85vh;
+            overflow-y: auto;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+            position: relative;
+        }
+
+        .close-btn {
+            position: absolute;
+            top: 20px; right: 20px;
+            background: #f1f5f9;
+            border: none;
+            width: 36px; height: 36px;
+            border-radius: 50%;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+            color: #475569;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: 0.2s;
+        }
+
+        .close-btn:hover {
+            background: #e2e8f0;
+            color: #0f172a;
+        }
+
+        .modal-title {
+            font-size: 24px;
+            font-weight: 800;
+            color: #0f172a;
+            margin-bottom: 5px;
+        }
+
+        .modal-subtitle {
+            font-size: 12.5px;
+            color: #d97706;
+            font-weight: 700;
+            margin-bottom: 15px;
+            text-transform: uppercase;
+        }
+
+        .modal-section {
+            margin-bottom: 15px;
+        }
+
+        .modal-section h4 {
+            font-size: 14px;
+            color: #0284c7;
+            font-weight: 700;
+            margin-bottom: 4px;
+        }
+
+        .modal-section p {
+            color: #334155;
+            font-size: 13.5px;
+            line-height: 1.6;
+        }
+
+        footer {
+            text-align: center;
+            padding: 20px;
+            background: #ffffff;
+            border-top: 1px solid #e2e8f0;
+            color: #64748b;
+            font-size: 13px;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <a href="indian.html" class="back-btn">← Back to Indian Hub</a>
+        <h3 style="font-size: 16px; color: #0f172a; font-weight: 700;">🪔 भारतीय संस्कृति और विविधता</h3>
+        <div style="width: 80px;"></div>
+    </header>
+
+    <!-- Detail Modal Box -->
+    <div id="cultureModal" class="modal-overlay" onclick="closeModal()">
+        <div class="modal-box" onclick="event.stopPropagation()">
+            <button class="close-btn" onclick="closeModal()">×</button>
+            <div id="modalStateTag" class="modal-subtitle">State</div>
+            <h2 id="modalStateName" class="modal-title">State Name</h2>
+            <hr style="border: none; border-top: 1px solid #e2e8f0; margin: 15px 0;">
+            
+            <div class="modal-section">
+                <h4>🗣️ मुख्य बोलियाँ (Languages)</h4>
+                <p id="modalBoli">Boli...</p>
+            </div>
+            <div class="modal-section">
+                <h4>👗 रहन-सहन और पहनावा (Lifestyle & Attire)</h4>
+                <p id="modalRahan">Rahan...</p>
+            </div>
+            <div class="modal-section">
+                <h4>🎉 प्रसिद्ध त्यौहार (Famous Festivals)</h4>
+                <p id="modalTyohar">Tyohar...</p>
+            </div>
+            <div class="modal-section">
+                <h4>🍲 प्रमुख भोजन (Traditional Cuisine)</h4>
+                <p id="modalBhojan">Bhojan...</p>
+            </div>
+            <div class="modal-section">
+                <h4>🏛️ प्रसिद्ध स्थल (Famous Places)</h4>
+                <p id="modalSthal">Sthal...</p>
+            </div>
+            <div class="modal-section">
+                <h4>🌾 मुख्य व्यवसाय (Main Occupation)</h4>
+                <p id="modalVyavsaay">Vyavsaay...</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="cultural-hero">
+            <h1>अनेकलता में एकता: भारत की सांस्कृतिक धरोहर 🪔</h1>
+            <p>भारत के विभिन्न राज्यों और केंद्र शासित प्रदेशों की अनोखी बोलियाँ, खान-पान, वेशभूषा, लोक कला और परंपराएं हमारी असली ताकत हैं। किसी भी राज्य पर क्लिक करके वहाँ की संस्कृति को गहराई से जानें।</p>
+        </div>
+
+        <div class="grid-container">
+
+            <!-- 1. Uttar Pradesh -->
+            <div class="card">
+                <div>
+                    <div class="card-top">
+                        <div class="state-icon">🛕</div>
+                        <div>
+                            <h3 class="card-title">उत्तर प्रदेश</h3>
+                            <span class="card-tag">भारत का हृदय</span>
+                        </div>
+                    </div>
+                    <p class="card-text">गंगा-यमुना की दोआब भूमि, भगवान राम और कृष्ण की जन्मस्थली, तथा समृद्ध साहित्य और कला का केंद्र।</p>
+                </div>
+                <button class="detail-btn" onclick="showCulture('up')">संस्कृति देखें →</button>
+            </div>
+
+            <!-- 2. Bihar -->
+            <div class="card">
+                <div>
+                    <div class="card-top">
+                        <div class="state-icon">🌾</div>
+                        <div>
+                            <h3 class="card-title">बिहार</h3>
+                            <span class="card-tag">ज्ञान और इतिहास की भूमि</span>
+                        </div>
+                    </div>
+                    <p class="card-text">नಳंदा विश्वविद्यालय का प्राचीन इतिहास, छठ महापर्व की पावन परंपरा और बौद्ध धर्म की जन्मस्थली।</p>
+                </div>
+                <button class="detail-btn" onclick="showCulture('bihar')">संस्कृति देखें →</button>
+            </div>
+
+            <!-- 3. Punjab -->
+            <div class="card">
+                <div>
+                    <div class="card-top">
+                        <div class="state-icon">🌾</div>
+                        <div>
+                            <h3 class="card-title">पंजाब</h3>
+                            <span class="card-tag">वीरता और खुशहाली की भूमि</span>
+                        </div>
+                    </div>
+                    <p class="card-text">स्वर्ण मंदिर की पावन पवित्रता, भांगड़ा नृत्य की ऊर्जा और मेहमाननवाज़ी के लिए पूरी दुनिया में प्रसिद्ध।</p>
+                </div>
+                <button class="detail-btn" onclick="showCulture('punjab')">संस्कृति देखें →</button>
+            </div>
+
+            <!-- 4. Rajasthan -->
+            <div class="card">
+                <div>
+                    <div class="card-top">
+                        <div class="state-icon">🏰</div>
+                        <div>
+                            <h3 class="card-title">राजस्थान</h3>
+                            <span class="card-tag">राजपूतों का शौर्य</span>
+                        </div>
+                    </div>
+                    <p class="card-text">भव्य किले, रेगिस्तान की संस्कृति, रंग-बिरंगे पारंपरिक पहनावे और लोक संगीत की अनूठी मिसाल।</p>
+                </div>
+                <button class="detail-btn" onclick="showCulture('rajasthan')">संस्कृति देखें →</button>
+            </div>
+
+            <!-- 5. Maharashtra -->
+            <div class="card">
+                <div>
+                    <div class="card-top">
+                        <div class="state-icon">⭐</div>
+                        <div>
+                            <h3 class="card-title">महाराष्ट्र</h3>
+                            <span class="card-tag">संतों और शूरवीरों की भूमि</span>
+                        </div>
+                    </div>
+                    <p class="card-text">छत्रपती शिवाजी महाराज का गौरवशाली इतिहास, गणेश उत्सव की भव्यता और मुंबई की आधुनिक जीवनशैली।</p>
+                </div>
+                <button class="detail-btn" onclick="showCulture('maharashtra')">संस्कृति देखें →</button>
+            </div>
+
+            <!-- 6. Tamil Nadu -->
+            <div class="card">
+                <div>
+                    <div class="card-top">
+                        <div class="state-icon">🛕</div>
+                        <div>
+                            <h3 class="card-title">तमिलनाडु</h3>
+                            <span class="card-tag">प्राचीन द्रविड़ संस्कृति</span>
+                        </div>
+                    </div>
+                    <p class="card-text">भव्य द्रविड़ शैली के मंदिर, भरतनाट्यम शास्त्रीय नृत्य, और संगीतमय तमिल भाषा की समृद्ध विरासत।</p>
+                </div>
+                <button class="detail-btn" onclick="showCulture('tamilnadu')">संस्कृति देखें →</button>
+            </div>
+
+            <!-- 7. West Bengal -->
+            <div class="card">
+                <div>
+                    <div class="card-top">
+                        <div class="state-icon">🎭</div>
+                        <div>
+                            <h3 class="card-title">पश्चिम बंगाल</h3>
+                            <span class="card-tag">कला, साहित्य और संगीत</span>
+                        </div>
+                    </div>
+                    <p class="card-text">दुर्गा पूजा की भव्यता, रबींद्र संगीत, बंगाली मिष्ठान (रसगुल्ला) और वैचारिक जागृति का केंद्र।</p>
+                </div>
+                <button class="detail-btn" onclick="showCulture('bengal')">संस्कृति देखें →</button>
+            </div>
+
+            <!-- 8. Kerala -->
+            <div class="card">
+                <div>
+                    <div class="card-top">
+                        <div class="state-icon">🌴</div>
+                        <div>
+                            <h3 class="card-title">केरल</h3>
+                            <span class="card-tag">भगवान का अपना देश</span>
+                        </div>
+                    </div>
+                    <p class="card-text">शांत बैकवाटर, ओणम का त्यौहार, कथकली नृत्य और आयुर्वेद की प्राचीन चिकित्सा पद्धति।</p>
+                </div>
+                <button class="detail-btn" onclick="showCulture('kerala')">संस्कृति देखें →</button>
+            </div>
+
+            <!-- 9. Gujarat -->
+            <div class="card">
+                <div>
+                    <div class="card-top">
+                        <div class="state-icon">🥻</div>
+                        <div>
+                            <h3 class="card-title">गुजरात</h3>
+                            <span class="card-tag">व्यापार और उत्सवों की भूमि</span>
+                        </div>
+                    </div>
+                    <p class="card-text">गरबा और डांडिया का विश्वप्रसिद्ध उत्सव, महात्मा गांधी की जन्मभूमि और स्वादिष्ट गुजराती व्यंजन।</p>
+                </div>
+                <button class="detail-btn" onclick="showCulture('gujarat')">संस्कृति देखें →</button>
+            </div>
+
+        </div>
+    </div>
+
+    <footer>
+        <p>Proudly Created for Gen'Z India 🇮🇳 | विविधता में एकता ही हमारी पहचान है!</p>
+    </footer>
+
+    <script>
+        const cultureData = {
+            up: {
+                name: "उत्तर प्रदेश",
+                tag: "भारत का सांस्कृतिक केंद्र",
+                boli: "हिंदी, अवधी, भोजपुरी, ब्रजभाषा, और उर्दू।",
+                rahan: "पारंपरिक धोती-कुर्ता और साड़ी; आधुनिक युवा पश्चिमी और पारंपरिक दोनों शैलियों अपनाते हैं।",
+                tyohar: "दीवाली, होली, मकर संक्रांति, ईद, और महाकुंभ मेला।",
+                bhojan: "दाल-चावल, रोटी, कचौरी-जिलेबी, टुंडे कबाब, और बनारस की चाट व ठंडाई।",
+                sthal: "ताजमहल (आगरा), श्री काशी विश्वनाथ मंदिर (वाराणसी), अयोध्या राम मंदिर, और त्रिवेणी संगम (प्रयागराज)।",
+                vyavsaay: "कृषि, हस्तशिल्प (चिकनकारी), कालीन उद्योग, और पीतल के बर्तन (मुरादाबाद)।"
+            },
+            bihar: {
+                name: "बिहार",
+                tag: "ऐतिहासिक और आध्यात्मिक भूमि",
+                boli: "भोजपुरी, मैथिली, मगही, अंगिका, और वज्जीि।",
+                rahan: "साधा जीवन; पुरुष कुर्ता-पायजामा और महिलाएं साड़ी पहनती हैं।",
+                tyohar: "छठ महापर्व (सूर्य उपासना), होली, तीज, और जितिया।",
+                bhojan: "लिट्टी-चोखा, सत्तू पराठा, खाजा, और ठेकुआ।",
+                sthal: "महाबोधि मंदिर (बोधगया), नालंदा विश्वविद्यालय के अवशेष, और वैशाली।",
+                vyavsaay: "कृषि (धान, मक्का, गेहूं), हथकरघा, और हस्तशिल्प (मधुबनी पेंटिंग)।"
+            },
+            punjab: {
+                name: "पंजाब",
+                tag: "वीरता और उत्सवों का राज्य",
+                boli: "पंजाबी (गुरुमुखी लिपि)।",
+                rahan: "रंगीन पगड़ी, कुर्ता-तेहमत (लुंगी), और पटियाला सूट।",
+                tyohar: "लोहरी, बैसाखी, गुरु पर्व, और होला मोहल्ला।",
+                bhojan: "मक्के दी रोटी और सरसो का साग, छोले-भटूरे, लस्सी, और अमृतसर की कुलचा।",
+                sthal: "स्वर्ण मंदिर (अमृतसर), वाघा बॉर्डर, और आनंदपुर साहिब।",
+                vyavsaay: "कृषि (गेहूं और चावल का कटोरा), डेयरी फार्मिंग, और खेल का सामान (जालंधर)।"
+            },
+            rajasthan: {
+                name: "राजस्थान",
+                tag: "रईसों और किलों की भूमि",
+                boli: "राजस्थानी (मारवाड़ी, मेवाड़ी, जयपुरी, शेखावाटी)।",
+                rahan: "रंगीन साफा (पगड़ी), अंगरखा, और पारंपरिक घाघरा-चोली।",
+                tyohar: "गणगौर, तीज, मकर संक्रांति (पतंग उत्सव), और डेजर्ट फेस्टिवल (जैसलमेर)।",
+                bhojan: "दाल-बाटी-चूरमा, घेवर, बाजरे की रोटी, और गट्टे की सब्जी।",
+                sthal: "आमेर किला (जयपुर), हवा महल, उदयपुर की झीलें, और थार मरुस्थल।",
+                vyavsaay: "पर्यटन, हस्तशिल्प, रत्न और आभूषण, तथा कृषि।"
+            },
+            maharashtra: {
+                name: "महाराष्ट्र",
+                tag: "ऊर्जा और विविधता का प्रतीक",
+                boli: "मराठी।",
+                rahan: "पुरुष धोती-कुर्तो या शर्ट-पैंट; महिलाएं नौवारी (नौ गज लंबी) साड़ी पहनती हैं।",
+                tyohar: "गणेश चतुर्थी, गुड़ी पड़वा, मकर संक्रांति, और दीपावली।",
+                bhojan: "पुरण पोली, वडा पाव, मिसळ पाव, भेलपुरी, और मोदक।",
+                sthal: "गेटवे ऑफ इंडिया (मुंबई), अजंता-एलोरा की गुफाएं, और महाबलेश्वर।",
+                vyavsaay: "उद्योग, फिल्म निर्माण (बॉलीवुड), वित्त (फाइनेंस), और कृषि (आम, अंगूर)।"
+            },
+            tamilnadu: {
+                name: "तमिलनाडु",
+                tag: "दक्षिण की प्राचीन संस्कृति",
+                boli: "तमिल (विश्व की सबसे पुरानी जीवित भाषाओं में एक)।",
+                rahan: "पुरुष सफेद वेष्टि (धोती) और अंगवस्त्रम; महिलाएं रेशमी कांजीवरम साड़ी।",
+                tyohar: "पोंगल, चित्राई थिरुविजा, और दीपावली।",
+                bhojan: "इडली, डोसा, सांभर, रसम, और केले के पत्ते पर पारंपरिक भोजन (सापीडु)।",
+                sthal: "मीनाक्षी मंदिर (मदुरै), तंजावुर बृहदेश्वर मंदिर, और कन्याकुमारी।",
+                vyavsaay: "ऑटोमोबाइल उद्योग, सूचना प्रौद्योगिकी (IT), वस्त्र उद्योग, और हथकरघा सिल्क।"
+            },
+            bengal: {
+                name: "पश्चिम बंगाल",
+                tag: "साहित्य और बौद्धिक चेतना का केंद्र",
+                boli: "बंगाली।",
+                rahan: "पुरुष कुर्ता और धोती; महिलाएं लाल पाड़ वाली सफेद सूती या सिल्क साड़ी।",
+                tyohar: "दुर्गा पूजा, काली पूजा, पोइला बोइशाख (बंगाली नववर्ष), और सरस्वती पूजा।",
+                bhojan: "माछेर झोल (मछली और चावल), रसगुल्ला, संदेश, और मिष्टी दोई।",
+                sthal: "विक्टोरिया मेमोरियल (कोलकाता), सुंदरबन नेशनल पार्क, और दार्जिलिंग टी गार्डन्स।",
+                vyavsaay: "जूट उद्योग, चाय बागान, हस्तशिल्प (कान्ता सिल्क), और कला-साहित्य।"
+            },
+            kerala: {
+                name: "केरल",
+                tag: "प्रकृति की गोद में बसी संस्कृति",
+                boli: "मलयालम।",
+                rahan: "पुरुष पारंपरिक सफेद मुंडू; महिलाएं कसवु साड़ी (सुनहरे बॉर्डर वाली सफेद साड़ी)।",
+                tyohar: "ओणम, विशु, और थ्रूर पूरम उत्सव।",
+                bhojan: "अप्पम, इडियप्पम, केरल सद्या (पत्ते पर भोजन), और फिश करी।",
+                sthal: "मुन्नार के चाय बागान, अलेप्पी बैकवाटर, और पद्मनाभस्वामी मंदिर।",
+                vyavsaay: "मसाले (मसाला उत्पादन), नारियल और रबर की खेती, मछली पालन, और पर्यटन।"
+            },
+            gujarat: {
+                name: "गुजरात",
+                tag: "व्यापार और उत्सवों की भूमि",
+                boli: "गुजराती।",
+                rahan: "पुरुष केडिया और चोरण; महिलाएं चनिया चोली और पल्लू आगे करके साड़ी।",
+                tyohar: "नवरात्रि (गरबा), उत्तरायण (पतंग महोत्सव), और दिवाली।",
+                bhojan: "ढोकला, खांडवी, गुजराती थाली (दाल, फाफड़ा, कढ़ी), और उंधियू।",
+                sthal: "स्टैचू ऑफ यूनिटी, साबरमती आश्रम, गिर नेशनल पार्क, और सोमनाथ मंदिर।",
+                vyavsaay: "हीरा तराशना (डायमंड इंडस्ट्री), टेक्सटाइल, पेट्रोकेमिकल्स, और डेयरी उद्योग (अमूल)।"
+            }
+        };
+
+        function showCulture(stateKey) {
+            const data = cultureData[stateKey];
+            if(data) {
+                document.getElementById('modalStateName').innerText = data.name;
+                document.getElementById('modalStateTag').innerText = data.tag;
+                document.getElementById('modalBoli').innerText = data.boli;
+                document.getElementById('modalRahan').innerText = data.rahan;
+                document.getElementById('modalTyohar').innerText = data.tyohar;
+                document.getElementById('modalBhojan').innerText = data.bhojan;
+                document.getElementById('modalSthal').innerText = data.sthal;
+                document.getElementById('modalVyavsaay').innerText = data.vyavsaay;
+                document.getElementById('cultureModal').style.display = 'flex';
+            }
+        }
+
+        function closeModal() {
+            document.getElementById('cultureModal').style.display = 'none';
+        }
+    </script>
+
+</body>
+</html>
