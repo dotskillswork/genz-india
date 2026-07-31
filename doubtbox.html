@@ -144,6 +144,46 @@
             color: #64748b;
             font-size: 13.5px;
         }
+
+        /* Recent Doubts Live Ticker Box */
+        .recent-doubts-box {
+            background: #fff7ed;
+            border: 1px solid #fed7aa;
+            border-radius: 16px;
+            padding: 20px;
+            margin-bottom: 35px;
+            box-shadow: 0 4px 15px rgba(234, 88, 12, 0.05);
+        }
+        .recent-doubts-box h3 {
+            font-size: 16px;
+            color: #ea580c;
+            margin-bottom: 12px;
+            font-weight: 700;
+        }
+        .recent-doubts-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            max-height: 220px;
+            overflow-y: auto;
+        }
+        .recent-doubt-item {
+            background: #ffffff;
+            border: 1px solid #fed7aa;
+            padding: 12px 16px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 15px;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+        .recent-doubt-item:hover {
+            border-color: #ea580c;
+            background: #fffbeb;
+        }
+
         .search-bar {
             width: 100%;
             max-width: 550px;
@@ -208,7 +248,6 @@
             color: #64748b;
         }
 
-        /* Course & Subject Unread Badge */
         .course-badge, .subject-badge {
             position: absolute;
             top: 12px;
@@ -217,7 +256,7 @@
             color: #fff;
             font-size: 10px;
             font-weight: 700;
-            padding: 2px 8px;
+            padding: 2px 7px;
             border-radius: 10px;
             box-shadow: 0 2px 5px rgba(220, 38, 38, 0.3);
             display: none;
@@ -316,6 +355,14 @@
             <div class="hero-section">
                 <h1>Select Category, Course or Exam</h1>
                 <p>Choose your academic field or competitive exam stream to explore subjects & doubts</p>
+            </div>
+
+            <!-- 🔥 Live Recent Doubts Ticker Feed -->
+            <div class="recent-doubts-box">
+                <h3>🔥 Recent Unseen Community Doubts</h3>
+                <div class="recent-doubts-list" id="recentDoubtsList">
+                    <p style="color: #64748b; font-size: 12.5px; text-align: center; padding: 10px;">Loading recent community doubts...</p>
+                </div>
             </div>
 
             <input type="text" id="courseSearch" class="search-bar" placeholder="🔍 Search course, degree, exam (e.g., NEET, LLB, BCA, UPSC)...">
@@ -458,6 +505,87 @@
             document.getElementById('floatingToast').style.display = 'none';
         };
 
+        // Realtime Tracker with Seen/Read state stored in localStorage
+        let courseDoubtCounts = {};
+        let subjectDoubtCounts = {};
+        let currentOpenedCourse = null;
+
+        function getSeenDoubtsMap() {
+            try {
+                return JSON.parse(localStorage.getItem(`seenDoubts_${currentUser.username}`) || "{}");
+            } catch(e) {
+                return {};
+            }
+        }
+
+        function markDoubtAsSeen(doubtId) {
+            let seenMap = getSeenDoubtsMap();
+            seenMap[doubtId] = true;
+            localStorage.setItem(`seenDoubts_${currentUser.username}`, JSON.stringify(seenMap));
+        }
+
+        db.collection('doubts').onSnapshot((snapshot) => {
+            subjectDoubtCounts = {};
+            courseDoubtCounts = {};
+            let recentDoubtsArr = [];
+            let seenMap = getSeenDoubtsMap();
+
+            snapshot.forEach((docSnap) => {
+                const d = docSnap.data();
+                const dId = docSnap.id;
+                const isSeen = seenMap[dId];
+
+                // Only count as unread if not seen yet by this user
+                if (!isSeen) {
+                    if (d.subject) {
+                        subjectDoubtCounts[d.subject] = (subjectDoubtCounts[d.subject] || 0) + 1;
+                    }
+                    if (d.course) {
+                        courseDoubtCounts[d.course] = (courseDoubtCounts[d.course] || 0) + 1;
+                    }
+                    recentDoubtsArr.push({ id: dId, ...d });
+                }
+            });
+
+            // Sort recent unseen doubts by createdAt descending
+            recentDoubtsArr.sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
+            renderRecentDoubts(recentDoubtsArr);
+
+            renderCourses();
+            if (currentOpenedCourse) {
+                openCourse(currentOpenedCourse);
+            }
+        });
+
+        function renderRecentDoubts(doubts) {
+            const container = document.getElementById('recentDoubtsList');
+            if (!container) return;
+
+            if (doubts.length === 0) {
+                container.innerHTML = `<p style="color: #64748b; font-size: 12.5px; text-align: center; padding: 10px;">All caught up! No unseen doubts. 🎉</p>`;
+                return;
+            }
+
+            container.innerHTML = '';
+            doubts.slice(0, 5).forEach(d => {
+                const shortText = d.text.length > 60 ? d.text.substring(0, 60) + '...' : d.text;
+                container.innerHTML += `
+                    <div class="recent-doubt-item" onclick="clickRecentDoubt('${d.id}', '${d.course}', '${d.subject}')">
+                        <div>
+                            <span style="font-size: 11px; color: #ea580c; font-weight: 600;">📁 ${d.course} › ${d.subject}</span>
+                            <p style="font-size: 13px; color: #0f172a; font-weight: 500; margin-top: 2px;">${shortText}</p>
+                        </div>
+                        <span style="font-size: 12px; color: #64748b; white-space: nowrap;">@${d.author} →</span>
+                    </div>
+                `;
+            });
+        }
+
+        window.clickRecentDoubt = function(doubtId, course, subject) {
+            markDoubtAsSeen(doubtId);
+            openDoubtBox(course, subject);
+        };
+
         const academicData = {
             "UPSC Civil Services (IAS/IPS)": ["General Studies Paper 1 (History, Geography, Polity)", "General Studies Paper 2 (CSAT, Aptitude)", "General Studies Paper 3 (Economy, Science & Tech, Security)", "General Studies Paper 4 (Ethics, Integrity & Aptitude)", "Optional Subjects & Essay Writing"],
             "BPSC / State PSC Exams": ["General Studies (History & Geography of State)", "Indian Polity & Economy", "General Science & Mental Ability", "Current Affairs"],
@@ -497,31 +625,6 @@
             sciArtsCourses: ["B.Sc & M.Sc (Science Streams)", "B.A & M.A (Arts & Humanities)"],
             diplomaCourses: ["Polytechnic / Diploma in Engineering", "Paramedical & Lab Technology Diplomas"]
         };
-
-        // Realtime Tracker for Course & Subject Doubt Counts
-        let courseDoubtCounts = {};
-        let subjectDoubtCounts = {};
-        let currentOpenedCourse = null;
-
-        db.collection('doubts').onSnapshot((snapshot) => {
-            subjectDoubtCounts = {};
-            courseDoubtCounts = {};
-
-            snapshot.forEach((docSnap) => {
-                const d = docSnap.data();
-                if (d.subject) {
-                    subjectDoubtCounts[d.subject] = (subjectDoubtCounts[d.subject] || 0) + 1;
-                }
-                if (d.course) {
-                    courseDoubtCounts[d.course] = (courseDoubtCounts[d.course] || 0) + 1;
-                }
-            });
-
-            renderCourses();
-            if (currentOpenedCourse) {
-                openCourse(currentOpenedCourse);
-            }
-        });
 
         function renderCourses() {
             for (let catKey in categories) {
