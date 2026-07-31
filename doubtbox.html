@@ -190,6 +190,7 @@
             display: flex;
             flex-direction: column;
             justify-content: space-between;
+            position: relative;
         }
         .card:hover {
             border-color: #ea580c;
@@ -206,6 +207,21 @@
             font-size: 12.5px;
             color: #64748b;
         }
+
+        /* Subject Unread Badge */
+        .subject-badge {
+            position: absolute;
+            top: 12px;
+            right: 12px;
+            background: #dc2626;
+            color: #fff;
+            font-size: 10px;
+            font-weight: 700;
+            padding: 2px 7px;
+            border-radius: 10px;
+            display: none;
+        }
+
         #subjectView {
             display: none;
         }
@@ -370,7 +386,7 @@
             window.location.href = 'login.html';
         }
 
-        // Global Alerts & Floating Toast Listener
+        // Global Alerts & Floating Toast Listener for Chats
         let latestTargetUrl = "chats.html";
         window.toggleNotifDropdown = function(e) {
             e.stopPropagation();
@@ -441,6 +457,22 @@
             document.getElementById('floatingToast').style.display = 'none';
         };
 
+        // Realtime Tracker for Subject Doubt Counts
+        let doubtsCountMap = {};
+        db.collection('doubts').onSnapshot((snapshot) => {
+            doubtsCountMap = {};
+            snapshot.forEach((docSnap) => {
+                const d = docSnap.data();
+                if (d.subject) {
+                    doubtsCountMap[d.subject] = (doubtsCountMap[d.subject] || 0) + 1;
+                }
+            });
+            // Re-render subjects if a course is currently open
+            if (currentOpenedCourse) {
+                openCourse(currentOpenedCourse);
+            }
+        });
+
         const academicData = {
             "UPSC Civil Services (IAS/IPS)": ["General Studies Paper 1 (History, Geography, Polity)", "General Studies Paper 2 (CSAT, Aptitude)", "General Studies Paper 3 (Economy, Science & Tech, Security)", "General Studies Paper 4 (Ethics, Integrity & Aptitude)", "Optional Subjects & Essay Writing"],
             "BPSC / State PSC Exams": ["General Studies (History & Geography of State)", "Indian Polity & Economy", "General Science & Mental Ability", "Current Affairs"],
@@ -497,7 +529,10 @@
             }
         }
 
+        let currentOpenedCourse = null;
+
         function openCourse(courseName) {
+            currentOpenedCourse = courseName;
             document.getElementById('courseView').style.display = 'none';
             document.getElementById('subjectView').style.display = 'block';
             document.getElementById('selectedCourseTitle').innerText = courseName;
@@ -507,16 +542,21 @@
 
             const subjects = academicData[courseName] || [];
             subjects.forEach(subject => {
+                let count = doubtsCountMap[subject] || 0;
+                let badgeHtml = count > 0 ? `<span class="subject-badge">${count}</span>` : '';
+
                 subjectsGrid.innerHTML += `
                     <div class="card" onclick="openDoubtBox('${courseName}', '${subject}')">
+                        ${badgeHtml}
                         <h3>📖 ${subject}</h3>
-                        <p>Click to open DoubtBox & discussions</p>
+                        <p>${count > 0 ? count + ' active doubt(s)' : 'Click to open DoubtBox & discussions'}</p>
                     </div>
                 `;
             });
         }
 
         function goBackToCourses() {
+            currentOpenedCourse = null;
             document.getElementById('subjectView').style.display = 'none';
             document.getElementById('courseView').style.display = 'block';
         }
