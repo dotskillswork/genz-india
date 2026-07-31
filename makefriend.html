@@ -6,7 +6,7 @@
     <title>Make Friends & Community | Gen'Z India 🇮🇳</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     
-    <!-- Firebase SDKs -->
+    <!-- Firebase SDKs (Compat) -->
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
 
@@ -590,11 +590,8 @@
         </div>
     </div>
 
-    <!-- Firebase Scripts -->
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-app.js";
-        import { getFirestore, collection, getDocs, addDoc, query, where, serverTimestamp, updateDoc, doc } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-firestore.js";
-
+    <!-- Firebase Compat Script -->
+    <script>
         const firebaseConfig = {
             apiKey: "AIzaSyCNLwSjHq6LlX9uUovTRHrz9ZfUWeIUWQM",
             authDomain: "genz-india.firebaseapp.com",
@@ -605,8 +602,10 @@
             measurementId: "G-RBRDSRKSRH"
         };
 
-        const app = initializeApp(firebaseConfig);
-        const db = getFirestore(app);
+        if (!firebase.apps.length) {
+            firebase.initializeApp(firebaseConfig);
+        }
+        const db = firebase.firestore();
 
         const currentLoggedInUser = JSON.parse(localStorage.getItem('genzUser'));
         let allUsersList = [];
@@ -695,10 +694,9 @@
                 }
 
                 // Load My Profile Details from Firestore
-                const userQuery = query(collection(db, 'users'), where("username", "==", currentLoggedInUser.username));
-                const userSnap = await getDocs(userQuery);
-                if (!userSnap.empty) {
-                    const docSnap = userSnap.docs[0];
+                const userQuery = await db.collection('users').where("username", "==", currentLoggedInUser.username).get();
+                if (!userQuery.empty) {
+                    const docSnap = userQuery.docs[0];
                     myDocId = docSnap.id;
                     currentUserData = docSnap.data();
                     
@@ -716,7 +714,7 @@
                 }
 
                 // Load All Users for Suggestions
-                const querySnapshot = await getDocs(collection(db, 'users'));
+                const querySnapshot = await db.collection('users').get();
                 allUsersList = [];
                 querySnapshot.forEach((docSnap) => {
                     const u = docSnap.data();
@@ -761,8 +759,8 @@
             const updatedPhoto = document.getElementById('editPhoto').value.trim();
 
             try {
-                const userRef = doc(db, 'users', myDocId);
-                await updateDoc(userRef, {
+                const userRef = db.collection('users').doc(myDocId);
+                await userRef.update({
                     name: updatedName,
                     college: updatedCollege,
                     course: updatedCourse,
@@ -771,7 +769,6 @@
                     profilePic: updatedPhoto
                 });
 
-                // Update local storage session data
                 currentLoggedInUser.name = updatedName;
                 if(updatedPhoto) currentLoggedInUser.photo = updatedPhoto;
                 localStorage.setItem('genzUser', JSON.stringify(currentLoggedInUser));
@@ -842,36 +839,35 @@
 
         window.sendFriendRequest = async function(targetUsername, targetName, btnElement) {
             try {
-                await addDoc(collection(db, 'notifications'), {
+                await db.collection('notifications').add({
                     title: "Friend Request 🤝",
                     message: `${currentLoggedInUser.name} (@${currentLoggedInUser.username}) sent you a friend request.`,
                     targetUser: targetUsername,
                     senderUsername: currentLoggedInUser.username,
                     senderName: currentLoggedInUser.name,
                     type: "friend_request",
-                    createdAt: serverTimestamp(),
+                    createdAt: firebase.firestore.FieldValue.serverTimestamp(),
                     time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
                     broadcast: false
                 });
 
-                const targetQuery = query(collection(db, 'users'), where("username", "==", targetUsername));
-                const targetSnap = await getDocs(targetQuery);
-                if (!targetSnap.empty) {
-                    const targetDocRef = targetSnap.docs[0].ref;
-                    const targetData = targetSnap.docs[0].data();
+                const targetQuery = await db.collection('users').where("username", "==", targetUsername).get();
+                if (!targetQuery.empty) {
+                    const targetDocRef = targetQuery.docs[0].ref;
+                    const targetData = targetQuery.docs[0].data();
                     let targetReceived = targetData.requestsReceived || [];
                     if (!targetReceived.includes(currentLoggedInUser.username)) {
                         targetReceived.push(currentLoggedInUser.username);
                     }
-                    await updateDoc(targetDocRef, { requestsReceived: targetReceived });
+                    await targetDocRef.update({ requestsReceived: targetReceived });
                 }
 
                 if (myDocId) {
                     if (!myConnections.sent.includes(targetUsername)) {
                         myConnections.sent.push(targetUsername);
                     }
-                    const userRef = doc(db, 'users', myDocId);
-                    await updateDoc(userRef, { sentRequests: myConnections.sent });
+                    const userRef = db.collection('users').doc(myDocId);
+                    await userRef.update({ sentRequests: myConnections.sent });
                 }
 
                 btnElement.innerText = "Request Sent";
@@ -890,16 +886,15 @@
                 if (!myConnections.friends.includes(senderUsername)) {
                     myConnections.friends.push(senderUsername);
                 }
-                const myRef = doc(db, 'users', myDocId);
-                await updateDoc(myRef, {
+                const myRef = db.collection('users').doc(myDocId);
+                await myRef.update({
                     requestsReceived: myConnections.received,
                     friends: myConnections.friends
                 });
 
-                const senderQuery = query(collection(db, 'users'), where("username", "==", senderUsername));
-                const senderSnap = await getDocs(senderQuery);
-                if (!senderSnap.empty) {
-                    const senderDoc = senderSnap.docs[0];
+                const senderQuery = await db.collection('users').where("username", "==", senderUsername).get();
+                if (!senderQuery.empty) {
+                    const senderDoc = senderQuery.docs[0];
                     const senderData = senderDoc.data();
                     let senderSent = senderData.sentRequests || [];
                     let senderFriends = senderData.friends || [];
@@ -908,7 +903,7 @@
                     if (!senderFriends.includes(currentLoggedInUser.username)) {
                         senderFriends.push(currentLoggedInUser.username);
                     }
-                    await updateDoc(senderDoc.ref, {
+                    await senderDoc.ref.update({
                         sentRequests: senderSent,
                         friends: senderFriends
                     });
@@ -924,8 +919,8 @@
         window.rejectDirectRequest = async function(senderUsername) {
             try {
                 myConnections.received = myConnections.received.filter(u => u !== senderUsername);
-                const myRef = doc(db, 'users', myDocId);
-                await updateDoc(myRef, { requestsReceived: myConnections.received });
+                const myRef = db.collection('users').doc(myDocId);
+                await myRef.update({ requestsReceived: myConnections.received });
                 alert("Request rejected.");
                 location.reload();
             } catch(e) {
@@ -946,10 +941,9 @@
 
             container.innerHTML = '';
             for (let friendUsername of myConnections.friends) {
-                const fQuery = query(collection(db, 'users'), where("username", "==", friendUsername));
-                const fSnap = await getDocs(fQuery);
-                if (!fSnap.empty) {
-                    const fData = fSnap.docs[0].data();
+                const fQuery = await db.collection('users').where("username", "==", friendUsername).get();
+                if (!fQuery.empty) {
+                    const fData = fQuery.docs[0].data();
                     let avatar = fData.photo || fData.profilePic || 'https://cdn.jsdelivr.net/gh/twitter/twemoji@14.0.2/assets/72x72/1f464.png';
                     
                     container.innerHTML += `
