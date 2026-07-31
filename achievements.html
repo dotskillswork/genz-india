@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="hi">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Proud to be Indian | Gen'Z India 🇮🇳</title>
+    <title>भारत की ऐतिहासिक उपलब्धियां | Proud to be Indian 🇮🇳</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
         * {
@@ -13,309 +13,271 @@
             font-family: 'Poppins', sans-serif;
         }
 
-        /* 🇮🇳 Patriotic Tiranga & Space Theme Background */
         body {
-            background: radial-gradient(circle at 50% 20%, #1e1b4b 0%, #090d16 60%, #020617 100%);
-            color: #f8fafc;
+            background-color: #f8fafc;
+            color: #1e293b;
             min-height: 100vh;
             display: flex;
             flex-direction: column;
-            position: relative;
-            overflow-x: hidden;
+            line-height: 1.6;
         }
 
-        /* Subtle Tiranga Glow Ribbon across the top */
+        /* Top Tiranga Border */
         body::before {
             content: "";
-            position: absolute;
+            position: fixed;
             top: 0; left: 0; width: 100%; height: 5px;
             background: linear-gradient(to right, #FF9933, #FFFFFF, #138808);
             z-index: 1001;
         }
 
         header {
-            background: rgba(15, 23, 42, 0.9);
-            backdrop-filter: blur(12px);
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
             padding: 15px 30px;
             display: flex;
             align-items: center;
             justify-content: space-between;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+            border-bottom: 1px solid #e2e8f0;
             position: sticky;
             top: 0;
             z-index: 1000;
         }
 
         .back-btn {
-            color: #38bdf8;
+            color: #0284c7;
             text-decoration: none;
             font-size: 13.5px;
             font-weight: 600;
             transition: 0.2s;
         }
+
         .back-btn:hover {
-            color: #7dd3fc;
+            color: #0369a1;
         }
 
         .container {
             max-width: 1100px;
             width: 100%;
-            margin: 40px auto;
+            margin: 30px auto;
             padding: 0 20px;
             flex: 1;
-            position: relative;
-            z-index: 10;
         }
 
         /* Hero Banner */
-        .patriotic-hero {
-            background: linear-gradient(135deg, rgba(255, 153, 51, 0.15) 0%, rgba(19, 136, 8, 0.15) 100%), rgba(15, 23, 42, 0.8);
-            border: 1px solid rgba(255, 153, 51, 0.3);
-            border-radius: 24px;
-            padding: 40px;
+        .hero-section {
+            background: linear-gradient(135deg, #fff7ed 0%, #f0fdf4 100%);
+            border: 1px solid #fed7aa;
+            border-radius: 20px;
+            padding: 35px 25px;
             text-align: center;
-            margin-bottom: 40px;
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
-            position: relative;
-            overflow: hidden;
+            margin-bottom: 35px;
+            box-shadow: 0 10px 25px -5px rgba(255, 153, 51, 0.1);
         }
 
-        .patriotic-hero h1 {
-            font-size: 32px;
+        .hero-section h1 {
+            font-size: 28px;
             font-weight: 800;
-            margin-bottom: 12px;
-            background: linear-gradient(to right, #FF9933, #FFFFFF, #138808);
+            margin-bottom: 10px;
+            background: linear-gradient(to right, #ea580c, #16a34a);
             background-clip: text;
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
-            letter-spacing: 0.5px;
         }
 
-        .patriotic-hero p {
-            color: #cbd5e1;
+        .hero-section p {
+            color: #475569;
             font-size: 14.5px;
-            max-width: 700px;
+            max-width: 750px;
             margin: 0 auto;
-            line-height: 1.7;
         }
 
-        /* Categories Grid */
-        .categories-grid {
+        /* Achievements Grid */
+        .grid-container {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 20px;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 25px;
             margin-bottom: 40px;
         }
 
-        .category-card {
-            background: rgba(15, 23, 42, 0.75);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            border-radius: 20px;
-            padding: 25px;
-            text-decoration: none;
+        .card {
+            background: #ffffff;
+            border-radius: 18px;
+            border: 1px solid #e2e8f0;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.03);
+            transition: all 0.3s ease;
             display: flex;
             flex-direction: column;
-            justify-content: space-between;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
-            position: relative;
-            overflow: hidden;
         }
 
-        .category-card::before {
-            content: "";
-            position: absolute;
-            top: 0; left: 0; width: 4px; height: 100%;
-            background: linear-gradient(to bottom, #FF9933, #138808);
-            opacity: 0.6;
-            transition: 0.3s;
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(0,0,0,0.08);
+            border-color: #cbd5e1;
         }
 
-        .category-card:hover {
-            transform: translateY(-6px);
-            border-color: rgba(255, 153, 51, 0.5);
-            box-shadow: 0 20px 35px rgba(255, 153, 51, 0.15);
+        .card-img {
+            width: 100%;
+            height: 180px;
+            object-fit: cover;
+            border-bottom: 1px solid #f1f5f9;
         }
 
-        .category-card:hover::before {
-            opacity: 1;
-            width: 6px;
+        .card-body {
+            padding: 20px;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
         }
 
-        .cat-icon {
-            font-size: 36px;
-            margin-bottom: 15px;
+        .card-tag {
+            display: inline-block;
+            background: #fff7ed;
+            color: #ea580c;
+            font-size: 11.5px;
+            font-weight: 700;
+            padding: 4px 10px;
+            border-radius: 12px;
+            width: fit-content;
+            margin-bottom: 10px;
+            border: 1px solid #ffedd5;
         }
 
-        .cat-content h3 {
-            color: #f8fafc;
+        .card-title {
             font-size: 18px;
             font-weight: 700;
+            color: #0f172a;
             margin-bottom: 8px;
         }
 
-        .cat-content p {
-            color: #94a3b8;
-            font-size: 13px;
+        .card-text {
+            color: #64748b;
+            font-size: 13.5px;
             line-height: 1.6;
-            margin-bottom: 20px;
-        }
-
-        .cat-btn {
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-            background: rgba(255, 153, 51, 0.1);
-            color: #ffb74d;
-            border: 1px solid rgba(255, 153, 51, 0.25);
-            padding: 8px 16px;
-            border-radius: 10px;
-            font-size: 12.5px;
-            font-weight: 600;
-            width: fit-content;
-            transition: 0.2s;
-        }
-
-        .category-card:hover .cat-btn {
-            background: #FF9933;
-            color: #0f172a;
-            border-color: #FF9933;
         }
 
         footer {
             text-align: center;
-            padding: 25px;
-            border-top: 1px solid rgba(255, 255, 255, 0.08);
-            color: #94a3b8;
-            font-size: 12.5px;
-            background: rgba(15, 23, 42, 0.6);
+            padding: 20px;
+            background: #ffffff;
+            border-top: 1px solid #e2e8f0;
+            color: #64748b;
+            font-size: 13px;
         }
     </style>
 </head>
 <body>
 
     <header>
-        <a href="index.html" class="back-btn">← Back to Dashboard</a>
-        <h3 style="font-size: 16px; color: #f8fafc; font-weight: 700;">🇮🇳 Proud to be Indian Hub</h3>
-        <div style="width: 100px;"></div>
+        <a href="indian.html" class="back-btn">← Back to Indian Hub</a>
+        <h3 style="font-size: 16px; color: #0f172a; font-weight: 700;">🇮🇳 भारत की ऐतिहासिक उपलब्धियां</h3>
+        <div style="width: 80px;"></div>
     </header>
 
     <div class="container">
-        <!-- Hero Section -->
-        <div class="patriotic-hero">
-            <h1>"Sare Jahan Se Achha Hindustan Hamara" 🇮🇳</h1>
-            <p>Explore the magnificent dimensions of India—from our groundbreaking space achievements and glorious history to diverse cultures, rich geography, and intellectual milestones that inspire immense national pride.</p>
+        <div class="hero-section">
+            <h1>1947 से आज तक: भारत की विकास यात्रा 🚀</h1>
+            <p>आजादी के बाद से लेकर आज तक भारत ने विज्ञान, अंतरिक्ष, खेल, कृषि और तकनीक के क्षेत्र में जो ऐतिहासिक मुकाम हासिल किए हैं, उन पर हर भारतीय को गर्व है।</p>
         </div>
 
-        <!-- Categories / Buttons Grid -->
-        <div class="categories-grid">
-            
-            <!-- 1. Achievements -->
-            <a href="achievements.html" class="category-card">
-                <div class="cat-icon">🚀</div>
-                <div class="cat-content">
-                    <h3>National Achievements</h3>
-                    <p>ISRO milestones, Chandrayaan missions, UPI digital revolution, and global tech triumphs.</p>
-                </div>
-                <div class="cat-btn">Explore Pride →</div>
-            </a>
+        <div class="grid-container">
 
-            <!-- 2. Great Men of India -->
-            <a href="great_men.html" class="category-card">
-                <div class="cat-icon">🎖️</div>
-                <div class="cat-content">
-                    <h3>Great Men & Visionaries</h3>
-                    <p>Tribute to legendary leaders, freedom fighters, scientists, and thinkers who shaped our nation.</p>
+            <!-- Card 1 -->
+            <div class="card">
+                <img src="https://images.unsplash.com/photo-1532375810709-75b1da00537c?auto=format&fit=crop&w=600&q=80" alt="Freedom 1947" class="card-img">
+                <div class="card-body">
+                    <span class="card-tag">15 अगस्त 1947</span>
+                    <h3 class="card-title">स्वतंत्रता और स्वराज्य की शुरुआत</h3>
+                    <p class="card-text">वर्षों के कड़े संघर्ष और बलिदानों के बाद भारत ने ब्रिटिश शासन से स्वतंत्रता हासिल की और दुनिया के सबसे बड़े लोकतंत्र के रूप में अपनी यात्रा शुरू की।</p>
                 </div>
-                <div class="cat-btn">Read Legacies →</div>
-            </a>
+            </div>
 
-            <!-- 3. Indian Culture -->
-            <a href="culture.html" class="category-card">
-                <div class="cat-icon">🪔</div>
-                <div class="cat-content">
-                    <h3>Indian Culture & Heritage</h3>
-                    <p>Vibrant traditions, classical arts, festivals, heritage sites, and timeless values.</p>
+            <!-- Card 2 -->
+            <div class="card">
+                <img src="https://images.unsplash.com/photo-1589829545856-d10d557cf95f?auto=format&fit=crop&w=600&q=80" alt="Constitution" class="card-img">
+                <div class="card-body">
+                    <span class="card-tag">26 जनवरी 1950</span>
+                    <h3 class="card-title">भारतीय संविधान का लागू होना</h3>
+                    <p class="card-text">डॉ. बी. आर. आंबेडकर के नेतृत्व में दुनिया का सबसे बड़ा लिखित संविधान लागू हुआ, जिसने हर नागरिक को समानता और अधिकार दिए।</p>
                 </div>
-                <div class="cat-btn">Discover Culture →</div>
-            </a>
+            </div>
 
-            <!-- 4. Geography Of India -->
-            <a href="geography.html" class="category-card">
-                <div class="cat-icon">🏔️</div>
-                <div class="cat-content">
-                    <h3>Geography Of India</h3>
-                    <p>Majestic Himalayas, vast oceans, fertile plains, sacred rivers, and diverse landscapes.</p>
+            <!-- Card 3 -->
+            <div class="card">
+                <img src="https://images.unsplash.com/photo-1500937386664-56d1dfef3854?auto=format&fit=crop&w=600&q=80" alt="Green Revolution" class="card-img">
+                <div class="card-body">
+                    <span class="card-tag">1960s - 1970s</span>
+                    <h3 class="card-title">हरित क्रांति (Green Revolution)</h3>
+                    <p class="card-text">एम. एस. स्वामीनाथन के नेतृत्व में कृषि क्षेत्र में आई क्रांति ने भारत को अनाज के मामले में पूरी तरह आत्मनिर्भर बनाया।</p>
                 </div>
-                <div class="cat-btn">Explore Land →</div>
-            </a>
+            </div>
 
-            <!-- 5. History Of India -->
-            <a href="history.html" class="category-card">
-                <div class="cat-icon">📜</div>
-                <div class="cat-content">
-                    <h3>History Of India</h3>
-                    <p>Ancient Vedic era, glorious empires, freedom struggle, and our journey as a republic.</p>
+            <!-- Card 4 -->
+            <div class="card">
+                <img src="https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&w=600&q=80" alt="Aryabhata Satellite" class="card-img">
+                <div class="card-body">
+                    <span class="card-tag">19 अप्रैल 1975</span>
+                    <h3 class="card-title">आर्यभट्ट: भारत का पहला उपग्रह</h3>
+                    <p class="card-text">ISRO ने अपना पहला कृत्रिम उपग्रह 'आर्यभट्ट' अंतरिक्ष में लॉन्च करके भारत के अंतरिक्ष युग की ऐतिहासिक शुरुआत की।</p>
                 </div>
-                <div class="cat-btn">View Timeline →</div>
-            </a>
+            </div>
 
-            <!-- 6. Ministry Of India -->
-            <a href="ministry.html" class="category-card">
-                <div class="cat-icon">🏛️</div>
-                <div class="cat-content">
-                    <h3>Ministries & Governance</h3>
-                    <p>Key government bodies, ministries, digital initiatives, and policies driving development.</p>
+            <!-- Card 5 -->
+            <div class="card">
+                <img src="https://images.unsplash.com/photo-1531415074968-036ba1b575da?auto=format&fit=crop&w=600&q=80" alt="1983 Cricket World Cup" class="card-img">
+                <div class="card-body">
+                    <span class="card-tag">25 जून 1983</span>
+                    <h3 class="card-title">पहला क्रिकेट विश्व कप विजय</h3>
+                    <p class="card-text">कपिल देव की कप्तानी में भारत ने वेस्टइंडीज को हराकर पहली बार क्रिकेट वर्ल्ड कप जीता और खेल जगत में भारत का परचम लहराया।</p>
                 </div>
-                <div class="cat-btn">Know Governance →</div>
-            </a>
+            </div>
 
-            <!-- 7. Famous Places Of India -->
-            <a href="places.html" class="category-card">
-                <div class="cat-icon">🏰</div>
-                <div class="cat-content">
-                    <h3>Famous Places Of India</h3>
-                    <p>Architectural wonders, Taj Mahal, ancient temples, majestic forts, and serene natural retreats.</p>
+            <!-- Card 6 -->
+            <div class="card">
+                <img src="https://images.unsplash.com/photo-1509228468518-180dd4864904?auto=format&fit=crop&w=600&q=80" alt="Pokhran Nuclear Test" class="card-img">
+                <div class="card-body">
+                    <span class="card-tag">11-13 मई 1998</span>
+                    <h3 class="card-title">पोखरण-II: परमाणु शक्ति संपन्न भारत</h3>
+                    <p class="card-text">डॉ. ए.पी.जे. अब्दुल कलाम और अटल बिहारी वाजपेयी के नेतृत्व में सफल परमाणु परीक्षण कर भारत विश्व में परमाणु शक्ति बना।</p>
                 </div>
-                <div class="cat-btn">Explore Places →</div>
-            </a>
+            </div>
 
-            <!-- 8. Agriculture Of India -->
-            <a href="agriculture.html" class="category-card">
-                <div class="cat-icon">🌾</div>
-                <div class="cat-content">
-                    <h3>Agriculture Of India</h3>
-                    <p>The backbone of our economy—farming heritage, crops, green revolution, and modern agritech.</p>
+            <!-- Card 7 -->
+            <div class="card">
+                <img src="https://images.unsplash.com/photo-1614728894747-a83421e2b9c9?auto=format&fit=crop&w=600&q=80" alt="Mangalyaan" class="card-img">
+                <div class="card-body">
+                    <span class="card-tag">2013 - 2014</span>
+                    <h3 class="card-title">मंगलयान (Mars Orbiter Mission)</h3>
+                    <p class="card-text">भारत दुनिया का पहला ऐसा देश बना जिसने अपने पहले ही प्रयास में और सबसे कम बजट में मंगल ग्रह की कक्षा में प्रवेश किया।</p>
                 </div>
-                <div class="cat-btn">Learn More →</div>
-            </a>
+            </div>
 
-            <!-- 9. Books & Literature -->
-            <a href="books.html" class="category-card">
-                <div class="cat-icon">📚</div>
-                <div class="cat-content">
-                    <h3>Books & Ancient Scriptures</h3>
-                    <p>Vedas, Upanishads, epics like Mahabharata & Ramayana, and modern Indian literature.</p>
+            <!-- Card 8 -->
+            <div class="card">
+                <img src="https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?auto=format&fit=crop&w=600&q=80" alt="Digital India UPI" class="card-img">
+                <div class="card-body">
+                    <span class="card-tag">2016 - वर्तमान</span>
+                    <h3 class="card-title">डिजिटल इंडिया और UPI क्रांति</h3>
+                    <p class="card-text">भारत का डिजिटल पेमेंट सिस्टम (UPI) दुनिया का सबसे बड़ा और सफल रियल-टाइम पेमेंट नेटवर्क बन गया है, जिसे आज कई देश अपना रहे हैं।</p>
                 </div>
-                <div class="cat-btn">Read Wisdom →</div>
-            </a>
+            </div>
 
-            <!-- 10. Population Of India -->
-            <a href="population.html" class="category-card">
-                <div class="cat-icon">🇮🇳</div>
-                <div class="cat-content">
-                    <h3>Population & Demographics</h3>
-                    <p>Youth power, diversity, talent pool, and India's position as a global human resource superpower.</p>
+            <!-- Card 9 -->
+            <div class="card">
+                <img src="https://images.unsplash.com/photo-1517976487492-5750f3195933?auto=format&fit=crop&w=600&q=80" alt="Chandrayaan-3" class="card-img">
+                <div class="card-body">
+                    <span class="card-tag">23 अगस्त 2023</span>
+                    <h3 class="card-title">चंद्रयान-3: चंद्रमा के दक्षिणी ध्रुव पर लैंडिंग</h3>
+                    <p class="card-text">ISRO ने इतिहास रचते हुए चंद्रमा के दक्षिणी ध्रुव (South Pole) पर सॉफ्ट लैंडिंग करने वाला दुनिया का पहला देश बनने का गौरव हासिल किया।</p>
                 </div>
-                <div class="cat-btn">View Stats →</div>
-            </a>
+            </div>
 
         </div>
     </div>
 
     <footer>
-        <p>Proudly Built in India 🇮🇳 | Gen'Z India Student Hub © 2026</p>
+        <p>Proudly Created for Gen'Z India 🇮🇳 | जय हिंद, जय भारत!</p>
     </footer>
 
 </body>
