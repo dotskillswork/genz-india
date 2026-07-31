@@ -54,6 +54,7 @@
             border-radius: 20px;
             border: 1px solid #e2e8f0;
             box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05);
+            margin-bottom: 30px;
         }
         .about-card h1 {
             color: #0284c7;
@@ -83,6 +84,76 @@
             color: #0369a1;
             font-weight: 500;
         }
+
+        /* Mr. Gen'Z Creator Card Styling */
+        .mr-genz-card {
+            background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 100%);
+            border: 1px solid rgba(139, 92, 246, 0.3);
+            border-radius: 24px;
+            padding: 35px 30px;
+            text-align: center;
+            color: #ffffff;
+            box-shadow: 0 20px 40px -15px rgba(99, 102, 241, 0.3);
+            margin-top: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+        .avatar-glow-container {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+        .genz-avatar {
+            width: 90px;
+            height: 90px;
+            background: linear-gradient(135deg, #4f46e5, #ec4899);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 40px;
+            box-shadow: 0 0 25px rgba(236, 72, 153, 0.5);
+            animation: floatAvatar 3s ease-in-out infinite alternate;
+            border: 3px solid rgba(255, 255, 255, 0.2);
+        }
+        @keyframes floatAvatar {
+            0% { transform: translateY(0) scale(1); }
+            100% { transform: translateY(-6px) scale(1.05); }
+        }
+        .mr-genz-card h3 {
+            font-size: 24px;
+            font-weight: 700;
+            background: linear-gradient(to right, #818cf8, #f472b6);
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 4px;
+        }
+        .genz-tag {
+            display: inline-block;
+            font-size: 11.5px;
+            background: rgba(139, 92, 246, 0.2);
+            color: #c084fc;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-weight: 600;
+            margin-bottom: 15px;
+            border: 1px solid rgba(139, 92, 246, 0.3);
+        }
+        .mr-genz-card p {
+            color: #94a3b8;
+            font-size: 13.5px;
+            line-height: 1.6;
+            max-width: 500px;
+            margin: 0 auto 20px auto;
+        }
+        .genz-quote {
+            font-size: 12.5px;
+            color: #38bdf8;
+            font-style: italic;
+            font-weight: 500;
+            letter-spacing: 0.3px;
+        }
     </style>
 </head>
 <body>
@@ -108,6 +179,21 @@
                 <div class="feature-item">💡 Innovations & Talent Showcase</div>
                 <div class="feature-item">💼 Freelance & Student Gigs</div>
                 <div class="feature-item">🎧 Voice Up Campus Platform</div>
+            </div>
+
+            <!-- Mr. Gen'Z Creator Card -->
+            <div class="mr-genz-card">
+                <div class="avatar-glow-container">
+                    <div class="genz-avatar">
+                        🎧⚡
+                    </div>
+                </div>
+                <div class="genz-info">
+                    <h3>Mr. Gen'Z</h3>
+                    <span class="genz-tag">The Anonymous Builder & Creator 🚀</span>
+                    <p>Yeh platform kisi badi company ka nahi, balki ek student ki creative soch aur raat-bhar ki coding mehnat ka nateeja hai. Yahan har student bina apni identity ki chinta kiye befikar hokar seekh sakta hai aur aage badh sakta hai!</p>
+                    <div class="genz-quote">"Code it, build it, and let your work make the noise." 💻✨</div>
+                </div>
             </div>
         </div>
     </div>
