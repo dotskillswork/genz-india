@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>भारत के महान महापुरुष | Proud to be Indian 🇮🇳</title>
+    <title>भारत के महान महापुरुष और देशभक्त | Proud to be Indian 🇮🇳</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
         * {
@@ -119,8 +119,9 @@
 
         .card-img {
             width: 100%;
-            height: 240px;
+            height: 220px;
             object-fit: cover;
+            object-position: top;
             background: #f1f5f9;
             border-bottom: 1px solid #f1f5f9;
         }
@@ -259,7 +260,7 @@
 
     <header>
         <a href="indian.html" class="back-btn">← Back to Indian Hub</a>
-        <h3 style="font-size: 16px; color: #0f172a; font-weight: 700;">🇮🇳 भारत के महान महापुरुष</h3>
+        <h3 style="font-size: 16px; color: #0f172a; font-weight: 700;">🇮🇳 भारत के महान महापुरुष और देशभक्त</h3>
         <div style="width: 80px;"></div>
     </header>
 
@@ -276,15 +277,15 @@
 
     <div class="container">
         <div class="hero-section">
-            <h1>राष्ट्र निर्माण के अमर शिल्पी 🇮🇳</h1>
-            <p>इन महान विभूतियों ने अपने त्याग, तपस्या, ज्ञान और अदम्य साहस से भारत के इतिहास और भविष्य को गढ़ा है।</p>
+            <h1>राष्ट्र निर्माण के अमर शिल्पी और स्वतंत्रता सेनानी 🇮🇳</h1>
+            <p>भारत की आन, बान और शान के लिए अपना सर्वस्व न्यौछावर करने वाले महान महापुरुषों और देशभक्तों की पावन गाथा।</p>
         </div>
 
         <div class="grid-container">
 
             <!-- 1. Mahatma Gandhi -->
             <div class="card">
-                <img src="https://upload.wikimedia.org/wikipedia/commons/7/7a/Mahatma_Gandhi%2,3_1931.jpg" onerror="this.src='https://upload.wikimedia.org/wikipedia/commons/d/d4/Mahatma_Gandhi_portrait.jpg'" alt="Mahatma Gandhi" class="card-img">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/7/7a/Mahatma-Gandhi,_studio,_1931.jpg" alt="Mahatma Gandhi" class="card-img">
                 <div class="card-body">
                     <div>
                         <span class="card-tag">राष्ट्रपिता</span>
@@ -297,7 +298,7 @@
 
             <!-- 2. Subhash Chandra Bose -->
             <div class="card">
-                <img src="https://upload.wikimedia.org/wikipedia/commons/3/3d/Netaji_Subhash_Chandra_Bose_portrait.jpg" alt="Netaji" class="card-img">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/3/3f/Netaji_Subhash_Chandra_Bose_portrait_%28cropped%29.jpg" alt="Netaji" class="card-img">
                 <div class="card-body">
                     <div>
                         <span class="card-tag">आजाद हिन्द फौज</span>
@@ -360,6 +361,84 @@
                 </div>
             </div>
 
+            <!-- 7. Swami Vivekananda -->
+            <div class="card">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/9/97/Swami_Vivekananda-1893-rail_ticket-restored.jpg" alt="Swami Vivekananda" class="card-img">
+                <div class="card-body">
+                    <div>
+                        <span class="card-tag">आध्यात्मिक गुरु</span>
+                        <h3 class="card-title">स्वामी विवेकानंद</h3>
+                        <p class="card-text">भारतीय संस्कृति और वेदांत का डंका पूरे विश्व में बजाने वाले तथा युवाओं के प्रेरणास्रोत संत।</p>
+                    </div>
+                    <button class="detail-btn" onclick="showBio('vivekananda')">Read Full Biography →</button>
+                </div>
+            </div>
+
+            <!-- 8. Lokmanya Tilak -->
+            <div class="card">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/1/18/Bal_Gangadhar_Tilak.jpg" alt="Tilak" class="card-img">
+                <div class="card-body">
+                    <div>
+                        <span class="card-tag">लोकमान्य</span>
+                        <h3 class="card-title">बाल गंगाधर तिलक</h3>
+                        <p class="card-text">"स्वराज मेरा जन्मसिद्ध अधिकार है और मैं इसे लेकर रहूंगा" का हुंकार भरने वाले महान राष्ट्रवादी।</p>
+                    </div>
+                    <button class="detail-btn" onclick="showBio('tilak')">Read Full Biography →</button>
+                </div>
+            </div>
+
+            <!-- 9. Chandrashekhar Azad -->
+            <div class="card">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/1/14/Chandrashekhar_Azad_portrait.jpg" alt="Azad" class="card-img">
+                <div class="card-body">
+                    <div>
+                        <span class="card-tag">अमर क्रांतिकारी</span>
+                        <h3 class="card-title">चन्द्रशेखर आजाद</h3>
+                        <p class="card-text">"आजाद थे, आजाद हैं और आजाद रहेंगे"—ब्रिटिश हुकूमत को लोहे के चने चबाने वाले महानायक।</p>
+                    </div>
+                    <button class="detail-btn" onclick="showBio('azad')">Read Full Biography →</button>
+                </div>
+            </div>
+
+            <!-- 10. Rani Lakshmibai -->
+            <div class="card">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/6/63/Rani_Lakshmibai_of_Jhansi.jpg" alt="Lakshmibai" class="card-img">
+                <div class="card-body">
+                    <div>
+                        <span class="card-tag">वीरांगना</span>
+                        <h3 class="card-title">रानी लक्ष्मीबाई</h3>
+                        <p class="card-text">"खुब लड़ी मर्दानी वह तो झांसी वाली रानी थी"—1857 की क्रांति की अमर वीरांगना।</p>
+                    </div>
+                    <button class="detail-btn" onclick="showBio('lakshmibai')">Read Full Biography →</button>
+                </div>
+            </div>
+
+            <!-- 11. Lala Lajpat Rai -->
+            <div class="card">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/2/29/Lala_Lajpat_Rai.jpg" alt="Lala Lajpat Rai" class="card-img">
+                <div class="card-body">
+                    <div>
+                        <span class="card-tag">पंजाब केसरी</span>
+                        <h3 class="card-title">लाला लाजपत राय</h3>
+                        <p class="card-text">लाठीचार्ज का सामना करते हुए देश के लिए प्राण न्योछावर करने वाले 'पंजाब केसरी' महान स्वतंत्रता सेनानी।</p>
+                    </div>
+                    <button class="detail-btn" onclick="showBio('lala')">Read Full Biography →</button>
+                </div>
+            </div>
+
+            <!-- 12. Mangal Pandey -->
+            <div class="card">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/1/1b/Mangal_pandey.jpg" alt="Mangal Pandey" class="card-img">
+                <div class="card-body">
+                    <div>
+                        <span class="card-tag">प्रथम सेनानी</span>
+                        <h3 class="card-title">मंगल पांडे</h3>
+                        <p class="card-text">1857 के प्रथम स्वाधीनता संग्राम की चिंगारी भड़काने वाले और अंग्रेजों के खिलाफ बगावत करने वाले नायक।</p>
+                    </div>
+                    <button class="detail-btn" onclick="showBio('mangal')">Read Full Biography →</button>
+                </div>
+            </div>
+
         </div>
     </div>
 
@@ -372,32 +451,62 @@
             gandhi: {
                 name: "महात्मा गांधी",
                 category: "राष्ट्रपिता एवं स्वतंत्रता सेनानी",
-                desc: "महात्मा गांधी (मोहनदास करमचंद गांधी) का जन्म 2 अक्टूबर 1869 को गुजरात के पोरबंदर में हुआ था। उन्होंने भारत के स्वतंत्रता संग्राम में 'अहिंसा' और 'सत्याग्रह' को अपना सबसे बड़ा हथियार बनाया। उन्होंने असहयोग आंदोलन, दांडी मार्च और भारत छोड़ो आंदोलन का नेतृत्व किया। 30 जनवरी 1948 को उनकी हत्या कर दी गई, लेकिन उनके विचार आज भी पूरी दुनिया में शांति का प्रतीक हैं।"
+                desc: "महात्मा गांधी (मोहनदास करमचंद गांधी) का जन्म 2 अक्टूबर 1869 को पोरबंदर में हुआ था। उन्होंने 'अहिंसा' और 'सत्याग्रह' के बल पर भारत को स्वतंत्रता दिलाई। असहयोग और भारत छोड़ो आंदोलन के माध्यम से उन्होंने पूरे देश को एकजुट किया।"
             },
             bose: {
                 name: "नेताजी सुभाष चंद्र बोस",
                 category: "महान क्रांतिकारी एवं सेनानायक",
-                desc: "नेताजी सुभाष चंद्र बोस का जन्म 23 जनवरी 1897 को कटक (ओडिशा) में हुआ था। उन्होंने 'आजाद हिन्द फौज' का पुनर्गठन किया और देशवासियों को 'तुम मुझे खून दो, मैं तुम्हें आजादी दूंगा' का नारा दिया। 'जय हिन्द' का नारा उन्हीं की देन है।"
+                desc: "नेताजी सुभाष चंद्र बोस का जन्म 23 जनवरी 1897 को हुआ था। उन्होंने 'आजाद हिन्द फौज' का नेतृत्व किया और 'तुम मुझे खून दो, मैं तुम्हें आजादी दूंगा' का ओजस्वी नारा देकर अंग्रेजों के विरुद्ध सशस्त्र संघर्ष छेड़ा।"
             },
             ambedkar: {
                 name: "डॉ. भीमराव आंबेडकर",
                 category: "संविधान निर्माता एवं समाज सुधारक",
-                desc: "डॉ. भीमराव रामजी आंबेडकर का जन्म 14 अप्रैल 1891 को मऊ (मध्य प्रदेश) में हुआ था। उन्हें 'भारतीय संविधान के जनक' के रूप में जाना जाता है क्योंकि वे संविधान मसौदा समिति के अध्यक्ष थे। उन्होंने जीवनभर छुआछूत और सामाजिक कुप्रथाओं के खिलाफ संघर्ष किया।"
+                desc: "डॉ. भीमराव आंबेडकर का जन्म 14 अप्रैल 1891 को हुआ था। वे भारतीय संविधान की प्रारूप समिति के अध्यक्ष थे। उन्होंने जीवनभर सामाजिक न्याय, समानता और शोषितों के अधिकारों के लिए कड़ा संघर्ष किया।"
             },
             patel: {
                 name: "सरदार वल्लभभाई पटेल",
                 category: "भारत के लौह पुरुष एवं प्रथम गृह मंत्री",
-                desc: "सरदार वल्लभभाई पटेल का जन्म 31 अक्टूबर 1875 को गुजरात में हुआ था। उन्होंने अपनी कूटनीति और दृढ़ इच्छाशक्ति से 560 से अधिक रियासतों का भारतीय संघ में विलय कराकर आज के 'अखंड भारत' का निर्माण किया।"
+                desc: "सरदार पटेल का जन्म 31 अक्टूबर 1875 को हुआ था। उन्होंने अपनी अद्भुत कूटनीति से 560 से अधिक रियासतों का भारत में विलय कराकर 'अखंड भारत' की नींव रखी।"
             },
             kalam: {
                 name: "डॉ. ए.पी.जे. अब्दुल कलाम",
                 category: "मिसाइल मैन एवं पूर्व राष्ट्रपति",
-                desc: "डॉ. अवुल पकिर जैनुलुद्दीन अब्दुल कलाम का जन्म 15 अक्टूबर 1931 को रामेश्वरम में हुआ था। वे भारत के 11वें राष्ट्रपति थे और उन्हें 'मिसाइल मैन' कहा जाता है। उन्होंने अंतरिक्ष और रक्षा कार्यक्रम में अभूतपूर्व योगदान दिया।"
+                desc: "डॉ. कलाम का जन्म 15 अक्टूबर 1931 को हुआ था। भारत के अंतरिक्ष और मिसाइल कार्यक्रमों में उनका अतुलनीय योगदान रहा। वे देश के युवाओं के प्रेरणास्रोत और 'जनता के राष्ट्रपति' के रूप में अमर हैं।"
             },
             bhagat: {
                 name: "शहीद भगत सिंह",
-                category: "महान क्रांतिकारी एवं स्वतंत्रता सेनानी",
-                desc: "शहीद भगत सिंह का जन्म 28 सितंबर 1907 को हुआ था। देश की आजादी के लिए उन्होंने मात्र 23 साल की उम्र में 23 मार्च 1931 को अपने साथियों के साथ हंसते-हंसते फांसी का फंदा चूम लिया। उनका बलिदान अमर है।"
+                category: "अमर क्रांतिकारी एवं स्वतंत्रता सेनानी",
+                desc: "शहीद भगत सिंह का जन्म 28 सितंबर 1907 को हुआ था। देश की स्वतंत्रता के लिए उन्होंने मात्र 23 वर्ष की आयु में 23 मार्च 1931 को हंसते-हंसते फांसी का फंदा चूम लिया।"
+            },
+            vivekananda: {
+                name: "स्वामी विवेकानंद",
+                category: "आध्यात्मिक गुरु एवं दार्शनिक",
+                desc: "स्वामी विवेकानंद का जन्म 12 जनवरी 1863 को हुआ था। 1893 में शिकागो सम्मेलन में उन्होंने भारतीय सनातन संस्कृति और अध्यात्म का परचम पूरे विश्व में लहराया।"
+            },
+            tilak: {
+                name: "बाल गंगाधर तिलक",
+                category: "लोकमान्य एवं राष्ट्रवादी नेता",
+                desc: "लोकमान्य तिलक का जन्म 23 जुलाई 1856 को हुआ था। उन्होंने 'स्वराज मेरा जन्मसिद्ध अधिकार है' का नारा देकर भारतीय स्वतंत्रता संग्राम में जन-जागरण की नींव रखी।"
+            },
+            azad: {
+                name: "चन्द्रशेखर आजाद",
+                category: "महान क्रांतिकारी",
+                desc: "चन्द्रशेखर आजाद का जन्म 23 जुलाई 1906 को हुआ था। उन्होंने कसम खाई थी कि ब्रिटिश गोली कभी उन्हें जीवित नहीं पकड़ सकेगी, और अल्फ्रेड पार्क में अंत तक अंग्रेजों से लोहा लिया।"
+            },
+            lakshmibai: {
+                name: "रानी लक्ष्मीबाई",
+                category: "1857 की क्रांति की वीरांगना",
+                desc: "झांसी की रानी लक्ष्मीबाई का जन्म 19 नवंबर 1828 को हुआ था। 1857 के प्रथम स्वतंत्रता संग्राम में अंग्रेजों के खिलाफ वीरतापूर्वक युद्ध लड़ते हुए उन्होंने वीरगति प्राप्त की।"
+            },
+            lala: {
+                name: "लाला लाजपत राय",
+                category: "पंजाब केसरी एवं सेनानी",
+                desc: "लाला लाजपत राय का जन्म 28 जनवरी 1865 को हुआ था। साइमन कमीशन के विरोध के दौरान हुए लाठीचार्ज में घायल होने के बावजूद उन्होंने देशसेवा जारी रखी।"
+            },
+            mangal: {
+                name: "मंगल पांडे",
+                category: "प्रथम स्वतंत्रता संग्राम के अग्रदूत",
+                desc: "मंगल पांडे का जन्म 19 जुलाई 1831 को हुआ था। 1857 की क्रांति के समय बैरकपुर छावनी में उन्होंने सबसे पहले अंग्रेजों के विरुद्ध बगावत का बिगुल बजाया था।"
             }
         };
 
