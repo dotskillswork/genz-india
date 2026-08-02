@@ -224,14 +224,14 @@
             display: inline-flex;
             align-items: center;
             gap: 6px;
-            background: #f1f5f9;
+            background: #f0fdf4;
+            color: #16a34a;
             padding: 6px 14px;
             border-radius: 20px;
             font-size: 12.5px;
             font-weight: 600;
-            color: #334155;
             margin: 4px;
-            border: 1px solid #cbd5e1;
+            border: 1px solid #bbf7d0;
         }
         .post-item-card {
             background: #f8fafc;
@@ -331,7 +331,8 @@
         const db = firebase.firestore();
 
         const currentUser = JSON.parse(localStorage.getItem('genzUser'));
-        
+        let myDocId = null;
+
         if (currentUser) {
             updateProfileUI();
             loadUserDataFromFirebase();
@@ -343,8 +344,8 @@
             if(currentUser.bio) {
                 document.getElementById('profileBioDisplay').innerHTML = currentUser.bio.replace(/\n/g, '<br>');
             }
-            if (currentUser.photo) {
-                document.getElementById('profileUserImg').src = currentUser.photo;
+            if (currentUser.photo || currentUser.profilePic) {
+                document.getElementById('profileUserImg').src = currentUser.photo || currentUser.profilePic;
             }
         }
 
@@ -354,10 +355,10 @@
             document.getElementById('inputNewName').value = currentUser.name || "";
             document.getElementById('inputNewUsername').value = currentUser.username || currentUser.name || "";
             document.getElementById('inputNewBio').value = currentUser.bio || "";
-            document.getElementById('inputNewPhoto').value = currentUser.photo || "";
+            document.getElementById('inputNewPhoto').value = currentUser.photo || currentUser.profilePic || "";
         }
 
-        function saveProfile() {
+        async function saveProfile() {
             const newName = document.getElementById('inputNewName').value.trim();
             const newUsername = document.getElementById('inputNewUsername').value.trim();
             const newBio = document.getElementById('inputNewBio').value.trim();
@@ -368,10 +369,28 @@
             currentUser.name = newName;
             currentUser.username = newUsername || newName;
             currentUser.bio = newBio;
-            if(newPhoto) currentUser.photo = newPhoto;
+            if(newPhoto) {
+                currentUser.photo = newPhoto;
+                currentUser.profilePic = newPhoto;
+            }
 
             localStorage.setItem('genzUser', JSON.stringify(currentUser));
             updateProfileUI();
+
+            if (myDocId) {
+                try {
+                    await db.collection('users').doc(myDocId).update({
+                        name: newName,
+                        username: newUsername,
+                        bio: newBio,
+                        photo: newPhoto,
+                        profilePic: newPhoto
+                    });
+                } catch(err) {
+                    console.error("Firestore update error:", err);
+                }
+            }
+
             alert("Profile updated successfully! 🎉");
             toggleEditForm();
         }
@@ -381,66 +400,29 @@
             const uname = currentUser.username || currentUser.name;
             const name = currentUser.name;
 
-            // Load Friends accurately
             const friendsBox = document.getElementById('friendsListBox');
-            let friendItems = [];
-
+            
             try {
-                // 1. Check explicit friendships collections in Firestore
-                const cols = ["friendships", "friends", "connections"];
-                for(let col of cols) {
-                    try {
-                        const snap1 = await db.collection(col).where("users", "array-contains", uname).get();
-                        snap1.forEach(doc => {
-                            const d = doc.data();
-                            if(d.users) {
-                                const f = d.users.find(u => u !== uname);
-                                if(f && !friendItems.includes(f)) friendItems.push(f);
-                            }
-                        });
+                // Fetch directly from the users collection exactly like makefriend.html does
+                const userQuery = await db.collection('users').where("username", "==", uname).get();
+                let friendItems = [];
 
-                        const snap2 = await db.collection(col).where("sender", "==", uname).get();
-                        snap2.forEach(doc => {
-                            const f = doc.data().receiver;
-                            if(f && f !== uname && !friendItems.includes(f)) friendItems.push(f);
-                        });
-
-                        const snap3 = await db.collection(col).where("receiver", "==", uname).get();
-                        snap3.forEach(doc => {
-                            const f = doc.data().sender;
-                            if(f && f !== uname && !friendItems.includes(f)) friendItems.push(f);
-                        });
-                    } catch(err) { continue; }
-                }
-
-                // 2. Fallback: Check localStorage where makefriend.html might store accepted friend objects or arrays
-                for (let i = 0; i < localStorage.length; i++) {
-                    const key = localStorage.key(i);
-                    if (key.toLowerCase().includes('friend') || key.toLowerCase().includes('connect')) {
-                        try {
-                            const val = JSON.parse(localStorage.getItem(key));
-                            if (Array.isArray(val)) {
-                                val.forEach(item => {
-                                    if (typeof item === 'string' && item !== uname && !friendItems.includes(item)) {
-                                        friendItems.push(item);
-                                    } else if (item && item.name && item.name !== name && !friendItems.includes(item.name)) {
-                                        friendItems.push(item.name);
-                                    } else if (item && item.username && item.username !== uname && !friendItems.includes(item.username)) {
-                                        friendItems.push(item.username);
-                                    }
-                                });
-                            }
-                        } catch(e) {}
-                    }
+                if (!userQuery.empty) {
+                    const docSnap = userQuery.docs[0];
+                    myDocId = docSnap.id;
+                    const userData = docSnap.data();
+                    friendItems = userData.friends || [];
                 }
 
                 document.getElementById('friendsCountNum').innerText = friendItems.length;
-                if(friendItems.length === 0) {
+
+                if (friendItems.length === 0) {
                     friendsBox.innerHTML = "<span style='color: #64748b; font-size: 13px;'>No friends connected yet. Connect via Make Friends!</span>";
                 } else {
                     friendsBox.innerHTML = friendItems.map(f => `<div class="friend-chip">🤝 @${f}</div>`).join('');
                 }
             } catch(e) {
+                console.error(e);
                 friendsBox.innerHTML = "<span style='color: #64748b; font-size: 13px;'>Could not load friends list.</span>";
             }
 
