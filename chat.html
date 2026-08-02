@@ -73,13 +73,15 @@
         header {
             background: rgba(255, 255, 255, 0.95);
             backdrop-filter: blur(10px);
-            padding: 12px 20px;
+            padding: 10px 15px;
             display: flex;
             align-items: center;
             justify-content: space-between;
             border-bottom: 1px solid #e7e5e4;
             z-index: 100;
             flex-shrink: 0;
+            flex-wrap: nowrap;
+            gap: 8px;
         }
         .theme-midnight-focus header {
             background: rgba(30, 41, 59, 0.95) !important;
@@ -90,12 +92,13 @@
         .back-btn {
             color: #ea580c;
             text-decoration: none;
-            font-size: 13px;
+            font-size: 12px;
             font-weight: 600;
+            white-space: nowrap;
         }
 
         .chat-header {
-            padding: 10px 18px;
+            padding: 10px 15px;
             background: #fffbeb;
             display: flex;
             align-items: center;
@@ -112,12 +115,13 @@
         .chat-user-main {
             display: flex;
             align-items: center;
-            gap: 12px;
+            gap: 10px;
+            min-width: 0;
         }
 
         .chat-user-avatar {
-            width: 40px;
-            height: 40px;
+            width: 38px;
+            height: 38px;
             border-radius: 50%;
             background: #ffedd5;
             object-fit: cover;
@@ -128,12 +132,20 @@
             font-weight: 600;
             font-size: 13px;
             border: 1px solid #fed7aa;
+            flex-shrink: 0;
+        }
+
+        .chat-user-info {
+            min-width: 0;
         }
 
         .chat-user-info h4 {
-            font-size: 14.5px;
+            font-size: 14px;
             color: #0f172a;
             font-weight: 700;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
         .theme-midnight-focus .chat-user-info h4 { color: #f8fafc !important; }
 
@@ -145,6 +157,7 @@
         /* 3-Dot Control Menu */
         .chat-menu-container {
             position: relative;
+            flex-shrink: 0;
         }
         .chat-three-dot {
             background: transparent;
@@ -153,7 +166,7 @@
             font-weight: bold;
             color: #334155;
             cursor: pointer;
-            padding: 4px 10px;
+            padding: 2px 8px;
             border-radius: 8px;
         }
         .theme-midnight-focus .chat-three-dot { color: #cbd5e1; }
@@ -163,20 +176,20 @@
             display: none;
             position: absolute;
             right: 0;
-            top: 45px;
+            top: 40px;
             background: #ffffff;
             border: 1px solid #cbd5e1;
             border-radius: 14px;
             box-shadow: 0 15px 35px rgba(0,0,0,0.15);
-            width: 220px;
+            width: 210px;
             z-index: 1000;
             overflow: hidden;
         }
         .chat-dropdown.show { display: block; }
         
         .chat-dropdown-item {
-            padding: 11px 16px;
-            font-size: 12.5px;
+            padding: 10px 14px;
+            font-size: 12px;
             font-weight: 600;
             color: #334155;
             cursor: pointer;
@@ -201,8 +214,8 @@
             display: block;
         }
         .theme-sub-item {
-            padding: 9px 16px 9px 32px;
-            font-size: 11.5px;
+            padding: 8px 14px 8px 28px;
+            font-size: 11px;
             font-weight: 500;
             color: #475569;
             cursor: pointer;
@@ -218,7 +231,7 @@
 
         .messages-box {
             flex: 1;
-            padding: 20px;
+            padding: 15px;
             overflow-y: auto;
             display: flex;
             flex-direction: column;
@@ -227,7 +240,7 @@
         }
 
         .message {
-            max-width: 78%;
+            max-width: 82%;
             padding: 10px 14px;
             border-radius: 12px;
             font-size: 13px;
@@ -259,7 +272,7 @@
 
         .message img {
             max-width: 100%;
-            max-height: 220px;
+            max-height: 200px;
             border-radius: 6px;
             margin-top: 5px;
             display: block;
@@ -302,7 +315,7 @@
 
         .chat-input-box {
             background: #ffffff;
-            padding: 12px 15px;
+            padding: 10px 12px;
             display: flex;
             gap: 8px;
             align-items: center;
@@ -322,7 +335,7 @@
             background: #f8fafc;
             border: 1px solid #cbd5e1;
             border-radius: 10px;
-            padding: 10px 12px;
+            padding: 9px 12px;
             color: #1e293b;
             font-size: 13px;
         }
@@ -341,10 +354,10 @@
             background: #fff7ed;
             color: #ea580c;
             border: 1px solid #fed7aa;
-            padding: 8px 12px;
+            padding: 8px 10px;
             border-radius: 10px;
             cursor: pointer;
-            font-size: 14px;
+            font-size: 13px;
             flex-shrink: 0;
         }
 
@@ -352,10 +365,10 @@
             background: #ea580c;
             color: #ffffff;
             border: none;
-            padding: 9px 16px;
+            padding: 9px 14px;
             border-radius: 10px;
             font-weight: 600;
-            font-size: 13px;
+            font-size: 12.5px;
             cursor: pointer;
             flex-shrink: 0;
             box-shadow: 0 4px 10px rgba(234, 88, 12, 0.2);
@@ -401,9 +414,9 @@
 
     <div class="chat-container theme-classic-paper" id="chatContainerBox">
         <header>
-            <a href="chats.html" class="back-btn">← Back to Chats</a>
-            <h3 style="font-size: 14px; font-weight: 700;">💬 Gen'Z Direct Chat 🇮🇳</h3>
-            <div style="width: 50px;"></div>
+            <a href="chats.html" class="back-btn">← Back</a>
+            <h3 style="font-size: 13px; font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 180px;">💬 Gen'Z Direct Chat 🇮🇳</h3>
+            <div style="width: 20px;"></div>
         </header>
 
         <!-- Chat Header with 3-Dot Options Menu -->
@@ -508,10 +521,9 @@
             }
         });
 
-        // Theme Switcher Function (Applied specifically to Chat Box Container)
+        // Theme Switcher Function
         function changeChatTheme(themeName) {
             const container = document.getElementById('chatContainerBox');
-            // Remove previous theme classes
             container.className = "chat-container " + themeName;
             localStorage.setItem('preferred_chat_theme_' + activeUser.username, themeName);
             document.getElementById('chatDropdown').classList.remove('show');
