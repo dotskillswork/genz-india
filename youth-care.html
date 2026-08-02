@@ -80,26 +80,26 @@
 <body class="min-h-screen flex flex-col font-sans selection:bg-brand-saffron selection:text-white">
 
     <!-- Floating Background Decor Elements -->
-    <div class="fixed top-12 left-10 text-brand-gold/15 text-6xl floating pointer-events-none">
+    <div class="fixed top-12 left-10 text-brand-gold/15 text-5xl floating pointer-events-none">
         <i class="fa-solid fa-seedling"></i>
     </div>
-    <div class="fixed bottom-24 right-10 text-brand-saffron/15 text-7xl floating pointer-events-none" style="animation-delay: 2s;">
+    <div class="fixed bottom-24 right-10 text-brand-saffron/15 text-6xl floating pointer-events-none" style="animation-delay: 2s;">
         <i class="fa-solid fa-hands-holding-child"></i>
     </div>
 
     <!-- Header / Navbar -->
-    <header class="sticky top-0 z-50 glass-card border-b border-white/10 px-6 py-4 flex justify-between items-center">
-        <div class="flex items-center space-x-3">
-            <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-brand-saffron to-brand-gold flex items-center justify-center text-brand-earth text-xl font-bold shadow-lg">
+    <header class="sticky top-0 z-50 glass-card border-b border-white/10 px-4 md:px-6 py-3 flex justify-between items-center">
+        <div class="flex items-center space-x-2.5">
+            <div class="w-9 h-9 rounded-xl bg-gradient-to-tr from-brand-saffron to-brand-gold flex items-center justify-center text-brand-earth text-lg font-bold shadow-lg">
                 <i class="fa-solid fa-heart-circle-bolt"></i>
             </div>
             <div>
-                <h1 class="font-display text-xl font-bold tracking-wider text-brand-gold">YOUTH CARE</h1>
-                <p class="text-xs text-emerald-300 tracking-widest uppercase">Foundation 🇮🇳</p>
+                <h1 class="font-display text-base md:text-lg font-bold tracking-wider text-brand-gold">YOUTH CARE</h1>
+                <p class="text-[10px] text-emerald-300 tracking-widest uppercase">Foundation 🇮🇳</p>
             </div>
         </div>
         
-        <nav class="hidden md:flex space-x-8 text-sm font-medium">
+        <nav class="hidden md:flex space-x-6 text-sm font-medium">
             <a href="#mission" class="hover:text-brand-saffron transition-colors">Mission</a>
             <a href="#pillars" class="hover:text-brand-saffron transition-colors">Core Pillars</a>
             <a href="#success" class="hover:text-brand-saffron transition-colors">Success Work</a>
@@ -107,160 +107,198 @@
             <a href="#join" class="text-brand-gold hover:text-white transition-colors">Join Tribe</a>
         </nav>
 
-        <div class="flex items-center space-x-3">
-            <button onclick="toggleFounderPanel()" class="text-xs bg-emerald-950/80 text-brand-gold px-3 py-2 rounded-xl border border-brand-gold/30 hover:bg-brand-gold hover:text-brand-earth transition-all">
+        <div class="flex items-center space-x-2">
+            <button onclick="openLoginModal()" class="text-xs bg-emerald-950/80 text-brand-gold px-3 py-2 rounded-xl border border-brand-gold/30 hover:bg-brand-gold hover:text-brand-earth transition-all">
                 <i class="fa-solid fa-lock mr-1"></i> Founder Panel
             </button>
-            <button onclick="scrollToJoin()" class="bg-gradient-to-r from-brand-saffron to-brand-gold text-brand-earth font-bold px-5 py-2.5 rounded-full text-sm shadow-lg hover:opacity-95 transition-all transform hover:scale-105">
+            <button onclick="scrollToJoin()" class="bg-gradient-to-r from-brand-saffron to-brand-gold text-brand-earth font-bold px-4 py-2 rounded-full text-xs md:text-sm shadow-lg hover:opacity-95 transition-all transform hover:scale-105">
                 <i class="fa-solid fa-bolt mr-1"></i> Get Involved
             </button>
         </div>
     </header>
 
+    <!-- Secure Founder Login Modal -->
+    <div id="loginModal" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-md hidden flex items-center justify-center p-4">
+        <div class="glass-card max-w-sm w-full p-6 rounded-3xl border border-brand-gold/40 text-left relative">
+            <button onclick="closeLoginModal()" class="absolute top-3 right-3 text-gray-400 hover:text-white text-lg">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+            <h3 class="font-display text-xl font-bold text-brand-gold mb-1"><i class="fa-solid fa-user-shield mr-2"></i> Founder Login</h3>
+            <p class="text-gray-300 text-xs mb-4">Enter authorized credentials to open the control panel.</p>
+            
+            <form onsubmit="handleFounderLogin(event)" class="space-y-3">
+                <div>
+                    <label class="block text-[11px] uppercase tracking-wider text-emerald-300 mb-1">Username / Email</label>
+                    <input type="email" id="founderEmail" required placeholder="dotskills.work@gmail.com" class="w-full bg-brand-earth/90 border border-white/10 rounded-xl px-3 py-2 text-white text-xs focus:outline-none focus:border-brand-saffron">
+                </div>
+                <div>
+                    <label class="block text-[11px] uppercase tracking-wider text-emerald-300 mb-1">Password</label>
+                    <input type="password" id="founderPass" required placeholder="••••••••••••" class="w-full bg-brand-earth/90 border border-white/10 rounded-xl px-3 py-2 text-white text-xs focus:outline-none focus:border-brand-saffron">
+                </div>
+                <div id="loginError" class="text-red-400 text-xs hidden">❌ Invalid Credentials! Try again.</div>
+                <button type="submit" class="w-full bg-gradient-to-r from-brand-saffron to-brand-gold text-brand-earth font-bold py-2.5 rounded-xl shadow-lg hover:opacity-95 text-xs">
+                    Login Control Panel
+                </button>
+            </form>
+        </div>
+    </div>
+
     <!-- Hero Section with Auto-Slideshow & Emotional Headline -->
-    <main id="mission" class="flex-grow container mx-auto px-6 py-10 flex flex-col items-center justify-center text-center">
+    <main id="mission" class="flex-grow container mx-auto px-4 md:px-6 py-8 flex flex-col items-center justify-center text-center">
         
-        <div class="inline-flex items-center space-x-2 bg-emerald-950/80 border border-brand-saffron/40 px-4 py-1.5 rounded-full text-xs text-brand-gold mb-6 backdrop-blur-md shadow-lg">
+        <div class="inline-flex items-center space-x-2 bg-emerald-950/80 border border-brand-saffron/40 px-3.5 py-1 rounded-full text-[11px] text-brand-gold mb-4 backdrop-blur-md shadow-lg">
             <span class="w-2 h-2 rounded-full bg-brand-saffron animate-ping"></span>
-            <span>Jab youth ठaan le, toh badlaav aana tay hai! 🇮🇳</span>
+            <span>Jab youth thaan le, toh badlaav aana tay hai! 🇮🇳</span>
         </div>
 
-        <h2 class="font-display text-4xl md:text-6xl font-bold max-w-4xl leading-tight mb-6">
+        <h2 class="font-display text-2xl sm:text-3xl md:text-5xl font-bold max-w-4xl leading-tight mb-4">
             Zindagi badalni hai toh akele mat chalo, <span class="text-transparent bg-clip-text bg-gradient-to-r from-brand-saffron to-brand-gold">apne desh aur zarooratmandon ke liye</span> milkar haath badhao.
         </h2>
 
-        <p class="text-gray-300 text-base md:text-lg max-w-2xl mb-8 font-light">
+        <p class="text-gray-300 text-xs sm:text-sm md:text-base max-w-2xl mb-6 font-light px-2">
             Hum sirf ek platform nahi, balki har student ki aawaz hain jo ped lagane se lekar kisi garib ki zaroorat ko poora karne aur har bache tak shiksha pahunchane ka zikr nahi, balki amal rakhti hai.
         </p>
 
         <!-- High-VFX Banner Carousel -->
-        <div class="w-full max-w-4xl mb-12 glass-card rounded-3xl p-6 md:p-8 relative overflow-hidden border border-brand-gold/30 shadow-2xl">
-            <div class="absolute -right-10 -bottom-10 text-brand-gold/10 text-9xl pointer-events-none">
+        <div class="w-full max-w-3xl mb-10 glass-card rounded-2xl md:rounded-3xl p-5 md:p-6 relative overflow-hidden border border-brand-gold/30 shadow-2xl">
+            <div class="absolute -right-10 -bottom-10 text-brand-gold/10 text-8xl pointer-events-none">
                 <i class="fa-solid fa-globe-asia"></i>
             </div>
 
             <!-- Slide 1 -->
-            <div class="hero-slide slide-fade flex flex-col items-center text-center py-4">
-                <div class="w-16 h-16 rounded-2xl bg-emerald-500/20 text-emerald-400 flex items-center justify-center text-3xl mb-4 shadow-inner">
+            <div class="hero-slide slide-fade flex flex-col items-center text-center py-2">
+                <div class="w-12 h-12 rounded-2xl bg-emerald-500/20 text-emerald-400 flex items-center justify-center text-xl mb-3 shadow-inner">
                     <i class="fa-solid fa-tree"></i>
                 </div>
-                <span class="text-xs uppercase tracking-widest text-emerald-300 font-bold mb-1">Mission 01: Save Environment</span>
-                <h3 class="font-display text-2xl md:text-3xl font-bold text-white mb-2">"Hariyali Bachao, Saans Lo"</h3>
-                <p class="text-gray-300 text-sm max-w-xl">Har campus, har gali mein ped lagane aur plastic mukt Bharat banane ka maha-abhiyan.</p>
+                <span class="text-[10px] uppercase tracking-widest text-emerald-300 font-bold mb-1">Mission 01: Save Environment</span>
+                <h3 class="font-display text-lg md:text-2xl font-bold text-white mb-1.5">"Hariyali Bachao, Saans Lo"</h3>
+                <p class="text-gray-300 text-xs max-w-lg">Har campus, har gali mein ped lagane aur plastic mukt Bharat banane ka maha-abhiyan.</p>
             </div>
 
             <!-- Slide 2 -->
-            <div class="hero-slide slide-fade hidden flex flex-col items-center text-center py-4">
-                <div class="w-16 h-16 rounded-2xl bg-brand-gold/20 text-brand-gold flex items-center justify-center text-3xl mb-4 shadow-inner">
+            <div class="hero-slide slide-fade hidden flex flex-col items-center text-center py-2">
+                <div class="w-12 h-12 rounded-2xl bg-brand-gold/20 text-brand-gold flex items-center justify-center text-xl mb-3 shadow-inner">
                     <i class="fa-solid fa-graduation-cap"></i>
                 </div>
-                <span class="text-xs uppercase tracking-widest text-brand-gold font-bold mb-1">Mission 02: Shiksha Ki Roshni</span>
-                <h3 class="font-display text-2xl md:text-3xl font-bold text-white mb-2">"Padhega India, Tabhi Toh Badhega India"</h3>
-                <p class="text-gray-300 text-sm max-w-xl">Har zarooratmand bachhe tak padhai ke sansadhan aur free coaching support pahunchana.</p>
+                <span class="text-[10px] uppercase tracking-widest text-brand-gold font-bold mb-1">Mission 02: Shiksha Ki Roshni</span>
+                <h3 class="font-display text-lg md:text-2xl font-bold text-white mb-1.5">"Padhega India, Tabhi Toh Badhega India"</h3>
+                <p class="text-gray-300 text-xs max-w-lg">Har zarooratmand bachhe tak padhai ke sansadhan aur free coaching support pahunchana.</p>
             </div>
 
             <!-- Slide 3 -->
-            <div class="hero-slide slide-fade hidden flex flex-col items-center text-center py-4">
-                <div class="w-16 h-16 rounded-2xl bg-brand-saffron/20 text-brand-saffron flex items-center justify-center text-3xl mb-4 shadow-inner">
+            <div class="hero-slide slide-fade hidden flex flex-col items-center text-center py-2">
+                <div class="w-12 h-12 rounded-2xl bg-brand-saffron/20 text-brand-saffron flex items-center justify-center text-xl mb-3 shadow-inner">
                     <i class="fa-solid fa-hands-holding-child"></i>
                 </div>
-                <span class="text-xs uppercase tracking-widest text-brand-saffron font-bold mb-1">Mission 03: Seva & Humanity</span>
-                <h3 class="font-display text-2xl md:text-3xl font-bold text-white mb-2">"Sahyog Seva - Zarooratmand Ki Aas"</h3>
-                <p class="text-gray-300 text-sm max-w-xl">Bhookhe ko khana, zarooratmand ko sahara aur har musibat mein ek-doosre ki dhal banna.</p>
+                <span class="text-[10px] uppercase tracking-widest text-brand-saffron font-bold mb-1">Mission 03: Seva & Humanity</span>
+                <h3 class="font-display text-lg md:text-2xl font-bold text-white mb-1.5">"Sahyog Seva - Zarooratmand Ki Aas"</h3>
+                <p class="text-gray-300 text-xs max-w-lg">Bhookhe ko khana, zarooratmand ko sahara aur har musibat mein ek-doosre ki dhal banna.</p>
+            </div>
+
+            <!-- Slide 4: Hindi Devnagri Submission Slide -->
+            <div class="hero-slide slide-fade hidden flex flex-col items-center text-center py-2">
+                <div class="w-12 h-12 rounded-2xl bg-blue-500/20 text-blue-400 flex items-center justify-center text-xl mb-3 shadow-inner">
+                    <i class="fa-solid fa-envelope-open-text"></i>
+                </div>
+                <span class="text-[10px] uppercase tracking-widest text-blue-300 font-bold mb-1">Aapka Yogdaan 🇮🇳</span>
+                <h3 class="font-display text-base md:text-xl font-bold text-white mb-1.5">"Aapne bhi koi achchha kaam kiya hai?"</h3>
+                <p class="text-gray-300 text-xs max-w-lg">Toh uski detail hamari e-mail id - <span class="text-brand-gold font-semibold">dotskills.work@gmail.com</span> par send karein!</p>
             </div>
 
             <!-- Slide Indicators Dots -->
-            <div class="flex justify-center space-x-2 mt-6">
-                <span class="dot w-3 h-3 rounded-full bg-brand-saffron transition-all cursor-pointer" onclick="currentSlide(0)"></span>
-                <span class="dot w-3 h-3 rounded-full bg-white/30 transition-all cursor-pointer" onclick="currentSlide(1)"></span>
-                <span class="dot w-3 h-3 rounded-full bg-white/30 transition-all cursor-pointer" onclick="currentSlide(2)"></span>
+            <div class="flex justify-center space-x-2 mt-4">
+                <span class="dot w-2.5 h-2.5 rounded-full bg-brand-saffron transition-all cursor-pointer" onclick="currentSlide(0)"></span>
+                <span class="dot w-2.5 h-2.5 rounded-full bg-white/30 transition-all cursor-pointer" onclick="currentSlide(1)"></span>
+                <span class="dot w-2.5 h-2.5 rounded-full bg-white/30 transition-all cursor-pointer" onclick="currentSlide(2)"></span>
+                <span class="dot w-2.5 h-2.5 rounded-full bg-white/30 transition-all cursor-pointer" onclick="currentSlide(3)"></span>
             </div>
         </div>
 
         <!-- Action Buttons -->
-        <div class="flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-4 mb-16">
-            <button onclick="scrollToJoin()" class="bg-brand-saffron text-white font-semibold px-8 py-3.5 rounded-xl shadow-xl hover:bg-brand-saffron/90 transition-all transform hover:-translate-y-1 flex items-center justify-center space-x-2">
+        <div class="flex flex-col sm:flex-row space-y-3 sm:space-y-0 sm:space-x-4 mb-12">
+            <button onclick="scrollToJoin()" class="bg-brand-saffron text-white font-semibold px-6 py-3 rounded-xl shadow-xl hover:bg-brand-saffron/95 transition-all transform hover:-translate-y-0.5 flex items-center justify-center space-x-2 text-xs md:text-sm">
                 <span>Join As Changemaker</span>
                 <i class="fa-solid fa-arrow-right"></i>
             </button>
-            <a href="#pillars" class="glass-card hover:bg-white/10 text-brand-gold font-semibold px-8 py-3.5 rounded-xl transition-all flex items-center justify-center space-x-2">
+            <a href="#pillars" class="glass-card hover:bg-white/10 text-brand-gold font-semibold px-6 py-3 rounded-xl transition-all flex items-center justify-center space-x-2 text-xs md:text-sm">
                 <i class="fa-solid fa-compass mr-1"></i> Explore 3 Pillars
             </a>
         </div>
 
-        <!-- 3 Core Pillars Section -->
-        <section id="pillars" class="w-full max-w-6xl py-12 text-left">
-            <div class="text-center mb-12">
-                <h3 class="font-display text-3xl font-bold text-brand-gold mb-2">Our 3 Core Pillars</h3>
-                <p class="text-gray-400 text-sm">The foundation upon which Youth Care stands for real social change</p>
+        <!-- 3 Core Pillars Section (Horizontal Circle Feature Cards Style) -->
+        <section id="pillars" class="w-full max-w-5xl py-8 text-left">
+            <div class="text-center mb-8">
+                <h3 class="font-display text-2xl md:text-3xl font-bold text-brand-gold mb-1.5">Our 3 Core Pillars</h3>
+                <p class="text-gray-400 text-xs">The foundation upon which Youth Care stands for real social change</p>
             </div>
 
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <!-- Horizontal Grid with Round Icons -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
                 <!-- Pillar 1 -->
-                <div class="glass-card p-8 rounded-3xl relative overflow-hidden group hover:border-emerald-400 transition-all duration-300">
-                    <div class="w-14 h-14 rounded-2xl bg-emerald-500/20 text-emerald-400 flex items-center justify-center text-2xl mb-6 group-hover:scale-110 transition-transform">
+                <div class="glass-card p-6 rounded-2xl relative overflow-hidden group hover:border-emerald-400 transition-all duration-300 flex flex-col items-center text-center">
+                    <div class="w-14 h-14 rounded-full bg-emerald-500/20 text-emerald-400 flex items-center justify-center text-xl mb-4 group-hover:scale-110 transition-transform shadow-inner border border-emerald-500/30">
                         <i class="fa-solid fa-leaf"></i>
                     </div>
-                    <h4 class="font-display text-xl font-bold mb-3 text-white">1. Save Environment</h4>
-                    <p class="text-gray-300 text-sm leading-relaxed mb-4">
+                    <h4 class="font-display text-base font-bold mb-2 text-white">1. Save Environment</h4>
+                    <p class="text-gray-300 text-xs leading-relaxed mb-3">
                         Dedicated campaigns, cleanliness drives, and mass tree-plantation missions across schools and colleges.
                     </p>
-                    <span class="inline-block text-xs text-emerald-300 bg-emerald-950/60 px-3 py-1 rounded-full border border-emerald-500/30">#GreenCampus</span>
+                    <span class="inline-block text-[10px] text-emerald-300 bg-emerald-950/60 px-2.5 py-0.5 rounded-full border border-emerald-500/30">#GreenCampus</span>
                 </div>
 
                 <!-- Pillar 2 -->
-                <div class="glass-card p-8 rounded-3xl relative overflow-hidden group hover:border-brand-gold transition-all duration-300">
-                    <div class="w-14 h-14 rounded-2xl bg-brand-gold/20 text-brand-gold flex items-center justify-center text-2xl mb-6 group-hover:scale-110 transition-transform">
+                <div class="glass-card p-6 rounded-2xl relative overflow-hidden group hover:border-brand-gold transition-all duration-300 flex flex-col items-center text-center">
+                    <div class="w-14 h-14 rounded-full bg-brand-gold/20 text-brand-gold flex items-center justify-center text-xl mb-4 group-hover:scale-110 transition-transform shadow-inner border border-brand-gold/30">
                         <i class="fa-solid fa-book-open-reader"></i>
                     </div>
-                    <h4 class="font-display text-xl font-bold mb-3 text-white">2. Education</h4>
-                    <p class="text-gray-300 text-sm leading-relaxed mb-4">
+                    <h4 class="font-display text-base font-bold mb-2 text-white">2. Education</h4>
+                    <p class="text-gray-300 text-xs leading-relaxed mb-3">
                         Empowering underprivileged students with proper learning resources, mentorship, and career guidance.
                     </p>
-                    <span class="inline-block text-xs text-brand-gold bg-amber-950/60 px-3 py-1 rounded-full border border-brand-gold/30">#ShikshaKiShakti</span>
+                    <span class="inline-block text-[10px] text-brand-gold bg-amber-950/60 px-2.5 py-0.5 rounded-full border border-brand-gold/30">#ShikshaKiShakti</span>
                 </div>
 
                 <!-- Pillar 3 -->
-                <div class="glass-card p-8 rounded-3xl relative overflow-hidden group hover:border-brand-saffron transition-all duration-300">
-                    <div class="w-14 h-14 rounded-2xl bg-brand-saffron/20 text-brand-saffron flex items-center justify-center text-2xl mb-6 group-hover:scale-110 transition-transform">
+                <div class="glass-card p-6 rounded-2xl relative overflow-hidden group hover:border-brand-saffron transition-all duration-300 flex flex-col items-center text-center">
+                    <div class="w-14 h-14 rounded-full bg-brand-saffron/20 text-brand-saffron flex items-center justify-center text-xl mb-4 group-hover:scale-110 transition-transform shadow-inner border border-brand-saffron/30">
                         <i class="fa-solid fa-hands-holding-child"></i>
                     </div>
-                    <h4 class="font-display text-xl font-bold mb-3 text-white">3. Sahyog Seva (Humanity)</h4>
-                    <p class="text-gray-300 text-sm leading-relaxed mb-4">
+                    <h4 class="font-display text-base font-bold mb-2 text-white">3. Sahyog Seva (Humanity)</h4>
+                    <p class="text-gray-300 text-xs leading-relaxed mb-3">
                         A dedicated lifeline to support zarooratmand (needy) people with clothes, food drives, and emergency assistance.
                     </p>
-                    <span class="inline-block text-xs text-brand-saffron bg-orange-950/60 px-3 py-1 rounded-full border border-brand-saffron/30">#SahyogSeva</span>
+                    <span class="inline-block text-[10px] text-brand-saffron bg-orange-950/60 px-2.5 py-0.5 rounded-full border border-brand-saffron/30">#SahyogSeva</span>
                 </div>
             </div>
         </section>
 
-        <!-- Founder-Only Admin Modal (Hidden by Default) -->
+        <!-- Founder-Only Control Panel Modal (Hidden by Default) -->
         <div id="founderModal" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-md hidden flex items-center justify-center p-4">
-            <div class="glass-card max-w-lg w-full p-8 rounded-3xl border border-brand-gold/40 text-left relative">
-                <button onclick="toggleFounderPanel()" class="absolute top-4 right-4 text-gray-400 hover:text-white text-xl">
+            <div class="glass-card max-w-md w-full p-6 md:p-8 rounded-3xl border border-brand-gold/40 text-left relative">
+                <button onclick="toggleFounderPanel()" class="absolute top-4 right-4 text-gray-400 hover:text-white text-lg">
                     <i class="fa-solid fa-xmark"></i>
                 </button>
-                <h3 class="font-display text-2xl font-bold text-brand-gold mb-2"><i class="fa-solid fa-shield-halved mr-2"></i> Founder Control Panel</h3>
-                <p class="text-gray-300 text-xs mb-6">Publish a successful ground-level work. This will instantly reflect on the public Success Work wall.</p>
+                <h3 class="font-display text-xl font-bold text-brand-gold mb-1"><i class="fa-solid fa-shield-halved mr-2"></i> Founder Control Panel</h3>
+                <p class="text-gray-300 text-xs mb-5">Publish a successful ground-level work. This will instantly reflect on the public Success Work wall.</p>
                 
-                <form onsubmit="handlePublishWork(event)" class="space-y-4">
+                <form onsubmit="handlePublishWork(event)" class="space-y-3.5">
                     <div>
-                        <label class="block text-xs uppercase tracking-wider text-emerald-300 mb-1">Category / Pillar</label>
-                        <select id="workCategory" class="w-full bg-brand-earth/90 border border-white/10 rounded-xl px-4 py-2.5 text-white text-sm focus:outline-none focus:border-brand-s">
+                        <label class="block text-[11px] uppercase tracking-wider text-emerald-300 mb-1">Category / Pillar</label>
+                        <select id="workCategory" class="w-full bg-brand-earth/90 border border-white/10 rounded-xl px-3.5 py-2 text-white text-xs focus:outline-none focus:border-brand-saffron">
                             <option value="Environment Drive">Environment Drive</option>
                             <option value="Education Campaign">Education Campaign</option>
                             <option value="Sahyog Seva">Sahyog Seva (Humanity)</option>
                         </select>
                     </div>
                     <div>
-                        <label class="block text-xs uppercase tracking-wider text-emerald-300 mb-1">Work Title</label>
-                        <input type="text" id="workTitle" required placeholder="e.g. 100 Saplings Planted Today" class="w-full bg-brand-earth/90 border border-white/10 rounded-xl px-4 py-2.5 text-white text-sm focus:outline-none">
+                        <label class="block text-[11px] uppercase tracking-wider text-emerald-300 mb-1">Work Title</label>
+                        <input type="text" id="workTitle" required placeholder="e.g. 100 Saplings Planted Today" class="w-full bg-brand-earth/90 border border-white/10 rounded-xl px-3.5 py-2 text-white text-xs focus:outline-none">
                     </div>
                     <div>
-                        <label class="block text-xs uppercase tracking-wider text-emerald-300 mb-1">Short Description</label>
-                        <textarea id="workDesc" required rows="3" placeholder="Write details about the successful work..." class="w-full bg-brand-earth/90 border border-white/10 rounded-xl px-4 py-2.5 text-white text-sm focus:outline-none"></textarea>
+                        <label class="block text-[11px] uppercase tracking-wider text-emerald-300 mb-1">Short Description</label>
+                        <textarea id="workDesc" required rows="3" placeholder="Write details about the successful work..." class="w-full bg-brand-earth/90 border border-white/10 rounded-xl px-3.5 py-2 text-white text-xs focus:outline-none"></textarea>
                     </div>
-                    <button type="submit" class="w-full bg-gradient-to-r from-brand-saffron to-brand-gold text-brand-earth font-bold py-3 rounded-xl shadow-lg hover:opacity-95 text-sm">
+                    <button type="submit" class="w-full bg-gradient-to-r from-brand-saffron to-brand-gold text-brand-earth font-bold py-2.5 rounded-xl shadow-lg hover:opacity-95 text-xs">
                         <i class="fa-solid fa-paper-plane mr-2"></i> Publish Success Work
                     </button>
                 </form>
@@ -268,23 +306,23 @@
         </div>
 
         <!-- Successful Works & Impact Section (Dynamic) -->
-        <section id="success" class="w-full max-w-6xl py-12 text-left">
-            <div class="text-center mb-12">
-                <h3 class="font-display text-3xl font-bold text-brand-gold mb-2">Our Successful Works & Impact</h3>
-                <p class="text-gray-400 text-sm">Glimpses of real ground-level execution by our student changemakers</p>
+        <section id="success" class="w-full max-w-5xl py-8 text-left">
+            <div class="text-center mb-8">
+                <h3 class="font-display text-2xl md:text-3xl font-bold text-brand-gold mb-1.5">Our Successful Works & Impact</h3>
+                <p class="text-gray-400 text-xs">Glimpses of real ground-level execution by our student changemakers</p>
             </div>
 
             <!-- Dynamic Work Grid Container -->
-            <div id="successWorksGrid" class="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <div id="successWorksGrid" class="grid grid-cols-1 md:grid-cols-3 gap-6">
                 <!-- If no work is posted, this shows a clean 'Coming Soon' state -->
             </div>
         </section>
 
         <!-- Live Joined Members Wall (Tribe Wall) -->
-        <section id="members" class="w-full max-w-6xl py-12 text-left">
-            <div class="text-center mb-8">
-                <h3 class="font-display text-3xl font-bold text-brand-gold mb-2">Our Active Tribe Members 🇮🇳</h3>
-                <p class="text-gray-400 text-sm">Real changemakers who have joined the movement</p>
+        <section id="members" class="w-full max-w-5xl py-8 text-left">
+            <div class="text-center mb-6">
+                <h3 class="font-display text-2xl md:text-3xl font-bold text-brand-gold mb-1.5">Our Active Tribe Members 🇮🇳</h3>
+                <p class="text-gray-400 text-xs">Real changemakers who have joined the movement</p>
             </div>
             <!-- Members Grid Container -->
             <div id="membersGrid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
@@ -293,48 +331,48 @@
         </section>
 
         <!-- Join Form Section -->
-        <section id="join" class="w-full max-w-2xl my-16 glass-card p-8 md:p-12 rounded-3xl border border-brand-gold/30 text-left">
+        <section id="join" class="w-full max-w-xl my-10 glass-card p-6 md:p-10 rounded-3xl border border-brand-gold/30 text-left">
             
             <!-- Join Form -->
             <div id="formContainer">
-                <div class="text-center mb-8">
-                    <h3 class="font-display text-2xl md:text-3xl font-bold text-brand-gold mb-2">Be Part of the Movement</h3>
-                    <p class="text-gray-300 text-sm">Your profile details (Name & College) will be automatically fetched from your account. Just enter your Email ID to join!</p>
+                <div class="text-center mb-6">
+                    <h3 class="font-display text-xl md:text-2xl font-bold text-brand-gold mb-1">Be Part of the Movement</h3>
+                    <p class="text-gray-300 text-xs">Your profile details are automatically fetched. Just enter your Email ID to join!</p>
                 </div>
 
-                <div class="bg-brand-earth/80 p-4 rounded-2xl border border-emerald-500/30 mb-6 flex items-center space-x-4">
-                    <div class="w-12 h-12 rounded-full bg-gradient-to-tr from-brand-saffron to-brand-gold flex items-center justify-center text-brand-earth font-bold text-lg shadow-md flex-shrink-0" id="previewAvatar">
+                <div class="bg-brand-earth/80 p-3.5 rounded-2xl border border-emerald-500/30 mb-5 flex items-center space-x-3.5">
+                    <div class="w-10 h-10 rounded-full bg-gradient-to-tr from-brand-saffron to-brand-gold flex items-center justify-center text-brand-earth font-bold text-base shadow-md flex-shrink-0" id="previewAvatar">
                         A
                     </div>
                     <div>
-                        <h4 class="font-bold text-white text-sm" id="previewName">Aryan Sharma</h4>
-                        <p class="text-xs text-emerald-300" id="previewCollege">Delhi University</p>
+                        <h4 class="font-bold text-white text-xs" id="previewName">Aryan Sharma</h4>
+                        <p class="text-[11px] text-emerald-300" id="previewCollege">Delhi University</p>
                     </div>
                 </div>
 
-                <form onsubmit="handleJoin(event)" class="space-y-6">
+                <form onsubmit="handleJoin(event)" class="space-y-4">
                     <div>
-                        <label class="block text-xs uppercase tracking-wider text-emerald-300 mb-2">Your Email ID or WhatsApp Number</label>
-                        <input type="text" id="userEmail" required placeholder="your.email@gmail.com or 9876543210" class="w-full bg-brand-earth/80 border border-white/10 rounded-xl px-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:border-brand-saffron transition-colors">
+                        <label class="block text-[11px] uppercase tracking-wider text-emerald-300 mb-1.5">Your Email ID or WhatsApp Number</label>
+                        <input type="text" id="userEmail" required placeholder="your.email@gmail.com or 9876543210" class="w-full bg-brand-earth/80 border border-white/10 rounded-xl px-3.5 py-2.5 text-white text-xs placeholder-gray-500 focus:outline-none focus:border-brand-saffron transition-colors">
                     </div>
-                    <button type="submit" class="w-full bg-gradient-to-r from-brand-saffron to-brand-gold text-brand-earth font-bold py-4 rounded-xl shadow-lg hover:opacity-95 transition-all text-base">
+                    <button type="submit" class="w-full bg-gradient-to-r from-brand-saffron to-brand-gold text-brand-earth font-bold py-3 rounded-xl shadow-lg hover:opacity-95 transition-all text-xs">
                         <i class="fa-solid fa-paper-plane mr-2"></i> Join Youth Care Tribe
                     </button>
                 </form>
             </div>
 
             <!-- Already Joined / Success Card -->
-            <div id="welcomeCard" class="hidden text-center py-6">
-                <div class="w-20 h-20 bg-gradient-to-tr from-brand-saffron to-brand-gold rounded-full flex items-center justify-center text-brand-earth text-3xl mx-auto mb-4 shadow-xl">
+            <div id="welcomeCard" class="hidden text-center py-4">
+                <div class="w-16 h-16 bg-gradient-to-tr from-brand-saffron to-brand-gold rounded-full flex items-center justify-center text-brand-earth text-2xl mx-auto mb-3 shadow-xl">
                     <i class="fa-solid fa-user-check"></i>
                 </div>
-                <h3 class="font-display text-2xl font-bold text-brand-gold mb-2">Welcome to the Tribe, <span id="displayName" class="text-white"></span>! 🎉</h3>
-                <p class="text-emerald-300 text-sm mb-2" id="displayCollege"></p>
-                <p class="text-xs text-gray-400 mb-4" id="displayEmail"></p>
-                <p class="text-gray-300 text-sm bg-emerald-950/60 p-4 rounded-xl border border-emerald-500/30">
+                <h3 class="font-display text-xl font-bold text-brand-gold mb-1">Welcome to the Tribe, <span id="displayName" class="text-white"></span>! 🎉</h3>
+                <p class="text-emerald-300 text-xs mb-1.5" id="displayCollege"></p>
+                <p class="text-[11px] text-gray-400 mb-3" id="displayEmail"></p>
+                <p class="text-gray-300 text-xs bg-emerald-950/60 p-3 rounded-xl border border-emerald-500/30">
                     You are officially registered as an active changemaker. Your profile is now visible on the Tribe Wall below!
                 </p>
-                <button onclick="leaveTribe()" class="mt-6 text-xs text-red-400 hover:underline">Switch Account / Leave Tribe</button>
+                <button onclick="leaveTribe()" class="mt-4 text-[11px] text-red-400 hover:underline">Switch Account / Leave Tribe</button>
             </div>
 
         </section>
@@ -342,8 +380,8 @@
     </main>
 
     <!-- Footer -->
-    <footer class="glass-card border-t border-white/10 py-8 px-6 text-center text-xs text-gray-400">
-        <p class="mb-2">Made with 💚 and raw passion by Indian Students for the Youth.</p>
+    <footer class="glass-card border-t border-white/10 py-6 px-4 text-center text-[11px] text-gray-400">
+        <p class="mb-1">Made with 💚 and raw passion by Indian Students for the Youth.</p>
         <p class="text-brand-gold/80">&copy; 2026 Youth Care Foundation. All rights reserved.</p>
     </footer>
 
@@ -362,16 +400,16 @@
             if(slides.length === 0) return;
             slides.forEach((slide, index) => {
                 slide.classList.add('hidden');
-                dots[index].classList.remove('bg-brand-saffron', 'w-6');
-                dots[index].classList.add('bg-white/30', 'w-3');
+                dots[index].classList.remove('bg-brand-saffron', 'w-5');
+                dots[index].classList.add('bg-white/30', 'w-2.5');
             });
             
             slideIndex++;
             if (slideIndex > slides.length) { slideIndex = 1; }
             
             slides[slideIndex - 1].classList.remove('hidden');
-            dots[slideIndex - 1].classList.remove('bg-white/30', 'w-3');
-            dots[slideIndex - 1].classList.add('bg-brand-saffron', 'w-6');
+            dots[slideIndex - 1].classList.remove('bg-white/30', 'w-2.5');
+            dots[slideIndex - 1].classList.add('bg-brand-saffron', 'w-5');
 
             setTimeout(showSlides, 4000);
         }
@@ -380,19 +418,19 @@
             slideIndex = n;
             slides.forEach((slide, index) => {
                 slide.classList.add('hidden');
-                dots[index].classList.remove('bg-brand-saffron', 'w-6');
-                dots[index].classList.add('bg-white/30', 'w-3');
+                dots[index].classList.remove('bg-brand-saffron', 'w-5');
+                dots[index].classList.add('bg-white/30', 'w-2.5');
             });
             slides[n].classList.remove('hidden');
-            dots[n].classList.remove('bg-white/30', 'w-3');
-            dots[n].classList.add('bg-brand-saffron', 'w-6');
+            dots[n].classList.remove('bg-white/30', 'w-2.5');
+            dots[n].classList.add('bg-brand-saffron', 'w-5');
         }
 
         window.onload = function() {
             if(slides.length > 0) {
                 slides[0].classList.remove('hidden');
-                dots[0].classList.remove('bg-white/30', 'w-3');
-                dots[0].classList.add('bg-brand-saffron', 'w-6');
+                dots[0].classList.remove('bg-white/30', 'w-2.5');
+                dots[0].classList.add('bg-brand-saffron', 'w-5');
                 setTimeout(showSlides, 4000);
             }
             
@@ -409,10 +447,46 @@
             document.getElementById('join').scrollIntoView({ behavior: 'smooth' });
         }
 
-        // Toggle Founder Control Panel
+        // Secure Login Modal Functions
+        function openLoginModal() {
+            document.getElementById('loginModal').classList.remove('hidden');
+            document.getElementById('loginError').classList.add('hidden');
+        }
+
+        function closeLoginModal() {
+            document.getElementById('loginModal').classList.add('hidden');
+        }
+
+        function handleFounderLogin(e) {
+            e.preventDefault();
+            const email = document.getElementById('founderEmail').value.trim();
+            const pass = document.getElementById('founderPass').value.trim();
+
+            if (email === "dotskills.work@gmail.com" && pass === "YouthforNation") {
+                closeLoginModal();
+                document.getElementById('founderEmail').value = "";
+                document.getElementById('founderPass').value = "";
+                // Open Founder Control Panel
+                document.getElementById('founderModal').classList.remove('hidden'); // wait, let's toggle the actual work modal
+                closeLoginModal();
+                toggleFounderPanel();
+            } else {
+                document.getElementById('loginError').classList.remove('hidden');
+            }
+        }
+
+        // Toggle Founder Control Panel Work Modal
         function toggleFounderPanel() {
             const modal = document.getElementById('founderModal');
-            modal.classList.toggle('hidden');
+            // If it was the login modal, ensure we handle the work modal properly
+            // Let's create a dedicated work modal or reuse
+            const workModal = document.getElementById('founderWorkModal');
+            if(workModal) {
+                workModal.classList.toggle('hidden');
+            } else {
+                // Let's toggle the modal directly
+                modal.classList.toggle('hidden');
+            }
         }
 
         // Handle Publishing New Success Work (Only by Founder)
@@ -428,7 +502,7 @@
 
             document.getElementById('workTitle').value = '';
             document.getElementById('workDesc').value = '';
-            toggleFounderPanel();
+            document.getElementById('founderModal').classList.add('hidden');
             loadSuccessWorks();
         }
 
@@ -439,10 +513,10 @@
 
             if(works.length === 0) {
                 grid.innerHTML = `
-                    <div class="col-span-3 glass-card p-10 rounded-3xl text-center border-dashed border-2 border-brand-saffron/30">
-                        <div class="text-brand-saffron text-4xl mb-3"><i class="fa-solid fa-seedling"></i></div>
-                        <h4 class="font-display text-xl font-bold text-white mb-2">Ground Work In Progress 🚀</h4>
-                        <p class="text-gray-300 text-sm">No successful work posted yet. As soon as the founder publishes completed missions from the Founder Panel, they will appear right here!</p>
+                    <div class="col-span-3 glass-card p-8 rounded-3xl text-center border-dashed border-2 border-brand-saffron/30">
+                        <div class="text-brand-saffron text-3xl mb-2"><i class="fa-solid fa-seedling"></i></div>
+                        <h4 class="font-display text-lg font-bold text-white mb-1">Ground Work In Progress 🚀</h4>
+                        <p class="text-gray-300 text-xs">No successful work posted yet. As soon as the founder publishes completed missions from the Founder Panel, they will appear right here!</p>
                     </div>
                 `;
                 return;
@@ -454,15 +528,15 @@
                 if(w.category.includes("Education")) icon = "fa-book-bookmark";
                 if(w.category.includes("Sahyog")) icon = "fa-hands-holding-child";
 
-                grid.innerHTML = `
-                    <div class="glass-card rounded-3xl overflow-hidden border border-white/10 group">
-                        <div class="h-48 bg-emerald-900/40 flex items-center justify-center text-emerald-400 text-5xl relative">
+                grid.innerHTML += `
+                    <div class="glass-card rounded-2xl overflow-hidden border border-white/10 group">
+                        <div class="h-40 bg-emerald-900/40 flex items-center justify-center text-emerald-400 text-4xl relative">
                             <i class="fa-solid ${icon}"></i>
-                            <span class="absolute top-4 right-4 bg-brand-earth/80 text-brand-gold text-xs px-3 py-1 rounded-full border border-brand-gold/30">Completed</span>
+                            <span class="absolute top-3 right-3 bg-brand-earth/80 text-brand-gold text-[10px] px-2.5 py-0.5 rounded-full border border-brand-gold/30">Completed</span>
                         </div>
-                        <div class="p-6">
-                            <span class="text-xs text-emerald-300 uppercase tracking-wider font-bold">${w.category}</span>
-                            <h4 class="font-display text-lg font-bold text-white mt-1 mb-2">${w.title}</h4>
+                        <div class="p-5">
+                            <span class="text-[10px] text-emerald-300 uppercase tracking-wider font-bold">${w.category}</span>
+                            <h4 class="font-display text-base font-bold text-white mt-0.5 mb-1.5">${w.title}</h4>
                             <p class="text-gray-300 text-xs leading-relaxed">${w.desc}</p>
                         </div>
                     </div>
@@ -522,14 +596,14 @@
             grid.innerHTML = "";
             members.forEach(m => {
                 grid.innerHTML += `
-                    <div class="glass-card p-5 rounded-2xl flex items-center space-x-4 border border-white/10">
-                        <div class="w-12 h-12 rounded-full bg-gradient-to-tr from-brand-saffron to-brand-gold flex items-center justify-center text-brand-earth font-bold text-lg shadow-md flex-shrink-0">
+                    <div class="glass-card p-4 rounded-2xl flex items-center space-x-3.5 border border-white/10">
+                        <div class="w-10 h-10 rounded-full bg-gradient-to-tr from-brand-saffron to-brand-gold flex items-center justify-center text-brand-earth font-bold text-sm shadow-md flex-shrink-0">
                             ${m.avatar || m.name.charAt(0).toUpperCase()}
                         </div>
                         <div class="overflow-hidden">
-                            <h4 class="font-bold text-white text-sm truncate">${m.name}</h4>
-                            <p class="text-xs text-emerald-300 truncate">${m.college}</p>
-                            <span class="inline-block mt-1 text-[10px] bg-brand-earth px-2 py-0.5 rounded text-brand-gold border border-brand-gold/20">Changemaker 🇮🇳</span>
+                            <h4 class="font-bold text-white text-xs truncate">${m.name}</h4>
+                            <p class="text-[11px] text-emerald-300 truncate">${m.college}</p>
+                            <span class="inline-block mt-0.5 text-[9px] bg-brand-earth px-2 py-0.2 rounded text-brand-gold border border-brand-gold/20">Changemaker 🇮🇳</span>
                         </div>
                     </div>
                 `;
