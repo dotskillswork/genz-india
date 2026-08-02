@@ -97,6 +97,20 @@
             white-space: nowrap;
         }
 
+        /* Manual Refresh Button */
+        .manual-refresh-btn {
+            background: #fff7ed;
+            border: 1px solid #fed7aa;
+            color: #ea580c;
+            padding: 4px 10px;
+            border-radius: 8px;
+            font-size: 11.5px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+        .manual-refresh-btn:hover { background: #ffedd5; }
+
         .chat-header {
             padding: 10px 16px;
             background: #fffbeb;
@@ -158,7 +172,7 @@
             display: block;
         }
 
-        /* 3-Dot Control Menu - Fully Fixed for Mobile & Desktop */
+        /* 3-Dot Control Menu */
         .chat-menu-container {
             position: relative;
             flex-shrink: 0;
@@ -417,24 +431,12 @@
             border: none;
         }
 
-        /* Responsive Mobile Layout Adjustments */
         @media(max-width: 480px) {
-            .chat-container {
-                border: none;
-                box-shadow: none;
-            }
-            header {
-                padding: 8px 12px;
-            }
-            .chat-header {
-                padding: 8px 12px;
-            }
-            .chat-user-avatar {
-                width: 36px; height: 36px;
-            }
-            .chat-user-info h4 {
-                font-size: 13.5px;
-            }
+            .chat-container { border: none; box-shadow: none; }
+            header { padding: 8px 12px; }
+            .chat-header { padding: 8px 12px; }
+            .chat-user-avatar { width: 36px; height: 36px; }
+            .chat-user-info h4 { font-size: 13.5px; }
         }
     </style>
 </head>
@@ -444,7 +446,8 @@
         <header>
             <a href="chats.html" class="back-btn">← Back to Chats</a>
             <h3 style="font-size: 13.5px; font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">💬 Gen'Z Direct Chat 🇮🇳</h3>
-            <div style="width: 10px;"></div>
+            <!-- Manual Refresh Button Added Here -->
+            <button class="manual-refresh-btn" onclick="manualRefreshChat()">🔄 Refresh</button>
         </header>
 
         <!-- Chat Header with 3-Dot Options Menu -->
@@ -527,6 +530,20 @@
 
         const chatId = [activeUser.username, chatWith].sort().join('_');
         let selectedImageBase64 = "";
+
+        // --- AUTO REFRESH / PAGE RESYNC LOGIC ON LOAD ---
+        window.addEventListener('load', () => {
+            if (!sessionStorage.getItem('chat_auto_refreshed')) {
+                sessionStorage.setItem('chat_auto_refreshed', 'true');
+                window.location.reload();
+            }
+        });
+
+        // --- MANUAL REFRESH FUNCTION ---
+        function manualRefreshChat() {
+            sessionStorage.removeItem('chat_auto_refreshed');
+            window.location.reload();
+        }
 
         // 3-Dot Dropdown Toggle Logic
         function toggleChatMenu(e) {
