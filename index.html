@@ -346,7 +346,7 @@
             background: #ffffff;
         }
         .service-icon-emoji {
-            font-size: 28px;
+            font-size: 26px;
             background: linear-gradient(135deg, #fff7ed, #ffedd5);
             width: 58px;
             height: 58px;
@@ -678,6 +678,26 @@
                 <div class="service-icon-title">Make Friends</div>
             </a>
 
+            <!-- 💬 Modern Unique Chat Bubble Icon Card Added Here -->
+            <a href="chats.html" class="service-icon-card" onclick="markSeen('chat')">
+                <span class="card-badge" id="badge_chat">0</span>
+                <div class="service-icon-emoji">
+                    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M12 2C6.477 2 2 6.038 2 11c0 2.457 1.05 4.685 2.768 6.326L4 21l3.909-1.045C9.37 20.485 10.654 21 12 21c5.523 0 10-4.038 10-9s-4.477-9-10-9z" fill="url(#chatGradient)" stroke="#ea580c" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                        <circle cx="8" cy="11" r="1.2" fill="#fff"/>
+                        <circle cx="12" cy="11" r="1.2" fill="#fff"/>
+                        <circle cx="16" cy="11" r="1.2" fill="#fff"/>
+                        <defs>
+                            <linearGradient id="chatGradient" x1="2" y1="2" x2="22" y2="21" gradientUnits="userSpaceOnUse">
+                                <stop stop-color="#ff7a00"/>
+                                <stop offset="1" stop-color="#ea580c"/>
+                            </linearGradient>
+                        </defs>
+                    </svg>
+                </div>
+                <div class="service-icon-title">Messages Hub</div>
+            </a>
+
             <a href="voiceup.html" class="service-icon-card" onclick="markSeen('voice')">
                 <span class="card-badge" id="badge_voice">0</span>
                 <div class="service-icon-emoji">✊</div>
@@ -894,6 +914,9 @@
                         });
                     }
                 });
+                
+                // Update Messages Hub Unread Badge
+                updateCardBadge('badge_chat', unreadChats.length);
                 mergeAndRenderAlerts(null, unreadChats);
             });
         }
