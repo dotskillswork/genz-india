@@ -440,7 +440,6 @@
                 </div>
             </div>
 
-            <a href="study_rooms.html" style="background: #f0fdf4; color: #16a34a; border: 1px solid #bbf7d0; padding: 6px 12px; border-radius: 8px; text-decoration: none; font-weight: 600; font-size: 11.5px;">Rooms</a>
             <button class="logout-btn" onclick="logoutUser()">Logout</button>
 
             <!-- 3-Dot More Menu -->
@@ -479,12 +478,6 @@
                 <div class="service-icon-title">Make Friends</div>
             </a>
 
-            <a href="doubtbox.html" class="service-icon-card" onclick="markSeen('doubt')">
-                <span class="card-badge" id="badge_doubt">0</span>
-                <div class="service-icon-emoji">💬</div>
-                <div class="service-icon-title">DoubtBox</div>
-            </a>
-
             <a href="voiceup.html" class="service-icon-card" onclick="markSeen('voice')">
                 <span class="card-badge" id="badge_voice">0</span>
                 <div class="service-icon-emoji">✊</div>
@@ -521,11 +514,12 @@
                 <div class="service-icon-emoji">🎯</div>
                 <div class="service-icon-title">Mock Interviews</div>
             </a>
+        </div>
 
-            <a href="resources.html" class="service-icon-card">
-                <div class="service-icon-emoji">📖</div>
-                <div class="service-icon-title">Skill Resources</div>
-            </a>
+        <!-- Skills Section (Ready for future skill features) -->
+        <div class="services-section-title">⚡ Skills</div>
+        <div class="services-grid">
+            <!-- Future skill cards can be added here -->
         </div>
 
         <div class="footer-links">
@@ -664,14 +658,6 @@
         function setupCardActivityTrackers() {
             if (!currentUser) return;
 
-            db.collection("doubts").onSnapshot((snapshot) => {
-                let totalDoubts = snapshot.size;
-                let lastSeen = parseInt(localStorage.getItem('seen_count_doubts') ?? totalDoubts);
-                if(lastSeen > totalDoubts) lastSeen = totalDoubts;
-                let unread = totalDoubts - lastSeen;
-                updateCardBadge('badge_doubt', unread > 0 ? unread : 0);
-            });
-
             db.collection("voiceup_reports").onSnapshot((snapshot) => {
                 let totalVoice = snapshot.size;
                 let lastSeen = parseInt(localStorage.getItem('seen_count_voice') ?? totalVoice);
@@ -690,9 +676,7 @@
         }
 
         window.markSeen = function(featureKey) {
-            if (featureKey === 'doubt') {
-                db.collection("doubts").get().then(snap => localStorage.setItem('seen_count_doubts', snap.size));
-            } else if (featureKey === 'voice') {
+            if (featureKey === 'voice') {
                 db.collection("voiceup_reports").get().then(snap => localStorage.setItem('seen_count_voice', snap.size));
             } else if (featureKey === 'innov') {
                 db.collection("innovations").get().then(snap => localStorage.setItem('seen_count_innov', snap.size));
