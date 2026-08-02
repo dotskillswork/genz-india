@@ -11,6 +11,10 @@
     <!-- Google Fonts: Poppins & Space Grotesk -->
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
     
+    <!-- Firebase SDKs -->
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+
     <script>
         tailwind.config = {
             darkMode: 'class',
@@ -117,7 +121,7 @@
         </div>
     </header>
 
-    <!-- Secure Founder Login Modal -->
+    <!-- Secure Founder Login Modal (Fixed: Secret typing format) -->
     <div id="loginModal" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-md hidden flex items-center justify-center p-4">
         <div class="glass-card max-w-sm w-full p-6 rounded-3xl border border-brand-gold/40 text-left relative">
             <button onclick="closeLoginModal()" class="absolute top-3 right-3 text-gray-400 hover:text-white text-lg">
@@ -128,12 +132,12 @@
             
             <form onsubmit="handleFounderLogin(event)" class="space-y-3">
                 <div>
-                    <label class="block text-[11px] uppercase tracking-wider text-emerald-300 mb-1">Username / Email</label>
-                    <input type="email" id="founderEmail" required placeholder="dotskills.work@gmail.com" class="w-full bg-brand-earth/90 border border-white/10 rounded-xl px-3 py-2 text-white text-xs focus:outline-none focus:border-brand-saffron">
+                    <label class="block text-[11px] uppercase tracking-wider text-emerald-300 mb-1">Username</label>
+                    <input type="password" id="founderEmail" required autocomplete="new-password" placeholder="Enter username" class="w-full bg-brand-earth/90 border border-white/10 rounded-xl px-3 py-2 text-white text-xs focus:outline-none focus:border-brand-saffron">
                 </div>
                 <div>
                     <label class="block text-[11px] uppercase tracking-wider text-emerald-300 mb-1">Password</label>
-                    <input type="password" id="founderPass" required placeholder="••••••••••••" class="w-full bg-brand-earth/90 border border-white/10 rounded-xl px-3 py-2 text-white text-xs focus:outline-none focus:border-brand-saffron">
+                    <input type="password" id="founderPass" required autocomplete="new-password" placeholder="••••••••••••" class="w-full bg-brand-earth/90 border border-white/10 rounded-xl px-3 py-2 text-white text-xs focus:outline-none focus:border-brand-saffron">
                 </div>
                 <div id="loginError" class="text-red-400 text-xs hidden">❌ Invalid Credentials! Try again.</div>
                 <button type="submit" class="w-full bg-gradient-to-r from-brand-saffron to-brand-gold text-brand-earth font-bold py-2.5 rounded-xl shadow-lg hover:opacity-95 text-xs">
@@ -318,7 +322,7 @@
             </div>
         </section>
 
-        <!-- Live Joined Members Wall (Tribe Wall) -->
+        <!-- Live Joined Members Wall (Tribe Wall) - Firebase Connected -->
         <section id="members" class="w-full max-w-5xl py-8 text-left">
             <div class="text-center mb-6">
                 <h3 class="font-display text-2xl md:text-3xl font-bold text-brand-gold mb-1.5">Our Active Tribe Members 🇮🇳</h3>
@@ -326,7 +330,7 @@
             </div>
             <!-- Members Grid Container -->
             <div id="membersGrid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
-                <!-- Dynamic cards will appear here -->
+                <!-- Dynamic cards will appear here from Firebase -->
             </div>
         </section>
 
@@ -386,10 +390,28 @@
     </footer>
 
     <script>
+        // Firebase Configuration (Matching index.html)
+        const firebaseConfig = {
+            apiKey: "AIzaSyCNLwSjHq6LlX9uUovTRHrz9ZfUWeIUWQM",
+            authDomain: "genz-india.firebaseapp.com",
+            projectId: "genz-india",
+            storageBucket: "genz-india.firebasestorage.app",
+            messagingSenderId: "149959470783",
+            appId: "1:149959470783:web:71b7969ee2c8fc049c200a",
+            measurementId: "G-RBRDSRKH"
+        };
+
+        if (!firebase.apps.length) {
+            firebase.initializeApp(firebaseConfig);
+        }
+        const db = firebase.firestore();
+
+        // Get Logged-in User from LocalStorage (from main dashboard login)
+        const localUser = JSON.parse(localStorage.getItem('genzUser'));
         const currentUserProfile = {
-            name: "Aryan Sharma",
-            college: "Delhi University",
-            avatarText: "A"
+            name: localUser ? (localUser.name || localUser.username || "Student") : "Aryan Sharma",
+            college: localUser ? (localUser.college || localUser.bio || "Delhi University") : "Delhi University",
+            avatarText: localUser ? (localUser.name ? localUser.name.charAt(0).toUpperCase() : "A") : "A"
         };
 
         let slideIndex = 0;
@@ -438,7 +460,7 @@
             document.getElementById('previewCollege').innerText = currentUserProfile.college;
             document.getElementById('previewAvatar').innerText = currentUserProfile.avatarText;
 
-            loadMembers();
+            setupRealtimeMembers();
             loadSuccessWorks();
             checkUserJoined();
         };
@@ -451,6 +473,8 @@
         function openLoginModal() {
             document.getElementById('loginModal').classList.remove('hidden');
             document.getElementById('loginError').classList.add('hidden');
+            document.getElementById('founderEmail').value = "";
+            document.getElementById('founderPass').value = "";
         }
 
         function closeLoginModal() {
@@ -466,9 +490,6 @@
                 closeLoginModal();
                 document.getElementById('founderEmail').value = "";
                 document.getElementById('founderPass').value = "";
-                // Open Founder Control Panel
-                document.getElementById('founderModal').classList.remove('hidden'); // wait, let's toggle the actual work modal
-                closeLoginModal();
                 toggleFounderPanel();
             } else {
                 document.getElementById('loginError').classList.remove('hidden');
@@ -478,15 +499,7 @@
         // Toggle Founder Control Panel Work Modal
         function toggleFounderPanel() {
             const modal = document.getElementById('founderModal');
-            // If it was the login modal, ensure we handle the work modal properly
-            // Let's create a dedicated work modal or reuse
-            const workModal = document.getElementById('founderWorkModal');
-            if(workModal) {
-                workModal.classList.toggle('hidden');
-            } else {
-                // Let's toggle the modal directly
-                modal.classList.toggle('hidden');
-            }
+            modal.classList.toggle('hidden');
         }
 
         // Handle Publishing New Success Work (Only by Founder)
@@ -506,7 +519,7 @@
             loadSuccessWorks();
         }
 
-        // Load Success Works (If empty, shows Coming Soon instead of fake posts)
+        // Load Success Works
         function loadSuccessWorks() {
             const grid = document.getElementById('successWorksGrid');
             let works = JSON.parse(localStorage.getItem('founderSuccessWorks')) || [];
@@ -544,7 +557,8 @@
             });
         }
 
-        function handleJoin(e) {
+        // Handle Join Tribe - Syncs with Firebase Firestore for cross-device real-time sync
+        async function handleJoin(e) {
             e.preventDefault();
             const email = document.getElementById('userEmail').value;
 
@@ -552,19 +566,19 @@
                 name: currentUserProfile.name, 
                 college: currentUserProfile.college, 
                 email: email,
-                avatar: currentUserProfile.avatarText
+                avatar: currentUserProfile.avatarText,
+                joinedAt: firebase.firestore.FieldValue.serverTimestamp()
             };
 
-            localStorage.setItem('youthMember', JSON.stringify(userData));
-
-            let members = JSON.parse(localStorage.getItem('tribeMembers')) || [];
-            if(!members.some(m => m.email === email)) {
-                members.push(userData);
-                localStorage.setItem('tribeMembers', JSON.stringify(members));
+            try {
+                // Save to Firebase Firestore so all devices can see it
+                await db.collection("youth_members").add(userData);
+                localStorage.setItem('youthMember', JSON.stringify(userData));
+                checkUserJoined();
+            } catch (err) {
+                console.error("Error joining tribe: ", err);
+                alert("Failed to join. Please check internet connection.");
             }
-
-            checkUserJoined();
-            loadMembers();
         }
 
         function checkUserJoined() {
@@ -587,26 +601,36 @@
             checkUserJoined();
         }
 
-        function loadMembers() {
+        // Realtime Members Sync from Firebase Firestore across all devices
+        function setupRealtimeMembers() {
             const grid = document.getElementById('membersGrid');
-            let members = JSON.parse(localStorage.getItem('tribeMembers')) || [
-                { name: "Aryan Sharma", college: "Delhi University", avatar: "A" }
-            ];
+            
+            db.collection("youth_members").onSnapshot((snapshot) => {
+                let members = [];
+                snapshot.forEach((doc) => {
+                    members.push(doc.data());
+                });
 
-            grid.innerHTML = "";
-            members.forEach(m => {
-                grid.innerHTML += `
-                    <div class="glass-card p-4 rounded-2xl flex items-center space-x-3.5 border border-white/10">
-                        <div class="w-10 h-10 rounded-full bg-gradient-to-tr from-brand-saffron to-brand-gold flex items-center justify-center text-brand-earth font-bold text-sm shadow-md flex-shrink-0">
-                            ${m.avatar || m.name.charAt(0).toUpperCase()}
+                if (members.length === 0) {
+                    grid.innerHTML = `<div class="col-span-4 text-center text-gray-400 text-xs py-4">No members joined yet. Be the first one! 🚀</div>`;
+                    return;
+                }
+
+                grid.innerHTML = "";
+                members.forEach(m => {
+                    grid.innerHTML += `
+                        <div class="glass-card p-4 rounded-2xl flex items-center space-x-3.5 border border-white/10">
+                            <div class="w-10 h-10 rounded-full bg-gradient-to-tr from-brand-saffron to-brand-gold flex items-center justify-center text-brand-earth font-bold text-sm shadow-md flex-shrink-0">
+                                ${m.avatar || (m.name ? m.name.charAt(0).toUpperCase() : "U")}
+                            </div>
+                            <div class="overflow-hidden">
+                                <h4 class="font-bold text-white text-xs truncate">${m.name}</h4>
+                                <p class="text-[11px] text-emerald-300 truncate">${m.college}</p>
+                                <span class="inline-block mt-0.5 text-[9px] bg-brand-earth px-2 py-0.2 rounded text-brand-gold border border-brand-gold/20">Changemaker 🇮🇳</span>
+                            </div>
                         </div>
-                        <div class="overflow-hidden">
-                            <h4 class="font-bold text-white text-xs truncate">${m.name}</h4>
-                            <p class="text-[11px] text-emerald-300 truncate">${m.college}</p>
-                            <span class="inline-block mt-0.5 text-[9px] bg-brand-earth px-2 py-0.2 rounded text-brand-gold border border-brand-gold/20">Changemaker 🇮🇳</span>
-                        </div>
-                    </div>
-                `;
+                    `;
+                });
             });
         }
     </script>
