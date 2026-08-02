@@ -36,9 +36,6 @@
         }
 
         /* Full Page Light Theme Matches */
-        body.theme-friendship {
-            background: linear-gradient(180deg, #fff1f2 0%, #fffafb 50%, #f8fafc 100%);
-        }
         body.theme-independence {
             background: linear-gradient(180deg, #fff7ed 0%, #f0fdf4 50%, #f8fafc 100%);
         }
@@ -47,6 +44,9 @@
         }
         body.theme-pride {
             background: linear-gradient(180deg, #f1f5f9 0%, #e2e8f0 50%, #f8fafc 100%);
+        }
+        body.theme-youthcare {
+            background: linear-gradient(180deg, #f0fdf4 0%, #ecfdf5 50%, #f8fafc 100%);
         }
 
         /* Top Tiranga Animated Gradient Border */
@@ -170,10 +170,7 @@
             pointer-events: auto;
         }
 
-        /* Rich Vibrant Slide Gradients */
-        .slide-friendship {
-            background: linear-gradient(135deg, #f43f5e 0%, #fb7185 50%, #e11d48 100%);
-        }
+        /* Rich Vibrant Slide Gradients (Friendship slide removed) */
         .slide-independence {
             background: linear-gradient(135deg, #ff9933 0%, #f97316 50%, #15803d 100%);
         }
@@ -182,6 +179,9 @@
         }
         .slide-pride {
             background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #334155 100%);
+        }
+        .slide-youthcare {
+            background: linear-gradient(135deg, #0f221c 0%, #17362b 50%, #1e3f33 100%);
         }
 
         .hero-slide-content h2 {
@@ -536,7 +536,7 @@
         }
     </style>
 </head>
-<body class="theme-friendship">
+<body class="theme-independence">
 
     <!-- Special Tiranga Celebration Header Ticker -->
     <div class="tiranga-banner-decor" id="tirangaTicker">
@@ -564,7 +564,7 @@
 
     <header>
         <div style="display: flex; align-items: center; gap: 12px;">
-            <!-- Profile Avatar Icon in Header (Opposite to Logo) - Redirects to viewprofile.html -->
+            <!-- Profile Avatar Icon in Header -->
             <div class="header-profile-icon" id="headerProfileAvatar" onclick="window.location.href='viewprofile.html'" title="View Profile">
                 <img id="headerUserImg" src="https://cdn.jsdelivr.net/gh/twitter/twemoji@14.0.2/assets/72x72/1f464.png" alt="Profile">
             </div>
@@ -589,7 +589,7 @@
                 </div>
             </div>
 
-            <!-- 3-Dot More Menu (Logout shifted inside here) -->
+            <!-- 3-Dot More Menu -->
             <div class="menu-container">
                 <button class="three-dot-btn" onclick="toggleMenu(event)">⋮</button>
                 <div class="dropdown-menu" id="moreDropdown">
@@ -608,23 +608,10 @@
         </nav>
     </header>
 
-    <!-- Full-Width Immersive Hero Slider Banner -->
+    <!-- Full-Width Immersive Hero Slider Banner (Friendship Day Slide Removed) -->
     <div class="hero-slider-container">
-        <!-- Slide 1: Friendship Day (Active on Aug 2) -->
-        <div class="hero-slide slide-friendship active" data-slide-name="friendship" data-theme="theme-friendship">
-            <div class="hero-slide-content">
-                <span style="background: rgba(255,255,255,0.25); padding: 4px 12px; border-radius: 20px; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px;">Special Event 🌟</span>
-                <h2 style="margin-top: 8px;">Happy Friendship Day! 🤝</h2>
-                <p>Connect with brilliant peers across the country, share ideas and build lifelong bonds on Gen'Z India.</p>
-                <a href="makefriend.html" class="hero-btn">Make Friends Now 🚀</a>
-            </div>
-            <div class="hero-animation-box">
-                <div class="floating-char">🤗</div>
-            </div>
-        </div>
-
-        <!-- Slide 2: Independence Day / August Special -->
-        <div class="hero-slide slide-independence" data-slide-name="independence" data-theme="theme-independence">
+        <!-- Slide 1: Independence Day / August Special -->
+        <div class="hero-slide slide-independence active" data-slide-name="independence" data-theme="theme-independence">
             <div class="hero-slide-content">
                 <span style="background: rgba(255,255,255,0.25); padding: 4px 12px; border-radius: 20px; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px;">August Freedom Fest 🇮🇳</span>
                 <h2 style="margin-top: 8px;">Great Freedom Sale & Youth Rally</h2>
@@ -636,7 +623,7 @@
             </div>
         </div>
 
-        <!-- Slide 3: Environment -->
+        <!-- Slide 2: Environment -->
         <div class="hero-slide slide-environment" data-slide-name="environment" data-theme="theme-environment">
             <div class="hero-slide-content">
                 <span style="background: rgba(255,255,255,0.25); padding: 4px 12px; border-radius: 20px; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px;">Green India 🌱</span>
@@ -649,7 +636,7 @@
             </div>
         </div>
 
-        <!-- Slide 4: Make India Proud -->
+        <!-- Slide 3: Make India Proud -->
         <div class="hero-slide slide-pride" data-slide-name="pride" data-theme="theme-pride">
             <div class="hero-slide-content">
                 <span style="background: rgba(234,88,12,0.3); color: #fdba74; padding: 4px 12px; border-radius: 20px; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px;">Make India Proud 🚀</span>
@@ -659,6 +646,19 @@
             </div>
             <div class="hero-animation-box">
                 <div class="floating-char">🏆</div>
+            </div>
+        </div>
+
+        <!-- Slide 4: Youth Care Foundation (New Added Slide) -->
+        <div class="hero-slide slide-youthcare" data-slide-name="youthcare" data-theme="theme-youthcare">
+            <div class="hero-slide-content">
+                <span style="background: rgba(255,200,87,0.3); color: #FFC857; padding: 4px 12px; border-radius: 20px; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px;">Youth Care Foundation 💚</span>
+                <h2 style="margin-top: 8px;">Changemakers for Society</h2>
+                <p>Environment, Education & Sahyog Seva. Join hands to uplift zarooratmandon and create real ground impact.</p>
+                <a href="youth-care.html" class="hero-btn" style="background: #FF6B35; color: #fff;">Join Youth Care Tribe 🚀</a>
+            </div>
+            <div class="hero-animation-box">
+                <div class="floating-char">🌱</div>
             </div>
         </div>
 
@@ -678,7 +678,7 @@
                 <div class="service-icon-title">Make Friends</div>
             </a>
 
-            <!-- 💬 Modern Unique Chat Bubble Icon Card Added Here -->
+            <!-- 💬 Modern Unique Chat Bubble Icon Card -->
             <a href="chats.html" class="service-icon-card" onclick="markSeen('chat')">
                 <span class="card-badge" id="badge_chat">0</span>
                 <div class="service-icon-emoji">
@@ -708,6 +708,12 @@
                 <span class="card-badge" id="badge_innov">0</span>
                 <div class="service-icon-emoji">💡</div>
                 <div class="service-icon-title">Innovations</div>
+            </a>
+
+            <!-- 💚 Youth Care Foundation Feature Card -->
+            <a href="youth-care.html" class="service-icon-card" style="border-color: #bbf7d0; background: #f0fdf4;">
+                <div class="service-icon-emoji" style="background: #dcfce7; border-color: #bbf7d0;">🌱</div>
+                <div class="service-icon-title" style="color: #16a34a;">Youth Care</div>
             </a>
 
             <!-- 🇮🇳 Proud to be Indian Icon Card -->
@@ -768,19 +774,17 @@
             showSlide(currentSlideIndex);
         }
 
-        // Smart Calendar Priority Detection (Auto-Highlight based on date)
+        // Smart Calendar Priority Detection
         function setSmartInitialSlide() {
             const today = new Date();
             const date = today.getDate();
             const month = today.getMonth() + 1; // August is 8
 
-            let targetSlideName = 'friendship'; // Default for August 2
+            let targetSlideName = 'independence'; // Default priority
 
             if (month === 8) {
                 if (date >= 10 && date <= 18) {
-                    targetSlideName = 'independence'; // Around 15th August
-                } else if (date === 2) {
-                    targetSlideName = 'friendship'; // Friendship Day
+                    targetSlideName = 'independence'; 
                 }
             }
 
@@ -915,7 +919,6 @@
                     }
                 });
                 
-                // Update Messages Hub Unread Badge
                 updateCardBadge('badge_chat', unreadChats.length);
                 mergeAndRenderAlerts(null, unreadChats);
             });
