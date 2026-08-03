@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>About Us | Gen'Z India</title>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
         * {
             margin: 0;
@@ -13,76 +13,112 @@
             font-family: 'Poppins', sans-serif;
         }
         body {
-            background-color: #f8fafc;
+            background: linear-gradient(135deg, #f0f4f8 0%, #e2e8f0 100%);
             color: #1e293b;
             min-height: 100vh;
             display: flex;
             flex-direction: column;
+            overflow-x: hidden;
         }
         header {
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(10px);
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(12px);
             padding: 15px 30px;
             display: flex;
             align-items: center;
             justify-content: space-between;
-            border-bottom: 1px solid #e2e8f0;
+            border-bottom: 1px solid rgba(226, 232, 240, 0.8);
             position: sticky;
             top: 0;
             z-index: 1000;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
         }
         .back-btn {
             color: #0284c7;
             text-decoration: none;
             font-size: 13.5px;
             font-weight: 600;
-            transition: 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            transition: transform 0.2s ease, color 0.2s ease;
         }
         .back-btn:hover {
             color: #0369a1;
+            transform: translateX(-3px);
         }
         .container {
-            max-width: 800px;
+            max-width: 900px;
             width: 100%;
             margin: 40px auto;
             padding: 0 20px;
             flex: 1;
+            animation: fadeIn 0.8s ease-out;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
         }
         .about-card {
             background: #ffffff;
-            padding: 40px;
-            border-radius: 20px;
-            border: 1px solid #e2e8f0;
-            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05);
+            padding: 45px;
+            border-radius: 24px;
+            border: 1px solid rgba(226, 232, 240, 0.8);
+            box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.07);
             margin-bottom: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+        .about-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 5px;
+            background: linear-gradient(90deg, #ff9933, #ffffff, #138808);
         }
         .about-card h1 {
-            color: #0284c7;
-            font-size: 26px;
-            font-weight: 700;
-            margin-bottom: 15px;
+            background: linear-gradient(135deg, #0284c7, #4f46e5);
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-size: 28px;
+            font-weight: 800;
+            margin-bottom: 20px;
             text-align: center;
         }
         .about-card p {
             color: #475569;
-            font-size: 14px;
+            font-size: 14.5px;
             line-height: 1.8;
             margin-bottom: 20px;
+            text-align: justify;
         }
         .features-list {
-            margin-top: 20px;
+            margin-top: 25px;
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
             gap: 15px;
         }
         .feature-item {
-            background: #f0f9ff;
+            background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
             border: 1px solid #bae6fd;
-            padding: 15px;
-            border-radius: 12px;
-            font-size: 13px;
+            padding: 16px 18px;
+            border-radius: 14px;
+            font-size: 13.5px;
             color: #0369a1;
-            font-weight: 500;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 12px rgba(3, 105, 161, 0.05);
+        }
+        .feature-item:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 20px rgba(3, 105, 161, 0.12);
+            background: linear-gradient(135deg, #e0f2fe 100%, #bae6fd 0%);
         }
 
         /* Mr. Gen'Z Creator Card Styling */
@@ -90,69 +126,95 @@
             background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 100%);
             border: 1px solid rgba(139, 92, 246, 0.3);
             border-radius: 24px;
-            padding: 35px 30px;
+            padding: 40px 30px;
             text-align: center;
             color: #ffffff;
-            box-shadow: 0 20px 40px -15px rgba(99, 102, 241, 0.3);
-            margin-top: 30px;
+            box-shadow: 0 25px 50px -12px rgba(99, 102, 241, 0.35);
+            margin-top: 35px;
             position: relative;
             overflow: hidden;
+        }
+        .mr-genz-card::after {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(99, 102, 241, 0.1) 0%, transparent 70%);
+            pointer-events: none;
+            animation: pulseGlow 6s ease-in-out infinite;
+        }
+        @keyframes pulseGlow {
+            0% { transform: scale(0.9); opacity: 0.8; }
+            50% { transform: scale(1.1); opacity: 1; }
+            100% { transform: scale(0.9); opacity: 0.8; }
         }
         .avatar-glow-container {
             display: flex;
             justify-content: center;
             margin-bottom: 20px;
+            position: relative;
+            z-index: 2;
         }
         .genz-avatar {
-            width: 90px;
-            height: 90px;
+            width: 95px;
+            height: 95px;
             background: linear-gradient(135deg, #4f46e5, #ec4899);
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 40px;
-            box-shadow: 0 0 25px rgba(236, 72, 153, 0.5);
+            font-size: 42px;
+            box-shadow: 0 0 30px rgba(236, 72, 153, 0.6);
             animation: floatAvatar 3s ease-in-out infinite alternate;
-            border: 3px solid rgba(255, 255, 255, 0.2);
+            border: 3px solid rgba(255, 255, 255, 0.25);
         }
         @keyframes floatAvatar {
             0% { transform: translateY(0) scale(1); }
-            100% { transform: translateY(-6px) scale(1.05); }
+            100% { transform: translateY(-8px) scale(1.06); }
         }
         .mr-genz-card h3 {
-            font-size: 24px;
+            font-size: 26px;
             font-weight: 700;
             background: linear-gradient(to right, #818cf8, #f472b6);
             background-clip: text;
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
-            margin-bottom: 4px;
+            margin-bottom: 6px;
+            position: relative;
+            z-index: 2;
         }
         .genz-tag {
             display: inline-block;
-            font-size: 11.5px;
-            background: rgba(139, 92, 246, 0.2);
+            font-size: 12px;
+            background: rgba(139, 92, 246, 0.25);
             color: #c084fc;
-            padding: 4px 12px;
+            padding: 5px 14px;
             border-radius: 20px;
             font-weight: 600;
-            margin-bottom: 15px;
-            border: 1px solid rgba(139, 92, 246, 0.3);
+            margin-bottom: 18px;
+            border: 1px solid rgba(139, 92, 246, 0.4);
+            position: relative;
+            z-index: 2;
         }
         .mr-genz-card p {
             color: #94a3b8;
-            font-size: 13.5px;
-            line-height: 1.6;
-            max-width: 500px;
+            font-size: 14px;
+            line-height: 1.7;
+            max-width: 550px;
             margin: 0 auto 20px auto;
+            position: relative;
+            z-index: 2;
         }
         .genz-quote {
-            font-size: 12.5px;
+            font-size: 13px;
             color: #38bdf8;
             font-style: italic;
-            font-weight: 500;
-            letter-spacing: 0.3px;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            position: relative;
+            z-index: 2;
         }
     </style>
 </head>
@@ -161,24 +223,24 @@
     <header>
         <a href="index.html" class="back-btn">← Back to Dashboard</a>
         <h3 style="font-size: 16px; color: #0f172a; font-weight: 700;">ℹ️ About Gen'Z India</h3>
-        <div style="width: 80px;"></div>
+        <div style="width: 100px;"></div>
     </header>
 
     <div class="container">
         <div class="about-card">
-            <h1>Empowering Students Across India 🚀</h1>
-            <p><strong>Gen'Z India</strong> is a dynamic student-centric platform built by students, for students. Our core mission is to provide a unified space where college and university peers can connect, share academic notes, monetize collaborative projects, and seamlessly resolve doubts together.</p>
+            <h1>Empowering Indian Youth & Campuses 🚀</h1>
+            <p><strong>Gen'Z India</strong> (`genzindia.online`) is a dynamic, next-generation student ecosystem built from scratch to unite peers across colleges and universities. Our core mission is to provide an immersive platform where students can collaborate seamlessly, share innovations, express opinions, and connect safely.</p>
             
-            <p>Whether you need help with coding questions, want to join focused study rooms, raise your voice on campus matters, or showcase your innovations to the world—Gen'Z India is your ultimate academic companion.</p>
+            <p>Powered by real-time cloud technology, Gen'Z India brings essential campus utilities right to your fingertips—eliminating barriers and fostering a strong community spirit.</p>
 
-            <h3 style="font-size: 16px; color: #0f172a; margin-top: 25px; margin-bottom: 12px;">What We Offer:</h3>
+            <h3 style="font-size: 17px; color: #0f172a; margin-top: 30px; margin-bottom: 15px;">🌟 Core Platform Features:</h3>
             <div class="features-list">
-                <div class="feature-item">🤝 Make Friends & Peer Chat</div>
-                <div class="feature-item">💬 DoubtBox for Q&A</div>
-                <div class="feature-item">📦 Gen'Z Store for Notes</div>
-                <div class="feature-item">💡 Innovations & Talent Showcase</div>
-                <div class="feature-item">💼 Freelance & Student Gigs</div>
+                <div class="feature-item">🤝 Make Friends & Peer Network</div>
+                <div class="feature-item">💬 Messages Hub (Real-time Chat)</div>
                 <div class="feature-item">🎧 Voice Up Campus Platform</div>
+                <div class="feature-item">💡 Innovations & Talent Showcase</div>
+                <div class="feature-item">🌱 Youth Care Foundation</div>
+                <div class="feature-item">🇮🇳 Indian Pride & Community</div>
             </div>
 
             <!-- Mr. Gen'Z Creator Card -->
@@ -190,8 +252,8 @@
                 </div>
                 <div class="genz-info">
                     <h3>Mr. Gen'Z</h3>
-                    <span class="genz-tag">The Anonymous Builder & Creator 🚀</span>
-                    <p>This platform is not backed by any corporation; rather, it is the result of a student's creative vision and late-night coding efforts. Here, every student can learn, collaborate, and grow securely without any barriers.</p>
+                    <span class="genz-tag">The Creator & Sole Builder 🚀</span>
+                    <p>This entire platform is built independently through passionate late-night coding and real-world vision. Designed to give the youth of Bharat a powerful digital voice and robust community infrastructure.</p>
                     <div class="genz-quote">"Code it, build it, and let your work make the noise." 💻✨</div>
                 </div>
             </div>
