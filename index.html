@@ -5,6 +5,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard | Gen'Z India 🇮🇳</title>
+    
+    <!-- Favicon using iconlogo -->
+    <link rel="icon" type="image/png" href="images/iconlogo.png">
+
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     
     <!-- PWA Manifest Link -->
@@ -23,7 +27,6 @@
             font-family: 'Poppins', sans-serif;
         }
         
-        /* Smooth Dynamic Background Transitions for Entire Page */
         body {
             background-color: #f8fafc;
             color: #0f172a;
@@ -36,7 +39,6 @@
             transition: background 0.8s ease, color 0.8s ease;
         }
 
-        /* Full Page Light Theme Matches */
         body.theme-independence {
             background: linear-gradient(180deg, #fff7ed 0%, #f0fdf4 50%, #f8fafc 100%);
         }
@@ -65,11 +67,12 @@
             z-index: 10;
         }
 
+        /* Sleek, Thin & Compact Header */
         header {
-            background: rgba(255, 255, 255, 0.9);
+            background: rgba(255, 255, 255, 0.98);
             backdrop-filter: blur(16px);
             -webkit-backdrop-filter: blur(16px);
-            padding: 12px 20px;
+            padding: 5px 20px;
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -78,21 +81,32 @@
             top: 0;
             z-index: 1000;
             box-shadow: 0 4px 20px -2px rgba(0,0,0,0.03);
-            gap: 10px;
+            overflow: visible;
+            height: 55px;
         }
-        .logo {
-            font-size: 22px;
-            font-weight: 800;
-            background: linear-gradient(135deg, #ea580c, #16a34a);
-            background-clip: text;
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            text-decoration: none;
-            letter-spacing: -0.5px;
+        
+        /* Logo untouched and majestic */
+        .logo-brand-wrap {
+            display: flex;
+            align-items: center;
+            overflow: visible;
         }
+        .logo-brand-img {
+            height: 85px;
+            width: auto;
+            object-fit: contain;
+            display: block;
+            position: relative;
+            z-index: 1002;
+            transition: transform 0.2s;
+        }
+        .logo-brand-img:hover {
+            transform: scale(1.02);
+        }
+
         nav {
             display: flex;
-            gap: 8px;
+            gap: 10px;
             align-items: center;
         }
         
@@ -103,7 +117,7 @@
             border: 1px solid #bbf7d0;
             padding: 6px 12px;
             border-radius: 10px;
-            font-size: 11px;
+            font-size: 11.5px;
             cursor: pointer;
             font-weight: 600;
             transition: all 0.2s ease;
@@ -112,8 +126,8 @@
 
         /* Header Profile Avatar Icon */
         .header-profile-icon {
-            width: 36px;
-            height: 36px;
+            width: 40px;
+            height: 40px;
             border-radius: 50%;
             overflow: hidden;
             border: 2px solid #ea580c;
@@ -122,6 +136,7 @@
             align-items: center;
             justify-content: center;
             background: #fed7aa;
+            flex-shrink: 0;
             transition: transform 0.2s;
         }
         .header-profile-icon:hover { transform: scale(1.08); }
@@ -139,7 +154,7 @@
             width: 100%;
         }
 
-        /* Full-Width Seamless Immersive Hero Slider */
+        /* Hero Slider Container pushed down cleanly so slides never cut */
         .hero-slider-container {
             position: relative;
             width: 100vw;
@@ -149,6 +164,7 @@
             margin-right: -50vw;
             height: 250px;
             overflow: hidden;
+            margin-top: 25px;
             margin-bottom: 25px;
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
         }
@@ -171,7 +187,6 @@
             pointer-events: auto;
         }
 
-        /* Rich Vibrant Slide Gradients (Friendship slide removed) */
         .slide-independence {
             background: linear-gradient(135deg, #ff9933 0%, #f97316 50%, #15803d 100%);
         }
@@ -213,7 +228,6 @@
         }
         .hero-btn:hover { transform: translateY(-2px); }
 
-        /* Floating Animated Character Icons */
         .hero-animation-box {
             position: relative;
             width: 100px; height: 100px;
@@ -229,7 +243,6 @@
             50% { transform: translateY(-10px) rotate(3deg); }
         }
 
-        /* Slider Controls */
         .slider-arrow {
             position: absolute;
             top: 50%;
@@ -249,7 +262,6 @@
         .slider-prev { left: 10px; border-radius: 10px; }
         .slider-next { right: 10px; border-radius: 10px; }
 
-        /* Tiranga Ticker Banner */
         .tiranga-banner-decor {
             display: none;
             background: linear-gradient(90deg, #ff9933, #ffffff, #138808);
@@ -262,11 +274,8 @@
         }
         .tiranga-banner-decor.show { display: block; }
 
-        /* Mobile Responsive Portrait Adjustments */
         @media(max-width: 768px) {
-            .hero-slider-container {
-                height: 210px;
-            }
+            .hero-slider-container { height: 210px; margin-top: 15px; }
             .hero-slide {
                 padding: 15px 20px;
                 flex-direction: column-reverse;
@@ -274,26 +283,14 @@
                 text-align: center;
                 gap: 8px;
             }
-            .hero-slide-content h2 {
-                font-size: 18px;
-            }
-            .hero-slide-content p {
-                font-size: 11px;
-                max-width: 100%;
-                margin-bottom: 8px;
-            }
-            .hero-animation-box {
-                width: 50px; height: 50px;
-            }
-            .floating-char {
-                font-size: 34px;
-            }
-            .slider-arrow {
-                width: 28px; height: 40px; font-size: 12px;
-            }
+            .hero-slide-content h2 { font-size: 18px; }
+            .hero-slide-content p { font-size: 11px; max-width: 100%; margin-bottom: 8px; }
+            .hero-animation-box { width: 50px; height: 50px; }
+            .floating-char { font-size: 34px; }
+            .slider-arrow { width: 28px; height: 40px; font-size: 12px; }
+            .logo-brand-img { height: 55px; }
         }
 
-        /* Section Titles */
         .services-section-title {
             font-size: 15px;
             font-weight: 700;
@@ -305,7 +302,6 @@
             letter-spacing: -0.2px;
         }
 
-        /* App Style Grid */
         .services-grid {
             display: grid;
             grid-template-columns: repeat(4, 1fr);
@@ -313,15 +309,10 @@
             margin-bottom: 30px;
         }
         @media(max-width: 700px) {
-            .services-grid {
-                grid-template-columns: repeat(3, 1fr);
-                gap: 12px;
-            }
+            .services-grid { grid-template-columns: repeat(3, 1fr); gap: 12px; }
         }
         @media(max-width: 480px) {
-            .services-grid {
-                grid-template-columns: repeat(2, 1fr);
-            }
+            .services-grid { grid-template-columns: repeat(2, 1fr); }
         }
 
         .service-icon-card {
@@ -368,7 +359,6 @@
             letter-spacing: -0.2px;
         }
 
-        /* Live Badge on Mini Icons */
         .card-badge {
             position: absolute;
             top: 10px;
@@ -383,7 +373,6 @@
             display: none;
         }
 
-        /* Footer Links */
         .footer-links {
             display: flex;
             gap: 24px;
@@ -413,11 +402,13 @@
             background: #fff7ed;
             border: 1px solid #fed7aa;
             color: #ea580c;
-            padding: 6px 12px;
+            padding: 7px 12px;
             border-radius: 10px;
-            font-size: 11.5px;
+            font-size: 12px;
             font-weight: 600;
+            transition: 0.2s;
         }
+        .notif-bell:hover { background: #ffedd5; }
         .notif-badge {
             position: absolute;
             top: -5px;
@@ -432,7 +423,7 @@
         .notif-dropdown {
             display: none;
             position: fixed;
-            left: 5%; right: 5%; top: 65px;
+            left: 5%; right: 5%; top: 70px;
             max-width: 350px;
             margin: 0 auto;
             background: #ffffff;
@@ -444,7 +435,7 @@
         }
         @media(min-width: 600px) {
             .notif-dropdown {
-                position: absolute; left: auto; right: 0; top: 48px; width: 310px;
+                position: absolute; left: auto; right: 0; top: 50px; width: 310px;
             }
         }
         .notif-header {
@@ -502,7 +493,7 @@
             background: #f8fafc;
             border: 1px solid #cbd5e1;
             color: #334155;
-            width: 36px; height: 36px;
+            width: 38px; height: 38px;
             border-radius: 10px;
             font-size: 16px; font-weight: bold;
             cursor: pointer;
@@ -512,7 +503,7 @@
         .three-dot-btn:hover { background: #f1f5f9; }
         .dropdown-menu {
             display: none;
-            position: absolute; right: 0; top: 48px;
+            position: absolute; right: 0; top: 50px;
             background: #ffffff; min-width: 220px;
             border-radius: 16px;
             box-shadow: 0 20px 40px rgba(0,0,0,0.12);
@@ -569,7 +560,12 @@
             <div class="header-profile-icon" id="headerProfileAvatar" onclick="window.location.href='viewprofile.html'" title="View Profile">
                 <img id="headerUserImg" src="https://cdn.jsdelivr.net/gh/twitter/twemoji@14.0.2/assets/72x72/1f464.png" alt="Profile">
             </div>
-            <a href="index.html" class="logo" style="margin: 0;">Gen'Z 🇮🇳</a>
+            <!-- Full Dashboard Logo Image (.png) - Untouched & Majestic -->
+            <div class="logo-brand-wrap">
+                <a href="index.html" style="margin: 0; display: flex; align-items: center; text-decoration: none;">
+                    <img src="images/dashboardlogo.png" alt="Gen'Z India Logo" class="logo-brand-img">
+                </a>
+            </div>
         </div>
 
         <nav>
@@ -609,7 +605,7 @@
         </nav>
     </header>
 
-    <!-- Full-Width Immersive Hero Slider Banner (Friendship Day Slide Removed) -->
+    <!-- Full-Width Immersive Hero Slider Banner -->
     <div class="hero-slider-container">
         <!-- Slide 1: Independence Day / August Special -->
         <div class="hero-slide slide-independence active" data-slide-name="independence" data-theme="theme-independence">
@@ -650,7 +646,7 @@
             </div>
         </div>
 
-        <!-- Slide 4: Youth Care Foundation (New Added Slide) -->
+        <!-- Slide 4: Youth Care Foundation -->
         <div class="hero-slide slide-youthcare" data-slide-name="youthcare" data-theme="theme-youthcare">
             <div class="hero-slide-content">
                 <span style="background: rgba(255,200,87,0.3); color: #FFC857; padding: 4px 12px; border-radius: 20px; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px;">Youth Care Foundation 💚</span>
@@ -679,7 +675,7 @@
                 <div class="service-icon-title">Make Friends</div>
             </a>
 
-            <!-- 💬 Modern Unique Chat Bubble Icon Card -->
+            <!-- Messages Hub Icon Card -->
             <a href="chats.html" class="service-icon-card" onclick="markSeen('chat')">
                 <span class="card-badge" id="badge_chat">0</span>
                 <div class="service-icon-emoji">
@@ -711,13 +707,13 @@
                 <div class="service-icon-title">Innovations</div>
             </a>
 
-            <!-- 💚 Youth Care Foundation Feature Card -->
+            <!-- Youth Care Feature Card -->
             <a href="youth-care.html" class="service-icon-card" style="border-color: #bbf7d0; background: #f0fdf4;">
                 <div class="service-icon-emoji" style="background: #dcfce7; border-color: #bbf7d0;">🌱</div>
                 <div class="service-icon-title" style="color: #16a34a;">Youth Care</div>
             </a>
 
-            <!-- 🇮🇳 Proud to be Indian Icon Card -->
+            <!-- Indian Pride Icon Card -->
             <a href="indian.html" class="service-icon-card" style="border-color: #fed7aa; background: #fffaf5;">
                 <div class="service-icon-emoji" style="background: #ffedd5;">🇮🇳</div>
                 <div class="service-icon-title" style="color: #ea580c;">Indian Pride</div>
@@ -738,21 +734,17 @@
             }
         }
 
-        /* Advanced Dynamic Slider & Full-Page Theme Sync Script */
         let currentSlideIndex = 0;
         const slides = document.querySelectorAll('.hero-slide');
         const bodyTag = document.body;
         const tirangaTicker = document.getElementById('tirangaTicker');
 
         function updateFullPageTheme(slideElement) {
-            bodyTag.className = ""; // Clear existing theme classes
-            
+            bodyTag.className = "";
             const themeClass = slideElement.getAttribute('data-theme');
             if (themeClass) {
                 bodyTag.classList.add(themeClass);
             }
-
-            // Show Tiranga Ticker only for Independence Day slide
             if (slideElement.getAttribute('data-slide-name') === 'independence') {
                 tirangaTicker.classList.add('show');
             } else {
@@ -775,13 +767,12 @@
             showSlide(currentSlideIndex);
         }
 
-        // Smart Calendar Priority Detection
         function setSmartInitialSlide() {
             const today = new Date();
             const date = today.getDate();
-            const month = today.getMonth() + 1; // August is 8
+            const month = today.getMonth() + 1;
 
-            let targetSlideName = 'independence'; // Default priority
+            let targetSlideName = 'independence';
 
             if (month === 8) {
                 if (date >= 10 && date <= 18) {
@@ -797,13 +788,11 @@
             showSlide(currentSlideIndex);
         }
 
-        // Auto slide every 5 seconds
         setInterval(() => {
             currentSlideIndex++;
             showSlide(currentSlideIndex);
         }, 5000);
 
-        // Initialize on load
         window.addEventListener('DOMContentLoaded', () => {
             setSmartInitialSlide();
         });
@@ -1032,7 +1021,7 @@
         function triggerBrowserPushNotification(title, body) {
             if ("Notification" in window && Notification.permission === "granted") {
                 try {
-                    new Notification(title, { body: body, icon: "https://cdn.jsdelivr.net/gh/twitter/twemoji@14.0.2/assets/72x72/1f4dd.png" });
+                    new Notification(title, { body: body, icon: "images/iconlogo.png" });
                 } catch (err) { console.log(err); }
             }
         }
