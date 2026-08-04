@@ -3,7 +3,6 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <!-- Fixed: Allowed Google Indexing -->
     <meta name="robots" content="index, follow">
     <title>Login | Gen'Z India</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -17,7 +16,7 @@
             font-family: 'Poppins', sans-serif;
         }
         body {
-            background-color: #f8fafc;
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
             color: #1e293b;
             display: flex;
             justify-content: center;
@@ -27,19 +26,25 @@
         }
         .auth-card {
             background: #ffffff;
-            padding: 35px;
-            border-radius: 20px;
+            padding: 40px;
+            border-radius: 24px;
             border: 1px solid #e2e8f0;
             width: 100%;
             max-width: 420px;
-            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.05);
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.35);
         }
         .auth-card h2 {
             color: #0284c7;
-            margin-bottom: 24px;
+            margin-bottom: 8px;
             text-align: center;
-            font-size: 22px;
+            font-size: 24px;
             font-weight: 700;
+        }
+        .auth-subtitle {
+            text-align: center;
+            font-size: 13px;
+            color: #64748b;
+            margin-bottom: 24px;
         }
         .form-group {
             margin-bottom: 16px;
@@ -56,7 +61,7 @@
             padding: 12px 14px;
             background: #f8fafc;
             border: 1px solid #cbd5e1;
-            border-radius: 10px;
+            border-radius: 12px;
             color: #1e293b;
             font-size: 13.5px;
             transition: 0.3s;
@@ -64,32 +69,46 @@
         .auth-card input:focus {
             outline: none;
             border-color: #0284c7;
-            box-shadow: 0 0 0 3px rgba(2, 132, 199, 0.1);
+            box-shadow: 0 0 0 4px rgba(2, 132, 199, 0.15);
             background: #ffffff;
         }
+        .forgot-pass-container {
+            text-align: right;
+            margin-bottom: 20px;
+            margin-top: -6px;
+        }
+        .forgot-pass-container a {
+            font-size: 12px;
+            color: #0284c7;
+            text-decoration: none;
+            font-weight: 600;
+        }
+        .forgot-pass-container a:hover {
+            text-decoration: underline;
+        }
         .submit-btn {
-            background: #0284c7;
+            background: linear-gradient(135deg, #0284c7, #0369a1);
             color: #ffffff;
             border: none;
             padding: 14px;
-            border-radius: 10px;
+            border-radius: 12px;
             font-weight: 600;
             font-size: 14px;
             width: 100%;
             cursor: pointer;
-            margin-top: 10px;
             transition: 0.2s;
-            box-shadow: 0 4px 6px -1px rgba(2, 132, 199, 0.2);
+            box-shadow: 0 4px 12px rgba(2, 132, 199, 0.3);
         }
         .submit-btn:hover {
-            background: #0369a1;
+            opacity: 0.95;
+            transform: translateY(-1px);
         }
         .google-btn {
             background: #ffffff;
             color: #334155;
             border: 1px solid #cbd5e1;
             padding: 12px;
-            border-radius: 10px;
+            border-radius: 12px;
             font-weight: 600;
             font-size: 13.5px;
             width: 100%;
@@ -133,24 +152,34 @@
             font-weight: 600;
         }
         .auth-link a:hover {
-            color: #0369a1;
+            text-decoration: underline;
         }
         .error-msg {
             background: #fee2e2;
             color: #991b1b;
             padding: 10px;
-            border-radius: 8px;
+            border-radius: 10px;
+            font-size: 12px;
+            margin-bottom: 15px;
+            display: none;
+            text-align: center;
+        }
+        .success-msg {
+            background: #dcfce7;
+            color: #166534;
+            padding: 10px;
+            border-radius: 10px;
             font-size: 12px;
             margin-bottom: 15px;
             display: none;
             text-align: center;
         }
 
-        /* Grand Success Modal Styling */
+        /* Success Modal Styling */
         .modal-overlay {
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(15, 23, 42, 0.6);
+            background: rgba(15, 23, 42, 0.7);
             backdrop-filter: blur(5px);
             display: flex;
             justify-content: center;
@@ -224,15 +253,22 @@
 
     <div class="auth-card">
         <h2>Welcome Back ⚡</h2>
+        <p class="auth-subtitle">Sign in to your Gen'Z India account</p>
+        
         <div id="errorAlert" class="error-msg"></div>
+        <div id="successAlert" class="success-msg"></div>
+
         <form onsubmit="handleLogin(event)">
             <div class="form-group">
-                <label>Email Address</label>
-                <input type="email" id="lEmail" placeholder="name@email.com" autocomplete="email" required>
+                <label>Username</label>
+                <input type="text" id="lUsername" placeholder="Enter your username" autocomplete="username" required>
             </div>
             <div class="form-group">
                 <label>Password</label>
                 <input type="password" id="lPass" placeholder="••••••••" autocomplete="current-password" required>
+            </div>
+            <div class="forgot-pass-container">
+                <a href="#" onclick="handleForgotPassword(event)">Forgot Password?</a>
             </div>
             <button type="submit" class="submit-btn" id="loginBtn">Login</button>
         </form>
@@ -249,7 +285,7 @@
         </div>
     </div>
 
-    <!-- Grand Success Modal Popup -->
+    <!-- Success Modal Popup -->
     <div id="successModal" class="modal-overlay">
         <div class="success-modal">
             <div class="success-icon">✓</div>
@@ -262,8 +298,8 @@
     <!-- Firebase Secure Login Script -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-app.js";
-        import { getAuth, signInWithEmailAndPassword, GoogleAuthProvider, signInWithPopup } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-auth.js";
-        import { getFirestore, doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-firestore.js";
+        import { getAuth, signInWithEmailAndPassword, sendPasswordResetEmail, GoogleAuthProvider, signInWithPopup } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-auth.js";
+        import { getFirestore, doc, getDoc, setDoc, collection, query, where, getDocs } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-firestore.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyCNLwSjHq6LlX9uUovTRHrz9ZfUwEIUWQM",
@@ -290,9 +326,10 @@
             window.location.href = 'welcome.html';
         }
 
+        // Login with Username & Password
         window.handleLogin = async function(event) {
             event.preventDefault();
-            let email = document.getElementById('lEmail').value.trim().toLowerCase();
+            let username = document.getElementById('lUsername').value.trim().toLowerCase();
             let password = document.getElementById('lPass').value.trim();
             let btn = document.getElementById('loginBtn');
             let errorAlert = document.getElementById('errorAlert');
@@ -302,29 +339,38 @@
             btn.disabled = true;
 
             try {
-                const userCredential = await signInWithEmailAndPassword(auth, email, password);
-                const user = userCredential.user;
+                // 1. Firestore se username search karke associated email nikalna
+                const qUser = query(collection(db, "users"), where("username", "==", username));
+                const querySnapshot = await getDocs(qUser);
 
-                const docRef = doc(db, "users", user.uid);
-                const docSnap = await getDoc(docRef);
+                if (querySnapshot.empty) {
+                    throw new Error("Username not found! Please check your username.");
+                }
+
+                let userEmail = "";
+                let userId = "";
+                let userData = {};
+
+                querySnapshot.forEach((docSnap) => {
+                    userId = docSnap.id;
+                    userData = docSnap.data();
+                    userEmail = userData.email;
+                });
+
+                // 2. Firebase Auth se email aur password ke zariye login karna
+                const userCredential = await signInWithEmailAndPassword(auth, userEmail, password);
                 
-                let userData = docSnap.exists() ? docSnap.data() : { email: user.email };
-
                 localStorage.setItem('genzUser', JSON.stringify(userData));
                 localStorage.removeItem('hasSeenWelcome');
                 
                 showSuccessModal();
             } catch(e) {
-                console.error("Login Error Code:", e.code);
-                console.error("Login Error Message:", e.message);
-                
-                let userFriendlyMessage = 'Invalid Email or Password! Please check your credentials.';
-                if (e.code === 'auth/user-not-found') {
-                    userFriendlyMessage = 'No account found with this email. Please Sign Up first.';
-                } else if (e.code === 'auth/wrong-password') {
+                console.error("Login Error:", e);
+                let userFriendlyMessage = 'Invalid Username or Password! Please try again.';
+                if (e.message.includes("Username not found")) {
+                    userFriendlyMessage = 'This username does not exist. Please check or Sign Up.';
+                } else if (e.code === 'auth/wrong-password' || e.code === 'auth/invalid-credential') {
                     userFriendlyMessage = 'Incorrect password entered.';
-                } else if (e.code === 'auth/invalid-credential') {
-                    userFriendlyMessage = 'Invalid email or password combination.';
                 }
 
                 errorAlert.innerText = userFriendlyMessage;
@@ -335,6 +381,46 @@
             }
         }
 
+        // Forgot Password Logic (Via Email linked to Username)
+        window.handleForgotPassword = async function(event) {
+            event.preventDefault();
+            let username = document.getElementById('lUsername').value.trim().toLowerCase();
+            let errorAlert = document.getElementById('errorAlert');
+            let successAlert = document.getElementById('successAlert');
+
+            errorAlert.style.display = 'none';
+            successAlert.style.display = 'none';
+
+            if (!username) {
+                errorAlert.innerText = 'Please enter your Username first, then click Forgot Password.';
+                errorAlert.style.display = 'block';
+                return;
+            }
+
+            try {
+                const qUser = query(collection(db, "users"), where("username", "==", username));
+                const querySnapshot = await getDocs(qUser);
+
+                if (querySnapshot.empty) {
+                    throw new Error("Username not found.");
+                }
+
+                let userEmail = "";
+                querySnapshot.forEach((docSnap) => {
+                    userEmail = docSnap.data().email;
+                });
+
+                await sendPasswordResetEmail(auth, userEmail);
+                successAlert.innerText = 'Password reset link has been sent to your registered email (' + userEmail + ')!';
+                successAlert.style.display = 'block';
+            } catch (e) {
+                console.error("Reset Error:", e);
+                errorAlert.innerText = 'Could not find an account associated with this username.';
+                errorAlert.style.display = 'block';
+            }
+        }
+
+        // Google Login
         window.handleGoogleLogin = async function() {
             const provider = new GoogleAuthProvider();
             try {
@@ -346,10 +432,11 @@
 
                 let userData;
                 if (!docSnap.exists()) {
+                    let cleanUsername = user.email.split('@')[0].toLowerCase().replace(/[^a-z0-9_]/g, '_');
                     userData = {
                         uid: user.uid,
                         name: user.displayName || 'Student',
-                        username: user.email.split('@')[0],
+                        username: cleanUsername,
                         email: user.email,
                         profilePic: user.photoURL || '',
                         createdAt: Date.now()
