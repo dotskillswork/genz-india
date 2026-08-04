@@ -9,6 +9,13 @@
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="manifest" href="manifest.json">
     <meta name="theme-color" content="#0284c7">
+    <!-- EmailJS CDN -->
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+    <script type="text/javascript">
+       (function(){
+          emailjs.init("YOUR_EMAILJS_PUBLIC_KEY"); // Yahan apni EmailJS Public Key daal dein
+       })();
+    </script>
     <style>
         * {
             margin: 0;
@@ -51,7 +58,7 @@
             margin-bottom: 6px;
             font-weight: 600;
         }
-        .auth-card input {
+        .auth-card input, .auth-card select {
             width: 100%;
             padding: 12px 14px;
             background: #f8fafc;
@@ -61,11 +68,58 @@
             font-size: 13.5px;
             transition: 0.3s;
         }
-        .auth-card input:focus {
+        .auth-card input:focus, .auth-card select:focus {
             outline: none;
             border-color: #0284c7;
             box-shadow: 0 0 0 3px rgba(2, 132, 199, 0.1);
             background: #ffffff;
+        }
+        .input-with-btn {
+            display: flex;
+            gap: 8px;
+        }
+        .input-with-btn input {
+            flex: 1;
+        }
+        .verify-action-btn {
+            background: #0ea5e9;
+            color: #fff;
+            border: none;
+            padding: 0 14px;
+            border-radius: 10px;
+            font-weight: 600;
+            font-size: 12px;
+            cursor: pointer;
+            transition: 0.2s;
+            white-space: nowrap;
+        }
+        .verify-action-btn:hover {
+            background: #0284c7;
+        }
+        .verify-action-btn:disabled {
+            background: #94a3b8;
+            cursor: not-allowed;
+        }
+        .verified-badge {
+            color: #16a34a;
+            font-size: 12px;
+            font-weight: 600;
+            margin-top: 4px;
+            display: none;
+        }
+        .username-status {
+            font-size: 12px;
+            margin-top: 4px;
+            font-weight: 600;
+            display: none;
+        }
+        .username-status.taken {
+            color: #dc2626;
+            display: block;
+        }
+        .username-status.available {
+            color: #16a34a;
+            display: block;
         }
         .row-group {
             display: flex;
@@ -119,57 +173,6 @@
         .submit-btn:disabled {
             background: #94a3b8;
             cursor: not-allowed;
-        }
-        .google-btn {
-            background: #ffffff;
-            color: #334155;
-            border: 1px solid #cbd5e1;
-            padding: 12px;
-            border-radius: 10px;
-            font-weight: 600;
-            font-size: 13.5px;
-            width: 100%;
-            cursor: pointer;
-            margin-top: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
-            transition: 0.2s;
-        }
-        .google-btn:hover {
-            background: #f1f5f9;
-            border-color: #94a3b8;
-        }
-        .divider {
-            display: flex;
-            align-items: center;
-            text-align: center;
-            margin: 18px 0;
-            color: #94a3b8;
-            font-size: 12px;
-        }
-        .divider::before, .divider::after {
-            content: '';
-            flex: 1;
-            border-bottom: 1px solid #e2e8f0;
-        }
-        .divider::before { margin-right: 10px; }
-        .divider::after { margin-left: 10px; }
-
-        .auth-link {
-            text-align: center;
-            margin-top: 20px;
-            font-size: 12.5px;
-            color: #64748b;
-        }
-        .auth-link a {
-            color: #0284c7;
-            text-decoration: none;
-            font-weight: 600;
-        }
-        .auth-link a:hover {
-            color: #0369a1;
         }
         .error-msg {
             background: #fee2e2;
@@ -226,6 +229,11 @@
             font-size: 32px;
             margin: 0 auto 20px auto;
             box-shadow: 0 10px 15px -3px rgba(2, 132, 199, 0.4);
+            animation: rocketFloat 2s ease-in-out infinite;
+        }
+        @keyframes rocketFloat {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-8px); }
         }
         .success-modal h3 {
             color: #0f172a;
@@ -262,54 +270,106 @@
         <h2>Join Gen'Z India ⚡</h2>
         <div id="errorAlert" class="error-msg"></div>
         <form id="signupForm">
+            <!-- 1. Full Name -->
             <div class="form-group">
                 <label>Full Name</label>
                 <input type="text" id="sName" placeholder="e.g. Rahul Sharma" autocomplete="name" required>
             </div>
+            
+            <!-- 2. Unique Username with Live Availability Check -->
             <div class="form-group">
-                <label>Unique Username (e.g. rahul_dev)</label>
-                <input type="text" id="sUsername" placeholder="rahul_dev" autocomplete="username" required>
+                <label>Unique Username</label>
+                <input type="text" id="sUsername" placeholder="rahul_dev" autocomplete="username" oninput="checkUsernameAvailability()" required>
+                <div id="usernameStatus" class="username-status"></div>
+            </div>
+
+            <!-- 3. Student Type (School or College) -->
+            <div class="form-group">
+                <label>Student Type</label>
+                <select id="sStudentType" required>
+                    <option value="">-- Select Type --</option>
+                    <option value="School">School Student</option>
+                    <option value="College">College Student</option>
+                </select>
+            </div>
+
+            <!-- 4. University or Board (Manual Input) -->
+            <div class="form-group">
+                <label>University / Board Name</label>
+                <input type="text" id="sUniversityBoard" placeholder="e.g. CBSE / Delhi University" required>
+            </div>
+
+            <!-- 5. College or School Name (Manual Input) -->
+            <div class="form-group">
+                <label>College / School Name</label>
+                <input type="text" id="sInstitution" placeholder="e.g. St. Xavier's / DAV Public" required>
+            </div>
+
+            <!-- 6. Course or Class (Manual Input) -->
+            <div class="form-group">
+                <label>Course / Class</label>
+                <input type="text" id="sCourse" placeholder="e.g. B.Tech 2nd Year or Class 12th" required>
+            </div>
+
+            <!-- 7. Address Fields (Area, City, District, State, Country) -->
+            <div class="row-group">
+                <div class="form-group">
+                    <label>Area / Locality</label>
+                    <input type="text" id="sArea" placeholder="Area" required>
+                </div>
+                <div class="form-group">
+                    <label>City</label>
+                    <input type="text" id="sCity" placeholder="City" required>
+                </div>
             </div>
             <div class="row-group">
                 <div class="form-group">
-                    <label>Email Address</label>
-                    <input type="email" id="sEmailReal" placeholder="name@email.com" autocomplete="email" required>
+                    <label>District</label>
+                    <input type="text" id="sDistrict" placeholder="District" required>
                 </div>
+                <div class="form-group">
+                    <label>State</label>
+                    <input type="text" id="sState" placeholder="State" required>
+                </div>
+            </div>
+            <div class="form-group">
+                <label>Country</label>
+                <input type="text" id="sCountry" placeholder="Country" value="India" required>
+            </div>
+
+            <!-- 8. Mobile Number (No Verification) -->
+            <div class="form-group">
+                <label>Mobile Number</label>
+                <input type="tel" id="sMobile" placeholder="9876543210" pattern="[0-9]{10}" autocomplete="tel" required>
+            </div>
+
+            <!-- 9. Email Address with EmailJS Verification -->
+            <div class="form-group">
+                <label>Email Address</label>
+                <div class="input-with-btn">
+                    <input type="email" id="sEmailReal" placeholder="name@email.com" autocomplete="email" required>
+                    <button type="button" class="verify-action-btn" id="emailVerifyBtn" onclick="triggerEmailVerification()">Verify Email</button>
+                </div>
+                <div id="emailOtpGroup" style="display:none; margin-top:8px;" class="input-with-btn">
+                    <input type="text" id="emailOtpInput" placeholder="Enter 6-digit OTP">
+                    <button type="button" class="verify-action-btn" onclick="confirmEmailOtp()">Submit OTP</button>
+                </div>
+                <div id="emailVerifiedBadge" class="verified-badge">✓ Email Verified Successfully</div>
+            </div>
+
+            <!-- Password & DOB -->
+            <div class="row-group">
                 <div class="form-group">
                     <label>Password (Min 6 chars)</label>
                     <input type="password" id="sPass" placeholder="••••••••" autocomplete="new-password" required>
                 </div>
-            </div>
-            <div class="row-group">
                 <div class="form-group">
                     <label>Date of Birth</label>
                     <input type="date" id="sDob" autocomplete="bday" required>
                 </div>
-                <div class="form-group">
-                    <label>City</label>
-                    <input type="text" id="sCity" placeholder="City" autocomplete="address-level2" required>
-                </div>
-            </div>
-            <div class="row-group">
-                <div class="form-group">
-                    <label>District / State</label>
-                    <input type="text" id="sState" placeholder="State" autocomplete="address-level1" required>
-                </div>
-                <div class="form-group">
-                    <label>College Name</label>
-                    <input type="text" id="sCollege" placeholder="College / University" autocomplete="organization" required>
-                </div>
-            </div>
-            <div class="form-group">
-                <label>Course & Year</label>
-                <input type="text" id="sCourse" placeholder="e.g. B.Tech 2nd Year" autocomplete="off" required>
-            </div>
-            <div class="form-group">
-                <label>Profile Photo (Optional)</label>
-                <input type="file" id="sPhoto" accept="image/*" style="font-size: 12px; color: #64748b; background: transparent; border: none; padding: 4px 0;">
             </div>
 
-            <!-- Terms & Conditions Checkbox Added -->
+            <!-- Terms & Conditions Checkbox -->
             <div class="terms-group">
                 <input type="checkbox" id="termsCheck" required>
                 <label for="termsCheck" style="display:inline; font-size:12px; color:#475569; font-weight:normal;">
@@ -317,15 +377,8 @@
                 </label>
             </div>
 
-            <button type="submit" class="submit-btn" id="submitBtn">Create Account</button>
+            <button type="submit" class="submit-btn" id="submitBtn">Create Account 🚀</button>
         </form>
-
-        <div class="divider">or sign up with</div>
-
-        <button type="button" class="google-btn" onclick="handleGoogleSignup()">
-            <svg width="18" height="18" viewBox="0 0 24 24"><path fill="#4285F4" d="M23.745 12.27c0-.7-.06-1.4-.19-2.07H12v4.51h6.6c-.29 1.52-1.14 2.82-2.4 3.68v3.05h3.88c2.27-2.09 3.66-5.17 3.66-9.17z"/><path fill="#34A853" d="M12 24c3.24 0 5.95-1.08 7.93-2.91l-3.88-3.05c-1.08.72-2.45 1.16-4.05 1.16-3.12 0-5.77-2.1-6.72-4.93H1.19v3.15C3.17 21.32 7.22 24 12 24z"/><path fill="#FBBC05" d="M5.28 14.27c-.25-.72-.38-1.49-.38-2.27s.13-1.55.38-2.27V6.58H1.19C.43 8.1 0 9.98 0 12s.43 3.9 1.19 5.42l4.09-3.15z"/><path fill="#EA4335" d="M12 4.75c1.77 0 3.35.61 4.6 1.8l3.42-3.42C17.95 1.19 15.24 0 12 0 7.22 0 3.17 2.68 1.19 6.58l4.09 3.15c.95-2.83 3.6-4.98 6.72-4.98z"/></svg>
-            Sign up with Google
-        </button>
 
         <div class="auth-link">
             Already have an account? <a href="login.html">Login here</a>
@@ -335,18 +388,18 @@
     <!-- Grand Success Modal Popup -->
     <div id="successModal" class="modal-overlay">
         <div class="success-modal">
-            <div class="success-icon">✓</div>
+            <div class="success-icon">🚀</div>
             <h3>Account Created!</h3>
-            <p>Your account has been successfully created. Redirecting to login...</p>
+            <p>Liftoff successful! Redirecting securely to your dashboard login...</p>
             <button class="modal-btn" onclick="redirectToLogin()">Continue to Login</button>
         </div>
     </div>
 
-    <!-- Firebase Secure Script -->
+    <!-- Firebase & Custom Script -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-app.js";
-        import { getAuth, createUserWithEmailAndPassword, GoogleAuthProvider, signInWithPopup } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-auth.js";
-        import { getFirestore, doc, setDoc, getDocs, collection, query, where, getDoc } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-firestore.js";
+        import { getAuth, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-auth.js";
+        import { getFirestore, doc, setDoc, getDocs, collection, query, where } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-firestore.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyCNLwSjHq6LlX9uUovTRHrz9ZfUwEIUWQM",
@@ -362,61 +415,101 @@
         const auth = getAuth(app);
         const db = getFirestore(app);
 
+        let isEmailVerified = false;
+        let generatedOtp = "";
+        let isUsernameAvailable = false;
+
+        // Live Username Availability Check
+        window.checkUsernameAvailability = async function() {
+            const usernameInput = document.getElementById('sUsername').value.trim().toLowerCase().replace('@','');
+            const statusDiv = document.getElementById('usernameStatus');
+
+            if (usernameInput.length < 3) {
+                statusDiv.style.display = 'none';
+                isUsernameAvailable = false;
+                return;
+            }
+
+            const usernameRegex = /^[a-z0-9_]+$/;
+            if (!usernameRegex.test(usernameInput)) {
+                statusDiv.className = 'username-status taken';
+                statusDiv.innerText = '✕ Use only letters, numbers, and underscores';
+                statusDiv.style.display = 'block';
+                isUsernameAvailable = false;
+                return;
+            }
+
+            try {
+                const qUser = query(collection(db, "users"), where("username", "==", usernameInput));
+                const querySnapshot = await getDocs(qUser);
+
+                if (!querySnapshot.empty) {
+                    statusDiv.className = 'username-status taken';
+                    statusDiv.innerText = '✕ Not Available (Username already taken)';
+                    statusDiv.style.display = 'block';
+                    isUsernameAvailable = false;
+                } else {
+                    statusDiv.className = 'username-status available';
+                    statusDiv.innerText = '✓ Username is available!';
+                    statusDiv.style.display = 'block';
+                    isUsernameAvailable = true;
+                }
+            } catch (err) {
+                console.error("Error checking username:", err);
+            }
+        };
+
+        // EmailJS OTP Trigger
+        window.triggerEmailVerification = function() {
+            const email = document.getElementById('sEmailReal').value.trim();
+            if (!email || !email.includes('@')) {
+                alert('Please enter a valid email address first.');
+                return;
+            }
+
+            generatedOtp = Math.floor(100000 + Math.random() * 900000).toString();
+
+            const templateParams = {
+                to_email: email,
+                otp: generatedOtp
+            };
+
+            emailjs.send('service_bb6u3ua', 'template_i811c92', templateParams)
+                .then(function(response) {
+                    document.getElementById('emailOtpGroup').style.display = 'flex';
+                    document.getElementById('emailVerifyBtn').disabled = true;
+                    alert('Verification code successfully sent to ' + email);
+                }, function(error) {
+                    console.error('FAILED...', error);
+                    alert('Failed to send OTP. Please check your email configuration.');
+                });
+        };
+
+        window.confirmEmailOtp = function() {
+            const userEnteredOtp = document.getElementById('emailOtpInput').value.trim();
+            if (userEnteredOtp === generatedOtp && generatedOtp !== "") {
+                isEmailVerified = true;
+                document.getElementById('emailOtpGroup').style.display = 'none';
+                document.getElementById('emailVerifiedBadge').style.display = 'block';
+                document.getElementById('sEmailReal').readOnly = true;
+                alert('Email verified successfully!');
+            } else {
+                alert('Invalid OTP. Please enter the correct code received on your email.');
+            }
+        };
+
         window.showSuccessModal = function() {
             document.getElementById('successModal').classList.add('active');
             setTimeout(() => {
                 redirectToLogin();
-            }, 1800);
-        }
+            }, 2200);
+        };
 
         window.redirectToLogin = function() {
             window.location.href = 'login.html';
-        }
+        };
 
-        function convertAndCompressImage(fileInputId) {
-            return new Promise((resolve) => {
-                const fileInput = document.getElementById(fileInputId);
-                if (fileInput && fileInput.files && fileInput.files[0]) {
-                    const file = fileInput.files[0];
-                    const reader = new FileReader();
-                    reader.onload = function(e) {
-                        const img = new Image();
-                        img.onload = function() {
-                            const canvas = document.createElement('canvas');
-                            let width = img.width;
-                            let height = img.height;
-                            const maxDim = 300;
-
-                            if (width > height) {
-                                if (width > maxDim) {
-                                    height = Math.round((height * maxDim) / width);
-                                    width = maxDim;
-                                }
-                            } else {
-                                if (height > maxDim) {
-                                    width = Math.round((width * maxDim) / height);
-                                    height = maxDim;
-                                }
-                            }
-
-                            canvas.width = width;
-                            canvas.height = height;
-                            const ctx = canvas.getContext('2d');
-                            ctx.drawImage(img, 0, 0, width, height);
-
-                            resolve(canvas.toDataURL('image/jpeg', 0.7));
-                        };
-                        img.onerror = () => resolve("");
-                        img.src = e.target.result;
-                    };
-                    reader.onerror = () => resolve("");
-                    reader.readAsDataURL(file);
-                } else {
-                    resolve("");
-                }
-            });
-        }
-
+        // Form Submission
         document.getElementById('signupForm').addEventListener('submit', async function(event) {
             event.preventDefault();
             
@@ -424,37 +517,47 @@
             const errorAlert = document.getElementById('errorAlert');
             errorAlert.style.display = 'none';
 
-            // Check if terms are accepted
+            if (!isUsernameAvailable) {
+                errorAlert.innerText = 'Please choose a valid and available username.';
+                errorAlert.style.display = 'block';
+                return;
+            }
+
+            if (!isEmailVerified) {
+                errorAlert.innerText = 'Please verify your Email Address using OTP before signing up.';
+                errorAlert.style.display = 'block';
+                return;
+            }
+
             const termsChecked = document.getElementById('termsCheck').checked;
             if (!termsChecked) {
                 errorAlert.innerText = 'Please accept the Terms & Conditions and Privacy Policy.';
                 errorAlert.style.display = 'block';
                 return;
             }
-            
+
             btn.innerText = "Creating Account...";
             btn.disabled = true;
 
             let name = document.getElementById('sName').value.trim();
             let username = document.getElementById('sUsername').value.trim().toLowerCase().replace('@','');
+            let studentType = document.getElementById('sStudentType').value;
+            let universityBoard = document.getElementById('sUniversityBoard').value.trim();
+            let institution = document.getElementById('sInstitution').value.trim();
+            let course = document.getElementById('sCourse').value.trim();
+            
+            let area = document.getElementById('sArea').value.trim();
+            let city = document.getElementById('sCity').value.trim();
+            let district = document.getElementById('sDistrict').value.trim();
+            let state = document.getElementById('sState').value.trim();
+            let country = document.getElementById('sCountry').value.trim();
+
+            let mobile = document.getElementById('sMobile').value.trim();
             let email = document.getElementById('sEmailReal').value.trim().toLowerCase();
             let password = document.getElementById('sPass').value.trim();
             let dob = document.getElementById('sDob').value;
-            let city = document.getElementById('sCity').value.trim();
-            let state = document.getElementById('sState').value.trim();
-            let college = document.getElementById('sCollege').value.trim();
-            let course = document.getElementById('sCourse').value.trim();
 
             try {
-                const qUser = query(collection(db, "users"), where("username", "==", username));
-                const queryUserSnapshot = await getDocs(qUser);
-
-                if (!queryUserSnapshot.empty) {
-                    throw new Error('Username already taken! Please choose another unique username.');
-                }
-
-                let photoBase64 = await convertAndCompressImage('sPhoto');
-
                 const userCredential = await createUserWithEmailAndPassword(auth, email, password);
                 const user = userCredential.user;
 
@@ -462,14 +565,18 @@
                     uid: user.uid,
                     name: name,
                     username: username,
+                    studentType: studentType,
+                    universityBoard: universityBoard,
+                    institution: institution,
+                    course: course,
+                    area: area,
+                    city: city,
+                    district: district,
+                    state: state,
+                    country: country,
+                    mobile: mobile,
                     email: email,
                     dob: dob,
-                    city: city,
-                    state: state,
-                    college: college,
-                    course: course,
-                    photo: photoBase64,
-                    profilePic: photoBase64,
                     createdAt: Date.now()
                 };
 
@@ -484,62 +591,14 @@
                     msg = 'This email is already registered! Please login.';
                 } else if (e.code === 'auth/weak-password') {
                     msg = 'Password should be at least 6 characters long.';
-                } else if (e.code === 'auth/configuration-not-found') {
-                    msg = 'Firebase Authentication (Email/Password) is not enabled in Firebase Console.';
                 }
                 
                 errorAlert.innerText = msg;
                 errorAlert.style.display = 'block';
-                btn.innerText = "Create Account";
+                btn.innerText = "Create Account 🚀";
                 btn.disabled = false;
             }
         });
-
-        window.handleGoogleSignup = async function() {
-            const errorAlert = document.getElementById('errorAlert');
-            errorAlert.style.display = 'none';
-
-            // Check if terms are accepted for Google signup
-            const termsChecked = document.getElementById('termsCheck').checked;
-            if (!termsChecked) {
-                errorAlert.innerText = 'Please accept the Terms & Conditions and Privacy Policy to continue.';
-                errorAlert.style.display = 'block';
-                return;
-            }
-
-            const provider = new GoogleAuthProvider();
-
-            try {
-                const result = await signInWithPopup(auth, provider);
-                const user = result.user;
-
-                const docRef = doc(db, "users", user.uid);
-                const docSnap = await getDoc(docRef);
-
-                if (!docSnap.exists()) {
-                    let userData = {
-                        uid: user.uid,
-                        name: user.displayName || 'Student',
-                        username: user.email.split('@')[0],
-                        email: user.email,
-                        dob: '',
-                        city: '',
-                        state: '',
-                        college: '',
-                        course: '',
-                        profilePic: user.photoURL || '',
-                        createdAt: Date.now()
-                    };
-                    await setDoc(docRef, userData);
-                }
-
-                showSuccessModal();
-            } catch (e) {
-                console.error("Google Signup Error:", e);
-                errorAlert.innerText = "Google Signup failed. Please try again.";
-                errorAlert.style.display = 'block';
-            }
-        }
     </script>
 </body>
 </html>
