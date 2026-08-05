@@ -267,7 +267,7 @@
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             box-shadow: 0 10px 30px -5px rgba(0,0,0,0.04);
             position: relative;
-            width: 270px; /* Fixed compact width like reference */
+            width: 270px;
             flex-shrink: 0;
             display: flex;
             flex-direction: column;
@@ -275,8 +275,8 @@
         }
         .user-card:hover {
             border-color: #ea580c;
-            transform: translateY(-6px);
-            box-shadow: 0 20px 35px -8px rgba(234, 88, 12, 0.15);
+            transform: translateY(-4px);
+            box-shadow: 0 15px 30px -8px rgba(234, 88, 12, 0.15);
         }
         
         .card-close-x {
@@ -315,7 +315,7 @@
             white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100%;
         }
         
-        /* TOUCH-OPTIMIZED BUTTONS (FIXED MOBILE TAP & ZERO BLINKING) */
+        /* 100% BULLETPROOF MOBILE TOUCH BUTTONS */
         .action-btn {
             width: 100%; padding: 11px;
             border-radius: 14px; font-weight: 700;
@@ -324,7 +324,7 @@
             display: inline-flex; align-items: center; justify-content: center; gap: 6px;
             touch-action: manipulation;
             -webkit-tap-highlight-color: transparent;
-            z-index: 5;
+            z-index: 20;
             position: relative;
         }
         .btn-friend { background: #0284c7; color: #fff; box-shadow: 0 4px 14px rgba(2, 132, 199, 0.3); }
@@ -856,26 +856,26 @@
                 if (isFriend) {
                     btnHtml = `
                         <button class="action-btn" style="background:#16a34a; color:#fff; cursor:default;" disabled>✓ Connected</button>
-                        <button class="action-btn" style="background:#dc2626; color:#fff;" ontouchend="event.stopPropagation(); unfriendUser('${u.username}')" onclick="event.stopPropagation(); unfriendUser('${u.username}')">Remove Friend</button>
-                        <button class="action-btn btn-block" ontouchend="event.stopPropagation(); blockUser('${u.username}')" onclick="event.stopPropagation(); blockUser('${u.username}')">Block User</button>
+                        <button class="action-btn" style="background:#dc2626; color:#fff;" ontouchend="unfriendUser('${u.username}'); event.stopPropagation();" onclick="unfriendUser('${u.username}'); event.stopPropagation();">Remove Friend</button>
+                        <button class="action-btn btn-block" ontouchend="blockUser('${u.username}'); event.stopPropagation();" onclick="blockUser('${u.username}'); event.stopPropagation();">Block User</button>
                     `;
                 } else if (isRequestedByMe) {
                     btnHtml = `
-                        <button class="action-btn btn-sent" ontouchend="event.stopPropagation(); cancelRequest('${u.username}')" onclick="event.stopPropagation(); cancelRequest('${u.username}')">Cancel Request</button>
-                        <button class="action-btn btn-block" ontouchend="event.stopPropagation(); blockUser('${u.username}')" onclick="event.stopPropagation(); blockUser('${u.username}')">Block User</button>
+                        <button class="action-btn btn-sent" ontouchend="cancelRequest('${u.username}'); event.stopPropagation();" onclick="cancelRequest('${u.username}'); event.stopPropagation();">Cancel Request</button>
+                        <button class="action-btn btn-block" ontouchend="blockUser('${u.username}'); event.stopPropagation();" onclick="blockUser('${u.username}'); event.stopPropagation();">Block User</button>
                     `;
                 } else if (isReceivedByThem) {
                     btnHtml = `
                         <div style="display:flex; gap:6px; margin-top:10px; width:100%;" ontouchend="event.stopPropagation()" onclick="event.stopPropagation()">
-                            <button class="action-btn btn-accept" ontouchend="acceptDirectRequest('${u.username}')" onclick="acceptDirectRequest('${u.username}')">Accept</button>
-                            <button class="action-btn btn-reject" ontouchend="rejectDirectRequest('${u.username}')" onclick="rejectDirectRequest('${u.username}')">Reject</button>
+                            <button class="action-btn btn-accept" ontouchend="acceptDirectRequest('${u.username}'); event.stopPropagation();" onclick="acceptDirectRequest('${u.username}'); event.stopPropagation();">Accept</button>
+                            <button class="action-btn btn-reject" ontouchend="rejectDirectRequest('${u.username}'); event.stopPropagation();" onclick="rejectDirectRequest('${u.username}'); event.stopPropagation();">Reject</button>
                         </div>
-                        <button class="action-btn btn-block" ontouchend="event.stopPropagation(); blockUser('${u.username}')" onclick="event.stopPropagation(); blockUser('${u.username}')">Block User</button>
+                        <button class="action-btn btn-block" ontouchend="blockUser('${u.username}'); event.stopPropagation();" onclick="blockUser('${u.username}'); event.stopPropagation();">Block User</button>
                     `;
                 } else {
                     btnHtml = `
-                        <button class="action-btn btn-friend" ontouchend="event.stopPropagation(); sendFriendRequest('${u.username}', '${u.name}', this)" onclick="event.stopPropagation(); sendFriendRequest('${u.username}', '${u.name}', this)">Connect Peer</button>
-                        <button class="action-btn btn-block" ontouchend="event.stopPropagation(); blockUser('${u.username}')" onclick="event.stopPropagation(); blockUser('${u.username}')">Block User</button>
+                        <button class="action-btn btn-friend" ontouchend="sendFriendRequest('${u.username}', '${u.name}', this); event.stopPropagation();" onclick="sendFriendRequest('${u.username}', '${u.name}', this); event.stopPropagation();">Connect Peer</button>
+                        <button class="action-btn btn-block" ontouchend="blockUser('${u.username}'); event.stopPropagation();" onclick="blockUser('${u.username}'); event.stopPropagation();">Block User</button>
                     `;
                 }
                 
