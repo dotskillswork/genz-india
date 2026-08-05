@@ -819,7 +819,7 @@
             }
         };
 
-        // 100% BULLETPROOF RENDER USERS LOGIC WITH ISOLATED TOUCH ACTIONS
+        // 100% BULLETPROOF PURE JS EVENT LISTENER RENDER LOGIC
         window.renderUsers = function(users) {
             const container = document.getElementById('usersListContainer');
             container.innerHTML = '';
@@ -831,54 +831,156 @@
 
             users.forEach((u) => {
                 let avatar = u.photo || u.profilePic || 'https://cdn.jsdelivr.net/gh/twitter/twemoji@14.0.2/assets/72x72/1f464.png';
-                
                 let isFriend = myConnections.friends.includes(u.username);
                 let isRequestedByMe = myConnections.sent.includes(u.username);
                 let isReceivedByThem = myConnections.received.includes(u.username);
 
-                let btnHtml = '';
-                if (isFriend) {
-                    btnHtml = `
-                        <button class="action-btn" style="background:#16a34a; color:#fff; cursor:default;" disabled>✓ Connected</button>
-                        <button class="action-btn" style="background:#dc2626; color:#fff;" ontouchend="unfriendUser('${u.username}'); event.stopImmediatePropagation();" onclick="unfriendUser('${u.username}'); event.stopImmediatePropagation();">Remove Friend</button>
-                        <button class="action-btn btn-block" ontouchend="blockUser('${u.username}'); event.stopImmediatePropagation();" onclick="blockUser('${u.username}'); event.stopImmediatePropagation();">Block User</button>
-                    `;
-                } else if (isRequestedByMe) {
-                    btnHtml = `
-                        <button class="action-btn btn-sent" ontouchend="cancelRequest('${u.username}'); event.stopImmediatePropagation();" onclick="cancelRequest('${u.username}'); event.stopImmediatePropagation();">Cancel Request</button>
-                        <button class="action-btn btn-block" ontouchend="blockUser('${u.username}'); event.stopImmediatePropagation();" onclick="blockUser('${u.username}'); event.stopImmediatePropagation();">Block User</button>
-                    `;
-                } else if (isReceivedByThem) {
-                    btnHtml = `
-                        <div style="display:flex; gap:6px; margin-top:10px; width:100%;" ontouchend="event.stopImmediatePropagation()" onclick="event.stopImmediatePropagation()">
-                            <button class="action-btn btn-accept" ontouchend="acceptDirectRequest('${u.username}'); event.stopImmediatePropagation();" onclick="acceptDirectRequest('${u.username}'); event.stopImmediatePropagation();">Accept</button>
-                            <button class="action-btn btn-reject" ontouchend="rejectDirectRequest('${u.username}'); event.stopImmediatePropagation();" onclick="rejectDirectRequest('${u.username}'); event.stopImmediatePropagation();">Reject</button>
-                        </div>
-                        <button class="action-btn btn-block" ontouchend="blockUser('${u.username}'); event.stopImmediatePropagation();" onclick="blockUser('${u.username}'); event.stopImmediatePropagation();">Block User</button>
-                    `;
-                } else {
-                    btnHtml = `
-                        <button class="action-btn btn-friend" ontouchend="sendFriendRequest('${u.username}', '${u.name}', this); event.stopImmediatePropagation();" onclick="sendFriendRequest('${u.username}', '${u.name}', this); event.stopImmediatePropagation();">Connect Peer</button>
-                        <button class="action-btn btn-block" ontouchend="blockUser('${u.username}'); event.stopImmediatePropagation();" onclick="blockUser('${u.username}'); event.stopImmediatePropagation();">Block User</button>
-                    `;
-                }
-                
                 let instName = u.institution || u.college || 'College N/A';
                 let cityName = u.city || '';
 
-                container.innerHTML += `
-                    <div class="user-card">
-                        <div class="card-close-x" ontouchend="blockUser('${u.username}'); event.stopImmediatePropagation();" onclick="blockUser('${u.username}'); event.stopImmediatePropagation();" title="Dismiss">&times;</div>
-                        <div class="user-card-clickable" onclick="openUserProfileCard('${encodeURIComponent(u.name || '')}', '${encodeURIComponent(u.username || '')}', '${encodeURIComponent(avatar)}', '${encodeURIComponent(instName)}', '${encodeURIComponent(cityName)}', '${encodeURIComponent(u.studentType || '')}', '${encodeURIComponent(u.universityBoard || '')}', '${encodeURIComponent(u.course || '')}')">
-                            <img src="${avatar}" alt="Avatar">
-                            <h3>${u.name || 'Student'}</h3>
-                            <div class="username">@${u.username || 'user'}</div>
-                            <p>🎓 ${instName}</p>
-                            <p>📍 ${cityName}</p>
-                        </div>
-                        ${btnHtml}
-                    </div>
+                // Create Card Container
+                const card = document.createElement('div');
+                card.className = 'user-card';
+
+                // Close (X) button
+                const closeBtn = document.createElement('div');
+                closeBtn.className = 'card-close-x';
+                closeBtn.innerHTML = '&times;';
+                closeBtn.title = 'Dismiss';
+                closeBtn.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    blockUser(u.username);
+                });
+                card.appendChild(closeBtn);
+
+                // Clickable Profile Area (Opens Modal)
+                const clickableArea = document.createElement('div');
+                clickableArea.className = 'user-card-clickable';
+                clickableArea.innerHTML = `
+                    <img src="${avatar}" alt="Avatar">
+                    <h3>${u.name || 'Student'}</h3>
+                    <div class="username">@${u.username || 'user'}</div>
+                    <p>🎓 ${instName}</p>
+                    <p>📍 ${cityName}</p>
                 `;
+                clickableArea.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    openUserProfileCard(
+                        encodeURIComponent(u.name || ''),
+                        encodeURIComponent(u.username || ''),
+                        encodeURIComponent(avatar),
+                        encodeURIComponent(instName),
+                        encodeURIComponent(cityName),
+                        encodeURIComponent(u.studentType || ''),
+                        encodeURIComponent(u.universityBoard || ''),
+                        encodeURIComponent(u.course || '')
+                    );
+                });
+                card.appendChild(clickableArea);
+
+                // Action Buttons Logic
+                if (isFriend) {
+                    const connectedBtn = document.createElement('button');
+                    connectedBtn.className = 'action-btn';
+                    connectedBtn.style.cssText = 'background:#16a34a; color:#fff; cursor:default;';
+                    connectedBtn.disabled = true;
+                    connectedBtn.innerText = '✓ Connected';
+                    card.appendChild(connectedBtn);
+
+                    const removeBtn = document.createElement('button');
+                    removeBtn.className = 'action-btn';
+                    removeBtn.style.cssText = 'background:#dc2626; color:#fff;';
+                    removeBtn.innerText = 'Remove Friend';
+                    removeBtn.addEventListener('click', (e) => {
+                        e.stopPropagation();
+                        unfriendUser(u.username);
+                    });
+                    card.appendChild(removeBtn);
+
+                    const blockBtn = document.createElement('button');
+                    blockBtn.className = 'action-btn btn-block';
+                    blockBtn.innerText = 'Block User';
+                    blockBtn.addEventListener('click', (e) => {
+                        e.stopPropagation();
+                        blockUser(u.username);
+                    });
+                    card.appendChild(blockBtn);
+
+                } else if (isRequestedByMe) {
+                    const cancelBtn = document.createElement('button');
+                    cancelBtn.className = 'action-btn btn-sent';
+                    cancelBtn.innerText = 'Cancel Request';
+                    cancelBtn.addEventListener('click', (e) => {
+                        e.stopPropagation();
+                        cancelRequest(u.username);
+                    });
+                    card.appendChild(cancelBtn);
+
+                    const blockBtn = document.createElement('button');
+                    blockBtn.className = 'action-btn btn-block';
+                    blockBtn.innerText = 'Block User';
+                    blockBtn.addEventListener('click', (e) => {
+                        e.stopPropagation();
+                        blockUser(u.username);
+                    });
+                    card.appendChild(blockBtn);
+
+                } else if (isReceivedByThem) {
+                    const acceptRejectDiv = document.createElement('div');
+                    acceptRejectDiv.style.cssText = 'display:flex; gap:6px; margin-top:12px; width:100%;';
+                    
+                    const acceptBtn = document.createElement('button');
+                    acceptBtn.className = 'action-btn btn-accept';
+                    acceptBtn.style.margin = '0';
+                    acceptBtn.innerText = 'Accept';
+                    acceptBtn.addEventListener('click', (e) => {
+                        e.stopPropagation();
+                        acceptDirectRequest(u.username);
+                    });
+
+                    const rejectBtn = document.createElement('button');
+                    rejectBtn.className = 'action-btn btn-reject';
+                    rejectBtn.style.margin = '0';
+                    rejectBtn.innerText = 'Reject';
+                    rejectBtn.addEventListener('click', (e) => {
+                        e.stopPropagation();
+                        rejectDirectRequest(u.username);
+                    });
+
+                    acceptRejectDiv.appendChild(acceptBtn);
+                    acceptRejectDiv.appendChild(rejectBtn);
+                    card.appendChild(acceptRejectDiv);
+
+                    const blockBtn = document.createElement('button');
+                    blockBtn.className = 'action-btn btn-block';
+                    blockBtn.innerText = 'Block User';
+                    blockBtn.addEventListener('click', (e) => {
+                        e.stopPropagation();
+                        blockUser(u.username);
+                    });
+                    card.appendChild(blockBtn);
+
+                } else {
+                    const connectBtn = document.createElement('button');
+                    connectBtn.className = 'action-btn btn-friend';
+                    connectBtn.innerText = 'Connect Peer';
+                    connectBtn.addEventListener('click', (e) => {
+                        e.stopPropagation();
+                        sendFriendRequest(u.username, u.name, connectBtn);
+                    });
+                    card.appendChild(connectBtn);
+
+                    const blockBtn = document.createElement('button');
+                    blockBtn.className = 'action-btn btn-block';
+                    blockBtn.innerText = 'Block User';
+                    blockBtn.addEventListener('click', (e) => {
+                        e.stopPropagation();
+                        blockUser(u.username);
+                    });
+                    card.appendChild(blockBtn);
+                }
+
+                container.appendChild(card);
             });
         };
 
