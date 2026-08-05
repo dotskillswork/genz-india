@@ -251,36 +251,38 @@
             box-shadow: 0 0 0 4px rgba(234, 88, 12, 0.1); background: #ffffff;
         }
 
-        /* FIXED COMPACT STUDENT CARDS GRID (Match exact reference size) */
+        /* PERFECT COMPACT GRID (FIXED CARD SIZE SO IT DOES NOT STRETCH) */
         .users-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(240px, 280px));
+            display: flex;
+            flex-wrap: wrap;
             gap: 20px;
-            justify-content: center;
+            justify-content: flex-start;
         }
         .user-card {
             background: #ffffff;
-            border: 1px solid #e2e8f0;
-            border-radius: 20px;
-            padding: 20px 18px;
+            border: 1px solid #fed7aa;
+            border-radius: 24px;
+            padding: 24px 20px;
             text-align: center;
-            transition: all 0.3s ease;
-            box-shadow: 0 10px 25px -5px rgba(0,0,0,0.04);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 10px 30px -5px rgba(0,0,0,0.04);
             position: relative;
+            width: 270px; /* Fixed compact width like reference */
+            flex-shrink: 0;
             display: flex;
             flex-direction: column;
             align-items: center;
         }
         .user-card:hover {
             border-color: #ea580c;
-            transform: translateY(-5px);
-            box-shadow: 0 15px 30px -8px rgba(234, 88, 12, 0.15);
+            transform: translateY(-6px);
+            box-shadow: 0 20px 35px -8px rgba(234, 88, 12, 0.15);
         }
         
         .card-close-x {
-            position: absolute; top: 12px; right: 14px;
-            color: #94a3b8; font-size: 15px; cursor: pointer;
-            width: 26px; height: 26px; border-radius: 50%;
+            position: absolute; top: 14px; right: 16px;
+            color: #94a3b8; font-size: 16px; cursor: pointer;
+            width: 28px; height: 28px; border-radius: 50%;
             display: flex; align-items: center; justify-content: center;
             transition: 0.2s;
             z-index: 10;
@@ -296,40 +298,41 @@
             width: 100%;
         }
         .user-card img {
-            width: 74px; height: 74px;
+            width: 80px; height: 80px;
             border-radius: 50%; object-fit: cover;
-            border: 3px solid #ea580c; margin-bottom: 10px;
-            box-shadow: 0 6px 15px rgba(234, 88, 12, 0.15);
+            border: 3px solid #ea580c; margin-bottom: 12px;
+            box-shadow: 0 8px 20px rgba(234, 88, 12, 0.15);
         }
         .user-card h3 {
-            font-size: 16px; color: #0f172a; font-weight: 800; margin-bottom: 1px;
+            font-size: 17px; color: #0f172a; font-weight: 800; margin-bottom: 2px;
+            white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100%;
         }
         .user-card .username {
-            font-size: 11.5px; color: #64748b; margin-bottom: 8px; font-weight: 500;
+            font-size: 12px; color: #ea580c; margin-bottom: 10px; font-weight: 700;
         }
         .user-card p {
-            font-size: 12px; color: #64748b; margin-bottom: 3px;
+            font-size: 12.5px; color: #64748b; margin-bottom: 4px;
             white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100%;
         }
         
-        /* TOUCH-OPTIMIZED BUTTONS (NO BLINKING / NO HANGING) */
+        /* TOUCH-OPTIMIZED BUTTONS (FIXED MOBILE TAP & ZERO BLINKING) */
         .action-btn {
-            width: 100%; padding: 10px;
-            border-radius: 12px; font-weight: 700;
-            font-size: 12px; cursor: pointer; border: none;
-            margin-top: 10px; transition: 0.2s;
+            width: 100%; padding: 11px;
+            border-radius: 14px; font-weight: 700;
+            font-size: 12.5px; cursor: pointer; border: none;
+            margin-top: 12px; transition: 0.2s;
             display: inline-flex; align-items: center; justify-content: center; gap: 6px;
             touch-action: manipulation;
             -webkit-tap-highlight-color: transparent;
             z-index: 5;
             position: relative;
         }
-        .btn-friend { background: #0284c7; color: #fff; box-shadow: 0 4px 12px rgba(2, 132, 199, 0.25); }
+        .btn-friend { background: #0284c7; color: #fff; box-shadow: 0 4px 14px rgba(2, 132, 199, 0.3); }
         .btn-friend:hover { background: #0369a1; }
         .btn-sent { background: #f59e0b; color: #fff; box-shadow: 0 4px 10px rgba(245, 158, 11, 0.2); }
         .btn-accept { background: #16a34a; color: #fff; }
         .btn-reject { background: #dc2626; color: #fff; }
-        .btn-block { background: #f1f5f9; color: #64748b; margin-top: 5px; font-size: 11px; padding: 6px; }
+        .btn-block { background: #f1f5f9; color: #64748b; margin-top: 6px; font-size: 11.5px; padding: 7px; }
         .btn-block:hover { background: #e2e8f0; color: #0f172a; }
 
         /* Modern Modals */
@@ -853,26 +856,26 @@
                 if (isFriend) {
                     btnHtml = `
                         <button class="action-btn" style="background:#16a34a; color:#fff; cursor:default;" disabled>✓ Connected</button>
-                        <button class="action-btn" style="background:#dc2626; color:#fff;" onclick="unfriendUser('${u.username}')">Remove Friend</button>
-                        <button class="action-btn btn-block" onclick="blockUser('${u.username}')">Block User</button>
+                        <button class="action-btn" style="background:#dc2626; color:#fff;" ontouchend="event.stopPropagation(); unfriendUser('${u.username}')" onclick="event.stopPropagation(); unfriendUser('${u.username}')">Remove Friend</button>
+                        <button class="action-btn btn-block" ontouchend="event.stopPropagation(); blockUser('${u.username}')" onclick="event.stopPropagation(); blockUser('${u.username}')">Block User</button>
                     `;
                 } else if (isRequestedByMe) {
                     btnHtml = `
-                        <button class="action-btn btn-sent" onclick="cancelRequest('${u.username}')">Cancel Request</button>
-                        <button class="action-btn btn-block" onclick="blockUser('${u.username}')">Block User</button>
+                        <button class="action-btn btn-sent" ontouchend="event.stopPropagation(); cancelRequest('${u.username}')" onclick="event.stopPropagation(); cancelRequest('${u.username}')">Cancel Request</button>
+                        <button class="action-btn btn-block" ontouchend="event.stopPropagation(); blockUser('${u.username}')" onclick="event.stopPropagation(); blockUser('${u.username}')">Block User</button>
                     `;
                 } else if (isReceivedByThem) {
                     btnHtml = `
-                        <div style="display:flex; gap:6px; margin-top:10px; width:100%;">
-                            <button class="action-btn btn-accept" onclick="acceptDirectRequest('${u.username}')">Accept</button>
-                            <button class="action-btn btn-reject" onclick="rejectDirectRequest('${u.username}')">Reject</button>
+                        <div style="display:flex; gap:6px; margin-top:10px; width:100%;" ontouchend="event.stopPropagation()" onclick="event.stopPropagation()">
+                            <button class="action-btn btn-accept" ontouchend="acceptDirectRequest('${u.username}')" onclick="acceptDirectRequest('${u.username}')">Accept</button>
+                            <button class="action-btn btn-reject" ontouchend="rejectDirectRequest('${u.username}')" onclick="rejectDirectRequest('${u.username}')">Reject</button>
                         </div>
-                        <button class="action-btn btn-block" onclick="blockUser('${u.username}')">Block User</button>
+                        <button class="action-btn btn-block" ontouchend="event.stopPropagation(); blockUser('${u.username}')" onclick="event.stopPropagation(); blockUser('${u.username}')">Block User</button>
                     `;
                 } else {
                     btnHtml = `
-                        <button class="action-btn btn-friend" onclick="sendFriendRequest('${u.username}', '${u.name}', this)">Connect Peer</button>
-                        <button class="action-btn btn-block" onclick="blockUser('${u.username}')">Block User</button>
+                        <button class="action-btn btn-friend" ontouchend="event.stopPropagation(); sendFriendRequest('${u.username}', '${u.name}', this)" onclick="event.stopPropagation(); sendFriendRequest('${u.username}', '${u.name}', this)">Connect Peer</button>
+                        <button class="action-btn btn-block" ontouchend="event.stopPropagation(); blockUser('${u.username}')" onclick="event.stopPropagation(); blockUser('${u.username}')">Block User</button>
                     `;
                 }
                 
@@ -881,7 +884,7 @@
 
                 container.innerHTML += `
                     <div class="user-card">
-                        <div class="card-close-x" onclick="blockUser('${u.username}')" title="Dismiss">&times;</div>
+                        <div class="card-close-x" ontouchend="blockUser('${u.username}'); event.stopPropagation();" onclick="blockUser('${u.username}'); event.stopPropagation();" title="Dismiss">&times;</div>
                         <div class="user-card-clickable" onclick="openUserProfileCard('${encodeURIComponent(u.name || '')}', '${encodeURIComponent(u.username || '')}', '${encodeURIComponent(avatar)}', '${encodeURIComponent(instName)}', '${encodeURIComponent(cityName)}', '${encodeURIComponent(u.studentType || '')}', '${encodeURIComponent(u.universityBoard || '')}', '${encodeURIComponent(u.course || '')}')">
                             <img src="${avatar}" alt="Avatar">
                             <h3>${u.name || 'Student'}</h3>
