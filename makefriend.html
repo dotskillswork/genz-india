@@ -251,7 +251,7 @@
             box-shadow: 0 0 0 4px rgba(234, 88, 12, 0.1); background: #ffffff;
         }
 
-        /* PERFECT COMPACT GRID (FIXED CARD SIZE SO IT DOES NOT STRETCH) */
+        /* COMPACT GRID */
         .users-grid {
             display: flex;
             flex-wrap: wrap;
@@ -264,7 +264,6 @@
             border-radius: 24px;
             padding: 24px 20px;
             text-align: center;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             box-shadow: 0 10px 30px -5px rgba(0,0,0,0.04);
             position: relative;
             width: 270px;
@@ -272,11 +271,6 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-        }
-        .user-card:hover {
-            border-color: #ea580c;
-            transform: translateY(-4px);
-            box-shadow: 0 15px 30px -8px rgba(234, 88, 12, 0.15);
         }
         
         .card-close-x {
@@ -315,12 +309,12 @@
             white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100%;
         }
         
-        /* 100% BULLETPROOF MOBILE TOUCH BUTTONS */
+        /* BULLETPROOF MOBILE TOUCH BUTTONS */
         .action-btn {
             width: 100%; padding: 11px;
             border-radius: 14px; font-weight: 700;
             font-size: 12.5px; cursor: pointer; border: none;
-            margin-top: 12px; transition: 0.2s;
+            margin-top: 12px;
             display: inline-flex; align-items: center; justify-content: center; gap: 6px;
             touch-action: manipulation;
             -webkit-tap-highlight-color: transparent;
@@ -328,12 +322,10 @@
             position: relative;
         }
         .btn-friend { background: #0284c7; color: #fff; box-shadow: 0 4px 14px rgba(2, 132, 199, 0.3); }
-        .btn-friend:hover { background: #0369a1; }
         .btn-sent { background: #f59e0b; color: #fff; box-shadow: 0 4px 10px rgba(245, 158, 11, 0.2); }
         .btn-accept { background: #16a34a; color: #fff; }
         .btn-reject { background: #dc2626; color: #fff; }
         .btn-block { background: #f1f5f9; color: #64748b; margin-top: 6px; font-size: 11.5px; padding: 7px; }
-        .btn-block:hover { background: #e2e8f0; color: #0f172a; }
 
         /* Modern Modals */
         .modal {
@@ -361,10 +353,8 @@
             font-size: 18px; width: 38px; height: 38px;
             border-radius: 50%; cursor: pointer;
             display: flex; align-items: center; justify-content: center;
-            transition: 0.2s;
             touch-action: manipulation;
         }
-        .close-modal:hover { background: #e2e8f0; color: #0f172a; }
         .friend-list-item {
             display: flex; align-items: center; justify-content: space-between;
             padding: 15px 0; border-bottom: 1px solid #f1f5f9; gap: 12px;
@@ -386,17 +376,15 @@
         .form-group input, .form-group select {
             width: 100%; padding: 11px 16px; border: 1px solid #cbd5e1; border-radius: 14px; font-size: 13.5px; background: #f8fafc;
         }
-        .form-group input:focus, .form-group select:focus { outline: none; border-color: #ea580c; box-shadow: 0 0 0 4px rgba(234, 88, 12, 0.1); background: #ffffff; }
 
         .hub-btn {
             background: linear-gradient(135deg, #ea580c, #f97316);
             color: #fff; border: none; padding: 12px 24px;
             border-radius: 14px; font-weight: 700; font-size: 13.5px;
-            cursor: pointer; transition: 0.25s; text-decoration: none;
+            cursor: pointer; text-decoration: none;
             display: inline-flex; align-items: center; gap: 8px;
             touch-action: manipulation;
         }
-        .hub-btn:hover { transform: translateY(-2px); box-shadow: 0 10px 20px rgba(234, 88, 12, 0.3); }
 
         #floatingToast {
             display: none; position: fixed; bottom: 30px; right: 30px;
@@ -404,11 +392,6 @@
             border-radius: 20px; padding: 18px 24px;
             box-shadow: 0 25px 50px rgba(234, 88, 12, 0.25);
             z-index: 9999; max-width: 380px; cursor: pointer;
-            animation: slideUpToast 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-        }
-        @keyframes slideUpToast {
-            from { transform: translateY(40px); opacity: 0; }
-            to { transform: translateY(0); opacity: 1; }
         }
         .toast-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; }
         .toast-title { font-size: 14px; font-weight: 800; color: #ea580c; }
@@ -836,6 +819,7 @@
             }
         };
 
+        // 100% BULLETPROOF RENDER USERS LOGIC WITH ISOLATED TOUCH ACTIONS
         window.renderUsers = function(users) {
             const container = document.getElementById('usersListContainer');
             container.innerHTML = '';
@@ -856,26 +840,26 @@
                 if (isFriend) {
                     btnHtml = `
                         <button class="action-btn" style="background:#16a34a; color:#fff; cursor:default;" disabled>✓ Connected</button>
-                        <button class="action-btn" style="background:#dc2626; color:#fff;" onpointerdown="unfriendUser('${u.username}'); event.stopPropagation();">Remove Friend</button>
-                        <button class="action-btn btn-block" onpointerdown="blockUser('${u.username}'); event.stopPropagation();">Block User</button>
+                        <button class="action-btn" style="background:#dc2626; color:#fff;" ontouchend="unfriendUser('${u.username}'); event.stopImmediatePropagation();" onclick="unfriendUser('${u.username}'); event.stopImmediatePropagation();">Remove Friend</button>
+                        <button class="action-btn btn-block" ontouchend="blockUser('${u.username}'); event.stopImmediatePropagation();" onclick="blockUser('${u.username}'); event.stopImmediatePropagation();">Block User</button>
                     `;
                 } else if (isRequestedByMe) {
                     btnHtml = `
-                        <button class="action-btn btn-sent" onpointerdown="cancelRequest('${u.username}'); event.stopPropagation();">Cancel Request</button>
-                        <button class="action-btn btn-block" onpointerdown="blockUser('${u.username}'); event.stopPropagation();">Block User</button>
+                        <button class="action-btn btn-sent" ontouchend="cancelRequest('${u.username}'); event.stopImmediatePropagation();" onclick="cancelRequest('${u.username}'); event.stopImmediatePropagation();">Cancel Request</button>
+                        <button class="action-btn btn-block" ontouchend="blockUser('${u.username}'); event.stopImmediatePropagation();" onclick="blockUser('${u.username}'); event.stopImmediatePropagation();">Block User</button>
                     `;
                 } else if (isReceivedByThem) {
                     btnHtml = `
-                        <div style="display:flex; gap:6px; margin-top:10px; width:100%;" onpointerdown="event.stopPropagation()">
-                            <button class="action-btn btn-accept" onpointerdown="acceptDirectRequest('${u.username}'); event.stopPropagation();">Accept</button>
-                            <button class="action-btn btn-reject" onpointerdown="rejectDirectRequest('${u.username}'); event.stopPropagation();">Reject</button>
+                        <div style="display:flex; gap:6px; margin-top:10px; width:100%;" ontouchend="event.stopImmediatePropagation()" onclick="event.stopImmediatePropagation()">
+                            <button class="action-btn btn-accept" ontouchend="acceptDirectRequest('${u.username}'); event.stopImmediatePropagation();" onclick="acceptDirectRequest('${u.username}'); event.stopImmediatePropagation();">Accept</button>
+                            <button class="action-btn btn-reject" ontouchend="rejectDirectRequest('${u.username}'); event.stopImmediatePropagation();" onclick="rejectDirectRequest('${u.username}'); event.stopImmediatePropagation();">Reject</button>
                         </div>
-                        <button class="action-btn btn-block" onpointerdown="blockUser('${u.username}'); event.stopPropagation();">Block User</button>
+                        <button class="action-btn btn-block" ontouchend="blockUser('${u.username}'); event.stopImmediatePropagation();" onclick="blockUser('${u.username}'); event.stopImmediatePropagation();">Block User</button>
                     `;
                 } else {
                     btnHtml = `
-                        <button class="action-btn btn-friend" onpointerdown="sendFriendRequest('${u.username}', '${u.name}', this); event.stopPropagation();">Connect Peer</button>
-                        <button class="action-btn btn-block" onpointerdown="blockUser('${u.username}'); event.stopPropagation();">Block User</button>
+                        <button class="action-btn btn-friend" ontouchend="sendFriendRequest('${u.username}', '${u.name}', this); event.stopImmediatePropagation();" onclick="sendFriendRequest('${u.username}', '${u.name}', this); event.stopImmediatePropagation();">Connect Peer</button>
+                        <button class="action-btn btn-block" ontouchend="blockUser('${u.username}'); event.stopImmediatePropagation();" onclick="blockUser('${u.username}'); event.stopImmediatePropagation();">Block User</button>
                     `;
                 }
                 
@@ -884,7 +868,7 @@
 
                 container.innerHTML += `
                     <div class="user-card">
-                        <div class="card-close-x" onpointerdown="blockUser('${u.username}'); event.stopPropagation();" title="Dismiss">&times;</div>
+                        <div class="card-close-x" ontouchend="blockUser('${u.username}'); event.stopImmediatePropagation();" onclick="blockUser('${u.username}'); event.stopImmediatePropagation();" title="Dismiss">&times;</div>
                         <div class="user-card-clickable" onclick="openUserProfileCard('${encodeURIComponent(u.name || '')}', '${encodeURIComponent(u.username || '')}', '${encodeURIComponent(avatar)}', '${encodeURIComponent(instName)}', '${encodeURIComponent(cityName)}', '${encodeURIComponent(u.studentType || '')}', '${encodeURIComponent(u.universityBoard || '')}', '${encodeURIComponent(u.course || '')}')">
                             <img src="${avatar}" alt="Avatar">
                             <h3>${u.name || 'Student'}</h3>
