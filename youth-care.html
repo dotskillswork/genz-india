@@ -121,7 +121,7 @@
         </div>
     </header>
 
-    <!-- Secure Founder Login Modal (Fixed: Secret typing format) -->
+    <!-- Secure Founder Login Modal -->
     <div id="loginModal" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-md hidden flex items-center justify-center p-4">
         <div class="glass-card max-w-sm w-full p-6 rounded-3xl border border-brand-gold/40 text-left relative">
             <button onclick="closeLoginModal()" class="absolute top-3 right-3 text-gray-400 hover:text-white text-lg">
@@ -229,14 +229,13 @@
             </a>
         </div>
 
-        <!-- 3 Core Pillars Section (Horizontal Circle Feature Cards Style) -->
+        <!-- 3 Core Pillars Section -->
         <section id="pillars" class="w-full max-w-5xl py-8 text-left">
             <div class="text-center mb-8">
                 <h3 class="font-display text-2xl md:text-3xl font-bold text-brand-gold mb-1.5">Our 3 Core Pillars</h3>
                 <p class="text-gray-400 text-xs">The foundation upon which Youth Care stands for real social change</p>
             </div>
 
-            <!-- Horizontal Grid with Round Icons -->
             <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
                 <!-- Pillar 1 -->
                 <div class="glass-card p-6 rounded-2xl relative overflow-hidden group hover:border-emerald-400 transition-all duration-300 flex flex-col items-center text-center">
@@ -276,16 +275,16 @@
             </div>
         </section>
 
-        <!-- Founder-Only Control Panel Modal (Hidden by Default) -->
-        <div id="founderModal" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-md hidden flex items-center justify-center p-4">
-            <div class="glass-card max-w-md w-full p-6 md:p-8 rounded-3xl border border-brand-gold/40 text-left relative">
+        <!-- Founder-Only Control Panel Modal (Updated with Supporters & Multiple Images) -->
+        <div id="founderModal" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-md hidden flex items-center justify-center p-4 overflow-y-auto py-10">
+            <div class="glass-card max-w-lg w-full p-6 md:p-8 rounded-3xl border border-brand-gold/40 text-left relative my-auto">
                 <button onclick="toggleFounderPanel()" class="absolute top-4 right-4 text-gray-400 hover:text-white text-lg">
                     <i class="fa-solid fa-xmark"></i>
                 </button>
                 <h3 class="font-display text-xl font-bold text-brand-gold mb-1"><i class="fa-solid fa-shield-halved mr-2"></i> Founder Control Panel</h3>
-                <p class="text-gray-300 text-xs mb-5">Publish a successful ground-level work. This will instantly reflect on the public Success Work wall.</p>
+                <p class="text-gray-300 text-xs mb-4">Publish successful ground work with supporters list & multiple images.</p>
                 
-                <form onsubmit="handlePublishWork(event)" class="space-y-3.5">
+                <form onsubmit="handlePublishWork(event)" class="space-y-3">
                     <div>
                         <label class="block text-[11px] uppercase tracking-wider text-emerald-300 mb-1">Category / Pillar</label>
                         <select id="workCategory" class="w-full bg-brand-earth/90 border border-white/10 rounded-xl px-3.5 py-2 text-white text-xs focus:outline-none focus:border-brand-saffron">
@@ -300,9 +299,17 @@
                     </div>
                     <div>
                         <label class="block text-[11px] uppercase tracking-wider text-emerald-300 mb-1">Short Description</label>
-                        <textarea id="workDesc" required rows="3" placeholder="Write details about the successful work..." class="w-full bg-brand-earth/90 border border-white/10 rounded-xl px-3.5 py-2 text-white text-xs focus:outline-none"></textarea>
+                        <textarea id="workDesc" required rows="2" placeholder="Write details about the successful work..." class="w-full bg-brand-earth/90 border border-white/10 rounded-xl px-3.5 py-2 text-white text-xs focus:outline-none"></textarea>
                     </div>
-                    <button type="submit" class="w-full bg-gradient-to-r from-brand-saffron to-brand-gold text-brand-earth font-bold py-2.5 rounded-xl shadow-lg hover:opacity-95 text-xs">
+                    <div>
+                        <label class="block text-[11px] uppercase tracking-wider text-emerald-300 mb-1">Supporters / Contributors Names (Comma separated)</label>
+                        <input type="text" id="workSupporters" placeholder="e.g. Rahul Sharma, Priya Singh, Amit Kumar" class="w-full bg-brand-earth/90 border border-white/10 rounded-xl px-3.5 py-2 text-white text-xs focus:outline-none">
+                    </div>
+                    <div>
+                        <label class="block text-[11px] uppercase tracking-wider text-emerald-300 mb-1">Upload Multiple Images (Select up to 5)</label>
+                        <input type="file" id="workImages" accept="image/*" multiple class="w-full bg-brand-earth/90 border border-white/10 rounded-xl px-3.5 py-1.5 text-white text-xs focus:outline-none file:mr-4 file:py-1 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-brand-saffron file:text-white hover:file:bg-brand-saffron/80">
+                    </div>
+                    <button type="submit" class="w-full bg-gradient-to-r from-brand-saffron to-brand-gold text-brand-earth font-bold py-2.5 rounded-xl shadow-lg hover:opacity-95 text-xs mt-2">
                         <i class="fa-solid fa-paper-plane mr-2"></i> Publish Success Work
                     </button>
                 </form>
@@ -318,11 +325,11 @@
 
             <!-- Dynamic Work Grid Container -->
             <div id="successWorksGrid" class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                <!-- If no work is posted, this shows a clean 'Coming Soon' state -->
+                <!-- Posts will appear here -->
             </div>
         </section>
 
-        <!-- Live Joined Members Wall (Tribe Wall) - Firebase Connected -->
+        <!-- Live Joined Members Wall (Tribe Wall) -->
         <section id="members" class="w-full max-w-5xl py-8 text-left">
             <div class="text-center mb-6">
                 <h3 class="font-display text-2xl md:text-3xl font-bold text-brand-gold mb-1.5">Our Active Tribe Members 🇮🇳</h3>
@@ -336,8 +343,6 @@
 
         <!-- Join Form Section -->
         <section id="join" class="w-full max-w-xl my-10 glass-card p-6 md:p-10 rounded-3xl border border-brand-gold/30 text-left">
-            
-            <!-- Join Form -->
             <div id="formContainer">
                 <div class="text-center mb-6">
                     <h3 class="font-display text-xl md:text-2xl font-bold text-brand-gold mb-1">Be Part of the Movement</h3>
@@ -378,9 +383,7 @@
                 </p>
                 <button onclick="leaveTribe()" class="mt-4 text-[11px] text-red-400 hover:underline">Switch Account / Leave Tribe</button>
             </div>
-
         </section>
-
     </main>
 
     <!-- Footer -->
@@ -390,7 +393,6 @@
     </footer>
 
     <script>
-        // Firebase Configuration (Matching index.html)
         const firebaseConfig = {
             apiKey: "AIzaSyCNLwSjHq6LlX9uUovTRHrz9ZfUWeIUWQM",
             authDomain: "genz-india.firebaseapp.com",
@@ -406,7 +408,6 @@
         }
         const db = firebase.firestore();
 
-        // Get Logged-in User from LocalStorage (from main dashboard login)
         const localUser = JSON.parse(localStorage.getItem('genzUser'));
         const currentUserProfile = {
             name: localUser ? (localUser.name || localUser.username || "Student") : "Aryan Sharma",
@@ -469,7 +470,6 @@
             document.getElementById('join').scrollIntoView({ behavior: 'smooth' });
         }
 
-        // Secure Login Modal Functions
         function openLoginModal() {
             document.getElementById('loginModal').classList.remove('hidden');
             document.getElementById('loginError').classList.add('hidden');
@@ -496,30 +496,51 @@
             }
         }
 
-        // Toggle Founder Control Panel Work Modal
         function toggleFounderPanel() {
             const modal = document.getElementById('founderModal');
             modal.classList.toggle('hidden');
         }
 
-        // Handle Publishing New Success Work (Only by Founder)
-        function handlePublishWork(e) {
+        // Handle Publishing New Success Work with Multiple Images & Supporters List
+        async function handlePublishWork(e) {
             e.preventDefault();
             const category = document.getElementById('workCategory').value;
             const title = document.getElementById('workTitle').value;
             const desc = document.getElementById('workDesc').value;
+            const supporters = document.getElementById('workSupporters').value;
+            const imageInput = document.getElementById('workImages');
+
+            let imagesArray = [];
+
+            if (imageInput.files && imageInput.files.length > 0) {
+                const files = Array.from(imageInput.files);
+                for (let file of files) {
+                    const base64 = await convertFileToBase64(file);
+                    imagesArray.push(base64);
+                }
+            }
 
             let works = JSON.parse(localStorage.getItem('founderSuccessWorks')) || [];
-            works.unshift({ category, title, desc, date: "Just now" });
+            works.unshift({ category, title, desc, supporters, images: imagesArray, date: "Just now" });
             localStorage.setItem('founderSuccessWorks', JSON.stringify(works));
 
             document.getElementById('workTitle').value = '';
             document.getElementById('workDesc').value = '';
+            document.getElementById('workSupporters').value = '';
+            imageInput.value = '';
             document.getElementById('founderModal').classList.add('hidden');
             loadSuccessWorks();
         }
 
-        // Load Success Works
+        function convertFileToBase64(file) {
+            return new Promise((resolve) => {
+                const reader = new FileReader();
+                reader.onload = (e) => resolve(e.target.result);
+                reader.readAsDataURL(file);
+            });
+        }
+
+        // Load Success Works with Image Gallery & Supporters Display
         function loadSuccessWorks() {
             const grid = document.getElementById('successWorksGrid');
             let works = JSON.parse(localStorage.getItem('founderSuccessWorks')) || [];
@@ -536,28 +557,60 @@
             }
 
             grid.innerHTML = "";
-            works.forEach(w => {
+            works.forEach((w, index) => {
                 let icon = "fa-tree";
                 if(w.category.includes("Education")) icon = "fa-book-bookmark";
                 if(w.category.includes("Sahyog")) icon = "fa-hands-holding-child";
 
-                grid.innerHTML += `
-                    <div class="glass-card rounded-2xl overflow-hidden border border-white/10 group">
+                let imageHtml = "";
+                if(w.images && w.images.length > 0) {
+                    if(w.images.length === 1) {
+                        imageHtml = `<div class="h-48 overflow-hidden bg-emerald-950"><img src="${w.images[0]}" class="w-full h-full object-cover"></div>`;
+                    } else {
+                        let thumbnails = w.images.map(img => `<img src="${img}" class="w-16 h-16 object-cover rounded-lg border border-white/20">`).join('');
+                        imageHtml = `
+                            <div class="h-48 overflow-hidden bg-emerald-950 relative">
+                                <img src="${w.images[0]}" class="w-full h-full object-cover">
+                                <div class="absolute bottom-2 right-2 bg-black/70 px-2 py-1 rounded-md text-[10px] text-brand-gold font-bold flex space-x-1 overflow-x-auto max-w-[80%]">
+                                    ${thumbnails}
+                                </div>
+                            </div>
+                        `;
+                    }
+                } else {
+                    imageHtml = `
                         <div class="h-40 bg-emerald-900/40 flex items-center justify-center text-emerald-400 text-4xl relative">
                             <i class="fa-solid ${icon}"></i>
-                            <span class="absolute top-3 right-3 bg-brand-earth/80 text-brand-gold text-[10px] px-2.5 py-0.5 rounded-full border border-brand-gold/30">Completed</span>
                         </div>
-                        <div class="p-5">
-                            <span class="text-[10px] text-emerald-300 uppercase tracking-wider font-bold">${w.category}</span>
-                            <h4 class="font-display text-base font-bold text-white mt-0.5 mb-1.5">${w.title}</h4>
-                            <p class="text-gray-300 text-xs leading-relaxed">${w.desc}</p>
+                    `;
+                }
+
+                let supportersHtml = "";
+                if(w.supporters && w.supporters.trim() !== "") {
+                    supportersHtml = `
+                        <div class="mt-3 pt-3 border-t border-white/10">
+                            <p class="text-[10px] text-brand-gold font-semibold mb-1"><i class="fa-solid fa-users mr-1"></i> Supported By:</p>
+                            <p class="text-[11px] text-gray-300">${w.supporters}</p>
+                        </div>
+                    `;
+                }
+
+                grid.innerHTML += `
+                    <div class="glass-card rounded-2xl overflow-hidden border border-white/10 group flex flex-col justify-between">
+                        <div>
+                            ${imageHtml}
+                            <div class="p-5">
+                                <span class="text-[10px] text-emerald-300 uppercase tracking-wider font-bold">${w.category}</span>
+                                <h4 class="font-display text-base font-bold text-white mt-0.5 mb-1.5">${w.title}</h4>
+                                <p class="text-gray-300 text-xs leading-relaxed">${w.desc}</p>
+                                ${supportersHtml}
+                            </div>
                         </div>
                     </div>
                 `;
             });
         }
 
-        // Handle Join Tribe - Syncs with Firebase Firestore for cross-device real-time sync
         async function handleJoin(e) {
             e.preventDefault();
             const email = document.getElementById('userEmail').value;
@@ -571,7 +624,6 @@
             };
 
             try {
-                // Save to Firebase Firestore so all devices can see it
                 await db.collection("youth_members").add(userData);
                 localStorage.setItem('youthMember', JSON.stringify(userData));
                 checkUserJoined();
@@ -601,7 +653,6 @@
             checkUserJoined();
         }
 
-        // Realtime Members Sync from Firebase Firestore across all devices
         function setupRealtimeMembers() {
             const grid = document.getElementById('membersGrid');
             

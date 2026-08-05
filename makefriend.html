@@ -216,6 +216,7 @@
             cursor: pointer; transition: 0.25s;
             display: inline-flex; align-items: center; gap: 8px;
             box-shadow: 0 4px 15px rgba(234, 88, 12, 0.08);
+            touch-action: manipulation;
         }
         .edit-profile-btn:hover { background: #ea580c; color: #fff; transform: translateY(-2px); box-shadow: 0 8px 20px rgba(234, 88, 12, 0.25); }
 
@@ -226,6 +227,7 @@
             cursor: pointer; transition: 0.25s;
             display: inline-flex; align-items: center; gap: 8px;
             box-shadow: 0 4px 15px rgba(22, 163, 74, 0.08);
+            touch-action: manipulation;
         }
         .friends-counter-badge:hover { background: #16a34a; color: #fff; transform: translateY(-2px); box-shadow: 0 8px 20px rgba(22, 163, 74, 0.25); }
 
@@ -272,6 +274,8 @@
             position: relative;
             overflow: hidden;
             cursor: pointer;
+            touch-action: manipulation;
+            -webkit-tap-highlight-color: transparent;
         }
         .user-card:hover {
             border-color: #ea580c;
@@ -299,6 +303,8 @@
             font-size: 12.5px; cursor: pointer; border: none;
             margin-top: 14px; transition: 0.2s;
             display: inline-flex; align-items: center; justify-content: center; gap: 6px;
+            touch-action: manipulation;
+            -webkit-tap-highlight-color: transparent;
         }
         .btn-friend { background: #16a34a; color: #fff; box-shadow: 0 4px 12px rgba(22, 163, 74, 0.25); }
         .btn-friend:hover { background: #15803d; transform: translateY(-1px); }
@@ -336,6 +342,7 @@
             border-radius: 50%; cursor: pointer;
             display: flex; align-items: center; justify-content: center;
             transition: 0.2s;
+            touch-action: manipulation;
         }
         .close-modal:hover { background: #e2e8f0; color: #0f172a; }
         .friend-list-item {
@@ -354,14 +361,14 @@
         }
 
         /* Edit Profile Inputs */
-        .form-group { margin-bottom: 18px; }
+        .form-group { margin-bottom: 16px; }
         .form-group label {
-            display: block; font-size: 13px; font-weight: 700; color: #334155; margin-bottom: 6px;
+            display: block; font-size: 12.5px; font-weight: 700; color: #334155; margin-bottom: 6px;
         }
-        .form-group input {
-            width: 100%; padding: 12px 18px; border: 1px solid #cbd5e1; border-radius: 14px; font-size: 14px;
+        .form-group input, .form-group select {
+            width: 100%; padding: 11px 16px; border: 1px solid #cbd5e1; border-radius: 14px; font-size: 13.5px; background: #f8fafc;
         }
-        .form-group input:focus { outline: none; border-color: #ea580c; box-shadow: 0 0 0 4px rgba(234, 88, 12, 0.1); }
+        .form-group input:focus, .form-group select:focus { outline: none; border-color: #ea580c; box-shadow: 0 0 0 4px rgba(234, 88, 12, 0.1); background: #ffffff; }
 
         /* Hub Button */
         .hub-btn {
@@ -370,6 +377,7 @@
             border-radius: 14px; font-weight: 700; font-size: 13.5px;
             cursor: pointer; transition: 0.25s; text-decoration: none;
             display: inline-flex; align-items: center; gap: 8px;
+            touch-action: manipulation;
         }
         .hub-btn:hover { transform: translateY(-2px); box-shadow: 0 10px 20px rgba(234, 88, 12, 0.3); }
 
@@ -484,6 +492,12 @@
                 <h3 id="modalUserName" style="font-size: 18px; font-weight: 800; color: #0f172a;">User Name</h3>
                 <div id="modalUserHandle" style="font-size: 13px; color: #ea580c; font-weight: 700;">@username</div>
                 <p id="modalUserCollege" style="font-size: 12.5px; color: #64748b; margin-top: 4px;">College info</p>
+                <p id="modalUserLocation" style="font-size: 12px; color: #64748b; margin-top: 2px;">Location info</p>
+            </div>
+            <div style="background: #f8fafc; padding: 14px; border-radius: 14px; margin-bottom: 16px; font-size: 12.5px; color: #334155;">
+                <p><strong>Student Type:</strong> <span id="modalStudentType">-</span></p>
+                <p><strong>University / Board:</strong> <span id="modalUniBoard">-</span></p>
+                <p><strong>Course / Class:</strong> <span id="modalCourse">-</span></p>
             </div>
             <h4 style="font-size: 14px; font-weight: 700; color: #1e293b; margin-bottom: 12px; border-bottom: 2px solid #fed7aa; padding-bottom: 6px;">📢 User Shared Posts & Reports</h4>
             <div id="modalUserPostsContainer">
@@ -503,7 +517,7 @@
         </div>
     </div>
 
-    <!-- Edit Profile Modal with Choose Photo File Upload -->
+    <!-- Edit Profile Modal Updated with New Signup Form Fields -->
     <div class="modal" id="editProfileModal">
         <div class="modal-content">
             <button class="close-modal" onclick="closeEditProfileModal()">&times;</button>
@@ -514,16 +528,43 @@
                     <input type="text" id="editName" required>
                 </div>
                 <div class="form-group">
-                    <label>College Name</label>
-                    <input type="text" id="editCollege" placeholder="e.g. Delhi University">
+                    <label>Student Type</label>
+                    <select id="editStudentType">
+                        <option value="College">College Student</option>
+                        <option value="School">School Student</option>
+                    </select>
                 </div>
                 <div class="form-group">
-                    <label>Course / Branch</label>
-                    <input type="text" id="editCourse" placeholder="e.g. B.Tech Computer Science">
+                    <label>University / Board Name</label>
+                    <input type="text" id="editUniBoard" placeholder="e.g. CBSE / Delhi University">
+                </div>
+                <div class="form-group">
+                    <label>College / School Name</label>
+                    <input type="text" id="editCollege" placeholder="e.g. St. Xavier's / DAV">
+                </div>
+                <div class="form-group">
+                    <label>Course / Class</label>
+                    <input type="text" id="editCourse" placeholder="e.g. B.Tech 2nd Year or Class 12th">
+                </div>
+                <div class="form-group">
+                    <label>Area / Locality</label>
+                    <input type="text" id="editArea" placeholder="Area">
                 </div>
                 <div class="form-group">
                     <label>City</label>
-                    <input type="text" id="editCity" placeholder="e.g. New Delhi">
+                    <input type="text" id="editCity" placeholder="City">
+                </div>
+                <div class="form-group">
+                    <label>District</label>
+                    <input type="text" id="editDistrict" placeholder="District">
+                </div>
+                <div class="form-group">
+                    <label>State</label>
+                    <input type="text" id="editState" placeholder="State">
+                </div>
+                <div class="form-group">
+                    <label>Country</label>
+                    <input type="text" id="editCountry" value="India">
                 </div>
                 <div class="form-group">
                     <label>Choose Profile Photo</label>
@@ -661,7 +702,7 @@
 
                     document.getElementById('myName').innerText = currentUserData.name || currentLoggedInUser.name;
                     document.getElementById('myUsername').innerText = `@${currentUserData.username || currentLoggedInUser.username}`;
-                    document.getElementById('myCollegeInfo').innerText = `${currentUserData.college || 'College not specified'} | ${currentUserData.course || ''}`;
+                    document.getElementById('myCollegeInfo').innerText = `${currentUserData.institution || currentUserData.college || 'College not specified'} | ${currentUserData.course || ''}`;
                     if (currentUserData.photo || currentUserData.profilePic) {
                         document.getElementById('myAvatar').src = currentUserData.photo || currentUserData.profilePic;
                     }
@@ -685,9 +726,15 @@
 
         window.openEditProfileModal = function() {
             document.getElementById('editName').value = currentUserData.name || currentLoggedInUser.name || '';
-            document.getElementById('editCollege').value = currentUserData.college || '';
+            document.getElementById('editStudentType').value = currentUserData.studentType || 'College';
+            document.getElementById('editUniBoard').value = currentUserData.universityBoard || '';
+            document.getElementById('editCollege').value = currentUserData.institution || currentUserData.college || '';
             document.getElementById('editCourse').value = currentUserData.course || '';
+            document.getElementById('editArea').value = currentUserData.area || '';
             document.getElementById('editCity').value = currentUserData.city || '';
+            document.getElementById('editDistrict').value = currentUserData.district || '';
+            document.getElementById('editState').value = currentUserData.state || '';
+            document.getElementById('editCountry').value = currentUserData.country || 'India';
             selectedBase64Photo = currentUserData.photo || currentUserData.profilePic || '';
             document.getElementById('editProfileModal').style.display = 'flex';
         };
@@ -696,7 +743,7 @@
             document.getElementById('editProfileModal').style.display = 'none';
         };
 
-        // Handle Image File Selection & Auto-Compression to safely fit DB limits (<50KB)
+        // Handle Image File Selection & Auto-Compression
         document.getElementById('editPhotoFile').addEventListener('change', function(e) {
             const file = e.target.files[0];
             if (file) {
@@ -732,39 +779,45 @@
             e.preventDefault();
 
             const updatedName = document.getElementById('editName').value.trim();
+            const updatedStudentType = document.getElementById('editStudentType').value;
+            const updatedUniBoard = document.getElementById('editUniBoard').value.trim();
             const updatedCollege = document.getElementById('editCollege').value.trim();
             const updatedCourse = document.getElementById('editCourse').value.trim();
+            const updatedArea = document.getElementById('editArea').value.trim();
             const updatedCity = document.getElementById('editCity').value.trim();
+            const updatedDistrict = document.getElementById('editDistrict').value.trim();
+            const updatedState = document.getElementById('editState').value.trim();
+            const updatedCountry = document.getElementById('editCountry').value.trim();
             const finalPhoto = selectedBase64Photo || currentLoggedInUser.photo || currentUserData.photo || 'https://cdn.jsdelivr.net/gh/twitter/twemoji@14.0.2/assets/72x72/1f464.png';
 
+            const profileUpdates = {
+                name: updatedName,
+                studentType: updatedStudentType,
+                universityBoard: updatedUniBoard,
+                institution: updatedCollege,
+                college: updatedCollege,
+                course: updatedCourse,
+                area: updatedArea,
+                city: updatedCity,
+                district: updatedDistrict,
+                state: updatedState,
+                country: updatedCountry,
+                photo: finalPhoto,
+                profilePic: finalPhoto
+            };
+
             try {
-                // 1. Update LocalStorage first so UI never fails
                 currentLoggedInUser.name = updatedName;
                 currentLoggedInUser.photo = finalPhoto;
                 currentLoggedInUser.profilePic = finalPhoto;
                 localStorage.setItem('genzUser', JSON.stringify(currentLoggedInUser));
 
-                // 2. Update Firestore if document ID exists
                 if (myDocId) {
-                    await db.collection('users').doc(myDocId).update({
-                        name: updatedName,
-                        college: updatedCollege,
-                        course: updatedCourse,
-                        city: updatedCity,
-                        photo: finalPhoto,
-                        profilePic: finalPhoto
-                    });
+                    await db.collection('users').doc(myDocId).update(profileUpdates);
                 } else {
                     const q = await db.collection('users').where("username", "==", currentLoggedInUser.username).get();
                     if (!q.empty) {
-                        await q.docs[0].ref.update({
-                            name: updatedName,
-                            college: updatedCollege,
-                            course: updatedCourse,
-                            city: updatedCity,
-                            photo: finalPhoto,
-                            profilePic: finalPhoto
-                        });
+                        await q.docs[0].ref.update(profileUpdates);
                     }
                 }
 
@@ -773,7 +826,6 @@
                 initPage();
             } catch(err) {
                 console.error("Profile update error:", err);
-                // Graceful fallback: UI is already updated via LocalStorage
                 alert("Profile updated successfully on device! (Cloud sync pending)");
                 closeEditProfileModal();
                 initPage();
@@ -823,13 +875,16 @@
                     `;
                 }
                 
+                let instName = u.institution || u.college || 'College N/A';
+                let cityName = u.city || '';
+
                 container.innerHTML += `
-                    <div class="user-card" onclick="openUserProfileCard('${u.name}', '${u.username}', '${avatar}', '${u.college || 'College N/A'}', '${u.city || ''}')">
+                    <div class="user-card" onclick="openUserProfileCard('${encodeURIComponent(u.name || '')}', '${encodeURIComponent(u.username || '')}', '${encodeURIComponent(avatar)}', '${encodeURIComponent(instName)}', '${encodeURIComponent(cityName)}', '${encodeURIComponent(u.studentType || '')}', '${encodeURIComponent(u.universityBoard || '')}', '${encodeURIComponent(u.course || '')}')">
                         <img src="${avatar}" alt="Avatar">
-                        <h3>${u.name}</h3>
-                        <div class="username">@${u.username}</div>
-                        <p>🎓 ${u.college || 'College N/A'}</p>
-                        <p>📍 ${u.city || ''}</p>
+                        <h3>${u.name || 'Student'}</h3>
+                        <div class="username">@${u.username || 'user'}</div>
+                        <p>🎓 ${instName}</p>
+                        <p>📍 ${cityName}</p>
                         ${btnHtml}
                     </div>
                 `;
@@ -837,11 +892,24 @@
         };
 
         // --- INSPECT USER PROFILE & POSTS MODAL ---
-        window.openUserProfileCard = async function(name, username, avatar, college, city) {
+        window.openUserProfileCard = async function(encName, encUsername, encAvatar, encCollege, encCity, encStudentType, encUniBoard, encCourse) {
+            const name = decodeURIComponent(encName);
+            const username = decodeURIComponent(encUsername);
+            const avatar = decodeURIComponent(encAvatar);
+            const college = decodeURIComponent(encCollege);
+            const city = decodeURIComponent(encCity);
+            const studentType = decodeURIComponent(encStudentType);
+            const uniBoard = decodeURIComponent(encUniBoard);
+            const course = decodeURIComponent(encCourse);
+
             document.getElementById('modalUserAvatar').src = avatar;
             document.getElementById('modalUserName').innerText = name;
             document.getElementById('modalUserHandle').innerText = `@${username}`;
-            document.getElementById('modalUserCollege').innerText = `🎓 ${college} | 📍 ${city}`;
+            document.getElementById('modalUserCollege').innerText = `🎓 ${college}`;
+            document.getElementById('modalUserLocation').innerText = `📍 ${city || 'India'}`;
+            document.getElementById('modalStudentType').innerText = studentType || 'Not Specified';
+            document.getElementById('modalUniBoard').innerText = uniBoard || 'Not Specified';
+            document.getElementById('modalCourse').innerText = course || 'Not Specified';
 
             const postsContainer = document.getElementById('modalUserPostsContainer');
             postsContainer.innerHTML = `<p style="color: #64748b; font-size: 13px;">Loading posts...</p>`;
