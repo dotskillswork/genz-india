@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Basic of Computer | Gen'Z India</title>
+    <!-- Google AdSense Integration -->
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1748692932635414" crossorigin="anonymous"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        :root {
+            --bg-deep: #07090e;
+            --bg-card: #0f172a;
+            --accent-gold: #fbbf24;
+            --accent-neon: #3b82f6;
+            --accent-gradient: linear-gradient(135deg, #3b82f6 0%, #6366f1 100%);
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --success: #10b981;
+            --danger: #ef4444;
+            --border-color: rgba(255, 255, 255, 0.08);
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Plus Jakarta Sans', sans-serif; }
+        body { background-color: var(--bg-deep); color: var(--text-main); min-height: 100vh; padding-bottom: 60px; }
+        header {
+            background: rgba(15, 23, 42, 0.85); backdrop-filter: blur(12px);
+            border-bottom: 1px solid var(--border-color); padding: 16px 5%;
+            display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 100;
+        }
+        .back-link { color: var(--text-muted); text-decoration: none; font-size: 0.9rem; display: flex; align-items: center; gap: 6px; }
+        .header-controls { display: flex; align-items: center; gap: 12px; }
+        .lang-btn {
+            background: rgba(59, 130, 246, 0.15); border: 1px solid rgba(59, 130, 246, 0.3);
+            color: #60a5fa; padding: 6px 14px; border-radius: 20px; font-size: 0.8rem; font-weight: 600; cursor: pointer;
+        }
+        .wallet-badge {
+            background: rgba(59, 130, 246, 0.15); border: 1px solid rgba(59, 130, 246, 0.3);
+            padding: 6px 14px; border-radius: 50px; font-weight: 600; font-size: 0.85rem; color: #60a5fa;
+        }
+        .container { max-width: 950px; margin: 30px auto; padding: 0 20px; }
+        .course-box {
+            background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 20px; padding: 40px; margin-bottom: 30px;
+        }
+        .course-title { font-size: 1.8rem; font-weight: 800; margin-bottom: 15px; color: #fff; line-height: 1.4; }
+        .course-meta { font-size: 0.85rem; color: var(--accent-gold); margin-bottom: 25px; display: flex; gap: 20px; flex-wrap: wrap; }
+        .course-content { font-size: 0.98rem; color: #cbd5e1; line-height: 1.9; margin-bottom: 35px; }
+        .course-content h3 { color: #fff; margin: 25px 0 12px 0; font-size: 1.25rem; border-left: 4px solid #3b82f6; padding-left: 10px; }
+        .course-content p, .course-content ul { margin-bottom: 15px; }
+        .course-content ul { padding-left: 20px; }
+        
+        .action-banner {
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.1), rgba(99, 102, 241, 0.05));
+            border: 1px solid rgba(59, 130, 246, 0.3); border-radius: 16px; padding: 25px; text-align: center;
+        }
+        .start-quiz-btn {
+            background: var(--accent-gradient); color: white; border: none;
+            padding: 14px 40px; font-size: 1.05rem; font-weight: 700;
+            border-radius: 12px; cursor: pointer; box-shadow: 0 10px 25px rgba(59, 130, 246, 0.4);
+        }
+
+        /* Modal Overlay */
+        .modal-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(7, 9, 14, 0.9); backdrop-filter: blur(10px);
+            display: none; justify-content: center; align-items: center; z-index: 1000; padding: 20px;
+        }
+        .modal-box {
+            background: var(--bg-card); border: 1px solid var(--border-color);
+            border-radius: 20px; width: 100%; max-width: 550px; padding: 30px; position: relative;
+        }
+        .rules-list { list-style: none; margin: 20px 0; }
+        .rules-list li {
+            margin-bottom: 12px; display: flex; align-items: flex-start; gap: 10px; color: var(--text-muted); font-size: 0.9rem;
+        }
+        .rules-list li i { color: var(--success); margin-top: 3px; }
+
+        .quiz-header-bar {
+            display: flex; justify-content: space-between; align-items: center;
+            margin-bottom: 20px; border-bottom: 1px solid var(--border-color); padding-bottom: 12px;
+        }
+        .timer-badge {
+            background: rgba(239, 68, 68, 0.15); color: var(--danger);
+            border: 1px solid rgba(239, 68, 68, 0.3); padding: 5px 12px;
+            border-radius: 20px; font-weight: 700; font-size: 0.85rem;
+            display: flex; align-items: center; gap: 6px;
+        }
+        .question-text { font-size: 1.15rem; font-weight: 700; margin-bottom: 20px; line-height: 1.5; color: #fff; }
+        .options-grid { display: flex; flex-direction: column; gap: 10px; }
+        .option-btn {
+            background: rgba(255, 255, 255, 0.03); border: 1px solid var(--border-color);
+            padding: 14px 18px; border-radius: 12px; color: white; text-align: left;
+            font-size: 0.95rem; font-weight: 500; cursor: pointer; transition: all 0.2s;
+        }
+        .option-btn:hover { background: rgba(59, 130, 246, 0.15); border-color: var(--accent-neon); }
+    </style>
+</head>
+<body>
+
+    <header>
+        <a href="grouptopics.html?group=tech" class="back-link"><i class="fa-solid fa-arrow-left"></i> Back to Topics List</a>
+        <div class="header-controls">
+            <button class="lang-btn" onclick="switchLanguage()"><i class="fa-solid fa-language"></i> <span id="langIndicator">HINDI / ENG</span></button>
+            <div class="wallet-badge"><i class="fa-solid fa-wallet"></i> <span id="walletXP">0</span> XP</div>
+        </div>
+    </header>
+
+    <div class="container">
+        <div class="course-box">
+            <div class="course-title" id="courseTitle">Topic 1: Basic of Computer - Exhaustive Study Guide</div>
+            <div class="course-meta">
+                <span><i class="fa-solid fa-clock"></i> Estimated Read Time: 45 Mins</span>
+                <span><i class="fa-solid fa-file-lines"></i> 25 Unique Rapid Challenge Questions</span>
+            </div>
+            
+            <div class="course-content" id="courseBody"></div>
+
+            <div class="action-banner">
+                <p style="color: var(--text-muted); margin-bottom: 15px; font-size: 0.9rem;">Finished reading and revising this module? Take the 8-second rapid challenge (+2 XP per correct answer).</p>
+                <button class="start-quiz-btn" onclick="openRulesModal()"><i class="fa-solid fa-bolt"></i> Join Quiz & Challenge</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Rules Modal -->
+    <div class="modal-overlay" id="rulesModal">
+        <div class="modal-box">
+            <h2><i class="fa-solid fa-shield-halved" style="color: var(--accent-neon);"></i> Contest Protocol & Rules</h2>
+            <p style="color: var(--text-muted); font-size: 0.9rem;">Please review before starting:</p>
+            <ul class="rules-list">
+                <li><i class="fa-solid fa-circle-check"></i> Total exactly <strong>25 unique dynamic questions</strong> from this topic.</li>
+                <li><i class="fa-solid fa-circle-check"></i> Exactly <strong>8 seconds</strong> timer per question. Instant jump on selecting option.</li>
+                <li><i class="fa-solid fa-circle-check"></i> <strong>Strict Sequence Lock:</strong> No going back to previous answers.</li>
+                <li><i class="fa-solid fa-circle-check"></i> <strong>Scoring:</strong> Correct = +2 XP, Incorrect = 0 XP (No negative marking). Directly credited to your wallet & leaderboard.</li>
+            </ul>
+            <div style="display: flex; gap: 12px; margin-top: 20px;">
+                <button class="start-quiz-btn" style="flex: 1; padding: 12px;" onclick="startQuizEngine()">I Accept & Start Quiz</button>
+                <button onclick="closeRulesModal()" style="background: transparent; border: 1px solid rgba(255,255,255,0.15); color: var(--text-muted); padding: 12px 18px; border-radius: 12px; cursor: pointer; font-weight: 600;">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Quiz Modal -->
+    <div class="modal-overlay" id="quizModal">
+        <div class="modal-box">
+            <div class="quiz-header-bar">
+                <span id="questionCounter" style="font-weight: 700; color: var(--text-muted);">Question 1 of 25</span>
+                <div class="timer-badge"><i class="fa-solid fa-clock"></i> <span id="timeLeft">8</span>s</div>
+            </div>
+            <div class="question-text" id="questionTitle">Loading question...</div>
+            <div class="options-grid" id="optionsContainer"></div>
+        </div>
+    </div>
+
+    <script>
+        let currentLang = 'en';
+
+        // Initialize Wallet on Load
+        window.onload = function() {
+            let currentWallet = localStorage.getItem('userWalletXP') || "0";
+            document.getElementById('walletXP').innerText = currentWallet;
+        };
+
+        // Full Exhaustive Data for Basic of Computer from User Word File
+        const computerContent = {
+            en: {
+                title: "Topic 1: Basic of Computer - Comprehensive Study Guide & Research Report",
+                body: `<h3>1. Introduction</h3><p><strong>Definition:</strong> A computer is an advanced electronic device that takes raw data as input from the user, processes it according to a set of instructions, and gives meaningful information as output[cite: 1].</p><p><strong>Full Form of COMPUTER:</strong><br>C - Common<br>O - Operating<br>M - Machine<br>P - Particularly<br>U - Used for<br>T - Trade<br>E - Education<br>R - Research[cite: 1]</p><p><strong>Main Functions:</strong> The core operations performed by a computer are Input, Processing, Output, and Storage[cite: 1].</p><h3>2. Core Architecture (The IPO Cycle)</h3><p>The entire working mechanism of a computer runs on the IPO Cycle[cite: 1]:</p><ul><li><strong>Input:</strong> Entering data and instructions into the computer system (e.g., typing on a keyboard, clicking with a mouse)[cite: 1].</li><li><strong>Process:</strong> The CPU (Central Processing Unit) analyzes and manipulates the given data according to the instructions[cite: 1].</li><li><strong>Output:</strong> Displaying or presenting the processed result to the user via a screen, printer, or speakers[cite: 1].</li><li><strong>Storage:</strong> Saving the data and results for short-term or long-term use[cite: 1].</li></ul><h3>3. Main Components of a Computer</h3><p>A computer system is broadly divided into two main components[cite: 1]:</p><p><strong>A. Hardware:</strong> The physical and tangible parts of a computer that can be touched and seen[cite: 1].</p><ul><li><strong>Input Devices:</strong> Keyboard, Mouse, Scanner, Microphone, Joystick, Barcode Reader[cite: 1].</li><li><strong>Output Devices:</strong> Monitor, Printer, Speaker, Projector[cite: 1].</li><li><strong>Processing Unit (CPU):</strong> Known as the "Brain" of the computer. It consists of three sub-units: ALU (Arithmetic Logic Unit), CU (Control Unit), and MU (Memory Unit)[cite: 1].</li><li><strong>Storage Devices:</strong> Hard Disk Drive (HDD), Solid State Drive (SSD), Pen Drive, CD/DVD[cite: 1].</li></ul><p><strong>B. Software:</strong> A set of programs, data, and instructions that tell the hardware what to do[cite: 1].</p>`
+            },
+            hi: {
+                title: "टॉपिक 1: कंप्यूटर की बुनियादी बातें - विस्तृत अध्ययन गाइड और रिपोर्ट",
+                body: `<h3>1. परिचय</h3><p><strong>परिभाषा:</strong> कंप्यूटर एक उन्नत इलेक्ट्रॉनिक उपकरण है जो यूजर से इनपुट के रूप में कच्चा डेटा लेता है, निर्देशों के अनुसार प्रोसेस करता है, और आउटपुट के रूप में सार्थक जानकारी देता है[cite: 1].</p><p><strong>COMPUTER का फुल फॉर्म:</strong><br>C - Common (सामान्य)<br>O - Operating (संचालित)<br>M - Machine (मशीन)<br>P - Particularly (विशेष रूप से)<br>U - Used for (उपयोग किया जाता है)<br>T - Trade (व्यापार)<br>E - Education (शिक्षा)<br>R - Research (अनुसंधान)[cite: 1]</p><h3>2. कोर आर्किटेक्चर (IPO चक्र)</h3><p>कंप्यूटर का पूरा कामकाज IPO चक्र पर चलता है: इनपुट, प्रोसेस, आउटपुट और स्टोरेज[cite: 1].</p>`
+            }
+        };
+
+        const computerQuestions = {
+            en: [
+                { q: "What is the primary definition of a computer?", options: ["A mechanical device that only prints documents", "An advanced electronic device that takes raw data as input, processes it, and gives output", "A device used exclusively for gaming", "A manual calculating machine without electricity"], correct: 1 },
+                { q: "In the full form of COMPUTER, what does the letter 'C' stand for?", options: ["Calculation", "Control", "Common", "Core"], correct: 2 },
+                { q: "In the full form of COMPUTER, what does the letter 'O' stand for?", options: ["Online", "Operating", "Output", "Optimized"], correct: 1 },
+                { q: "In the full form of COMPUTER, what does the letter 'M' stand for?", options: ["Memory", "Main", "Machine", "Multitasking"], correct: 2 },
+                { q: "In the full form of COMPUTER, what does the letter 'P' stand for?", options: ["Processing", "Peripheral", "Particularly", "Programmed"], correct: 2 },
+                { q: "In the full form of COMPUTER, what does the letter 'U' stand for?", options: ["Unit", "Used for", "Universal", "Utility"], correct: 1 },
+                { q: "In the full form of COMPUTER, what does the letter 'T' stand for?", options: ["Technology", "Transfer", "Trade", "Terminal"], correct: 2 },
+                { q: "In the full form of COMPUTER, what does the letter 'E' stand for?", options: ["Engine", "Education", "Electronic", "Execution"], correct: 1 },
+                { q: "In the full form of COMPUTER, what does the letter 'R' stand for?", options: ["Register", "Research", "Routine", "Reader"], correct: 1 },
+                { q: "What does IPO stand for in computer architecture?", options: ["Input Process Output", "International Program Organization", "Information Processing Operation", "Input Peripheral Output"], correct: 0 },
+                { q: "What are the physical and tangible parts of a computer called?", options: ["Software", "Hardware", "Firmware", "Malware"], correct: 1 },
+                { q: "What is known as the 'Brain' of the computer?", options: ["Hard Disk", "Monitor", "CPU (Central Processing Unit)", "Keyboard"], correct: 2 },
+                { q: "What does ALU stand for within the CPU?", options: ["Arithmetic Logic Unit", "Automatic Logical Utility", "Array Line Unit", "Application Logic Utility"], correct: 0 },
+                { q: "What does CU stand for inside the CPU?", options: ["Central Unit", "Control Unit", "Compute Unit", "Common Unit"], correct: 1 },
+                { q: "Which of the following is an example of System Software?", options: ["MS Word", "Operating System (Windows/Linux)", "Adobe Photoshop", "WhatsApp"], correct: 1 },
+                { q: "Which type of computer is small and designed for single-user personal use?", options: ["Supercomputer", "Microcomputer", "Mainframe computer", "Minicomputer"], correct: 1 },
+                { q: "What electronic technology defined the 1st Generation of computers (1940–1956)?", options: ["Transistors", "Vacuum Tubes", "Integrated Circuits", "Microprocessors"], correct: 1 },
+                { q: "What technology defines the 5th Generation of computers?", options: ["Vacuum Tubes", "Transistors", "Artificial Intelligence (AI)", "Relays"], correct: 2 },
+                { q: "Which of the following is listed as an advantage of computers?", options: ["High Speed", "Lack of IQ", "Power Dependency", "Cyber Threats"], correct: 0 },
+                { q: "Do computers possess independent decision-making intelligence?", options: ["Yes, they think like humans", "No, they lack IQ and strictly follow instructions", "Yes, they have feelings", "Only online"], correct: 1 },
+                { q: "What type of machine is a computer fundamentally classified as?", options: ["Mechanical", "Hydraulic", "Electronic", "Thermal"], correct: 2 },
+                { q: "What is raw data converted into after computer processing?", options: ["Garbage", "Meaningful information", "Hardware", "Program code"], correct: 1 },
+                { q: "Typing on a keyboard is an example of which phase of the IPO cycle?", options: ["Process", "Output", "Input", "Storage"], correct: 2 },
+                { q: "Which device prints out the processed results on paper?", options: ["Scanner", "Printer", "Joystick", "Barcode Reader"], correct: 1 },
+                { q: "Which storage device uses flash memory chips and has no moving parts?", options: ["HDD", "Solid State Drive (SSD)", "Compact Disc", "Floppy Disk"], correct: 1 }
+            ],
+            hi: [
+                { q: "कंप्यूटर की प्राथमिक परिभाषा क्या है?", options: ["एक यांत्रिक उपकरण जो केवल दस्तावेज प्रिंट करता है", "एक उन्नत इलेक्ट्रॉनिक उपकरण जो रॉ डेटा इनपुट के रूप में लेता है, प्रोसेस करता है और आउटपुट देता है", "गेमिंग के लिए उपयोग किया जाने वाला उपकरण", "बिना बिजली के मैनुअल गणना मशीन"], correct: 1 },
+                { q: "COMPUTER के फुल फॉर्म में अक्षर 'C' का क्या अर्थ है?", options: ["Calculation", "Control", "Common", "Core"], correct: 2 },
+                { q: "COMPUTER के फुल फॉर्म में अक्षर 'O' का क्या अर्थ है?", options: ["Online", "Operating", "Output", "Optimized"], correct: 1 },
+                { q: "COMPUTER के फुल फॉर्म में अक्षर 'M' का क्या अर्थ है?", options: ["Memory", "Main", "Machine", "Multitasking"], correct: 2 },
+                { q: "COMPUTER के फुल फॉर्म में अक्षर 'P' का क्या अर्थ है?", options: ["Processing", "Peripheral", "Particularly", "Programmed"], correct: 2 },
+                { q: "COMPUTER के फुल फॉर्म में अक्षर 'U' का क्या अर्थ है?", options: ["Unit", "Used for", "Universal", "Utility"], correct: 1 },
+                { q: "COMPUTER के फुल फॉर्म में अक्षर 'T' का क्या अर्थ है?", options: ["Technology", "Transfer", "Trade", "Terminal"], correct: 2 },
+                { q: "COMPUTER के फुल फॉर्म में अक्षर 'E' का क्या अर्थ है?", options: ["Engine", "Education", "Electronic", "Execution"], correct: 1 },
+                { q: "COMPUTER के फुल फॉर्म में अक्षर 'R' का क्या अर्थ है?", options: ["Register", "Research", "Routine", "Reader"], correct: 1 },
+                { q: "कंप्यूटर वास्तुकला में IPO का क्या अर्थ है?", options: ["Input Process Output", "International Program Organization", "Information Processing Operation", "Input Peripheral Output"], correct: 0 },
+                { q: "कंप्यूटर के भौतिक और मूर्त भागों को क्या कहा जाता है?", options: ["सॉफ्टवेयर", "हार्डवेयर", "फर्मवेयर", "मालवेयर"], correct: 1 },
+                { q: "कंप्यूटर का 'मस्तिष्क' किसे कहा जाता है?", options: ["हार्ड डिस्क", "मॉनिटर", "CPU (सेंट्रल प्रोसेसिंग यूनिट)", "कीबोर्ड"], correct: 2 },
+                { q: "CPU के भीतर ALU का क्या अर्थ है?", options: ["Arithmetic Logic Unit", "Automatic Logical Utility", "Array Line Unit", "Application Logic Utility"], correct: 0 },
+                { q: "CPU के अंदर CU का क्या अर्थ है?", options: ["Central Unit", "Control Unit", "Compute Unit", "Common Unit"], correct: 1 },
+                { q: "इनमें से कौन सा सिस्टम सॉफ्टवेयर का उदाहरण है?", options: ["MS Word", "ऑपरेटिंग सिस्टम (Windows/Linux)", "Adobe Photoshop", "WhatsApp"], correct: 1 },
+                { q: "किस प्रकार का कंप्यूटर छोटा और व्यक्तिगत उपयोग के लिए डिज़ाइन किया गया है?", options: ["सुपरकंप्यूटर", "माइक्रोकंप्यूटर", "मेनफ्रेम कंप्यूटर", "मिनीकंप्यूटर"], correct: 1 },
+                { q: "कंप्यूटर की पहली पीढ़ी (1940-1956) की तकनीक क्या थी?", options: ["ट्रांजिस्टर", "वैक्यूम ट्यूब", "इंटीग्रेटेड सर्किट", "माइक्रोप्रोसेसर"], correct: 1 },
+                { q: "कंप्यूटर की 5वीं पीढ़ी की तकनीक क्या है?", options: ["वैक्यूम ट्यूब", "ट्रांजिस्टर", "आर्टिफिशियल इंटेलिजेंस (AI)", "रिले"], correct: 2 },
+                { q: "कंप्यूटर का कौन सा लाभ सूचीबद्ध है?", options: ["High Speed (उच्च गति)", "Lack of IQ", "Power Dependency", "Cyber Threats"], correct: 0 },
+                { q: "क्या कंप्यूटर में स्वतंत्र निर्णय लेने की बुद्धि होती है?", options: ["हाँ, वे इंसानों की तरह सोचते हैं", "नहीं, उनमें बुद्धिमत्ता की कमी होती है और वे निर्देशों का सख्ती से पालन करते हैं", "हाँ, उनकी भावनाएँ होती हैं", "केवल ऑनलाइन"], correct: 1 },
+                { q: "कंप्यूटर को मौलिक रूप से किस प्रकार की मशीन के रूप में वर्गीकृत किया गया है?", options: ["यांत्रिक", "हाइड्रोलिक", "इलेक्ट्रॉनिक", "थर्मल"], correct: 2 },
+                { q: "कंप्यूटर प्रोसेसिंग के बाद कच्चे डेटा को किसमें बदला जाता है?", options: ["कचरा", "सार्थक जानकारी (Meaningful information)", "हार्डवेयर", "प्रोग्राम कोड"], correct: 1 },
+                { q: "कीबोर्ड पर टाइप करना IPO चक्र के किस चरण का उदाहरण है?", options: ["प्रोसेस", "आउटपुट", "इनपुट", "स्टोरेज"], correct: 2 },
+                { q: "कौन सा उपकरण कागज पर प्रोसेस किए गए परिणाम प्रिंट करता है?", options: ["स्कैनर", "प्रिंटर", "जॉयस्टिक", "बारकोड रीडर"], correct: 1 },
+                { q: "कौन सा स्टोरेज डिवाइस फ्लैश मेमोरी चिप्स का उपयोग करता है और जिसमें कोई हिलने वाला भाग नहीं होता?", options: ["HDD", "सॉलिड स्टेट ड्राइव (SSD)", "कॉम्पैक्ट डिस्क", "फ्लॉपी डिस्क"], correct: 1 }
+            ]
+        };
+
+        let currentQIndex = 0;
+        let score = 0;
+        let correctCount = 0;
+        let incorrectCount = 0;
+        let timerInterval;
+        let timeLeft = 8;
+        let activeQuestions = [];
+
+        function loadReportContent() {
+            const activeReport = computerContent[currentLang] || computerContent['en'];
+            document.getElementById('courseTitle').innerText = activeReport.title;
+            document.getElementById('courseBody').innerHTML = activeReport.body;
+        }
+        loadReportContent();
+
+        function switchLanguage() {
+            currentLang = currentLang === 'en' ? 'hi' : 'en';
+            document.getElementById('langIndicator').innerText = currentLang.toUpperCase();
+            loadReportContent();
+        }
+
+        function openRulesModal() {
+            document.getElementById('rulesModal').style.display = 'flex';
+        }
+
+        function closeRulesModal() {
+            document.getElementById('rulesModal').style.display = 'none';
+        }
+
+        function startQuizEngine() {
+            closeRulesModal();
+            document.getElementById('quizModal').style.display = 'flex';
+            currentQIndex = 0;
+            score = 0;
+            correctCount = 0;
+            incorrectCount = 0;
+            
+            const langBank = computerQuestions[currentLang] || computerQuestions['en'];
+            activeQuestions = [...langBank].sort(() => 0.5 - Math.random()).slice(0, 25);
+            loadQuestion();
+        }
+
+        function loadQuestion() {
+            clearInterval(timerInterval);
+            if(currentQIndex >= 25 || currentQIndex >= activeQuestions.length) {
+                showScorecard();
+                return;
+            }
+
+            timeLeft = 8;
+            document.getElementById('timeLeft').innerText = timeLeft;
+            document.getElementById('questionCounter').innerText = `Question ${currentQIndex + 1} of 25`;
+
+            const q = activeQuestions[currentQIndex];
+            document.getElementById('questionTitle').innerText = q.q;
+
+            const optContainer = document.getElementById('optionsContainer');
+            optContainer.innerHTML = '';
+
+            q.options.forEach((opt, idx) => {
+                const btn = document.createElement('button');
+                btn.className = 'option-btn';
+                btn.innerText = opt;
+                btn.onclick = () => selectAnswer(idx === q.correct);
+                optContainer.appendChild(btn);
+            });
+
+            timerInterval = setInterval(() => {
+                timeLeft--;
+                document.getElementById('timeLeft').innerText = timeLeft;
+                if(timeLeft <= 0) {
+                    clearInterval(timerInterval);
+                    incorrectCount++;
+                    // 0 points deducted on timeout
+                    currentQIndex++;
+                    loadQuestion();
+                }
+            }, 1000);
+        }
+
+        function selectAnswer(isCorrect) {
+            clearInterval(timerInterval);
+            if(isCorrect) {
+                score += 2; // +2 XP per correct answer
+                correctCount++;
+            } else {
+                incorrectCount++;
+                // 0 points deducted for wrong answers
+            }
+            currentQIndex++;
+            loadQuestion();
+        }
+
+        function showScorecard() {
+            document.getElementById('quizModal').style.display = 'none';
+            let netXP = score;
+            
+            let existingWallet = parseInt(localStorage.getItem('userWalletXP')) || 0;
+            let currentWallet = existingWallet + netXP;
+            localStorage.setItem('userWalletXP', currentWallet);
+            document.getElementById('walletXP').innerText = currentWallet;
+
+            let leaderboard = JSON.parse(localStorage.getItem('contestLeaderboard')) || [];
+            let studentName = localStorage.getItem('contestUserName') || "Student Scholar";
+            
+            let existingUser = leaderboard.find(u => u.name === studentName);
+            if(existingUser) {
+                existingUser.points += netXP;
+            } else {
+                leaderboard.push({ name: studentName, points: currentWallet });
+            }
+            localStorage.setItem('contestLeaderboard', JSON.stringify(leaderboard));
+
+            alert(`🎉 Challenge Finished!\n\n✅ Correct Answers: ${correctCount}\n❌ Incorrect Answers: ${incorrectCount}\n⭐ Total XP Earned: +${netXP} XP\n\nYour wallet and live leaderboard have been updated successfully!`);
+        }
+    </script>
+</body>
+</html>

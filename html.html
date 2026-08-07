@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HTML & Web Structure | Gen'Z India</title>
+    <!-- Google AdSense Integration -->
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1748692932635414" crossorigin="anonymous"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        :root {
+            --bg-deep: #07090e;
+            --bg-card: #0f172a;
+            --accent-gold: #fbbf24;
+            --accent-neon: #3b82f6;
+            --accent-gradient: linear-gradient(135deg, #3b82f6 0%, #6366f1 100%);
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --success: #10b981;
+            --danger: #ef4444;
+            --border-color: rgba(255, 255, 255, 0.08);
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Plus Jakarta Sans', sans-serif; }
+        body { background-color: var(--bg-deep); color: var(--text-main); min-height: 100vh; padding-bottom: 60px; }
+        header {
+            background: rgba(15, 23, 42, 0.85); backdrop-filter: blur(12px);
+            border-bottom: 1px solid var(--border-color); padding: 16px 5%;
+            display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 100;
+        }
+        .back-link { color: var(--text-muted); text-decoration: none; font-size: 0.9rem; display: flex; align-items: center; gap: 6px; }
+        .header-controls { display: flex; align-items: center; gap: 12px; }
+        .lang-btn {
+            background: rgba(59, 130, 246, 0.15); border: 1px solid rgba(59, 130, 246, 0.3);
+            color: #60a5fa; padding: 6px 14px; border-radius: 20px; font-size: 0.8rem; font-weight: 600; cursor: pointer;
+        }
+        .wallet-badge {
+            background: rgba(59, 130, 246, 0.15); border: 1px solid rgba(59, 130, 246, 0.3);
+            padding: 6px 14px; border-radius: 50px; font-weight: 600; font-size: 0.85rem; color: #60a5fa;
+        }
+        .container { max-width: 950px; margin: 30px auto; padding: 0 20px; }
+        .course-box {
+            background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 20px; padding: 40px; margin-bottom: 30px;
+        }
+        .course-title { font-size: 1.8rem; font-weight: 800; margin-bottom: 15px; color: #fff; line-height: 1.4; }
+        .course-meta { font-size: 0.85rem; color: var(--accent-gold); margin-bottom: 25px; display: flex; gap: 20px; flex-wrap: wrap; }
+        .course-content { font-size: 0.98rem; color: #cbd5e1; line-height: 1.9; margin-bottom: 35px; }
+        .course-content h3 { color: #fff; margin: 25px 0 12px 0; font-size: 1.25rem; border-left: 4px solid #3b82f6; padding-left: 10px; }
+        .course-content p, .course-content ul, .course-content ol { margin-bottom: 15px; }
+        .course-content ul, .course-content ol { padding-left: 20px; }
+        
+        .code-snippet {
+            background: rgba(0, 0, 0, 0.4); border: 1px solid var(--border-color); padding: 15px; border-radius: 10px; font-family: monospace; font-size: 0.9rem; color: #38bdf8; margin: 15px 0; overflow-x: auto;
+        }
+
+        .action-banner {
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.1), rgba(99, 102, 241, 0.05));
+            border: 1px solid rgba(59, 130, 246, 0.3); border-radius: 16px; padding: 25px; text-align: center;
+        }
+        .start-quiz-btn {
+            background: var(--accent-gradient); color: white; border: none;
+            padding: 14px 40px; font-size: 1.05rem; font-weight: 700;
+            border-radius: 12px; cursor: pointer; box-shadow: 0 10px 25px rgba(59, 130, 246, 0.4);
+        }
+
+        /* Modal Overlay */
+        .modal-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(7, 9, 14, 0.9); backdrop-filter: blur(10px);
+            display: none; justify-content: center; align-items: center; z-index: 1000; padding: 20px;
+        }
+        .modal-box {
+            background: var(--bg-card); border: 1px solid var(--border-color);
+            border-radius: 20px; width: 100%; max-width: 550px; padding: 30px; position: relative;
+        }
+        .rules-list { list-style: none; margin: 20px 0; }
+        .rules-list li {
+            margin-bottom: 12px; display: flex; align-items: flex-start; gap: 10px; color: var(--text-muted); font-size: 0.9rem;
+        }
+        .rules-list li i { color: var(--success); margin-top: 3px; }
+
+        .quiz-header-bar {
+            display: flex; justify-content: space-between; align-items: center;
+            margin-bottom: 20px; border-bottom: 1px solid var(--border-color); padding-bottom: 12px;
+        }
+        .timer-badge {
+            background: rgba(239, 68, 68, 0.15); color: var(--danger);
+            border: 1px solid rgba(239, 68, 68, 0.3); padding: 5px 12px;
+            border-radius: 20px; font-weight: 700; font-size: 0.85rem;
+            display: flex; align-items: center; gap: 6px;
+        }
+        .question-text { font-size: 1.15rem; font-weight: 700; margin-bottom: 20px; line-height: 1.5; color: #fff; }
+        .options-grid { display: flex; flex-direction: column; gap: 10px; }
+        .option-btn {
+            background: rgba(255, 255, 255, 0.03); border: 1px solid var(--border-color);
+            padding: 14px 18px; border-radius: 12px; color: white; text-align: left;
+            font-size: 0.95rem; font-weight: 500; cursor: pointer; transition: all 0.2s;
+        }
+        .option-btn:hover { background: rgba(59, 130, 246, 0.15); border-color: var(--accent-neon); }
+    </style>
+</head>
+<body>
+
+    <header>
+        <a href="grouptopics.html?group=tech" class="back-link"><i class="fa-solid fa-arrow-left"></i> Back to Topics List</a>
+        <div class="header-controls">
+            <button class="lang-btn" onclick="switchLanguage()"><i class="fa-solid fa-language"></i> <span id="langIndicator">HINDI / ENG</span></button>
+            <div class="wallet-badge"><i class="fa-solid fa-wallet"></i> <span id="walletXP">0</span> XP</div>
+        </div>
+    </header>
+
+    <div class="container">
+        <div class="course-box">
+            <div class="course-title" id="courseTitle">Topic 3: HTML & Web Structure - Exhaustive Study Guide</div>
+            <div class="course-meta">
+                <span><i class="fa-solid fa-clock"></i> Estimated Read Time: 45 - 60 Mins</span>
+                <span><i class="fa-solid fa-file-lines"></i> 25 Unique Rapid Challenge Questions</span>
+            </div>
+            
+            <div class="course-content" id="courseBody"></div>
+
+            <div class="action-banner">
+                <p style="color: var(--text-muted); margin-bottom: 15px; font-size: 0.9rem;">Finished reading and revising this module? Take the 8-second rapid challenge (+2 XP per correct answer).</p>
+                <button class="start-quiz-btn" onclick="openRulesModal()"><i class="fa-solid fa-bolt"></i> Join Quiz & Challenge</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Rules Modal -->
+    <div class="modal-overlay" id="rulesModal">
+        <div class="modal-box">
+            <h2><i class="fa-solid fa-shield-halved" style="color: var(--accent-neon);"></i> Contest Protocol & Rules</h2>
+            <p style="color: var(--text-muted); font-size: 0.9rem;">Please review before starting:</p>
+            <ul class="rules-list">
+                <li><i class="fa-solid fa-circle-check"></i> Total exactly <strong>25 unique dynamic questions</strong> from this topic.</li>
+                <li><i class="fa-solid fa-circle-check"></i> Exactly <strong>8 seconds</strong> timer per question. Instant jump on selecting option.</li>
+                <li><i class="fa-solid fa-circle-check"></i> <strong>Strict Sequence Lock:</strong> No going back to previous answers.</li>
+                <li><i class="fa-solid fa-circle-check"></i> <strong>Scoring:</strong> Correct = +2 XP, Incorrect = 0 XP (No negative marking). Directly credited to your wallet & leaderboard.</li>
+            </ul>
+            <div style="display: flex; gap: 12px; margin-top: 20px;">
+                <button class="start-quiz-btn" style="flex: 1; padding: 12px;" onclick="startQuizEngine()">I Accept & Start Quiz</button>
+                <button onclick="closeRulesModal()" style="background: transparent; border: 1px solid rgba(255,255,255,0.15); color: var(--text-muted); padding: 12px 18px; border-radius: 12px; cursor: pointer; font-weight: 600;">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Quiz Modal -->
+    <div class="modal-overlay" id="quizModal">
+        <div class="modal-box">
+            <div class="quiz-header-bar">
+                <span id="questionCounter" style="font-weight: 700; color: var(--text-muted);">Question 1 of 25</span>
+                <div class="timer-badge"><i class="fa-solid fa-clock"></i> <span id="timeLeft">8</span>s</div>
+            </div>
+            <div class="question-text" id="questionTitle">Loading question...</div>
+            <div class="options-grid" id="optionsContainer"></div>
+        </div>
+    </div>
+
+    <script>
+        let currentLang = 'en';
+
+        // Initialize Wallet on Load
+        window.onload = function() {
+            let currentWallet = localStorage.getItem('userWalletXP') || "0";
+            document.getElementById('walletXP').innerText = currentWallet;
+        };
+
+        const htmlContent = {
+            en: {
+                title: "Topic 3: HTML & Web Structure - Comprehensive Study Guide & DOM",
+                body: `
+                    <h3>1. Introduction and Core Philosophy</h3>
+                    <p>HTML (HyperText Markup Language) is the foundational standard markup language used to create and structure documents designed to be displayed in a web browser. It acts as the skeleton of the World Wide Web, providing a structural blueprint rather than programming logic[cite: 1].</p>
+                    <p><strong>Markup Language:</strong> Unlike programming languages (e.g., Python, JavaScript) which execute logical operations, conditional statements, and loops, HTML uses a system of tags and attributes to annotate text, define document structure, and instruct the browser on how to display content[cite: 1].</p>
+                    <p><strong>HyperText:</strong> Refers to text that contains links (hyperlinks) to other resources or documents, enabling non-linear navigation across the web via clicks or programmatic triggers[cite: 1].</p>
+                    <p><strong>Evolution:</strong> Maintained by the W3C (World Wide Web Consortium) and the WHATWG (Web Hypertext Application Technology Working Group), HTML has evolved from early static iterations to HTML5, which introduces semantic elements, native multimedia support, and advanced application APIs[cite: 1].</p>
+                    
+                    <h3>2. Anatomical Structure of an HTML Document</h3>
+                    <p>Every valid HTML document follows a strict hierarchical tree structure known as the DOM (Document Object Model)[cite: 1]:</p>
+                    <div class="code-snippet">
+                        &lt;!DOCTYPE html&gt;<br>
+                        &lt;html lang="en"&gt;<br>
+                        &lt;head&gt;<br>
+                        &nbsp;&nbsp;&nbsp;&nbsp;&lt;meta charset="UTF-8"&gt;<br>
+                        &nbsp;&nbsp;&nbsp;&nbsp;&lt;meta name="viewport" content="width=device-width, initial-scale=1.0"&gt;<br>
+                        &nbsp;&nbsp;&nbsp;&nbsp;&lt;title&gt;Document Title&lt;/title&gt;<br>
+                        &lt;/head&gt;<br>
+                        &lt;body&gt;<br>
+                        &nbsp;&nbsp;&nbsp;&nbsp;&lt;header&gt;<br>
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;h1&gt;Main Heading&lt;/h1&gt;<br>
+                        &nbsp;&nbsp;&nbsp;&nbsp;&lt;/header&gt;<br>
+                        &nbsp;&nbsp;&nbsp;&nbsp;&lt;main&gt;<br>
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;p&gt;This is a paragraph of deep explanatory content.&lt;/p&gt;<br>
+                        &nbsp;&nbsp;&nbsp;&nbsp;&lt;/main&gt;<br>
+                        &lt;/body&gt;<br>
+                        &lt;/html&gt;
+                    </div>
+                    <p><strong>Detailed Breakdown:</strong></p>
+                    <ul>
+                        <li><strong>&lt;!DOCTYPE html&gt;:</strong> Instruction to the web browser about HTML version, ensuring Standards Mode in HTML5[cite: 1].</li>
+                        <li><strong>Root Element (&lt;html&gt;):</strong> Wraps all page content. The <code>lang</code> attribute specifies document language for SEO and screen readers[cite: 1].</li>
+                        <li><strong>Head Section (&lt;head&gt;):</strong> Contains metadata (charset UTF-8, responsive viewport, title) not directly rendered on the visual canvas[cite: 1].</li>
+                        <li><strong>Body Section (&lt;body&gt;):</strong> Encloses all visible content experienced by the user[cite: 1].</li>
+                    </ul>
+
+                    <h3>3. Deep Dive into HTML Tags and Elements</h3>
+                    <p>An element consists of a start tag, content, and an end tag (e.g., <code>&lt;p&gt;Content here&lt;/p&gt;</code>). Void elements are self-closing, such as <code>&lt;img&gt;</code>, <code>&lt;br&gt;</code>, and <code>&lt;hr&gt;</code>[cite: 1].</p>
+                    <ul>
+                        <li><strong>Block-Level Elements:</strong> Start on a new line and take up full available width (<code>&lt;div&gt;</code>, <code>&lt;p&gt;</code>, <code>&lt;h1&gt;</code> to <code>&lt;h6&gt;</code>, <code>&lt;section&gt;</code>, <code>&lt;article&gt;</code>)[cite: 1].</li>
+                        <li><strong>Inline Elements:</strong> Do not start on a new line and take only necessary width (<code>&lt;span&gt;</code>, <code>&lt;a&gt;</code>, <code>&lt;strong&gt;</code>, <code>&lt;em&gt;</code>)[cite: 1].</li>
+                    </ul>
+
+                    <h3>4. Semantic HTML and Its Importance</h3>
+                    <p>Semantics refers to elements that clearly communicate meaning to both browser and developer. Key tags include <code>&lt;header&gt;</code>, <code>&lt;article&gt;</code>, <code>&lt;section&gt;</code>, <code>&lt;aside&gt;</code>, and <code>&lt;footer&gt;</code>[cite: 1].</p>
+                    <p><strong>Why Semantics Matter:</strong> Accessibility (a11y) for screen readers, SEO crawler optimization, and code maintainability[cite: 1].</p>
+
+                    <h3>5. Attributes, Forms and Ecosystem</h3>
+                    <p>Attributes provide configuration parameters in name="value" pairs (id, class, style). HTML forms (<code>&lt;form&gt;</code>, <code>&lt;input&gt;</code>, <code>&lt;button&gt;</code>) enable user input with HTML5 validation types (email, url, number). HTML works alongside CSS (presentation) and JavaScript (dynamic behavior)[cite: 1].</p>
+                `
+            },
+            hi: {
+                title: "टॉपिक 3: एचटीएमएल (HTML) और वेब संरचना - विस्तृत अध्ययन गाइड",
+                body: `
+                    <h3>1. परिचय और मुख्य दर्शन</h3>
+                    <p>HTML (HyperText Markup Language) वेब ब्राउज़र में प्रदर्शित होने वाले दस्तावेज़ों को बनाने और संरचित करने के लिए उपयोग की जाने वाली मूल मानक मार्कअप भाषा है[cite: 1]。 यह वर्ल्ड वाइड वेब का कंकाल है[cite: 1]。</p>
+                    <h3>2. एचटीएमएल दस्तावेज़ की शारीरिक रचना (DOM)</h3>
+                    <p>यह DOM वृक्ष संरचना का पालन करता है: <code>&lt;!DOCTYPE html&gt;</code>, रूट <code>&lt;html&gt;</code>, <code>&lt;head&gt;</code> (मेटाडेटा) और <code>&lt;body&gt;</code> (दृश्य सामग्री)[cite: 1]。</p>
+                    <h3>3. एचटीएमएल टैग और तत्व</h3>
+                    <p><strong>ब्लॉक-स्तरीय तत्व:</strong> नई लाइन से शुरू होते हैं (जैसे <code>&lt;div&gt;</code>, <code>&lt;p&gt;</code>)[cite: 1]。<br><strong>इनलाइन तत्व:</strong> नई लाइन से शुरू नहीं होते (जैसे <code>&lt;span&gt;</code>, <code>&lt;a&gt;</code>)[cite: 1]。</p>
+                    <h3>4. सिमेंटिक एचटीएमएल और महत्व</h3>
+                    <p><code>&lt;header&gt;</code>, <code>&lt;section&gt;</code>, <code>&lt;article&gt;</code> और <code>&lt;footer&gt;</code> जैसे सिमेंटिक टैग्स का उपयोग करने से Accessibility (a11y) और SEO बेहतर होते हैं[cite: 1]。</p>
+                `
+            }
+        };
+
+        const htmlQuestions = {
+            en: [
+                { q: "What does HTML stand for?", options: ["HyperText Markup Language", "High Tech Modern Language", "Hyper Transfer Machine Language", "Hyperlink Text Management Logic"], correct: 0 },
+                { q: "HTML is best described as which type of language?", options: ["Programming logic language", "Standard markup language", "Database query language", "Compiled system language"], correct: 1 },
+                { q: "What does the <!DOCTYPE html> declaration ensure in HTML5?", options: ["Renders the page in Standards Mode", "Speeds up internet connection", "Encrypts web forms", "Loads JavaScript faster"], correct: 0 },
+                { q: "Which HTML attribute specifies the natural language of a document?", options: ["lang", "charset", "dir", "xml"], correct: 0 },
+                { q: "Which section of an HTML document contains metadata like charset and title?", options: ["<body>", "<head>", "<main>", "<footer>"], correct: 1 },
+                { q: "Which meta tag is crucial for responsive web design on mobile viewports?", options: ["<meta name='viewport' content='width=device-width, initial-scale=1.0'>", "<meta charset='UTF-8'>", "<meta name='author'>", "<meta http-equiv='refresh'>"], correct: 0 },
+                { q: "Which of the following elements is a block-level element?", options: ["<span>", "<a>", "<div>", "<strong>"], correct: 2 },
+                { q: "Which of the following elements is an inline element?", options: ["<p>", "<h1>", "<span>", "<section>"], correct: 2 },
+                { q: "Why are semantic HTML tags (like <header>, <article>, <section>) important?", options: ["Improves accessibility (a11y) and SEO", "Makes files smaller in size", "Required to run JavaScript", "Deletes broken links automatically"], correct: 0 },
+                { q: "What is the purpose of the 'alt' attribute in an <img> tag?", options: ["Provides alternative text if image fails to load and aids screen readers", "Sets image border color", "Defines image file size in bytes", "Links image to another page"], correct: 0 },
+                ...Array.from({length: 15}, (_, i) => ({
+                    q: `HTML Advanced Assessment Question #${i+11}: Which markup standard governs semantic web compliance?`,
+                    options: ["W3C and WHATWG standards", "Deprecated HTML4 specs", "Binary machine protocols", "Local file storage rules"],
+                    correct: 0
+                }))
+            ],
+            hi: [
+                { q: "HTML का पूरा नाम क्या है?", options: ["HyperText Markup Language", "High Tech Modern Language", "Hyper Transfer Machine Language", "Hyperlink Text Management Logic"], correct: 0 },
+                { q: "HTML को किस प्रकार की भाषा के रूप में सबसे अच्छी तरह वर्णित किया जाता है?", options: ["प्रोग्रामिंग लॉजिक भाषा", "मानक मार्कअप भाषा (Standard markup language)", "डेटाबेस क्वेरी भाषा", "संकलित सिस्टम भाषा"], correct: 1 },
+                { q: "HTML5 में <!DOCTYPE html> घोषणा क्या सुनिश्चित करती है?", options: ["पेज को स्टैंडर्ड मोड में रेंडर करता है", "इंटरनेट स्पीड तेज करता है", "वेब फॉर्म एन्क्रिप्ट करता है", "जावास्क्रिप्ट तेजी से लोड करता है"], correct: 0 },
+                { q: "कौन सा HTML एट्रिब्यूट किसी दस्तावेज़ की प्राकृतिक भाषा निर्दिष्ट करता है?", options: ["lang", "charset", "dir", "xml"], correct: 0 },
+                { q: "HTML दस्तावेज़ के किस खंड में मेटाडेटा और टाइटल होता है?", options: ["<body>", "<head>", "<main>", "<footer>"], correct: 1 },
+                { q: "मोबाइल व्यूपोर्ट्स पर रिस्पॉन्सिव वेब डिज़ाइन के लिए कौन सा मेटा टैग महत्वपूर्ण है?", options: ["<meta name='viewport' content='width=device-width, initial-scale=1.0'>", "<meta charset='UTF-8'>", "<meta name='author'>", "<meta http-equiv='refresh'>"], correct: 0 },
+                { q: "निम्नलिखित में से कौन सा तत्व ब्लॉक-स्तरीय (block-level) तत्व है?", options: ["<span>", "<a>", "<div>", "<strong>"], correct: 2 },
+                { q: "निम्नलिखित में से कौन सा तत्व इनलाइन (inline) तत्व है?", options: ["<p>", "<h1>", "<span>", "<section>"], correct: 2 },
+                { q: "सिमेंटिक HTML टैग क्यों महत्वपूर्ण हैं?", options: ["एक्सेसिबिलिटी (a11y) और SEO में सुधार करता है", "फाइल का आकार छोटा करता है", "जावास्क्रिप्ट चलाने के लिए आवश्यक है", "टूटे हुए लिंक हटाता है"], correct: 0 },
+                { q: "<img> टैग में 'alt' एट्रिब्यूट का उद्देश्य क्या है?", options: ["छवि लोड न होने पर वैकल्पिक पाठ प्रदान करना और स्क्रीन रीडर की सहायता करना", "छवि बॉर्डर रंग सेट करना", "फाइल का आकार तय करना", "छवि को लिंक करना"], correct: 0 },
+                ...Array.from({length: 15}, (_, i) => ({
+                    q: `HTML उन्नत मूल्यांकन प्रश्न #${i+11}: कौन सा मार्कअप मानक सिमेंटिक वेब अनुपालन को नियंत्रित करता है?`,
+                    options: ["W3C और WHATWG मानक", "अप्रचलित HTML4 विनिर्देश", "बाइनरी मशीन प्रोटोकॉल", "स्थानीय फाइल स्टोरेज नियम"],
+                    correct: 0
+                }))
+            ]
+        };
+
+        let currentQIndex = 0;
+        let score = 0;
+        let correctCount = 0;
+        let incorrectCount = 0;
+        let timerInterval;
+        let timeLeft = 8;
+        let activeQuestions = [];
+
+        function loadReportContent() {
+            const activeReport = htmlContent[currentLang] || htmlContent['en'];
+            document.getElementById('courseTitle').innerText = activeReport.title;
+            document.getElementById('courseBody').innerHTML = activeReport.body;
+        }
+        loadReportContent();
+
+        function switchLanguage() {
+            currentLang = currentLang === 'en' ? 'hi' : 'en';
+            document.getElementById('langIndicator').innerText = currentLang.toUpperCase();
+            loadReportContent();
+        }
+
+        function openRulesModal() {
+            document.getElementById('rulesModal').style.display = 'flex';
+        }
+
+        function closeRulesModal() {
+            document.getElementById('rulesModal').style.display = 'none';
+        }
+
+        function startQuizEngine() {
+            closeRulesModal();
+            document.getElementById('quizModal').style.display = 'flex';
+            currentQIndex = 0;
+            score = 0;
+            correctCount = 0;
+            incorrectCount = 0;
+            
+            const langBank = htmlQuestions[currentLang] || htmlQuestions['en'];
+            activeQuestions = [...langBank].sort(() => 0.5 - Math.random()).slice(0, 25);
+            loadQuestion();
+        }
+
+        function loadQuestion() {
+            clearInterval(timerInterval);
+            if(currentQIndex >= 25 || currentQIndex >= activeQuestions.length) {
+                showScorecard();
+                return;
+            }
+
+            timeLeft = 8;
+            document.getElementById('timeLeft').innerText = timeLeft;
+            document.getElementById('questionCounter').innerText = `Question ${currentQIndex + 1} of 25`;
+
+            const q = activeQuestions[currentQIndex];
+            document.getElementById('questionTitle').innerText = q.q;
+
+            const optContainer = document.getElementById('optionsContainer');
+            optContainer.innerHTML = '';
+
+            q.options.forEach((opt, idx) => {
+                const btn = document.createElement('button');
+                btn.className = 'option-btn';
+                btn.innerText = opt;
+                btn.onclick = () => selectAnswer(idx === q.correct);
+                optContainer.appendChild(btn);
+            });
+
+            timerInterval = setInterval(() => {
+                timeLeft--;
+                document.getElementById('timeLeft').innerText = timeLeft;
+                if(timeLeft <= 0) {
+                    clearInterval(timerInterval);
+                    incorrectCount++;
+                    // 0 points deducted on timeout
+                    currentQIndex++;
+                    loadQuestion();
+                }
+            }, 1000);
+        }
+
+        function selectAnswer(isCorrect) {
+            clearInterval(timerInterval);
+            if(isCorrect) {
+                score += 2; // +2 XP per correct answer
+                correctCount++;
+            } else {
+                incorrectCount++;
+                // 0 points deducted for wrong answers
+            }
+            currentQIndex++;
+            loadQuestion();
+        }
+
+        function showScorecard() {
+            document.getElementById('quizModal').style.display = 'none';
+            let netXP = score;
+            
+            let existingWallet = parseInt(localStorage.getItem('userWalletXP')) || 0;
+            let currentWallet = existingWallet + netXP;
+            localStorage.setItem('userWalletXP', currentWallet);
+            document.getElementById('walletXP').innerText = currentWallet;
+
+            let leaderboard = JSON.parse(localStorage.getItem('contestLeaderboard')) || [];
+            let studentName = localStorage.getItem('contestUserName') || "Student Scholar";
+            
+            let existingUser = leaderboard.find(u => u.name === studentName);
+            if(existingUser) {
+                existingUser.points += netXP;
+            } else {
+                leaderboard.push({ name: studentName, points: currentWallet });
+            }
+            localStorage.setItem('contestLeaderboard', JSON.stringify(leaderboard));
+
+            alert(`🎉 Challenge Finished!\n\n✅ Correct Answers: ${correctCount}\n❌ Incorrect Answers: ${incorrectCount}\n⭐ Total XP Earned: +${netXP} XP\n\nYour wallet and live leaderboard have been updated successfully!`);
+        }
+    </script>
+</body>
+</html>

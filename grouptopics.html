@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Group Topics | Gen'Z India</title>
+    <!-- Google AdSense Integration -->
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1748692932635414" crossorigin="anonymous"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        :root {
+            --bg-deep: #07090e;
+            --bg-card: #0f172a;
+            --bg-card-hover: #1e293b;
+            --accent-gradient: linear-gradient(135deg, #3b82f6 0%, #6366f1 100%);
+            --accent-gold: #fbbf24;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --border-color: rgba(255, 255, 255, 0.08);
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Plus Jakarta Sans', sans-serif; }
+        body { background-color: var(--bg-deep); color: var(--text-main); min-height: 100vh; padding-bottom: 60px; }
+        
+        header {
+            background: rgba(15, 23, 42, 0.85); backdrop-filter: blur(12px);
+            border-bottom: 1px solid var(--border-color); padding: 16px 5%;
+            display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 100;
+        }
+        .back-link { color: var(--text-muted); text-decoration: none; font-size: 0.9rem; display: flex; align-items: center; gap: 6px; }
+        .container { max-width: 900px; margin: 30px auto; padding: 0 20px; }
+        
+        .page-title { font-size: 1.8rem; font-weight: 800; margin-bottom: 8px; color: #fff; }
+        .page-subtitle { color: var(--text-muted); font-size: 0.95rem; margin-bottom: 25px; }
+
+        /* Community Support Banner */
+        .support-banner {
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.1), rgba(99, 102, 241, 0.05));
+            border: 1px solid rgba(59, 130, 246, 0.3); border-radius: 16px; padding: 20px 25px; margin-bottom: 30px;
+        }
+        .support-banner h4 { color: #60a5fa; font-size: 1rem; font-weight: 700; margin-bottom: 6px; display: flex; align-items: center; gap: 8px; }
+        .support-banner p { color: var(--text-muted); font-size: 0.85rem; line-height: 1.6; }
+        .support-banner span { display: block; margin-top: 4px; font-style: italic; color: #cbd5e1; }
+        .support-email { color: var(--accent-gold); font-weight: 700; text-decoration: none; }
+
+        .topics-list { display: flex; flex-direction: column; gap: 15px; }
+        .topic-item {
+            background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 16px; padding: 20px 25px;
+            display: flex; justify-content: space-between; align-items: center; text-decoration: none; color: #fff;
+            transition: all 0.2s; position: relative; overflow: hidden;
+        }
+        .topic-item:hover { border-color: #3b82f6; transform: translateX(5px); background: var(--bg-card-hover); }
+        
+        .topic-item.locked { opacity: 0.7; cursor: pointer; }
+        .topic-item.locked:hover { border-color: rgba(239, 68, 68, 0.4); transform: none; background: var(--bg-card); }
+
+        .topic-info h3 { font-size: 1.1rem; font-weight: 700; margin-bottom: 4px; display: flex; align-items: center; gap: 10px; }
+        .topic-info p { font-size: 0.85rem; color: var(--text-muted); }
+        
+        .read-action { background: rgba(59, 130, 246, 0.15); color: #60a5fa; padding: 8px 16px; border-radius: 10px; font-weight: 600; font-size: 0.85rem; }
+        .read-action.locked-action { background: rgba(239, 68, 68, 0.15); color: #ef4444; border: 1px solid rgba(239, 68, 68, 0.3); }
+
+        /* Modal Popup */
+        .modal-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(7, 9, 14, 0.85); backdrop-filter: blur(8px);
+            display: none; justify-content: center; align-items: center; z-index: 1000; padding: 20px;
+        }
+        .modal-box {
+            background: var(--bg-card); border: 1px solid var(--border-color);
+            border-radius: 20px; width: 100%; max-width: 420px; padding: 30px; text-align: center;
+        }
+        .modal-icon { font-size: 40px; color: var(--accent-gold); margin-bottom: 15px; }
+        .modal-box h3 { font-size: 1.3rem; font-weight: 800; color: #fff; margin-bottom: 10px; }
+        .modal-box p { font-size: 0.9rem; color: var(--text-muted); margin-bottom: 20px; line-height: 1.5; }
+        .close-modal-btn {
+            background: var(--accent-gradient); color: white; border: none; padding: 10px 25px;
+            border-radius: 10px; font-weight: 600; cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <a href="megacontest.html" class="back-link"><i class="fa-solid fa-arrow-left"></i> Back to Groups Hub</a>
+        <div style="font-weight: 700; color: #60a5fa;"><i class="fa-solid fa-book"></i> Course Selection</div>
+    </header>
+
+    <div class="container">
+        <h1 class="page-title" id="groupTitleHeading">Tech & Software Domain Courses</h1>
+        <p class="page-subtitle">Select an available course below to read its comprehensive report and take the 25-question rapid quiz.</p>
+
+        <!-- Community Support Banner (Hindi & English) -->
+        <div class="support-banner">
+            <h4><i class="fa-solid fa-hands-holding-child"></i> Community Growth & Support / सामुदायिक सहयोग</h4>
+            <p>
+                अगर आप चाहते हैं कि बाकी टॉपिक्स भी जल्द से जल्द ऑन किए जाएं, तो हमें <a href="mailto:dotskills.work@gmail.com" class="support-email">dotskills.work@gmail.com</a> पर मेल करें। आपके सपोर्ट के थ्रू हम साथ आगे बढ़ेंगे। Thank you!
+                <span>If you want other topics to be unlocked soon, please mail us at <a href="mailto:dotskills.work@gmail.com" class="support-email">dotskills.work@gmail.com</a>. Together we will grow through your support.</span>
+            </p>
+        </div>
+
+        <div class="topics-list" id="topicsContainer"></div>
+    </div>
+
+    <!-- Unlock Soon Modal Popup -->
+    <div class="modal-overlay" id="lockModal">
+        <div class="modal-box">
+            <div class="modal-icon"><i class="fa-solid fa-lock"></i></div>
+            <h3>Topic Unlocking Soon!</h3>
+            <p>This topic data is currently being prepared. Drop us a mail at <strong style="color:var(--accent-gold)">dotskills.work@gmail.com</strong> to prioritize this topic!</p>
+            <button class="close-modal-btn" onclick="closeLockPopup()">Got It</button>
+        </div>
+    </div>
+
+    <script>
+        const urlParams = new URLSearchParams(window.location.search);
+        const group = urlParams.get('group') || 'tech';
+
+        const groupTopicsData = {
+            tech: {
+                title: "Tech & Software Domain Courses",
+                topics: [
+                    { id: "computer", name: "1. Basic of Computer", desc: "Hardware architecture, CPU, memory systems, OS basics.", live: true, file: "computer.html" },
+                    { id: "vscode", name: "2. How to use VS Code", desc: "Extensions, terminal integration, debugging & shortcuts.", live: true, file: "vscode.html" },
+                    { id: "html", name: "3. HTML & Web Structure", desc: "Tags, semantic elements, forms and document layout.", live: true, file: "html.html" },
+                    { id: "python", name: "4. Python Core & Advanced", desc: "Dynamic typing, functions, data structures and algorithms.", live: false },
+                    { id: "java", name: "5. Java Programming", desc: "Object-oriented principles, classes, inheritance, JVM.", live: false },
+                    { id: "cpp", name: "6. C++ Programming", desc: "Pointers, memory management, STL and performance tuning.", live: false },
+                    { id: "webdev", name: "7. Web Development", desc: "Full-stack integration, APIs, databases and frontend frameworks.", live: false },
+                    { id: "appdev", name: "8. App Development", desc: "Cross-platform mobile apps, UI/UX and deployment cycles.", live: false },
+                    { id: "machinelearning", name: "9. Machine Learning", desc: "Supervised/unsupervised learning, regression and models.", live: false },
+                    { id: "api", name: "10. API Integration", desc: "RESTful services, JSON payloads, HTTP requests and security.", live: false },
+                    { id: "ai", name: "11. Artificial Intelligence", desc: "Neural networks, NLP, deep learning and future automation.", live: false }
+                ]
+            }
+        };
+
+        const currentGroup = groupTopicsData[group] || groupTopicsData['tech'];
+        document.getElementById('groupTitleHeading').innerText = currentGroup.title;
+
+        const container = document.getElementById('topicsContainer');
+        container.innerHTML = '';
+        
+        currentGroup.topics.forEach(t => {
+            if (t.live) {
+                container.innerHTML += `
+                    <a href="${t.file}" class="topic-item">
+                        <div class="topic-info">
+                            <h3><i class="fa-solid fa-book-open" style="color: #60a5fa;"></i> ${t.name}</h3>
+                            <p>${t.desc}</p>
+                        </div>
+                        <div class="read-action"><i class="fa-solid fa-arrow-right"></i> Read Course</div>
+                    </a>
+                `;
+            } else {
+                container.innerHTML += `
+                    <div class="topic-item locked" onclick="showLockPopup()">
+                        <div class="topic-info">
+                            <h3><i class="fa-solid fa-lock" style="color: #ef4444;"></i> ${t.name}</h3>
+                            <p>${t.desc}</p>
+                        </div>
+                        <div class="read-action locked-action"><i class="fa-solid fa-lock"></i> Coming Soon</div>
+                    </div>
+                `;
+            }
+        });
+
+        function showLockPopup() {
+            document.getElementById('lockModal').style.display = 'flex';
+        }
+        function closeLockPopup() {
+            document.getElementById('lockModal').style.display = 'none';
+        }
+    </script>
+</body>
+</html>

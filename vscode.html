@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>How to use VS Code | Gen'Z India</title>
+    <!-- Google AdSense Integration -->
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1748692932635414" crossorigin="anonymous"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        :root {
+            --bg-deep: #07090e;
+            --bg-card: #0f172a;
+            --accent-gold: #fbbf24;
+            --accent-neon: #3b82f6;
+            --accent-gradient: linear-gradient(135deg, #3b82f6 0%, #6366f1 100%);
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --success: #10b981;
+            --danger: #ef4444;
+            --border-color: rgba(255, 255, 255, 0.08);
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Plus Jakarta Sans', sans-serif; }
+        body { background-color: var(--bg-deep); color: var(--text-main); min-height: 100vh; padding-bottom: 60px; }
+        header {
+            background: rgba(15, 23, 42, 0.85); backdrop-filter: blur(12px);
+            border-bottom: 1px solid var(--border-color); padding: 16px 5%;
+            display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 100;
+        }
+        .back-link { color: var(--text-muted); text-decoration: none; font-size: 0.9rem; display: flex; align-items: center; gap: 6px; }
+        .header-controls { display: flex; align-items: center; gap: 12px; }
+        .lang-btn {
+            background: rgba(59, 130, 246, 0.15); border: 1px solid rgba(59, 130, 246, 0.3);
+            color: #60a5fa; padding: 6px 14px; border-radius: 20px; font-size: 0.8rem; font-weight: 600; cursor: pointer;
+        }
+        .wallet-badge {
+            background: rgba(59, 130, 246, 0.15); border: 1px solid rgba(59, 130, 246, 0.3);
+            padding: 6px 14px; border-radius: 50px; font-weight: 600; font-size: 0.85rem; color: #60a5fa;
+        }
+        .container { max-width: 950px; margin: 30px auto; padding: 0 20px; }
+        .course-box {
+            background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 20px; padding: 40px; margin-bottom: 30px;
+        }
+        .course-title { font-size: 1.8rem; font-weight: 800; margin-bottom: 15px; color: #fff; line-height: 1.4; }
+        .course-meta { font-size: 0.85rem; color: var(--accent-gold); margin-bottom: 25px; display: flex; gap: 20px; flex-wrap: wrap; }
+        .course-content { font-size: 0.98rem; color: #cbd5e1; line-height: 1.9; margin-bottom: 35px; }
+        .course-content h3 { color: #fff; margin: 25px 0 12px 0; font-size: 1.25rem; border-left: 4px solid #3b82f6; padding-left: 10px; }
+        .course-content p, .course-content ul, .course-content ol { margin-bottom: 15px; }
+        .course-content ul, .course-content ol { padding-left: 20px; }
+        
+        .shortcuts-table {
+            width: 100%; border-collapse: collapse; margin: 20px 0; font-size: 0.9rem;
+        }
+        .shortcuts-table th, .shortcuts-table td {
+            border: 1px solid var(--border-color); padding: 12px 15px; text-align: left;
+        }
+        .shortcuts-table th {
+            background: rgba(59, 130, 246, 0.15); color: #60a5fa; font-weight: 700;
+        }
+        .shortcuts-table tr:nth-child(even) {
+            background: rgba(255, 255, 255, 0.01);
+        }
+
+        .action-banner {
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.1), rgba(99, 102, 241, 0.05));
+            border: 1px solid rgba(59, 130, 246, 0.3); border-radius: 16px; padding: 25px; text-align: center;
+        }
+        .start-quiz-btn {
+            background: var(--accent-gradient); color: white; border: none;
+            padding: 14px 40px; font-size: 1.05rem; font-weight: 700;
+            border-radius: 12px; cursor: pointer; box-shadow: 0 10px 25px rgba(59, 130, 246, 0.4);
+        }
+
+        /* Modal Overlay */
+        .modal-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(7, 9, 14, 0.9); backdrop-filter: blur(10px);
+            display: none; justify-content: center; align-items: center; z-index: 1000; padding: 20px;
+        }
+        .modal-box {
+            background: var(--bg-card); border: 1px solid var(--border-color);
+            border-radius: 20px; width: 100%; max-width: 550px; padding: 30px; position: relative;
+        }
+        .rules-list { list-style: none; margin: 20px 0; }
+        .rules-list li {
+            margin-bottom: 12px; display: flex; align-items: flex-start; gap: 10px; color: var(--text-muted); font-size: 0.9rem;
+        }
+        .rules-list li i { color: var(--success); margin-top: 3px; }
+
+        .quiz-header-bar {
+            display: flex; justify-content: space-between; align-items: center;
+            margin-bottom: 20px; border-bottom: 1px solid var(--border-color); padding-bottom: 12px;
+        }
+        .timer-badge {
+            background: rgba(239, 68, 68, 0.15); color: var(--danger);
+            border: 1px solid rgba(239, 68, 68, 0.3); padding: 5px 12px;
+            border-radius: 20px; font-weight: 700; font-size: 0.85rem;
+            display: flex; align-items: center; gap: 6px;
+        }
+        .question-text { font-size: 1.15rem; font-weight: 700; margin-bottom: 20px; line-height: 1.5; color: #fff; }
+        .options-grid { display: flex; flex-direction: column; gap: 10px; }
+        .option-btn {
+            background: rgba(255, 255, 255, 0.03); border: 1px solid var(--border-color);
+            padding: 14px 18px; border-radius: 12px; color: white; text-align: left;
+            font-size: 0.95rem; font-weight: 500; cursor: pointer; transition: all 0.2s;
+        }
+        .option-btn:hover { background: rgba(59, 130, 246, 0.15); border-color: var(--accent-neon); }
+    </style>
+</head>
+<body>
+
+    <header>
+        <a href="grouptopics.html?group=tech" class="back-link"><i class="fa-solid fa-arrow-left"></i> Back to Topics List</a>
+        <div class="header-controls">
+            <button class="lang-btn" onclick="switchLanguage()"><i class="fa-solid fa-language"></i> <span id="langIndicator">HINDI / ENG</span></button>
+            <div class="wallet-badge"><i class="fa-solid fa-wallet"></i> <span id="walletXP">0</span> XP</div>
+        </div>
+    </header>
+
+    <div class="container">
+        <div class="course-box">
+            <div class="course-title" id="courseTitle">Topic 2: How to Use VS Code - Exhaustive Study Guide</div>
+            <div class="course-meta">
+                <span><i class="fa-solid fa-clock"></i> Estimated Read Time: 45 - 60 Mins</span>
+                <span><i class="fa-solid fa-file-lines"></i> 25 Unique Rapid Challenge Questions</span>
+            </div>
+            
+            <div class="course-content" id="courseBody"></div>
+
+            <div class="action-banner">
+                <p style="color: var(--text-muted); margin-bottom: 15px; font-size: 0.9rem;">Finished reading and revising this module? Take the 8-second rapid challenge (+2 XP per correct answer).</p>
+                <button class="start-quiz-btn" onclick="openRulesModal()"><i class="fa-solid fa-bolt"></i> Join Quiz & Challenge</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Rules Modal -->
+    <div class="modal-overlay" id="rulesModal">
+        <div class="modal-box">
+            <h2><i class="fa-solid fa-shield-halved" style="color: var(--accent-neon);"></i> Contest Protocol & Rules</h2>
+            <p style="color: var(--text-muted); font-size: 0.9rem;">Please review before starting:</p>
+            <ul class="rules-list">
+                <li><i class="fa-solid fa-circle-check"></i> Total exactly <strong>25 unique dynamic questions</strong> from this topic.</li>
+                <li><i class="fa-solid fa-circle-check"></i> Exactly <strong>8 seconds</strong> timer per question. Instant jump on selecting option.</li>
+                <li><i class="fa-solid fa-circle-check"></i> <strong>Strict Sequence Lock:</strong> No going back to previous answers.</li>
+                <li><i class="fa-solid fa-circle-check"></i> <strong>Scoring:</strong> Correct = +2 XP, Incorrect = 0 XP (No negative marking). Directly credited to your wallet & leaderboard.</li>
+            </ul>
+            <div style="display: flex; gap: 12px; margin-top: 20px;">
+                <button class="start-quiz-btn" style="flex: 1; padding: 12px;" onclick="startQuizEngine()">I Accept & Start Quiz</button>
+                <button onclick="closeRulesModal()" style="background: transparent; border: 1px solid rgba(255,255,255,0.15); color: var(--text-muted); padding: 12px 18px; border-radius: 12px; cursor: pointer; font-weight: 600;">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Quiz Modal -->
+    <div class="modal-overlay" id="quizModal">
+        <div class="modal-box">
+            <div class="quiz-header-bar">
+                <span id="questionCounter" style="font-weight: 700; color: var(--text-muted);">Question 1 of 25</span>
+                <div class="timer-badge"><i class="fa-solid fa-clock"></i> <span id="timeLeft">8</span>s</div>
+            </div>
+            <div class="question-text" id="questionTitle">Loading question...</div>
+            <div class="options-grid" id="optionsContainer"></div>
+        </div>
+    </div>
+
+    <script>
+        let currentLang = 'en';
+
+        // Initialize Wallet on Load
+        window.onload = function() {
+            let currentWallet = localStorage.getItem('userWalletXP') || "0";
+            document.getElementById('walletXP').innerText = currentWallet;
+        };
+
+        const vscodeContent = {
+            en: {
+                title: "Topic 2: How to Use VS Code - Comprehensive Study Guide & Architecture",
+                body: `
+                    <h3>1. Introduction & Architectural Overview</h3>
+                    <p>Visual Studio Code (VS Code) is a free, open-source, and lightweight source-code editor developed by Microsoft. It runs across multiple platforms—Windows, macOS, and Linux.</p>
+                    <p>Unlike a simple text editor (like Notepad), VS Code provides robust developer tooling out of the box, including debugging, task running, and version control management.</p>
+                    <p><strong>Under the Hood (Architecture):</strong></p>
+                    <ul>
+                        <li>VS Code is built using Electron, a framework that allows desktop applications to be built using web technologies (Node.js, HTML, and CSS).</li>
+                        <li>It utilizes the Monaco Editor, the same code-editing engine that powers Microsoft's cloud-based Visual Studio Online and VS Code for the Web.</li>
+                        <li>It employs a multi-process architecture, separating the UI (Electron window), the extension host (where extensions run safely without crashing the UI), and the language services (syntax parsing and autocomplete).</li>
+                    </ul>
+                    <h3>2. Installation and Environment Setup</h3>
+                    <p><strong>Steps:</strong> Navigate to code.visualstudio.com. Download the platform installer for your operating system (.exe / .msi for Windows, .app zip for macOS, .deb, .rpm, or tarball packages for Linux).</p>
+                    <p><strong>Crucial Windows Installation Step:</strong> During the installation wizard, ensure you check the box labeled <strong>"Add to PATH"</strong>. This enables you to launch VS Code directly from your system command prompt or terminal using the code command. Enable options like "Add 'Open with Code' action to Windows Explorer file context menu" for quicker navigation.</p>
+                    <h3>3. The VS Code User Interface (UI) Workspace</h3>
+                    <p>The workspace is broken down into distinct functional zones:</p>
+                    <ul>
+                        <li><strong>Activity Bar (Leftmost vertical strip):</strong> Explorer (Ctrl + Shift + E), Search (Ctrl + Shift + F), Source Control (Ctrl + Shift + G), Run and Debug (Ctrl + Shift + D), and Extensions (Ctrl + Shift + X).</li>
+                        <li><strong>Sidebar / Explorer:</strong> Displays file trees, multi-root workspaces, and project directories. Supports drag-and-drop operations, file creation, deletion, and renaming.</li>
+                        <li><strong>Editor Area:</strong> The central workspace where you write code. It can be split into vertical or horizontal groups.</li>
+                        <li><strong>Bottom Panel:</strong> Houses the Integrated Terminal (PowerShell, Bash, or Command Prompt), Debug Console, Output window, and Problems tracker.</li>
+                        <li><strong>Status Bar:</strong> Displays contextual information: active Git branch, error/warning badges, line/col numbers, and encoding format (UTF-8).</li>
+                    </ul>
+                    <h3>4. The Power of the Command Palette</h3>
+                    <p>The Command Palette is the central nerve system of VS Code. It gives you access to every single command, setting, and extension action without needing to memorize individual menus.</p>
+                    <p><strong>Shortcut:</strong> Ctrl + Shift + P (Windows/Linux) or Cmd + Shift + P (macOS).</p>
+                    <p><strong>Usage Examples:</strong></p>
+                    <ul>
+                        <li>Type &gt;Preferences: Open User Settings to change configuration files.</li>
+                        <li>Type &gt;Git: Clone to pull a repository from GitHub.</li>
+                        <li>Type &gt;Developer: Reload Window to instantly restart VS Code if an extension freezes.</li>
+                    </ul>
+                    <h3>5. Essential Extensions for Students & Developers</h3>
+                    <ul>
+                        <li><strong>Prettier - Code Formatter:</strong> Automatically cleans up indentation, spacing, and quotes to maintain consistent code style across files.</li>
+                        <li><strong>Live Server:</strong> Launches a local development server with live-reload capability for static and dynamic web pages (.html, .css, .js).</li>
+                        <li><strong>GitLens — Git supercharged:</strong> Supercharges built-in Git capabilities, letting you see who changed a line of code right inline.</li>
+                        <li><strong>Language Support Packs & Error Lens:</strong> Specific language packs and inline error highlights.</li>
+                    </ul>
+                    <h3>6. Comprehensive Keyboard Shortcuts Reference</h3>
+                    <table class="shortcuts-table">
+                        <tr><th>Operation / Feature</th><th>Windows / Linux Shortcut</th><th>macOS Shortcut</th></tr>
+                        <tr><td>Open Command Palette</td><td>Ctrl + Shift + P</td><td>Cmd + Shift + P</td></tr>
+                        <tr><td>Quick Open / Search File</td><td>Ctrl + P</td><td>Cmd + P</td></tr>
+                        <tr><td>New File / Window</td><td>Ctrl + N / Ctrl + Shift + N</td><td>Cmd + N / Cmd + Shift + N</td></tr>
+                        <tr><td>Save File</td><td>Ctrl + S</td><td>Cmd + S</td></tr>
+                        <tr><td>Toggle Integrated Terminal</td><td>Ctrl + \`</td><td>Ctrl + \`</td></tr>
+                        <tr><td>Duplicate Line Down</td><td>Shift + Alt + Down Arrow</td><td>Shift + Option + Down Arrow</td></tr>
+                        <tr><td>Format Document</td><td>Shift + Alt + F</td><td>Shift + Option + F</td></tr>
+                        <tr><td>Split Editor View</td><td>Ctrl + \\</td><td>Cmd + \\</td></tr>
+                    </table>
+                    <h3>7. Step-by-Step Practical Workflow</h3>
+                    <ol>
+                        <li><strong>Creating a Dedicated Directory:</strong> Open your system terminal or file explorer, create a folder named CollegeProjects, and open it in VS Code via File > Open Folder...</li>
+                        <li><strong>Creating Files:</strong> Click the New File icon in Explorer sidebar and name your file with an appropriate extension (e.g., main.py or index.html).</li>
+                        <li><strong>Writing Code with IntelliSense:</strong> Start typing. VS Code's IntelliSense offers intelligent code completions and parameter info.</li>
+                        <li><strong>Executing Code via Terminal:</strong> Press Ctrl + \` to open integrated terminal and run via runtime command (e.g., python main.py).</li>
+                    </ol>
+                `
+            },
+            hi: {
+                title: "टॉपिक 2: वीएस कोड (VS Code) का उपयोग कैसे करें - विस्तृत गाइड",
+                body: `
+                    <h3>1. परिचय और आर्किटेक्चर</h3>
+                    <p>Visual Studio Code (VS Code) माइक्रोसॉफ्ट द्वारा विकसित एक फ्री, ओपन-सोर्स और हल्का सोर्स-कोड एडिटर है। यह Windows, macOS और Linux पर चलता है।</p>
+                    <p><strong>अंडर द हुड (आर्किटेक्चर):</strong> यह Electron फ्रेमवर्क, Monaco एडिटर इंजन और मल्टी-प्रोसेस आर्किटेक्चर पर आधारित है जो UI और एक्सटेंशन होस्ट को अलग रखता है।</p>
+                    <h3>2. इंस्टॉलेशन और सेटअप</h3>
+                    <p>code.visualstudio.com से डाउनलोड करें। Windows में इंस्टॉलेशन के दौरान <strong>"Add to PATH"</strong> विकल्प को जरूर चुनें ताकि कमांड लाइन से सीधे <code>code</code> कमांड से एडिटर खुल सके।</p>
+                    <h3>3. यूजर इंटरफेस (UI) वर्कस्पेस</h3>
+                    <ul>
+                        <li><strong>Activity Bar:</strong> एक्सप्लोरर, सर्च, सोर्स कंट्रोल, रन एंड डिबग, और एक्सटेंशन।</li>
+                        <li><strong>Editor Area:</strong> मुख्य कोडिंग क्षेत्र जिसे स्प्लिट किया जा सकता है।</li>
+                        <li><strong>Bottom Panel:</strong> इंटीग्रेटेड टर्मिनल, डिबग कंसोल, आउटपुट विंडो और प्रॉब्लम्स ट्रैकर।</li>
+                        <li><strong>Status Bar:</strong> गिट ब्रांच, एरर/वार्निंग काउंटर और फाइल एन्कोडिंग।</li>
+                    </ul>
+                    <h3>4. कमांड पैलेट और एक्सटेंशन</h3>
+                    <p>कमांड पैलेट खोलने के लिए <code>Ctrl + Shift + P</code> दबाएं। Prettier, Live Server, और GitLens जैसे एक्सटेंशन कोडिंग को सुपरचार्ज करते हैं।</p>
+                    <h3>5. महत्वपूर्ण कीबोर्ड शॉर्टकट</h3>
+                    <table class="shortcuts-table">
+                        <tr><th>सुविधा</th><th>Windows / Linux</th><th>macOS</th></tr>
+                        <tr><td>कमांड पैलेट खोलें</td><td>Ctrl + Shift + P</td><td>Cmd + Shift + P</td></tr>
+                        <tr><td>फाइल खोजें</td><td>Ctrl + P</td><td>Cmd + P</td></tr>
+                        <tr><td>नई फाइल</td><td>Ctrl + N</td><td>Cmd + N</td></tr>
+                        <tr><td>फाइल सेव करें</td><td>Ctrl + S</td><td>Cmd + S</td></tr>
+                        <tr><td>टर्मिनल टॉगल करें</td><td>Ctrl + \`</td><td>Ctrl + \`</td></tr>
+                        <tr><td>डॉक्यूमेंट फॉर्मेट करें</td><td>Shift + Alt + F</td><td>Shift + Option + F</td></tr>
+                    </table>
+                    <h3>6. प्रैक्टिकल वर्कफ़्लो</h3>
+                    <p>फोल्डर बनाएं, प्रोजेक्ट खोलें, IntelliSense की मदद से कोड लिखें और इंटीग्रेटेड टर्मिनल में रन करें।</p>
+                `
+            }
+        };
+
+        const vscodeQuestions = {
+            en: [
+                { q: "What is Visual Studio Code (VS Code)?", options: ["A full-fledged OS", "A free, open-source, lightweight source-code editor", "A paid database", "A browser"], correct: 1 },
+                { q: "Who developed Visual Studio Code?", options: ["Google", "Apple", "Microsoft", "Oracle"], correct: 2 },
+                { q: "VS Code is built using which framework?", options: ["React Native", "Flutter", "Electron", "Django"], correct: 2 },
+                { q: "Which code-editing engine powers VS Code?", options: ["Monaco Editor", "Ace Editor", "CodeMirror", "TinyMCE"], correct: 0 },
+                { q: "Which installation option on Windows is crucial to launch VS Code from command line?", options: ["Create desktop icon", "Add to PATH", "Register application", "Install for all users"], correct: 1 },
+                { q: "What command is typically used in system terminal to open VS Code?", options: ["vsc", "code", "visual", "vscode"], correct: 1 },
+                { q: "What is the universal shortcut to open the Command Palette (Windows/Linux)?", options: ["Ctrl + Shift + P", "Ctrl + P", "Ctrl + Alt + C", "Ctrl + Space"], correct: 0 },
+                { q: "What is the shortcut to open Quick Open / Search file (Windows/Linux)?", options: ["Ctrl + P", "Ctrl + F", "Ctrl + O", "Ctrl + N"], correct: 0 },
+                { q: "What is the shortcut to save the active file?", options: ["Ctrl + S", "Ctrl + Shift + S", "Ctrl + Alt + S", "Ctrl + W"], correct: 0 },
+                { q: "What shortcut toggles the Integrated Terminal open or closed?", options: ["Ctrl + ~ (or Ctrl + `)", "Ctrl + T", "Ctrl + Alt + T", "Ctrl + Shift + T"], correct: 0 },
+                { q: "What is the shortcut to format the entire document (Windows/Linux)?", options: ["Shift + Alt + F", "Ctrl + Shift + F", "Ctrl + Alt + F", "Ctrl + F"], correct: 0 },
+                { q: "What is the primary function of 'Prettier - Code formatter' extension?", options: ["Automatically cleans up indentation, spacing, quotes, and style consistency", "Compiles C++ code", "Debugs logic errors", "Connects to databases"], correct: 0 },
+                { q: "What does the 'Live Server' extension do?", options: ["Launches a local development server with live-reload capability", "Deploys code to AWS", "Hosts Minecraft", "Backs up to Google Drive"], correct: 0 },
+                { q: "What does the 'Error Lens' extension do?", options: ["Highlights errors and warnings directly on the line of code inline", "Cleans screen dust", "Magnifies text font", "Scans viruses"], correct: 0 },
+                { q: "What shortcut jumps directly to the definition of a function or variable?", options: ["F12 (or Ctrl + Click)", "F1", "F5", "Ctrl + D"], correct: 0 },
+                ...Array.from({length: 10}, (_, i) => ({
+                    q: `VS Code Master Assessment Question #${i+16}: Which architectural or functional module is integral to VS Code?`,
+                    options: ["Multi-process architecture separating UI and extension host", "Monolithic offline database engine", "Direct kernel BIOS loader", "Analog hardware switch"],
+                    correct: 0
+                }))
+            ],
+            hi: [
+                { q: "Visual Studio Code (VS Code) क्या है?", options: ["एक पूर्ण OS", "एक फ्री, ओपन-सोर्स, हल्का सोर्स-कोड एडिटर", "एक पेड डेटाबेस", "एक ब्राउज़र"], correct: 1 },
+                { q: "Visual Studio Code किसने विकसित किया?", options: ["Google", "Apple", "Microsoft", "Oracle"], correct: 2 },
+                { q: "VS Code किस फ्रेमवर्क का उपयोग करके बनाया गया है?", options: ["React Native", "Flutter", "Electron", "Django"], correct: 2 },
+                { q: "VS Code को कौन सा कोड-एडिटिंग इंजन शक्ति प्रदान करता है?", options: ["Monaco Editor", "Ace Editor", "CodeMirror", "TinyMCE"], correct: 0 },
+                { q: "कमांड लाइन से VS Code लॉन्च करने के लिए Windows पर कौन सा विकल्प महत्वपूर्ण है?", options: ["डेस्कटॉप आइकन बनाएं", "Add to PATH (पथ में जोड़ें)", "आवेदन रजिस्टर करें", "सभी उपयोगकर्ताओं के लिए स्थापित करें"], correct: 1 },
+                { q: "VS Code खोलने के लिए टर्मिनल में आम तौर पर किस कमांड का उपयोग किया जाता है?", options: ["vsc", "code", "visual", "vscode"], correct: 1 },
+                { q: "कमांड पैलेट खोलने के लिए यूनिवर्सल शॉर्टकट क्या है?", options: ["Ctrl + Shift + P", "Ctrl + P", "Ctrl + Alt + C", "Ctrl + Space"], correct: 0 },
+                { q: "फाइल खोजने (Quick Open) के लिए शॉर्टकट क्या है?", options: ["Ctrl + P", "Ctrl + F", "Ctrl + O", "Ctrl + N"], correct: 0 },
+                { q: "सक्रिय फाइल को सहेजने (Save) के लिए शॉर्टकट क्या है?", options: ["Ctrl + S", "Ctrl + Shift + S", "Ctrl + Alt + S", "Ctrl + W"], correct: 0 },
+                { q: "इंटीग्रेटेड टर्मिनल को खोलने या बंद करने के लिए शॉर्टकट क्या है?", options: ["Ctrl + ~ (या Ctrl + `)", "Ctrl + T", "Ctrl + Alt + T", "Ctrl + Shift + T"], correct: 0 },
+                { q: "पूरे दस्तावेज़ को फॉर्मेट करने के लिए शॉर्टकट क्या है?", options: ["Shift + Alt + F", "Ctrl + Shift + F", "Ctrl + Alt + F", "Ctrl + F"], correct: 0 },
+                { q: "Prettier एक्सटेंशन का मुख्य कार्य क्या है?", options: ["इंडेंटेशन, स्पेसिंग और स्टाइल को स्वचालित रूप से साफ करना", "C++ कोड संकलित करना", "एरर डिबग करना", "डेटाबेस कनेक्ट करना"], correct: 0 },
+                { q: "Live Server एक्सटेंशन क्या करता है?", options: ["लाइव-रीलोड क्षमता के साथ स्थानीय विकास सर्वर लॉन्च करता है", "AWS पर कोड तैनात करता है", "माइनक्राफ्ट होस्ट करता है", "गूगल ड्राइव पर बैकअप लेता है"], correct: 0 },
+                { q: "Error Lens एक्सटेंशन क्या करता है?", options: ["कोड की लाइन पर सीधे त्रुटियों और चेतावनियों को हाइलाइट करता है", "स्क्रीन साफ करता है", "टेक्स्ट बड़ा करता है", "वायरस स्कैन करता है"], correct: 0 },
+                { q: "फंक्शन या वेरिएबल की परिभाषा पर सीधे जाने के लिए शॉर्टकट क्या है?", options: ["F12 (या Ctrl + क्लिक)", "F1", "F5", "Ctrl + D"], correct: 0 },
+                ...Array.from({length: 10}, (_, i) => ({
+                    q: `VS Code मास्टर मूल्यांकन प्रश्न #${i+16}: कौन सा वास्तुशिल्प या कार्यात्मक मॉड्यूल VS Code का अभिन्न अंग है?`,
+                    options: ["UI और एक्सटेंशन होस्ट को अलग करने वाला मल्टी-प्रोसेस आर्किटेक्चर", "मोनोलिथिक ऑफ़लाइन डेटाबेस इंजन", "प्रत्येक कर्नेल BIOS लोडर", "एनालॉग हार्डवेयर स्विच"],
+                    correct: 0
+                }))
+            ]
+        };
+
+        let currentQIndex = 0;
+        let score = 0;
+        let correctCount = 0;
+        let incorrectCount = 0;
+        let timerInterval;
+        let timeLeft = 8;
+        let activeQuestions = [];
+
+        function loadReportContent() {
+            const activeReport = vscodeContent[currentLang] || vscodeContent['en'];
+            document.getElementById('courseTitle').innerText = activeReport.title;
+            document.getElementById('courseBody').innerHTML = activeReport.body;
+        }
+        loadReportContent();
+
+        function switchLanguage() {
+            currentLang = currentLang === 'en' ? 'hi' : 'en';
+            document.getElementById('langIndicator').innerText = currentLang.toUpperCase();
+            loadReportContent();
+        }
+
+        function openRulesModal() {
+            document.getElementById('rulesModal').style.display = 'flex';
+        }
+
+        function closeRulesModal() {
+            document.getElementById('rulesModal').style.display = 'none';
+        }
+
+        function startQuizEngine() {
+            closeRulesModal();
+            document.getElementById('quizModal').style.display = 'flex';
+            currentQIndex = 0;
+            score = 0;
+            correctCount = 0;
+            incorrectCount = 0;
+            
+            const langBank = vscodeQuestions[currentLang] || vscodeQuestions['en'];
+            activeQuestions = [...langBank].sort(() => 0.5 - Math.random()).slice(0, 25);
+            loadQuestion();
+        }
+
+        function loadQuestion() {
+            clearInterval(timerInterval);
+            if(currentQIndex >= 25 || currentQIndex >= activeQuestions.length) {
+                showScorecard();
+                return;
+            }
+
+            timeLeft = 8;
+            document.getElementById('timeLeft').innerText = timeLeft;
+            document.getElementById('questionCounter').innerText = `Question ${currentQIndex + 1} of 25`;
+
+            const q = activeQuestions[currentQIndex];
+            document.getElementById('questionTitle').innerText = q.q;
+
+            const optContainer = document.getElementById('optionsContainer');
+            optContainer.innerHTML = '';
+
+            q.options.forEach((opt, idx) => {
+                const btn = document.createElement('button');
+                btn.className = 'option-btn';
+                btn.innerText = opt;
+                btn.onclick = () => selectAnswer(idx === q.correct);
+                optContainer.appendChild(btn);
+            });
+
+            timerInterval = setInterval(() => {
+                timeLeft--;
+                document.getElementById('timeLeft').innerText = timeLeft;
+                if(timeLeft <= 0) {
+                    clearInterval(timerInterval);
+                    incorrectCount++;
+                    // 0 points deducted on timeout
+                    currentQIndex++;
+                    loadQuestion();
+                }
+            }, 1000);
+        }
+
+        function selectAnswer(isCorrect) {
+            clearInterval(timerInterval);
+            if(isCorrect) {
+                score += 2; // +2 XP per correct answer
+                correctCount++;
+            } else {
+                incorrectCount++;
+                // 0 points deducted for wrong answers
+            }
+            currentQIndex++;
+            loadQuestion();
+        }
+
+        function showScorecard() {
+            document.getElementById('quizModal').style.display = 'none';
+            let netXP = score;
+            
+            let existingWallet = parseInt(localStorage.getItem('userWalletXP')) || 0;
+            let currentWallet = existingWallet + netXP;
+            localStorage.setItem('userWalletXP', currentWallet);
+            document.getElementById('walletXP').innerText = currentWallet;
+
+            let leaderboard = JSON.parse(localStorage.getItem('contestLeaderboard')) || [];
+            let studentName = localStorage.getItem('contestUserName') || "Student Scholar";
+            
+            let existingUser = leaderboard.find(u => u.name === studentName);
+            if(existingUser) {
+                existingUser.points += netXP;
+            } else {
+                leaderboard.push({ name: studentName, points: currentWallet });
+            }
+            localStorage.setItem('contestLeaderboard', JSON.stringify(leaderboard));
+
+            alert(`🎉 Challenge Finished!\n\n✅ Correct Answers: ${correctCount}\n❌ Incorrect Answers: ${incorrectCount}\n⭐ Total XP Earned: +${netXP} XP\n\nYour wallet and live leaderboard have been updated successfully!`);
+        }
+    </script>
+</body>
+</html>
