@@ -58,6 +58,13 @@
             margin-bottom: 6px;
             font-weight: 600;
         }
+        .form-note {
+            font-size: 11px;
+            color: #64748b;
+            margin-top: 4px;
+            display: block;
+            font-style: italic;
+        }
         .auth-card input {
             width: 100%;
             padding: 12px 14px;
@@ -105,43 +112,6 @@
             opacity: 0.95;
             transform: translateY(-1px);
         }
-        .google-btn {
-            background: #ffffff;
-            color: #334155;
-            border: 1px solid #cbd5e1;
-            padding: 12px;
-            border-radius: 12px;
-            font-weight: 600;
-            font-size: 13.5px;
-            width: 100%;
-            cursor: pointer;
-            margin-top: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
-            transition: 0.2s;
-        }
-        .google-btn:hover {
-            background: #f1f5f9;
-            border-color: #94a3b8;
-        }
-        .divider {
-            display: flex;
-            align-items: center;
-            text-align: center;
-            margin: 18px 0;
-            color: #94a3b8;
-            font-size: 12px;
-        }
-        .divider::before, .divider::after {
-            content: '';
-            flex: 1;
-            border-bottom: 1px solid #e2e8f0;
-        }
-        .divider::before { margin-right: 10px; }
-        .divider::after { margin-left: 10px; }
-
         .auth-link {
             text-align: center;
             margin-top: 20px;
@@ -262,8 +232,9 @@
 
         <form onsubmit="handleLogin(event)">
             <div class="form-group">
-                <label>Username</label>
-                <input type="text" id="lUsername" placeholder="Enter your username" autocomplete="username" required>
+                <label>Username or Email</label>
+                <input type="text" id="lIdentifier" placeholder="Enter your username or email" autocomplete="username" required>
+                <small class="form-note">Note: If entering an email, make sure to include '@' at the start/middle.</small>
             </div>
             <div class="form-group">
                 <label>Password</label>
@@ -274,13 +245,6 @@
             </div>
             <button type="submit" class="submit-btn" id="loginBtn">Login</button>
         </form>
-
-        <div class="divider">or continue with</div>
-
-        <button type="button" class="google-btn" onclick="handleGoogleLogin()">
-            <svg width="18" height="18" viewBox="0 0 24 24"><path fill="#4285F4" d="M23.745 12.27c0-.7-.06-1.4-.19-2.07H12v4.51h6.6c-.29 1.52-1.14 2.82-2.4 3.68v3.05h3.88c2.27-2.09 3.66-5.17 3.66-9.17z"/><path fill="#34A853" d="M12 24c3.24 0 5.95-1.08 7.93-2.91l-3.88-3.05c-1.08.72-2.45 1.16-4.05 1.16-3.12 0-5.77-2.1-6.72-4.93H1.19v3.15C3.17 21.32 7.22 24 12 24z"/><path fill="#FBBC05" d="M5.28 14.27c-.25-.72-.38-1.49-.38-2.27s.13-1.55.38-2.27V6.58H1.19C.43 8.1 0 9.98 0 12s.43 3.9 1.19 5.42l4.09-3.15z"/><path fill="#EA4335" d="M12 4.75c1.77 0 3.35.61 4.6 1.8l3.42-3.42C17.95 1.19 15.24 0 12 0 7.22 0 3.17 2.68 1.19 6.58l4.09 3.15c.95-2.83 3.6-4.98 6.72-4.98z"/></svg>
-            Sign in with Google
-        </button>
 
         <div class="auth-link">
             Don't have an account? <a href="signup.html">Sign Up here</a>
@@ -300,8 +264,8 @@
     <!-- Firebase Secure Login Script -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-app.js";
-        import { getAuth, signInWithEmailAndPassword, sendPasswordResetEmail, GoogleAuthProvider, signInWithPopup } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-auth.js";
-        import { getFirestore, doc, getDoc, setDoc, collection, query, where, getDocs } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-firestore.js";
+        import { getAuth, signInWithEmailAndPassword, sendPasswordResetEmail } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-auth.js";
+        import { getFirestore, collection, query, where, getDocs } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-firestore.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyCNLwSjHq6LlX9uUovTRHrz9ZfUwEIUWQM",
@@ -328,10 +292,10 @@
             window.location.href = 'welcome.html';
         }
 
-        // Login with Username & Password
+        // Login with Username or Email & Password
         window.handleLogin = async function(event) {
             event.preventDefault();
-            let username = document.getElementById('lUsername').value.trim().toLowerCase();
+            let identifier = document.getElementById('lIdentifier').value.trim();
             let password = document.getElementById('lPass').value.trim();
             let btn = document.getElementById('loginBtn');
             let errorAlert = document.getElementById('errorAlert');
@@ -341,25 +305,38 @@
             btn.disabled = true;
 
             try {
-                // 1. Firestore se username search karke associated email nikalna
-                const qUser = query(collection(db, "users"), where("username", "==", username));
-                const querySnapshot = await getDocs(qUser);
-
-                if (querySnapshot.empty) {
-                    throw new Error("Username not found! Please check your username.");
-                }
-
                 let userEmail = "";
-                let userId = "";
                 let userData = {};
 
-                querySnapshot.forEach((docSnap) => {
-                    userId = docSnap.id;
-                    userData = docSnap.data();
-                    userEmail = userData.email;
-                });
+                // Check if user entered an Email or a Username
+                if (identifier.includes('@')) {
+                    userEmail = identifier.toLowerCase();
+                    const qEmail = query(collection(db, "users"), where("email", "==", userEmail));
+                    const querySnapshot = await getDocs(qEmail);
 
-                // 2. Firebase Auth se email aur password ke zariye login karna
+                    if (querySnapshot.empty) {
+                        throw new Error("Email not found! Please check your email.");
+                    }
+
+                    querySnapshot.forEach((docSnap) => {
+                        userData = docSnap.data();
+                    });
+                } else {
+                    let username = identifier.toLowerCase();
+                    const qUser = query(collection(db, "users"), where("username", "==", username));
+                    const querySnapshot = await getDocs(qUser);
+
+                    if (querySnapshot.empty) {
+                        throw new Error("Username not found! Please check your username.");
+                    }
+
+                    querySnapshot.forEach((docSnap) => {
+                        userData = docSnap.data();
+                        userEmail = userData.email;
+                    });
+                }
+
+                // Firebase Auth se email aur password ke zariye login karna
                 const userCredential = await signInWithEmailAndPassword(auth, userEmail, password);
                 
                 localStorage.setItem('genzUser', JSON.stringify(userData));
@@ -368,9 +345,11 @@
                 showSuccessModal();
             } catch(e) {
                 console.error("Login Error:", e);
-                let userFriendlyMessage = 'Invalid Username or Password! Please try again.';
+                let userFriendlyMessage = 'Invalid Username/Email or Password! Please try again.';
                 if (e.message.includes("Username not found")) {
                     userFriendlyMessage = 'This username does not exist. Please check or Sign Up.';
+                } else if (e.message.includes("Email not found")) {
+                    userFriendlyMessage = 'This email does not exist. Please check or Sign Up.';
                 } else if (e.code === 'auth/wrong-password' || e.code === 'auth/invalid-credential') {
                     userFriendlyMessage = 'Incorrect password entered.';
                 }
@@ -383,79 +362,47 @@
             }
         }
 
-        // Forgot Password Logic (Via Email linked to Username)
+        // Forgot Password Logic (Via Email or Username)
         window.handleForgotPassword = async function(event) {
             event.preventDefault();
-            let username = document.getElementById('lUsername').value.trim().toLowerCase();
+            let identifier = document.getElementById('lIdentifier').value.trim();
             let errorAlert = document.getElementById('errorAlert');
             let successAlert = document.getElementById('successAlert');
 
             errorAlert.style.display = 'none';
             successAlert.style.display = 'none';
 
-            if (!username) {
-                errorAlert.innerText = 'Please enter your Username first, then click Forgot Password.';
+            if (!identifier) {
+                errorAlert.innerText = 'Please enter your Username or Email first, then click Forgot Password.';
                 errorAlert.style.display = 'block';
                 return;
             }
 
             try {
-                const qUser = query(collection(db, "users"), where("username", "==", username));
-                const querySnapshot = await getDocs(qUser);
+                let userEmail = "";
 
-                if (querySnapshot.empty) {
-                    throw new Error("Username not found.");
+                if (identifier.includes('@')) {
+                    userEmail = identifier.toLowerCase();
+                } else {
+                    let username = identifier.toLowerCase();
+                    const qUser = query(collection(db, "users"), where("username", "==", username));
+                    const querySnapshot = await getDocs(qUser);
+
+                    if (querySnapshot.empty) {
+                        throw new Error("User not found.");
+                    }
+
+                    querySnapshot.forEach((docSnap) => {
+                        userEmail = docSnap.data().email;
+                    });
                 }
 
-                let userEmail = "";
-                querySnapshot.forEach((docSnap) => {
-                    userEmail = docSnap.data().email;
-                });
-
                 await sendPasswordResetEmail(auth, userEmail);
-                successAlert.innerText = 'Password reset link has been sent to your registered email (' + userEmail + ')!';
+                successAlert.innerText = 'Password reset link has been sent to (' + userEmail + ')!';
                 successAlert.style.display = 'block';
             } catch (e) {
                 console.error("Reset Error:", e);
-                errorAlert.innerText = 'Could not find an account associated with this username.';
-                errorAlert.style.display = 'block';
-            }
-        }
-
-        // Google Login
-        window.handleGoogleLogin = async function() {
-            const provider = new GoogleAuthProvider();
-            try {
-                const result = await signInWithPopup(auth, provider);
-                const user = result.user;
-
-                const docRef = doc(db, "users", user.uid);
-                const docSnap = await getDoc(docRef);
-
-                let userData;
-                if (!docSnap.exists()) {
-                    let cleanUsername = user.email.split('@')[0].toLowerCase().replace(/[^a-z0-9_]/g, '_');
-                    userData = {
-                        uid: user.uid,
-                        name: user.displayName || 'Student',
-                        username: cleanUsername,
-                        email: user.email,
-                        profilePic: user.photoURL || '',
-                        createdAt: Date.now()
-                    };
-                    await setDoc(docRef, userData);
-                } else {
-                    userData = docSnap.data();
-                }
-
-                localStorage.setItem('genzUser', JSON.stringify(userData));
-                localStorage.removeItem('hasSeenWelcome');
-                
-                showSuccessModal();
-            } catch (e) {
-                console.error("Google Signin Error:", e);
-                const errorAlert = document.getElementById('errorAlert');
-                errorAlert.innerText = "Google Sign-in failed. Please try again.";
+                errorAlert.innerText = 'Could not find an account associated with this username or email.';
                 errorAlert.style.display = 'block';
             }
         }
